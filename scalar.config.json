@@ -11,12 +11,6 @@
         ]
       }
     ],
-
-    "references": [
-    {
-      "name": "API Reference",
-      "path": "https://api.steel.dev/sdk-openapi.json"
-    }
-  ],
-  "theme": "Moon"
+    "references": [],
+    "theme": "moon"
 }
