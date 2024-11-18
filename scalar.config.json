@@ -11,5 +11,11 @@
         ]
       }
     ],
-    "references": []
+
+    "references": [
+    {
+      "name": "API Reference",
+      "path": "https://api.steel.dev/sdk-openapi.json"
+    }
+  ]
   }
