@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@scalar/cli": "^1.2.8"
+  }
+}
