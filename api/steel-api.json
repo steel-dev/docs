@@ -1,0 +1,2625 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Steel API",
+    "contact": {
+      "name": "Steel Team",
+      "email": "team@steel.dev"
+    },
+    "description": "Steel (https://steel.dev) is an open-source browser API purpose-built for AI agents.\n        \nIt offers endpoints for various browser actions and session management, enabling agents to navigate the web for information over long running browser sessions.\n    \n**Key Capabilities:**\n- Control fleets of browser sessions in the cloud via API or Python/Node SDKs\n- Easily extract page data as cleaned HTML, markdown, PDFs, or screenshots\n- Access data behind logins with persistent cookies and automatic sign-in\n- Render complex client-side content with JavaScript execution\n- Bypass anti-bot measures with rotating proxies, stealth configs, and CAPTCHA solving\n- Reduce token usage and costs by up to 80% with optimized page formats\n- Reuse session and cookie data across multiple runs\n- Debug with ease using live session viewers, replays, and embeddings\n\n**Target Audience:**\n- AI engineers and developers working with online LLMs\n- Users with their own infrastructure looking to offload browser hosting operations\n- Users who need to scrape the web for information\n- QA teams who need to test web applications\n\n**Get Started:**\n- Open-source: Available as a Docker container for easy integration and scaling\n- Cloud API: Fully hosted and managed, no setup required. Get an API key at https://steel.dev\n- SDK: Available in Python, JavaScript, and more\n\n**Documentation:**\n- Check out the full documentation at https://docs.steel.dev\n- Explore the SDK documentation to get started with your project\n- Join our community on Discord for support and discussions",
+    "version": "0.0.1"
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "name": "steel-api-key",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "CreateSessionRequest": {
+        "title": "createSessionRequest",
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Optional custom UUID for the session"
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "Custom user agent string for the browser session"
+          },
+          "useProxy": {
+            "type": "boolean",
+            "description": "Enable Steel-provided residential proxy usage for the browser session. Default is false, which routes requests through datacenter proxies."
+          },
+          "proxyUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Custom proxy URL for the browser session. Overrides useProxy, disabling Steel-provided proxies in favor of your specified proxy. Format: http(s)://username:password@hostname:port"
+          },
+          "blockAds": {
+            "type": "boolean",
+            "description": "Block ads in the browser session. Default is false."
+          },
+          "solveCaptcha": {
+            "type": "boolean",
+            "description": "Enable automatic captcha solving. Default is false."
+          },
+          "sessionContext": {
+            "type": "object",
+            "properties": {
+              "cookies": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "The name of the cookie"
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "The value of the cookie"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "The URL of the cookie"
+                    },
+                    "domain": {
+                      "type": "string",
+                      "description": "The domain of the cookie"
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "The path of the cookie"
+                    },
+                    "secure": {
+                      "type": "boolean",
+                      "description": "Whether the cookie is secure"
+                    },
+                    "httpOnly": {
+                      "type": "boolean",
+                      "description": "Whether the cookie is HTTP only"
+                    },
+                    "sameSite": {
+                      "type": "string",
+                      "enum": [
+                        "Strict",
+                        "Lax",
+                        "None"
+                      ],
+                      "description": "The same site attribute of the cookie"
+                    },
+                    "size": {
+                      "type": "number",
+                      "description": "The size of the cookie"
+                    },
+                    "expires": {
+                      "type": "number",
+                      "description": "The expiration date of the cookie"
+                    },
+                    "partitionKey": {
+                      "type": "object",
+                      "properties": {
+                        "topLevelSite": {
+                          "type": "string",
+                          "description": "The site of the top-level URL the browser was visiting at the start of the request to the endpoint that set the cookie."
+                        },
+                        "hasCrossSiteAncestor": {
+                          "type": "boolean",
+                          "description": "Indicates if the cookie has any ancestors that are cross-site to the topLevelSite."
+                        }
+                      },
+                      "required": [
+                        "topLevelSite",
+                        "hasCrossSiteAncestor"
+                      ],
+                      "additionalProperties": false,
+                      "description": "The partition key of the cookie"
+                    },
+                    "session": {
+                      "type": "boolean",
+                      "description": "Whether the cookie is a session cookie"
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "Low",
+                        "Medium",
+                        "High"
+                      ],
+                      "description": "The priority of the cookie"
+                    },
+                    "sameParty": {
+                      "type": "boolean",
+                      "description": "Whether the cookie is a same party cookie"
+                    },
+                    "sourceScheme": {
+                      "type": "string",
+                      "enum": [
+                        "Unset",
+                        "NonSecure",
+                        "Secure"
+                      ],
+                      "description": "The source scheme of the cookie"
+                    },
+                    "sourcePort": {
+                      "type": "number",
+                      "description": "The source port of the cookie"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Cookies to initialize in the session"
+              },
+              "localStorage": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "description": "Domain-specific localStorage items to initialize in the session"
+              },
+              "sessionStorage": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "description": "Domain-specific sessionStorage items to initialize in the session"
+              },
+              "indexedDB": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "records": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "key": {},
+                                  "value": {},
+                                  "blobFiles": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "blobNumber": {
+                                          "type": "number"
+                                        },
+                                        "mimeType": {
+                                          "type": "string"
+                                        },
+                                        "size": {
+                                          "type": "number"
+                                        },
+                                        "filename": {
+                                          "type": "string"
+                                        },
+                                        "lastModified": {
+                                          "type": "string",
+                                          "format": "date-time"
+                                        },
+                                        "path": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "blobNumber",
+                                        "mimeType",
+                                        "size"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "records"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "data"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "description": "Domain-specific indexedDB items to initialize in the session"
+              }
+            },
+            "additionalProperties": false,
+            "description": "Session context data to be used in the created session. Sessions will start with an empty context by default."
+          },
+          "timeout": {
+            "type": "integer",
+            "description": "Session timeout duration in milliseconds. Default is 300000 (5 minutes)."
+          },
+          "concurrency": {
+            "type": "integer",
+            "description": "Number of sessions to create concurrently (check your plan limit)"
+          },
+          "isSelenium": {
+            "type": "boolean",
+            "description": "Enable Selenium mode for the browser session (default is false). Use this when you plan to connect to the browser session via Selenium."
+          },
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "width": {
+                "type": "integer",
+                "description": "Width of the session"
+              },
+              "height": {
+                "type": "integer",
+                "description": "Height of the session"
+              }
+            },
+            "required": [
+              "width",
+              "height"
+            ],
+            "additionalProperties": false,
+            "description": "Viewport and browser window dimensions for the session"
+          },
+          "namespace": {
+            "type": "string",
+            "description": "The namespace the session should be created against. Defaults to \"default\"."
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "autoSubmit": {
+                "type": "boolean"
+              },
+              "blurFields": {
+                "type": "boolean"
+              },
+              "exactOrigin": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false,
+            "description": "Configuration for session credentials"
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "lax",
+              "ord",
+              "iad",
+              "bom",
+              "scl",
+              "fra",
+              "hkg"
+            ],
+            "description": "The desired region for the session to be started in"
+          }
+        },
+        "additionalProperties": false,
+        "nullable": true,
+        "description": "Request body schema for creating a new browser session."
+      },
+      "NullableRequest": {
+        "title": "nullableRequest",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "nullable": true,
+        "description": "Empty request body that can be null"
+      },
+      "ScrapeRequest": {
+        "title": "scrapeRequest",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the webpage to scrape"
+          },
+          "format": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "html",
+                "readability",
+                "cleaned_html",
+                "markdown"
+              ]
+            },
+            "description": "Desired format(s) for the scraped content. Default is `html`."
+          },
+          "screenshot": {
+            "type": "boolean",
+            "description": "Include a screenshot in the response"
+          },
+          "pdf": {
+            "type": "boolean",
+            "description": "Include a PDF in the response"
+          },
+          "delay": {
+            "type": "number",
+            "description": "Delay before scraping (in milliseconds)"
+          },
+          "useProxy": {
+            "type": "boolean",
+            "description": "Use a Steel-provided residential proxy for the scrape"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "ScreenshotRequest": {
+        "title": "screenshotRequest",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the webpage to capture"
+          },
+          "useProxy": {
+            "type": "boolean",
+            "description": "Use a Steel-provided residential proxy for capturing the screenshot"
+          },
+          "delay": {
+            "type": "number",
+            "description": "Delay before capturing the screenshot (in milliseconds)"
+          },
+          "fullPage": {
+            "type": "boolean",
+            "description": "Capture the full page screenshot. Default is `false`."
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "PdfRequest": {
+        "title": "pdfRequest",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the webpage to convert to PDF"
+          },
+          "useProxy": {
+            "type": "boolean",
+            "description": "Use a Steel-provided residential proxy for generating the PDF"
+          },
+          "delay": {
+            "type": "number",
+            "description": "Delay before generating the PDF (in milliseconds)"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "FileUploadRequest": {
+        "title": "fileUploadRequest",
+        "type": "object",
+        "properties": {
+          "file": {
+            "description": "The file to upload (binary) or URL string to download from"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path to the file in the storage system"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CredentialCreate": {
+        "title": "credentialCreate",
+        "type": "object",
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "default": "default",
+            "description": "The namespace the credential is stored against. Defaults to \"default\"."
+          },
+          "origin": {
+            "type": "string",
+            "default": "default",
+            "description": "Website origin the credential is for"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label for the credential"
+          },
+          "value": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Value for the credential"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      "CredentialUpdate": {
+        "title": "credentialUpdate",
+        "type": "object",
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "description": "The namespace the credential is stored against. Defaults to \"default\"."
+          },
+          "origin": {
+            "type": "string",
+            "description": "Website origin the credential is for"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label for the credential"
+          },
+          "value": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Value for the credential"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CredentialNamespaceOrigin": {
+        "title": "credentialNamespaceOrigin",
+        "type": "object",
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "default": "default",
+            "description": "The namespace the credential is stored against. Defaults to \"default\"."
+          },
+          "origin": {
+            "type": "string",
+            "description": "Website origin the credential is for"
+          }
+        },
+        "required": [
+          "origin"
+        ],
+        "additionalProperties": false
+      },
+      "Credential": {
+        "title": "credential",
+        "type": "object",
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "default": "default",
+            "description": "The namespace the credential is stored against. Defaults to \"default\"."
+          },
+          "origin": {
+            "type": "string",
+            "default": "default",
+            "description": "Website origin the credential is for"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label for the credential"
+          },
+          "value": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Value for the credential"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the credential was created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the credential was last updated"
+          }
+        },
+        "required": [
+          "value",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "ErrorResponse": {
+        "title": "errorResponse",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "context": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "keyword": {
+                  "type": "string"
+                },
+                "params": {},
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "keyword",
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "additionalProperties": false,
+        "description": "An error response from the API"
+      },
+      "SuccessResponse": {
+        "title": "successResponse",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ],
+        "additionalProperties": false
+      },
+      "GetSessionEventsResponse": {
+        "title": "getSessionEventsResponse",
+        "type": "array",
+        "description": "Events for a browser session"
+      },
+      "SessionsResponse": {
+        "title": "sessionsResponse",
+        "type": "object",
+        "properties": {
+          "sessions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier for the session"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the session started"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "live",
+                    "released",
+                    "failed"
+                  ],
+                  "description": "Status of the session"
+                },
+                "duration": {
+                  "type": "integer",
+                  "description": "Duration of the session in milliseconds"
+                },
+                "eventCount": {
+                  "type": "integer",
+                  "description": "Number of events processed in the session"
+                },
+                "timeout": {
+                  "type": "integer",
+                  "description": "Session timeout duration in milliseconds"
+                },
+                "dimensions": {
+                  "type": "object",
+                  "properties": {
+                    "width": {
+                      "type": "integer",
+                      "description": "Width of the browser window"
+                    },
+                    "height": {
+                      "type": "integer",
+                      "description": "Height of the browser window"
+                    }
+                  },
+                  "required": [
+                    "width",
+                    "height"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Viewport and browser window dimensions for the session"
+                },
+                "creditsUsed": {
+                  "type": "integer",
+                  "description": "Amount of credits consumed by the session"
+                },
+                "websocketUrl": {
+                  "type": "string",
+                  "description": "URL for the session's WebSocket connection"
+                },
+                "debugUrl": {
+                  "type": "string",
+                  "description": "URL for debugging the session"
+                },
+                "sessionViewerUrl": {
+                  "type": "string",
+                  "description": "URL to view session details"
+                },
+                "userAgent": {
+                  "type": "string",
+                  "description": "User agent string used in the session"
+                },
+                "proxy": {
+                  "type": "string",
+                  "description": "Proxy server used for the session"
+                },
+                "proxyBytesUsed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Amount of data transmitted through the proxy"
+                },
+                "solveCaptcha": {
+                  "type": "boolean",
+                  "description": "Indicates if captcha solving is enabled"
+                },
+                "isSelenium": {
+                  "type": "boolean",
+                  "description": "Indicates if Selenium is used in the session"
+                },
+                "region": {
+                  "type": "string",
+                  "enum": [
+                    "lax",
+                    "ord",
+                    "iad",
+                    "bom",
+                    "scl",
+                    "fra",
+                    "hkg"
+                  ],
+                  "description": "The region where the session was created"
+                }
+              },
+              "required": [
+                "id",
+                "createdAt",
+                "status",
+                "duration",
+                "eventCount",
+                "timeout",
+                "dimensions",
+                "creditsUsed",
+                "websocketUrl",
+                "debugUrl",
+                "sessionViewerUrl",
+                "proxyBytesUsed"
+              ],
+              "additionalProperties": false,
+              "description": "Represents the data structure for a browser session, including its configuration and status."
+            },
+            "description": "List of browser sessions"
+          }
+        },
+        "required": [
+          "sessions"
+        ],
+        "additionalProperties": false,
+        "description": "Response containing a list of browser sessions with pagination details."
+      },
+      "SessionResponse": {
+        "title": "sessionResponse",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the session"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the session started"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "live",
+              "released",
+              "failed"
+            ],
+            "description": "Status of the session"
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Duration of the session in milliseconds"
+          },
+          "eventCount": {
+            "type": "integer",
+            "description": "Number of events processed in the session"
+          },
+          "timeout": {
+            "type": "integer",
+            "description": "Session timeout duration in milliseconds"
+          },
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "width": {
+                "type": "integer",
+                "description": "Width of the browser window"
+              },
+              "height": {
+                "type": "integer",
+                "description": "Height of the browser window"
+              }
+            },
+            "required": [
+              "width",
+              "height"
+            ],
+            "additionalProperties": false,
+            "description": "Viewport and browser window dimensions for the session"
+          },
+          "creditsUsed": {
+            "type": "integer",
+            "description": "Amount of credits consumed by the session"
+          },
+          "websocketUrl": {
+            "type": "string",
+            "description": "URL for the session's WebSocket connection"
+          },
+          "debugUrl": {
+            "type": "string",
+            "description": "URL for debugging the session"
+          },
+          "sessionViewerUrl": {
+            "type": "string",
+            "description": "URL to view session details"
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "User agent string used in the session"
+          },
+          "proxy": {
+            "type": "string",
+            "description": "Proxy server used for the session"
+          },
+          "proxyBytesUsed": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Amount of data transmitted through the proxy"
+          },
+          "solveCaptcha": {
+            "type": "boolean",
+            "description": "Indicates if captcha solving is enabled"
+          },
+          "isSelenium": {
+            "type": "boolean",
+            "description": "Indicates if Selenium is used in the session"
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "lax",
+              "ord",
+              "iad",
+              "bom",
+              "scl",
+              "fra",
+              "hkg"
+            ],
+            "description": "The region where the session was created"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "status",
+          "duration",
+          "eventCount",
+          "timeout",
+          "dimensions",
+          "creditsUsed",
+          "websocketUrl",
+          "debugUrl",
+          "sessionViewerUrl",
+          "proxyBytesUsed"
+        ],
+        "additionalProperties": false,
+        "description": "Represents the data structure for a browser session, including its configuration and status."
+      },
+      "ReleaseSessionResponse": {
+        "title": "releaseSessionResponse",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the session was successfully released"
+          },
+          "message": {
+            "type": "string",
+            "description": "Details about the outcome of the release operation"
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ],
+        "additionalProperties": false,
+        "description": "Response for releasing a single session."
+      },
+      "ReleaseSessionsResponse": {
+        "title": "releaseSessionsResponse",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the sessions were successfully released"
+          },
+          "message": {
+            "type": "string",
+            "description": "Details about the outcome of the release operation"
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ],
+        "additionalProperties": false,
+        "description": "Response for releasing multiple sessions."
+      },
+      "SessionContextResponse": {
+        "title": "sessionContextResponse",
+        "type": "object",
+        "properties": {
+          "cookies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the cookie"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "The value of the cookie"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The URL of the cookie"
+                },
+                "domain": {
+                  "type": "string",
+                  "description": "The domain of the cookie"
+                },
+                "path": {
+                  "type": "string",
+                  "description": "The path of the cookie"
+                },
+                "secure": {
+                  "type": "boolean",
+                  "description": "Whether the cookie is secure"
+                },
+                "httpOnly": {
+                  "type": "boolean",
+                  "description": "Whether the cookie is HTTP only"
+                },
+                "sameSite": {
+                  "type": "string",
+                  "enum": [
+                    "Strict",
+                    "Lax",
+                    "None"
+                  ],
+                  "description": "The same site attribute of the cookie"
+                },
+                "size": {
+                  "type": "number",
+                  "description": "The size of the cookie"
+                },
+                "expires": {
+                  "type": "number",
+                  "description": "The expiration date of the cookie"
+                },
+                "partitionKey": {
+                  "type": "object",
+                  "properties": {
+                    "topLevelSite": {
+                      "type": "string",
+                      "description": "The site of the top-level URL the browser was visiting at the start of the request to the endpoint that set the cookie."
+                    },
+                    "hasCrossSiteAncestor": {
+                      "type": "boolean",
+                      "description": "Indicates if the cookie has any ancestors that are cross-site to the topLevelSite."
+                    }
+                  },
+                  "required": [
+                    "topLevelSite",
+                    "hasCrossSiteAncestor"
+                  ],
+                  "additionalProperties": false,
+                  "description": "The partition key of the cookie"
+                },
+                "session": {
+                  "type": "boolean",
+                  "description": "Whether the cookie is a session cookie"
+                },
+                "priority": {
+                  "type": "string",
+                  "enum": [
+                    "Low",
+                    "Medium",
+                    "High"
+                  ],
+                  "description": "The priority of the cookie"
+                },
+                "sameParty": {
+                  "type": "boolean",
+                  "description": "Whether the cookie is a same party cookie"
+                },
+                "sourceScheme": {
+                  "type": "string",
+                  "enum": [
+                    "Unset",
+                    "NonSecure",
+                    "Secure"
+                  ],
+                  "description": "The source scheme of the cookie"
+                },
+                "sourcePort": {
+                  "type": "number",
+                  "description": "The source port of the cookie"
+                }
+              },
+              "required": [
+                "name",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Cookies to initialize in the session"
+          },
+          "localStorage": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "description": "Domain-specific localStorage items to initialize in the session"
+          },
+          "sessionStorage": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "description": "Domain-specific sessionStorage items to initialize in the session"
+          },
+          "indexedDB": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "records": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "key": {},
+                              "value": {},
+                              "blobFiles": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "blobNumber": {
+                                      "type": "number"
+                                    },
+                                    "mimeType": {
+                                      "type": "string"
+                                    },
+                                    "size": {
+                                      "type": "number"
+                                    },
+                                    "filename": {
+                                      "type": "string"
+                                    },
+                                    "lastModified": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "path": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "blobNumber",
+                                    "mimeType",
+                                    "size"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              }
+                            },
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "records"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "data"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "description": "Domain-specific indexedDB items to initialize in the session"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Session context data returned from a browser session."
+      },
+      "SessionLiveDetailsResponse": {
+        "title": "sessionLiveDetailsResponse",
+        "type": "object",
+        "properties": {
+          "sessionViewerUrl": {
+            "type": "string"
+          },
+          "sessionViewerFullscreenUrl": {
+            "type": "string"
+          },
+          "pages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "favicon": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "sessionViewerUrl": {
+                  "type": "string"
+                },
+                "sessionViewerFullscreenUrl": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "url",
+                "title",
+                "favicon",
+                "sessionViewerUrl",
+                "sessionViewerFullscreenUrl"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "wsUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sessionViewerUrl",
+          "sessionViewerFullscreenUrl",
+          "pages",
+          "wsUrl"
+        ],
+        "additionalProperties": false
+      },
+      "ScrapeResponse": {
+        "title": "scrapeResponse",
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "object",
+            "properties": {
+              "html": {
+                "type": "string",
+                "description": "Raw HTML content of the webpage"
+              },
+              "cleaned_html": {
+                "type": "string",
+                "description": "Cleaned HTML content of the webpage"
+              },
+              "markdown": {
+                "type": "string",
+                "description": "Webpage content converted to Markdown"
+              },
+              "readability": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "Webpage content in Readability format"
+              }
+            },
+            "additionalProperties": false
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Title of the webpage"
+              },
+              "ogImage": {
+                "type": "string",
+                "description": "Open Graph image URL"
+              },
+              "ogTitle": {
+                "type": "string",
+                "description": "Open Graph title"
+              },
+              "urlSource": {
+                "type": "string",
+                "description": "Source URL of the scraped page"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the webpage"
+              },
+              "ogDescription": {
+                "type": "string",
+                "description": "Open Graph description"
+              },
+              "statusCode": {
+                "type": "integer",
+                "description": "HTTP status code of the response"
+              },
+              "language": {
+                "type": "string",
+                "description": "Detected language of the webpage"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the scrape was performed"
+              },
+              "published_timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Publication timestamp of the content (if available)"
+              }
+            },
+            "required": [
+              "statusCode"
+            ],
+            "additionalProperties": false
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "URL of the link"
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Text content of the link"
+                }
+              },
+              "required": [
+                "url",
+                "text"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "screenshot": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "URL of the screenshot image"
+              }
+            },
+            "required": [
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          "pdf": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "URL of the generated PDF"
+              }
+            },
+            "required": [
+              "url"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "content",
+          "metadata",
+          "links"
+        ],
+        "additionalProperties": false,
+        "description": "Response from a successful scrape request"
+      },
+      "ScreenshotResponse": {
+        "title": "screenshotResponse",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL where the screenshot is hosted"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "PdfResponse": {
+        "title": "pdfResponse",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL where the PDF is hosted"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "FileDetails": {
+        "title": "fileDetails",
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file in the storage system"
+          },
+          "size": {
+            "type": "number",
+            "description": "Size of the file in bytes"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the file was created"
+          }
+        },
+        "required": [
+          "path",
+          "size",
+          "lastModified"
+        ],
+        "additionalProperties": false
+      },
+      "MultipleFiles": {
+        "title": "multipleFiles",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Path to the file in the storage system"
+                },
+                "size": {
+                  "type": "number",
+                  "description": "Size of the file in bytes"
+                },
+                "lastModified": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Timestamp when the file was created"
+                }
+              },
+              "required": [
+                "path",
+                "size",
+                "lastModified"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Array of files for the current page"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "CredentialMetadata": {
+        "title": "credentialMetadata",
+        "type": "object",
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "default": "default",
+            "description": "The namespace the credential is stored against. Defaults to \"default\"."
+          },
+          "origin": {
+            "type": "string",
+            "default": "default",
+            "description": "Website origin the credential is for"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label for the credential"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the credential was created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time the credential was last updated"
+          }
+        },
+        "required": [
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "CredentialList": {
+        "title": "credentialList",
+        "type": "object",
+        "properties": {
+          "credentials": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "namespace": {
+                  "type": "string",
+                  "default": "default",
+                  "description": "The namespace the credential is stored against. Defaults to \"default\"."
+                },
+                "origin": {
+                  "type": "string",
+                  "default": "default",
+                  "description": "Website origin the credential is for"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Label for the credential"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time the credential was created"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time the credential was last updated"
+                }
+              },
+              "required": [
+                "createdAt",
+                "updatedAt"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "credentials"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "paths": {
+    "/v1/scrape": {
+      "post": {
+        "operationId": "scrape",
+        "summary": "Scrape webpage content",
+        "tags": [
+          "Browser Tools"
+        ],
+        "description": "Extracts content from a specified URL.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/screenshot": {
+      "post": {
+        "operationId": "screenshot",
+        "summary": "Capture webpage screenshot",
+        "tags": [
+          "Browser Tools"
+        ],
+        "description": "Captures a screenshot of a specified webpage.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScreenshotRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScreenshotResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pdf": {
+      "post": {
+        "operationId": "pdf",
+        "summary": "Convert webpage to PDF",
+        "tags": [
+          "Browser Tools"
+        ],
+        "description": "Generates a PDF from a specified webpage.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PdfRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions": {
+      "get": {
+        "operationId": "get_sessions",
+        "summary": "List all sessions",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Fetches all active sessions for the current organization.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "cursorId",
+            "required": false,
+            "description": "Cursor ID for pagination"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "description": "Number of sessions to return. Default is 50."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live",
+                "released",
+                "failed"
+              ]
+            },
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "description": "Filter sessions by current status"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "create_session",
+        "summary": "Create a session",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Creates a new session with the provided configuration.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions/release": {
+      "post": {
+        "operationId": "release_all_sessions",
+        "summary": "Release all sessions",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Releases all active sessions for the current organization.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NullableRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseSessionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions/{id}": {
+      "get": {
+        "operationId": "get_session",
+        "summary": "Get session details",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Retrieves details of a specific session by ID.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions/{id}/context": {
+      "get": {
+        "operationId": "get_session_context",
+        "summary": "Get session context",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Fetches the context data of a specific session.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionContextResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions/{id}/events": {
+      "get": {
+        "operationId": "get_session_events",
+        "summary": "Get recorded events",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "This endpoint allows you to get the recorded session events in the RRWeb format",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSessionEventsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions/{id}/release": {
+      "post": {
+        "operationId": "release_session",
+        "summary": "Release a session",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Releases a specific session by ID.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NullableRequest"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseSessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions/{id}/live-details": {
+      "get": {
+        "operationId": "get_session_live_details",
+        "summary": "Get live session details",
+        "tags": [
+          "Sessions"
+        ],
+        "description": "Returns the live state of the session, including pages, tabs, and browser state",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionLiveDetailsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/files": {
+      "post": {
+        "operationId": "upload_file",
+        "summary": "Upload a file",
+        "tags": [
+          "Files"
+        ],
+        "description": "Uploads a file to a session via `multipart/form-data` with a `file` field that accepts either binary data or a URL string to download from, and an optional `path` field for the file storage path.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadRequest"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_files",
+        "summary": "List files",
+        "tags": [
+          "Files"
+        ],
+        "description": "List all files from the session in descending order.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleFiles"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_all_files",
+        "summary": "Delete all files",
+        "tags": [
+          "Files"
+        ],
+        "description": "Delete all files from a session",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "All files successfully deleted"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/files/{path}": {
+      "get": {
+        "operationId": "download_file",
+        "summary": "Download a file",
+        "tags": [
+          "Files"
+        ],
+        "description": "Download a file from a session",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful download",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_file",
+        "summary": "Delete a file",
+        "tags": [
+          "Files"
+        ],
+        "description": "Delete a file from a session",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "File successfully deleted"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/files.zip": {
+      "get": {
+        "operationId": "download_archive",
+        "summary": "Download archive",
+        "tags": [
+          "Files"
+        ],
+        "description": "Download all files from the session as a zip archive.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful download",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/files": {
+      "post": {
+        "operationId": "upload_global_file",
+        "summary": "Upload a global file",
+        "tags": [
+          "Files"
+        ],
+        "description": "Uploads a file to global storage via `multipart/form-data` with a `file` field that accepts either binary data or a URL string to download from, and an optional `path` field for the file storage path.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_global_files",
+        "summary": "List global files",
+        "tags": [
+          "Files"
+        ],
+        "description": "List all global files for the organization in descending order.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleFiles"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/files/{path}": {
+      "get": {
+        "operationId": "download_global_file",
+        "summary": "Download a global file",
+        "tags": [
+          "Files"
+        ],
+        "description": "Download a file from global storage",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful download",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_global_file",
+        "summary": "Delete a global file",
+        "tags": [
+          "Files"
+        ],
+        "description": "Delete a file from global storage",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "File successfully deleted"
+          }
+        }
+      }
+    },
+    "/v1/credentials": {
+      "get": {
+        "operationId": "list_credentials",
+        "summary": "List all credential metadata",
+        "tags": [
+          "Credentials"
+        ],
+        "description": "Fetches all credential metadata for the current organization.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "namespace",
+            "required": false,
+            "description": "namespace credential is stored against"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "origin",
+            "required": false,
+            "description": "website origin the credential is for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "create_credential",
+        "summary": "Stores credentials",
+        "tags": [
+          "Credentials"
+        ],
+        "description": "Encrypts and stores credentials for an origin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialMetadata"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "update_credential",
+        "summary": "Updates credentials",
+        "tags": [
+          "Credentials"
+        ],
+        "description": "Encrypts and updates credentials for an origin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialMetadata"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_credential",
+        "summary": "Deletes credentials",
+        "tags": [
+          "Credentials"
+        ],
+        "description": "Deletes encrypted credentials from the database",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialNamespaceOrigin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.steel.dev",
+      "description": "Steel production server"
+    }
+  ],
+  "security": [
+    {
+      "apiKey": []
+    }
+  ]
+}

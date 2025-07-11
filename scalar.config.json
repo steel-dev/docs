@@ -1,16 +1,408 @@
 {
-    "subdomain": "steel-test",
-    "guides": [
-      {
-        "name": "My awesome documentation",
-        "sidebar": [
-          {
-            "path": "introduction.md",
-            "type": "page"
-          }
-        ]
-      }
-    ],
-    "references": [],
-    "theme": "moon"
+  "$schema": "https://cdn.scalar.com/schema/scalar-config.json",
+  "siteMeta": {
+    "title": "Steel Documentation",
+    "ogImage": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/01EQeb6X5lTTuyukoe62C.png",
+    "favicon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/71ZO5mYfrOpfddD07kgUg.png",
+    "description": "Full documentation for Steel - the open-source headless browser API for AI agents. Here you'll find all the guides, concepts, and API reference for developing with Steel."
+  },
+  "subdomain": "steel",
+  "customDomain": "docs.steel.dev",
+  "publishOnMerge": true,
+  "header": [
+    {
+      "type": "guide",
+      "slug": "overview"
+    },
+    {
+      "type": "guide",
+      "slug": "changelog"
+    },
+    {
+      "type": "reference",
+      "slug": "api-reference"
+    },
+    {
+      "type": "link",
+      "title": "Cookbook",
+      "link": "https://github.com/steel-dev/steel-cookbook"
+    },
+    {
+      "type": "link",
+      "title": "Playground",
+      "link": "https://playground.steel.dev"
+    },
+    {
+      "type": "spacer"
+    },
+    {
+      "type": "link",
+      "title": "Discord",
+      "link": "https://discord.gg/steel-dev"
+    },
+    {
+      "type": "link",
+      "title": "GitHub",
+      "link": "https://github.com/steel-dev"
+    },
+    {
+      "type": "link",
+      "title": "Dashboard",
+      "link": "https://app.steel.dev"
+    },
+    {
+      "type": "link",
+      "title": "Get Started",
+      "isButton": true,
+      "link": "https://app.steel.dev/sign-up"
+    }
+  ],
+  "references": [
+    {
+      "name": "API Reference",
+      "slug": "api-reference",
+      "path": "api/steel-api.json"
+    }
+  ],
+  "guides": [
+    {
+      "name": "Overview",
+      "slug": "overview",
+      "sidebar": [
+        {
+          "type": "page",
+          "name": "Intro to Steel",
+          "path": "docs/intro-to-steel.md",
+          "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/Vod9aq_X68jOMnsM5HBrS.svg",
+          "description": "Humans use Chrome, Agents use Steel."
+        },
+        {
+          "type": "page",
+          "name": "Need Help?",
+          "icon": "solid/image-flash-lightning",
+          "path": "docs/need-help.md"
+        },
+        {
+          "type": "folder",
+          "name": "Sessions API",
+          "children": [
+            {
+              "type": "page",
+              "name": "Overview",
+              "path": "docs/sessions-api/overview.md",
+              "description": "Manage fleets of browser sessions with ease."
+            },
+            {
+              "type": "page",
+              "name": "Quickstart",
+              "description": "Get up a running with your first Steel Session in a few minutes.",
+              "path": "docs/sessions-api/quickstart.md"
+            },
+            {
+              "type": "page",
+              "name": "Session Lifecycle",
+              "description": "Learn how to start and release browser sessions programatically.",
+              "path": "docs/sessions-api/session-lifecycle.md"
+            },
+            {
+              "type": "page",
+              "name": "Captchas",
+              "path": "docs/sessions-api/captchas.md"
+            },
+            {
+              "type": "page",
+              "name": "Multi-region",
+              "description": "Control where your Steel browser sessions are hosted for optimal performance and latency.",
+              "path": "docs/sessions-api/multi-region.md"
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Credentials API",
+          "children": [
+            {
+              "type": "page",
+              "name": "Overview",
+              "path": "docs/credentials-api/overview.md"
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Files API",
+          "children": [
+            {
+              "type": "page",
+              "name": "Overview",
+              "path": "docs/files-api/overview.md"
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Guides",
+          "children": [
+            {
+              "type": "page",
+              "name": "Connect with Puppeteer",
+              "path": "docs/guides/connect-with-puppeteer.md",
+              "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/8z4ycCdv9JRHdEOFQwhk-.svg",
+              "description": "Drive a Steel session with Puppeteer via WebSocket connection."
+            },
+            {
+              "type": "page",
+              "name": "Connect with Playwright (Node)",
+              "path": "docs/guides/connect-with-playwright-node.md",
+              "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/vL5JPgq-BvqG6_o5W-kIB.svg",
+              "description": "Drive a Steel session with Playwright via WebSocket connection."
+            },
+            {
+              "type": "page",
+              "name": "Connect with Playwright (Python)",
+              "description": "Drive a Steel session with Playwright-python via WebSocket connection",
+              "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/vL5JPgq-BvqG6_o5W-kIB.svg",
+              "path": "docs/guides/connect-with-playwright-python.md"
+            },
+            {
+              "type": "page",
+              "name": "Connect with Selenium",
+              "path": "docs/guides/connect-with-selenium.md",
+              "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/AXGA7MEpLDj2FCG9rJ34p.svg",
+              "description": "How to drive and connect to Steel browser sessions with Selenium."
+            },
+            {
+              "type": "page",
+              "name": "Embed Session Recordings",
+              "description": "How to access recordings of past browser sessions and display them within your app",
+              "icon": "solid/entertainment-control-button-circle-play",
+              "path": "docs/guides/embed-session-recordings.md"
+            },
+            {
+              "type": "page",
+              "name": "View and Embed Live Sessions",
+              "description": "How to embed and share live browser sessions in your applications",
+              "icon": "solid/computer-device-laptop",
+              "path": "docs/guides/view-and-embed-live-sessions.md"
+            },
+            {
+              "type": "page",
+              "name": "Implement Human-in-the-Loop Controls",
+              "description": "How to let users take control of Steel browser sessions",
+              "icon": "solid/computer-device-mobile-tablet-touch",
+              "path": "docs/guides/implement-human-in-the-loop-controls.md"
+            },
+            {
+              "type": "page",
+              "name": "Reusing Contexts & Auth",
+              "description": "How to Reuse Authentication Across Steel Sessions",
+              "icon": "solid/interface-edit-view-eye",
+              "path": "docs/guides/reusing-contexts-&-auth.md"
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Self-hosting",
+          "children": [
+            {
+              "type": "page",
+              "name": "Docker",
+              "description": "Self-Hosting Steel Browser Using Docker",
+              "icon": "brand/brand-software-development-docker",
+              "path": "docs/self-hosting/docker.md"
+            },
+            {
+              "type": "link",
+              "name": "Railway",
+              "url": "https://railway.com/template/FQG9Ca"
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Examples",
+          "children": [
+            {
+              "type": "link",
+              "name": "Playwright Starter Project",
+              "url": "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-playwright-starter"
+            },
+            {
+              "type": "link",
+              "name": "Browser-use Starter Project",
+              "url": "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-browser-use-starter"
+            },
+            {
+              "type": "link",
+              "name": "Playwright-python Starter Project",
+              "url": "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-playwright-python-starter"
+            },
+            {
+              "type": "link",
+              "name": "Puppeteer Starter Project",
+              "url": "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-puppeteer-starter"
+            },
+            {
+              "type": "link",
+              "name": "Selenium Starter Project",
+              "url": "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-selenium-starter"
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Integrations",
+          "children": [
+            {
+              "type": "folder",
+              "name": "Browser-use",
+              "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/x1kBdm_PIGBIFuBhb_Yp5.png",
+              "children": [
+                {
+                  "type": "page",
+                  "name": "Overview",
+                  "path": "docs/integrations/browser-use/overview.md"
+                },
+                {
+                  "type": "page",
+                  "name": "Quickstart",
+                  "description": "A step-by-step guide to connecting Steel with Browser-use.",
+                  "path": "docs/integrations/browser-use/quickstart.md"
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Bolt.new / Stackblitz",
+              "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/fezS-ruDDZtdMetPTEwsh.png",
+              "children": [
+                {
+                  "type": "page",
+                  "name": "Overview",
+                  "path": "docs/integrations/boltnew-stackblitz/overview.md"
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "OpenAI Computer Use",
+              "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/ej9f3UMISxJxD5t2Do3p0.png",
+              "children": [
+                {
+                  "type": "page",
+                  "name": "Overview",
+                  "path": "docs/integrations/openai-computer-use/overview.md"
+                },
+                {
+                  "type": "page",
+                  "name": "Quickstart (Python)",
+                  "path": "docs/integrations/openai-computer-use/quickstart-python.md"
+                },
+                {
+                  "type": "page",
+                  "name": "Quickstart (TS/Node)",
+                  "path": "docs/integrations/openai-computer-use/quickstart-tsnode.md"
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Replit",
+              "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/egApfu2td8v9j_dOevqkp.png",
+              "children": [
+                {
+                  "type": "page",
+                  "name": "Overview",
+                  "path": "docs/integrations/replit/overview.md"
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Val.town",
+              "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/xtazbkNOTKE1WFsFR2Ca7.png",
+              "children": [
+                {
+                  "type": "page",
+                  "name": "Overview",
+                  "path": "docs/integrations/valtown/overview.md"
+                },
+                {
+                  "type": "link",
+                  "name": "Quickstart Template",
+                  "url": "https://www.val.town/v/steel/steel_puppeteer_starter"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Platform",
+          "children": [
+            {
+              "type": "page",
+              "name": "Steel Playground",
+              "description": "An interactive code execution environment for testing Steel automations.",
+              "path": "docs/platform/steel-playground.md"
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Reference",
+          "children": [
+            {
+              "type": "link",
+              "name": "API Reference",
+              "url": "/api-reference"
+            },
+            {
+              "type": "link",
+              "name": "Python SDK",
+              "url": "https://github.com/steel-dev/steel-python"
+            },
+            {
+              "type": "link",
+              "name": "Node SDK",
+              "url": "https://github.com/steel-dev/steel-node"
+            }
+          ]
+        },
+        {
+          "type": "page",
+          "name": "Pricing/Limits",
+          "path": "docs/pricing-limits.md"
+        },
+        {
+          "type": "page",
+          "name": "Legal",
+          "path": "docs/legal.md"
+        }
+      ]
+    },
+    {
+      "name": "Changelog",
+      "slug": "changelog",
+      "sidebar": [
+        {
+          "type": "page",
+          "name": "Changelog",
+          "icon": "solid/interface-favorite-stars-sparkles",
+          "path": "changelog/changelog.md"
+        }
+      ]
+    }
+  ],
+  "siteConfig": {
+    "theme": "steel-theme-1",
+    "cssString": "/* Basic theme */\n.light-mode {\n  --scalar-color-1: #21201c; /* Sand 12 */\n  --scalar-color-2: #63635e; /* Sand 11 */\n  --scalar-color-3: #82827c; /* Sand 10 */\n  --scalar-color-accent: #1b180f; /* Yellow 9 */\n  --scalar-background-1: #fdfdfc; /* Sand 1 */\n  --scalar-background-2: #f9f9f8; /* Sand 2 */\n  --scalar-background-3: #f1f0ef; /* Sand 3 */\n  --scalar-background-accent: #ffe62a1f;\n  --scalar-border-color: #f1f0ef; /* Sand 3 */\n  --scalar-code-language-color-supersede: var(--scalar-color-3);\n}\n.dark-mode {\n  --scalar-color-1: #eeeeec; /* Sand 12 */\n  --scalar-color-2: #b5b3ad; /* Sand 11 */\n  --scalar-color-3: rgba(180, 179, 173, 0.6); /* Sand 10 with opacity */\n  --scalar-color-accent: #ffe62a; /* Yellow 9 */\n  --scalar-background-1: #111110; /* Sand 1 */\n  --scalar-background-2: #191918; /* Sand 2 */\n  --scalar-background-3: #222221; /* Sand 3 */\n  --scalar-background-accent: #ffe62a1f;\n  --scalar-border-color: #222221; /* Sand Dark 3 */\n  --scalar-code-language-color-supersede: var(--scalar-color-3);\n}\n/* Document Sidebar */\n.light-mode .t-doc__sidebar {\n  --scalar-sidebar-background-1: var(--scalar-background-1);\n  --scalar-sidebar-item-hover-color: currentColor;\n  --scalar-sidebar-item-hover-background: var(--scalar-background-2);\n  --scalar-sidebar-item-active-background: var(--scalar-background-accent);\n  --scalar-sidebar-border-color: 0.5px solid var(--scalar-border-color);\n  --scalar-sidebar-color-1: var(--scalar-color-1);\n  --scalar-sidebar-color-2: var(--scalar-color-2);\n  --scalar-sidebar-color-active: #1b180f;\n  --scalar-sidebar-search-background: rgba(33, 32, 28, 0.05);\n  --scalar-sidebar-search-border-color: 1px solid rgba(33, 32, 28, 0.05);\n  --scalar-sidebar-search-color: var(--scalar-color-3);\n  --scalar-background-2: rgba(33, 32, 28, 0.03);\n}\n.dark-mode .t-doc__sidebar {\n  --scalar-sidebar-background-1: var(--scalar-background-1);\n  --scalar-sidebar-item-hover-color: currentColor;\n  --scalar-sidebar-item-hover-background: var(--scalar-background-2);\n  --scalar-sidebar-item-active-background: rgba(238, 238, 236, 0.1);\n  --scalar-sidebar-border-color: 0.5px solid var(--scalar-border-color);\n  --scalar-sidebar-color-1: var(--scalar-color-1);\n  --scalar-sidebar-color-2: var(--scalar-color-2);\n  --scalar-sidebar-color-active: var(--scalar-color-accent);\n  --scalar-sidebar-search-background: rgba(238, 238, 236, 0.1);\n  --scalar-sidebar-search-border-color: 1px solid rgba(238, 238, 236, 0.05);\n  --scalar-sidebar-search-color: var(--scalar-color-3);\n}\n/* Advanced */\n.light-mode {\n  --scalar-color-green: #069061;\n  --scalar-color-red: #ef0006;\n  --scalar-color-yellow: #edbe20;\n  --scalar-color-blue: #0082d0;\n  --scalar-color-orange: #fb892c;\n  --scalar-color-purple: #5203d1;\n  --scalar-button-1: rgba(33, 32, 28, 1);\n  --scalar-button-1-hover: rgba(33, 32, 28, 0.8);\n  --scalar-button-1-color: rgba(253, 253, 252, 0.9);\n}\n.dark-mode {\n  --scalar-color-green: #00b648;\n  --scalar-color-red: #dc1b19;\n  --scalar-color-yellow: #ffc90d;\n  --scalar-color-blue: #4eb3ec;\n  --scalar-color-orange: #ff8d4d;\n  --scalar-color-purple: #b191f9;\n  --scalar-button-1: rgba(238, 238, 236, 1);\n  --scalar-button-1-hover: rgba(238, 238, 236, 0.9);\n  --scalar-button-1-color: #111110;\n}\n/* Custom Theme */\n.dark-mode h2.t-editor__heading,\n.dark-mode .t-editor__page-title h1,\n.dark-mode h1.section-header,\n.dark-mode .markdown h1,\n.dark-mode .markdown h2,\n.dark-mode .markdown h3,\n.dark-mode .markdown h4,\n.dark-mode .markdown h5,\n.dark-mode .markdown h6 {\n  -webkit-text-fill-color: transparent;\n  background-image: linear-gradient(\n    to right bottom,\n    rgb(238, 238, 236) 30%,\n    rgba(238, 238, 236, 0.38)\n  );\n  -webkit-background-clip: text;\n  background-clip: text;\n}\n.sidebar-search {\n  backdrop-filter: blur(12px);\n}\n@keyframes headerbackground {\n  from {\n    background: transparent;\n    backdrop-filter: none;\n  }\n  to {\n    background: var(--scalar-header-background-1);\n    backdrop-filter: blur(12px);\n  }\n}\n.dark-mode .scalar-card {\n  background: rgba(238, 238, 236, 0.05) !important;\n}\n.dark-mode .scalar-card * {\n  --scalar-background-2: transparent !important;\n  --scalar-background-1: transparent !important;\n}\n.light-mode .dark-mode.scalar-card *,\n.light-mode .dark-mode.scalar-card {\n  --scalar-background-1: #191918 !important;\n  --scalar-background-2: #191918 !important;\n  --scalar-background-3: #222221 !important;\n}\n.light-mode .dark-mode.scalar-card {\n  background: #222221 !important;\n}\n.badge {\n  box-shadow: 0 0 0 1px var(--scalar-border-color);\n  margin-right: 6px;\n}\n.table-row.required-parameter .table-row-item:nth-of-type(2):after {\n  background: transparent;\n  box-shadow: none;\n}\n/* Hero Section Flare */\n.section-flare {\n  width: 100vw;\n  background: radial-gradient(\n    ellipse 80% 50% at 50% -20%,\n    rgba(255, 230, 42, 0.15),\n    transparent\n  );\n  height: 100vh;\n}\n/* Document layout */\n.light-mode .t-doc .layout-content,\n.dark-mode .t-doc .layout-content {\n  background: transparent;\n}\n.t-doc__header {\n  background: rgba(253, 253, 252, 0.7); /* Sand 1 with opacity for light mode */\n  backdrop-filter: blur(12px);\n  -webkit-backdrop-filter: blur(12px); /* For Safari */\n  border-bottom: 0.5px solid var(--scalar-border-color);\n  position: sticky;\n  top: 0;\n  z-index: 100;\n}\n.dark-mode .t-doc__header {\n  background: rgba(17, 17, 16, 0.7); /* Sand 1 dark with opacity */\n}\n/* Sidebar styles */\n.t-doc__sidebar {\n  background: rgba(253, 253, 252, 0.7); /* Sand 1 with opacity for light mode */\n  backdrop-filter: blur(12px);\n  -webkit-backdrop-filter: blur(12px);\n  border-bottom: 0.5px solid var(--scalar-border-color);\n  z-index: 100;\n}\n.dark-mode .t-doc__sidebar {\n  background: rgba(17, 17, 16, 0.7) !important;\n} .header-item-spacer:last-child { display: none; } .t-editor__page-link { text-decoration: none; }",
+    "logo": {
+      "darkMode": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/IIQ2O9RlcJTpZY3UxFpC4.png",
+      "lightMode": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/IIQ2O9RlcJTpZY3UxFpC4.png"
+    },
+    "footerCss": ".footer {\n  width: 100%;\n  padding: 4rem 0;\n  color: var(--scalar-color-1);\n  border-top: 1px solid var(--scalar-border-color);\n}\n\n.footer-container {\n  max-width: 90rem; /* Match content width */\n  margin: 0 auto;\n  padding: 0 1.5rem;\n  display: flex;\n  justify-content: space-between; /* Push sections to opposite ends */\n  align-items: flex-start;\n}\n\n.footer-left {\n  display: flex;\n  flex-direction: column;\n  gap: 1.5rem;\n}\n\n.logo-section {\n  display: flex;\n  gap: 1rem;\n  align-items: flex-start;\n}\n\n.logo {\n  color: var(--scalar-color-1);\n  flex-shrink: 0;\n}\n\n.logo-text {\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n}\n\n.tagline {\n  font-size: 0.875rem;\n  color: var(--scalar-color-2);\n  line-height: 1.5;\n}\n\n.copyright {\n  font-size: 0.875rem;\n  color: var(--scalar-color-3);\n}\n\n.legal-links {\n  font-size: 0.875rem;\n  color: var(--scalar-color-3);\n}\n\n.legal-links a {\n  color: inherit;\n  text-decoration: none;\n}\n\n.legal-links a:hover {\n  color: var(--scalar-color-2);\n}\n\n.separator {\n  margin: 0 0.5rem;\n}\n\n.links-column h3 {\n  font-size: 0.875rem;\n  font-weight: 600;\n  margin-bottom: 1rem;\n  color: var(--scalar-color-1);\n}\n\n.links-column ul {\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 0.75rem;\n}\n\n.links-column a {\n  color: var(--scalar-color-3);\n  text-decoration: none;\n  font-size: 0.875rem;\n  transition: color 0.2s ease;\n}\n\n.links-column a:hover {\n  color: var(--scalar-color-2);\n}\n\n/* Responsive styles */\n@media (max-width: 768px) {\n  .footer {\n    padding: 3rem 0;\n  }\n\n  .footer-container {\n    flex-direction: column;\n    gap: 3rem;\n  }\n\n  .footer-left {\n    width: 100%;\n  }\n\n  .logo-section {\n    flex-direction: column;\n    gap: 1rem;\n  }\n}",
+    "footer": "<footer class=\"footer\">\n  <div class=\"footer-container\">\n    <!-- Left section -->\n    <div class=\"footer-left\">\n      <div class=\"logo-section\">\n        <svg width=\"33\" height=\"24\" viewBox=\"0 0 33 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" class=\"logo\">\n          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0.5 7.89187C0.5 3.80945 3.95383 0.5 8.21434 0.5H24.5002V7.07055H8.21434C7.74095 7.07055 7.35719 7.43827 7.35719 7.89187C7.35719 8.34547 7.74095 8.71319 8.21434 8.71319H16.7858C21.0463 8.71319 24.5002 12.0226 24.5002 16.1051C24.5002 20.1875 21.0463 23.4969 16.7858 23.4969H0.5V16.9264H16.7858C17.2592 16.9264 17.643 16.5587 17.643 16.1051C17.643 15.6515 17.2592 15.2837 16.7858 15.2837H8.21434C3.95383 15.2837 0.5 11.9743 0.5 7.89187Z\" fill=\"currentColor\"/>\n          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M25.6428 23.5V7.89494C25.6428 7.44134 25.2591 7.07362 24.7857 7.07362H12.7856V0.50307H24.7857C29.0462 0.50307 32.5 3.81252 32.5 7.89494V23.5H25.6428Z\" fill=\"currentColor\"/>\n        </svg>\n        <div class=\"logo-text\">\n          <p class=\"tagline\">A better way to take your LLMs online.</p>\n          <p class=\"copyright\">© Steel · Inc. 2024.</p>\n        </div>\n      </div>\n      <div class=\"legal-links\">\n        <a href=\"https://docs.google.com/document/d/1VuaLxBq150cR9vyiir9B4GUsvqSu0Rd64Vtu-HiSqp8/edit?usp=sharing\">Terms of Service</a>\n        <span class=\"separator\">·</span>\n        <a href=\"https://docs.google.com/document/d/1q3QBkFm4ke-_oqEO3wyP5yi64TazRBt6wbvIE_Zx69A/edit?tab=t.0#heading=h.kuxqh9k2q4xz\">Privacy Policy</a>\n      </div>\n    </div>\n\n    <!-- Center and Right sections -->\n    <div class=\"footer-links-grid\">\n      <div class=\"links-column\">\n        <h3>Join the community</h3>\n        <ul>\n          <li><a href=\"https://x.com/steeldotdev\">X / Twitter</a></li>\n          <li><a href=\"https://github.com/steel-dev/\">GitHub</a></li>\n          <li><a href=\"https://discord.gg/steel-dev\">Discord</a></li>\n        </ul>\n      </div>\n    </div>\n        <div class=\"footer-links-grid\">\n      <div class=\"links-column\">\n        <h3>Platform</h3>\n        <ul>\n          <li><a href=\"https://steel.dev\">Home</a></li>\n          <li><a href=\"https://status.steel.dev/\">Status</a></li>\n          <!-- <li><a href=\"https://discord.gg/gPpvhNvc5R\">Discord</a></li> -->\n        </ul>\n      </div>\n    </div>\n  </div>\n</footer>"
+  }
 }
