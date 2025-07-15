@@ -2,7 +2,7 @@
 
 This page outlines the current pricing breakdown between free/paid plans on Steel.
 
-**Last Edit:** May 30th, 2025
+**Last Edit:** _May 30th, 2025_
 
 ### Pricing Table
 
