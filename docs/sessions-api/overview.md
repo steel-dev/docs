@@ -3,7 +3,7 @@
 The Sessions API lets you create and control cloud-based browser sessions through simple API calls. Each session is like a fresh incognito window, but running in our cloud and controlled through code.
 
 
-::scalar-button[]{title="Go to Quickstart Example" href=/overview/sessions-api/quickstart icon="solid/arrow-right" }
+::scalar-button[]{title="Go to Quickstart Example" href=/sessions-api/quickstart icon="solid/arrow-right" }
 
 ### What is a Session?
 
@@ -11,29 +11,29 @@ Sessions are the atomic unit of our Sessions API. Think of sessions as giving yo
 
 ### Get started
 
-<a href="/overview/sessions-api/quickstart" type="page-link" class="t-editor__page-link">
+<a href="/sessions-api/quickstart" type="page-link" class="t-editor__page-link">
     <span>Quickstart</span>
     <p>Get up a running with your first Steel Session in a few minutes</p>
 </a>
 
 ### Connect with your preferred tools
 
-<a href="/overview/guides/connect-with-puppeteer" type="page-link" class="t-editor__page-link">
+<a href="/guides/connect-with-puppeteer" type="page-link" class="t-editor__page-link">
     <span>Connect with Puppeteer</span>
     <p>Drive a Steel session with Puppeteer via WebSocket connection</p>
 </a>
 
-<a href="/overview/guides/connect-with-playwright-node" type="page-link" class="t-editor__page-link">
+<a href="/guides/connect-with-playwright-node" type="page-link" class="t-editor__page-link">
     <span>Connect with Playwright (Node)</span>
     <p>Drive a Steel session with Playwright via WebSocket connection</p>
 </a>
 
-<a href="/overview/guides/connect-with-playwright-python" type="page-link" class="t-editor__page-link">
+<a href="/guides/connect-with-playwright-python" type="page-link" class="t-editor__page-link">
     <span>Connect with Playwright (Python)</span>
     <p>Drive a Steel session with Playwright-python via WebSocket connection</p>
 </a>
 
-<a href="/overview/guides/connect-with-selenium" type="page-link" class="t-editor__page-link">
+<a href="/guides/connect-with-selenium" type="page-link" class="t-editor__page-link">
     <span>Connect with Selenium</span>
     <p>How to drive and connect to Steel browser sessions with Selenium</p>
 </a>

@@ -5,10 +5,10 @@ This guide will walk you through setting up your Steel account, creating your fi
 
 
 :::scalar-callout{type=success icon="line/interface-alert-information-circle"}
-**Want to jump right in? [Skip to our example project.](/overview/guides/connect-with-puppeteer#example-project-scraping-hacker-news)**
+**Want to jump right in? [Skip to our example project.](/guides/connect-with-puppeteer#example-project-scraping-hacker-news)**
 
 \
-**Using a different stack?** Check out our guides for [Playwright (node)](/overview/guides/connect-with-playwright-node), [Playwright-Python](/overview/guides/connect-with-playwright-python), and [Selenium](/overview/guides/connect-with-selenium), or view the [Python SDK Reference](/overview/reference/python-sdk-reference).
+**Using a different stack?** Check out our guides for [Playwright (node)](/guides/connect-with-playwright-node), [Playwright-Python](/guides/connect-with-playwright-python), and [Selenium](/guides/connect-with-selenium), or view the [Python SDK Reference](/reference/python-sdk-reference).
 :::
 
 ### Initial Setup

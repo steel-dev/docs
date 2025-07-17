@@ -53,31 +53,58 @@ Under the hood, Steel’s cloud-native platform handles all the headaches of bro
 
 - Optimizing data formats to reduce LLM token usage
 
+- Monitoring with OpenTelemetry for seamless integration with your observability tools
+
 ### Get started with Sessions API
 
-<a href="/overview/sessions-api/overview" type="page-link" class="t-editor__page-link">
+<a href="/sessions-api/overview" type="page-link" class="t-editor__page-link">
     <span>Overview</span>
     <p>Manage fleets of browser sessions with ease</p>
 </a>
 
-<a href="/overview/sessions-api/quickstart" type="page-link" class="t-editor__page-link">
+<a href="/sessions-api/quickstart" type="page-link" class="t-editor__page-link">
     <span>Quickstart</span>
     <p>Get up a running with your first Steel Session in a few minutes</p>
 </a>
 
-<a href="/overview/guides/connect-with-puppeteer" type="page-link" class="t-editor__page-link">
+<a href="/guides/connect-with-puppeteer" type="page-link" class="t-editor__page-link">
     <span>Connect with Puppeteer</span>
     <p>Drive a Steel session with Puppeteer via WebSocket connection</p>
 </a>
 
-<a href="/overview/guides/connect-with-playwright-node" type="page-link" class="t-editor__page-link">
+<a href="/guides/connect-with-playwright-node" type="page-link" class="t-editor__page-link">
     <span>Connect with Playwright (Node)</span>
     <p>Drive a Steel session with Playwright via WebSocket connection</p>
 </a>
 
-<a href="/overview/guides/connect-with-selenium" type="page-link" class="t-editor__page-link">
+<a href="/guides/connect-with-playwright-python" type="page-link" class="t-editor__page-link">
+    <span>Connect with Playwright (Python)</span>
+    <p>Drive a Steel session with Playwright Python via WebSocket connection</p>
+</a>
+
+<a href="/guides/connect-with-selenium" type="page-link" class="t-editor__page-link">
     <span>Connect with Selenium</span>
     <p>How to drive and connect to Steel browser sessions with Selenium</p>
+</a>
+
+<a href="/integrations/browser-use/quickstart" type="page-link" class="t-editor__page-link">
+    <span>Connect with Browser-use</span>
+    <p>Drive a Steel session with OpenAI's Browser-use capabilities</p>
+</a>
+
+<a href="/files-api/overview" type="page-link" class="t-editor__page-link">
+    <span>Files API</span>
+    <p>Upload, manage and download files within browser sessions</p>
+</a>
+
+<a href="/guides/view-and-embed-live-sessions" type="page-link" class="t-editor__page-link">
+    <span>Embed Live Sessions</span>
+    <p>View and embed live Steel browser sessions in your application</p>
+</a>
+
+<a href="/platform/opentelemetry" type="page-link" class="t-editor__page-link">
+    <span>OpenTelemetry Support</span>
+    <p>Monitor your Steel sessions with your favorite observability tools</p>
 </a>
 
 ### Reference
