@@ -1,6 +1,6 @@
 # Connect with Playwright (Python)
 
-This guide shows you how to drive Steel's cloud browser sessions using Playwright with Python. Looking for Node.js/TypeScript? Check out our [Playwright Node.js guide](/overview/guides/link-to-node-guide).
+This guide shows you how to drive Steel's cloud browser sessions using Playwright with Python. Looking for Node.js/TypeScript? Check out our [Playwright Node.js guide](/guides/connect-with-playwright-node).
 
 Steel sessions are designed to be easily driven by Playwright. There are two main methods for connecting to & driving a Steel session with Playwright.
 
