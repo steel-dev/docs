@@ -2,11 +2,11 @@
 
 How to use Claude Computer Use with Steel
 
-This guide walks you through creating an AI agent with Anthropic's Claude models using computer use capabilities alongside Steel's managed remote browsers for autonomous web task execution.
+This guide shows you how to create AI agents with Claude's computer use capabilities and Steel browsers for autonomous web task execution.
 
 ### Prerequisites
 
-- Node.js 16+
+- Node.js 20+
 
 - A Steel API key ([sign up here](https://app.steel.dev/))
 
@@ -1223,13 +1223,13 @@ main().catch(console.error);
 
 ### Running Your Agent
 
-Execute your script to start an interactive AI browser session:
+Execute your script:
 
 ```bash
 npx ts-node main.ts
 ```
 
-You will see the session URL printed in the console. You can view the live browser session by opening this URL in your web browser.
+You'll see the session URL printed in the console. Open this URL to view the live browser session.
 
 The agent will execute the task defined in the `TASK` environment variable or the default task. You can modify the task by setting the environment variable:
 

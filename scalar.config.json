@@ -308,6 +308,50 @@
             },
             {
               "type": "folder",
+              "name": "Claude Computer Use",
+              "icon": "https://raw.githubusercontent.com/steel-dev/docs/main/assets/claude.png",
+              "children": [
+                {
+                  "type": "page",
+                  "name": "Overview",
+                  "path": "docs/integrations/claude-computer-use/overview.md"
+                },
+                {
+                  "type": "page",
+                  "name": "Quickstart (Python)",
+                  "path": "docs/integrations/claude-computer-use/quickstart-python.md"
+                },
+                {
+                  "type": "page",
+                  "name": "Quickstart (TS/Node)",
+                  "path": "docs/integrations/claude-computer-use/quickstart-tsnode.md"
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Stagehand",
+              "icon": "https://raw.githubusercontent.com/steel-dev/docs/main/assets/stagehand.png",
+              "children": [
+                {
+                  "type": "page",
+                  "name": "Overview",
+                  "path": "docs/integrations/stagehand/overview.md"
+                },
+                {
+                  "type": "page",
+                  "name": "Quickstart (Python)",
+                  "path": "docs/integrations/stagehand/quickstart-python.md"
+                },
+                {
+                  "type": "page",
+                  "name": "Quickstart (TS/Node)",
+                  "path": "docs/integrations/stagehand/quickstart-tsnode.md"
+                }
+              ]
+            },
+            {
+              "type": "folder",
               "name": "Replit",
               "icon": "https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/egApfu2td8v9j_dOevqkp.png",
               "children": [

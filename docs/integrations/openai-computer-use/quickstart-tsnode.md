@@ -6,7 +6,7 @@ This guide walks you through creating an AI agent with OpenAI's `computer-use-pr
 
 ### Prerequisites
 
-- Node.js 16+
+- Node.js 20+
 
 - A Steel API key ([sign up here](https://steel.dev/))
 

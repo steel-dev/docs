@@ -2,9 +2,9 @@
 
 How to use Claude Computer Use with Steel
 
-This guide will walk you through how to use Anthropic's Claude models with computer use capabilities alongside Steel's managed remote browsers to create AI agents that can navigate the web.
+This guide shows you how to use Claude models with computer use capabilities and Steel browsers to create AI agents that navigate the web.
 
-We'll be implementing a Claude Computer Use loop that enables autonomous web task execution through iterative screenshot analysis and action planning.
+We'll build a Claude Computer Use loop that enables autonomous web task execution through iterative screenshot analysis and action planning.
 
 ### Prerequisites
 
@@ -959,13 +959,13 @@ if __name__ == "__main__":
 
 ### Running Your Agent
 
-Execute your script to start an interactive AI browser session:
+Execute your script:
 
 ```bash
 python main.py
 ```
 
-You will see the session URL printed in the console. You can view the live browser session by opening this URL in your web browser.
+You'll see the session URL printed in the console. Open this URL to view the live browser session.
 
 The agent will execute the task defined in the `TASK` environment variable or the default task. You can modify the task by setting the environment variable:
 

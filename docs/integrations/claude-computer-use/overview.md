@@ -1,40 +1,40 @@
 # Overview
 
-Anthropic's Claude Computer Use is an advanced AI capability that combines vision and reasoning to autonomously control computer interfaces through a continuous action loop, enabling complex web automation tasks.
+Claude Computer Use enables AI to control browsers through vision and reasoning in a continuous action loop.
 
 ### Overview
 
-The Claude Computer Use integration connects Anthropic's Claude 3.5 Sonnet (and newer models) with Steel's reliable browser infrastructure. This integration enables AI agents to:
+The Claude Computer Use integration connects Claude 3.5 Sonnet (and newer models) with Steel's browser infrastructure. This enables:
 
 - Control Steel browser sessions via Claude's Computer Use API
 
-- Execute real browser actions like clicking, typing, scrolling, and navigation
+- Execute browser actions like clicking, typing, and scrolling
 
-- Perform complex web tasks such as form filling, data extraction, and multi-step workflows
+- Automate complex web tasks and multi-step workflows
 
-- Process visual feedback from screenshots to determine next actions
+- Process visual feedback from screenshots
 
-- Implement human-in-the-loop verification for sensitive operations
+- Implement human verification for sensitive operations
 
-By combining Claude's Computer Use capabilities with Steel's cloud browser infrastructure, you can build robust, scalable web automation solutions that leverage Steel's anti-bot capabilities, proxy management, and sandboxed environments.
+Combining Claude's Computer Use with Steel gives you reliable automation with anti-bot capabilities, proxy support, and sandboxed environments.
 
 ### Requirements & Limitations
 
-- **Anthropic API Key**: Access to Claude 3.5 Sonnet or newer models with Computer Use capabilities
+- **Anthropic API Key**: Access to Claude 3.5 Sonnet or newer models
 
 - **Steel API Key**: Active subscription to Steel
 
 - **Python or Node.js Environment**: Support for API clients for both services
 
-- **Supported Environments**: Works best with Steel's browser environment (vs. desktop environments)
+- **Supported Environments**: Works best with Steel's browser environment
 
-- **Beta Status**: Computer Use is currently in beta with some limitations around latency and accuracy
+- **Beta Status**: Computer Use is currently in beta with some limitations
 
 ### Documentation
 
-[Quickstart Guide (Python)](https://docs.steel.dev/overview/integrations/claude-computer-use/quickstart-python) → Step-by-step guide to building a Claude Computer Use agent with Steel browser sessions in Python.
+[Quickstart Guide (Python)](https://docs.steel.dev/overview/integrations/claude-computer-use/quickstart-python) → Step-by-step guide to building Claude Computer Use agents with Steel sessions in Python.
 
-[Quickstart Guide (Node.js)](https://docs.steel.dev/overview/integrations/claude-computer-use/quickstart-tsnode) → Step-by-step guide to building a Claude Computer Use agent with Steel browser sessions in TypeScript & Node.js.
+[Quickstart Guide (Node.js)](https://docs.steel.dev/overview/integrations/claude-computer-use/quickstart-tsnode) → Step-by-step guide to building Claude Computer Use agents with Steel sessions in TypeScript & Node.js.
 
 ### Additional Resources
 
