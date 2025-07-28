@@ -1,22 +1,45 @@
 # Quickstart (Python)
 
-How to use OpenAI Computer Use with Steel
+How to use Claude Computer Use with Steel
 
-This guide will walk you through how to use OpenAI's `computer-use-preview` model with Steel's managed remote browsers to create AI agents that can navigate the web.
+This guide will walk you through how to use Anthropic's Claude models with computer use capabilities alongside Steel's managed remote browsers to create AI agents that can navigate the web.
 
-We'll be implementing a simple CUA loop that functions the same as described below:
-
-::scalar-image{src=https://cdn.openai.com/API/docs/images/cua_diagram.png}
+We'll be implementing a Claude Computer Use loop that enables autonomous web task execution through iterative screenshot analysis and action planning.
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.11+
 
 - A Steel API key ([sign up here](https://app.steel.dev/))
 
-- An OpenAI API key with access to the `computer-use-preview` model
+- An Anthropic API key with access to Claude models
 
-### Step 1: Setup and Helper Functions
+### Step 1: Setup and Dependencies
+
+First, create a project directory, set up a virtual environment, and install the required packages:
+
+```bash
+# Create a project directory
+mkdir steel-claude-computer-use
+cd steel-claude-computer-use
+
+# Recommended: Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+
+# Install required packages
+pip install steel-sdk anthropic playwright python-dotenv pillow
+```
+
+Create a `.env` file with your API keys:
+
+```env
+STEEL_API_KEY=your_steel_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+TASK=Go to Wikipedia and search for machine learning
+```
+
+### Step 2: Create Helper Functions
 
 ```python
 # helpers.py
@@ -28,17 +51,20 @@ import re
 from typing import List, Dict
 from urllib.parse import urlparse
 
-import requests
 from dotenv import load_dotenv
 from PIL import Image
 from io import BytesIO
+from playwright.sync_api import sync_playwright, Error as PlaywrightError
+from steel import Steel
+from anthropic import Anthropic
+from anthropic.types.beta import BetaMessageParam
 
 
 load_dotenv(override=True)
 
 # Replace with your own API keys
 STEEL_API_KEY = os.getenv("STEEL_API_KEY") or "your-steel-api-key-here"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or "your-openai-api-key-here"
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY") or "your-anthropic-api-key-here"
 
 # Replace with your own task
 TASK = os.getenv("TASK") or "Go to Wikipedia and search for machine learning"
@@ -51,8 +77,6 @@ SYSTEM_PROMPT = """You are an expert browser automation assistant operating in a
 * You have full internet access and can visit any public website
 * You can read content, fill forms, search for information, and perform complex multi-step tasks
 * After each action, you receive a screenshot showing the current state
-* Use the goto(url) function to navigate directly to URLs - DO NOT try to click address bars or browser UI
-* Use the back() function to go back to the previous page
 
 <COORDINATE_SYSTEM>
 * The browser viewport has specific dimensions that you must respect
@@ -95,7 +119,7 @@ For each step, you must reason systematically:
 <CRITICAL_REQUIREMENTS>
 * This is fully automated execution - work completely independently
 * Start by taking a screenshot to understand the current state
-* Use goto(url) function for navigation - never click on browser UI elements
+* Never click on browser UI elements
 * Always respect coordinate boundaries - invalid coordinates will fail
 * Recognize when the stated objective has been achieved and declare completion immediately
 * Focus on the explicit task given, not implied or potential follow-up tasks
@@ -110,6 +134,29 @@ BLOCKED_DOMAINS = [
     "suspiciouspins.com",
     "ilanbigio.com",
 ]
+
+MODEL_CONFIGS = {
+    "claude-3-5-sonnet-20241022": {
+        "tool_type": "computer_20241022",
+        "beta_flag": "computer-use-2024-10-22",
+        "description": "Stable Claude 3.5 Sonnet (recommended)"
+    },
+    "claude-3-7-sonnet-20250219": {
+        "tool_type": "computer_20250124",
+        "beta_flag": "computer-use-2025-01-24",
+        "description": "Claude 3.7 Sonnet (newer)"
+    },
+    "claude-sonnet-4-20250514": {
+        "tool_type": "computer_20250124",
+        "beta_flag": "computer-use-2025-01-24",
+        "description": "Claude 4 Sonnet (newest)"
+    },
+    "claude-opus-4-20250514": {
+        "tool_type": "computer_20250124",
+        "beta_flag": "computer-use-2025-01-24",
+        "description": "Claude 4 Opus (newest)"
+    }
+}
 
 CUA_KEY_TO_PLAYWRIGHT_KEY = {
     "/": "Divide",
@@ -137,11 +184,49 @@ CUA_KEY_TO_PLAYWRIGHT_KEY = {
     "super": "Meta",
     "tab": "Tab",
     "win": "Meta",
+    "Return": "Enter",
+    "KP_Enter": "Enter",
+    "Escape": "Escape",
+    "BackSpace": "Backspace",
+    "Delete": "Delete",
+    "Tab": "Tab",
+    "ISO_Left_Tab": "Shift+Tab",
+    "Up": "ArrowUp",
+    "Down": "ArrowDown",
+    "Left": "ArrowLeft",
+    "Right": "ArrowRight",
+    "Page_Up": "PageUp",
+    "Page_Down": "PageDown",
+    "Home": "Home",
+    "End": "End",
+    "Insert": "Insert",
+    "F1": "F1", "F2": "F2", "F3": "F3", "F4": "F4",
+    "F5": "F5", "F6": "F6", "F7": "F7", "F8": "F8",
+    "F9": "F9", "F10": "F10", "F11": "F11", "F12": "F12",
+    "Shift_L": "Shift", "Shift_R": "Shift",
+    "Control_L": "Control", "Control_R": "Control",
+    "Alt_L": "Alt", "Alt_R": "Alt",
+    "Meta_L": "Meta", "Meta_R": "Meta",
+    "Super_L": "Meta", "Super_R": "Meta",
+    "minus": "-",
+    "equal": "=",
+    "bracketleft": "[",
+    "bracketright": "]",
+    "semicolon": ";",
+    "apostrophe": "'",
+    "grave": "`",
+    "comma": ",",
+    "period": ".",
+    "slash": "/",
 }
 
 
+def chunks(s: str, chunk_size: int) -> List[str]:
+    return [s[i : i + chunk_size] for i in range(0, len(s), chunk_size)]
+
+
 def pp(obj):
-    print(json.dumps(obj, indent=4))
+    print(json.dumps(obj, indent=2))
 
 
 def show_image(base_64_image):
@@ -150,38 +235,7 @@ def show_image(base_64_image):
     image.show()
 
 
-def sanitize_message(msg: dict) -> dict:
-    """Return a copy of the message with image_url omitted for computer_call_output messages."""
-    if msg.get("type") == "computer_call_output":
-        output = msg.get("output", {})
-        if isinstance(output, dict):
-            sanitized = msg.copy()
-            sanitized["output"] = {**output, "image_url": "[omitted]"}
-            return sanitized
-    return msg
-
-
-def create_response(**kwargs):
-    url = "https://api.openai.com/v1/responses"
-    headers = {
-        "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
-        "Content-Type": "application/json"
-    }
-
-    openai_org = os.getenv("OPENAI_ORG")
-    if openai_org:
-        headers["Openai-Organization"] = openai_org
-
-    response = requests.post(url, headers=headers, json=kwargs)
-
-    if response.status_code != 200:
-        print(f"Error: {response.status_code} {response.text}")
-
-    return response.json()
-
-
 def check_blocklisted_url(url: str) -> None:
-    """Raise ValueError if the given URL (including subdomains) is in the blocklist."""
     hostname = urlparse(url).hostname or ""
     if any(
         hostname == blocked or hostname.endswith(f".{blocked}")
@@ -190,7 +244,7 @@ def check_blocklisted_url(url: str) -> None:
         raise ValueError(f"Blocked URL: {url}")
 ```
 
-### Step 2: Create Steel Browser Integration
+### Step 3: Create Steel Browser Integration
 
 ```python
 class SteelBrowser:
@@ -202,7 +256,7 @@ class SteelBrowser:
         proxy: bool = False,
         solve_captcha: bool = False,
         virtual_mouse: bool = True,
-        session_timeout: int = 900000,  # 15 minutes
+        session_timeout: int = 900000,
         ad_blocker: bool = True,
         start_url: str = "https://www.google.com",
     ):
@@ -220,9 +274,7 @@ class SteelBrowser:
         self._playwright = None
         self._browser = None
         self._page = None
-
-    def get_environment(self):
-        return "browser"
+        self._last_mouse_position = None
 
     def get_dimensions(self):
         return self.dimensions
@@ -231,7 +283,6 @@ class SteelBrowser:
         return self._page.url if self._page else ""
 
     def __enter__(self):
-        """Enter context manager - create Steel session and connect browser."""
         width, height = self.dimensions
         session_params = {
             "use_proxy": self.proxy,
@@ -325,7 +376,6 @@ class SteelBrowser:
             print(f"Session completed. View replay at {self.session.session_viewer_url}")
 
     def screenshot(self) -> str:
-        """Take a screenshot using Playwright for consistent viewport sizing."""
         try:
             width, height = self.dimensions
             png_bytes = self._page.screenshot(
@@ -345,139 +395,253 @@ class SteelBrowser:
                 print(f"CDP screenshot also failed: {cdp_error}")
                 raise error
 
-    def click(self, x: int, y: int, button: str = "left") -> None:
-        if button == "back":
-            self.back()
-        elif button == "forward":
-            self.forward()
-        elif button == "wheel":
-            self._page.mouse.wheel(x, y)
-        else:
-            button_type = {"left": "left", "right": "right"}.get(button, "left")
-            self._page.mouse.click(x, y, button=button_type)
+    def validate_and_get_coordinates(self, coordinate):
+        if not isinstance(coordinate, (list, tuple)) or len(coordinate) != 2:
+            raise ValueError(f"{coordinate} must be a tuple or list of length 2")
+        if not all(isinstance(i, int) and i >= 0 for i in coordinate):
+            raise ValueError(f"{coordinate} must be a tuple/list of non-negative ints")
 
-    def double_click(self, x: int, y: int) -> None:
-        self._page.mouse.dblclick(x, y)
+        x, y = self.clamp_coordinates(coordinate[0], coordinate[1])
+        return x, y
 
-    def scroll(self, x: int, y: int, scroll_x: int, scroll_y: int) -> None:
-        self._page.mouse.move(x, y)
-        self._page.evaluate(f"window.scrollBy({scroll_x}, {scroll_y})")
+    def clamp_coordinates(self, x: int, y: int):
+        width, height = self.dimensions
+        clamped_x = max(0, min(x, width - 1))
+        clamped_y = max(0, min(y, height - 1))
 
-    def type(self, text: str) -> None:
-        self._page.keyboard.type(text)
+        if x != clamped_x or y != clamped_y:
+            print(f"⚠️  Coordinate clamped: ({x}, {y}) → ({clamped_x}, {clamped_y})")
 
-    def wait(self, ms: int = 1000) -> None:
-        time.sleep(ms / 1000)
+        return clamped_x, clamped_y
 
-    def move(self, x: int, y: int) -> None:
-        self._page.mouse.move(x, y)
+    def execute_computer_action(
+        self,
+        action: str,
+        text: str = None,
+        coordinate = None,
+        scroll_direction: str = None,
+        scroll_amount: int = None,
+        duration = None,
+        key: str = None,
+        **kwargs
+    ) -> str:
 
-    def keypress(self, keys: List[str]) -> None:
-        """Press keys (supports modifier combinations)."""
-        mapped_keys = [CUA_KEY_TO_PLAYWRIGHT_KEY.get(key.lower(), key) for key in keys]
-        for key in mapped_keys:
-            self._page.keyboard.down(key)
-        for key in reversed(mapped_keys):
-            self._page.keyboard.up(key)
+        if action in ("left_mouse_down", "left_mouse_up"):
+            if coordinate is not None:
+                raise ValueError(f"coordinate is not accepted for {action}")
 
-    def drag(self, path: List[Dict[str, int]]) -> None:
-        if not path:
-            return
-        start_x, start_y = path[0]["x"], path[0]["y"]
-        self._page.mouse.move(start_x, start_y)
-        self._page.mouse.down()
-        for point in path[1:]:
-            scaled_x, scaled_y = point["x"], point["y"]
-            self._page.mouse.move(scaled_x, scaled_y)
-        self._page.mouse.up()
+            if action == "left_mouse_down":
+                self._page.mouse.down()
+            elif action == "left_mouse_up":
+                self._page.mouse.up()
 
-    def goto(self, url: str) -> None:
-        try:
-            self._page.goto(url)
-        except Exception as e:
-            print(f"Error navigating to {url}: {e}")
+            return self.screenshot()
 
-    def back(self) -> None:
-        self._page.go_back()
+        if action == "scroll":
+            if scroll_direction is None or scroll_direction not in ("up", "down", "left", "right"):
+                raise ValueError("scroll_direction must be 'up', 'down', 'left', or 'right'")
+            if scroll_amount is None or not isinstance(scroll_amount, int) or scroll_amount < 0:
+                raise ValueError("scroll_amount must be a non-negative int")
 
-    def forward(self) -> None:
-        self._page.go_forward()
+            if coordinate is not None:
+                x, y = self.validate_and_get_coordinates(coordinate)
+                self._page.mouse.move(x, y)
+                self._last_mouse_position = (x, y)
+
+            if text:
+                modifier_key = text
+                if modifier_key in CUA_KEY_TO_PLAYWRIGHT_KEY:
+                    modifier_key = CUA_KEY_TO_PLAYWRIGHT_KEY[modifier_key]
+                self._page.keyboard.down(modifier_key)
+
+            scroll_mapping = {
+                "down": (0, 100 * scroll_amount),
+                "up": (0, -100 * scroll_amount),
+                "right": (100 * scroll_amount, 0),
+                "left": (-100 * scroll_amount, 0)
+            }
+            delta_x, delta_y = scroll_mapping[scroll_direction]
+            self._page.mouse.wheel(delta_x, delta_y)
+
+            if text:
+                self._page.keyboard.up(modifier_key)
+
+            return self.screenshot()
+
+        if action in ("hold_key", "wait"):
+            if duration is None or not isinstance(duration, (int, float)):
+                raise ValueError("duration must be a number")
+            if duration < 0:
+                raise ValueError("duration must be non-negative")
+            if duration > 100:
+                raise ValueError("duration is too long")
+
+            if action == "hold_key":
+                if text is None:
+                    raise ValueError("text is required for hold_key")
+
+                hold_key = text
+                if hold_key in CUA_KEY_TO_PLAYWRIGHT_KEY:
+                    hold_key = CUA_KEY_TO_PLAYWRIGHT_KEY[hold_key]
+
+                self._page.keyboard.down(hold_key)
+                time.sleep(duration)
+                self._page.keyboard.up(hold_key)
+
+            elif action == "wait":
+                time.sleep(duration)
+
+            return self.screenshot()
+
+        if action in ("left_click", "right_click", "double_click", "triple_click", "middle_click"):
+            if text is not None:
+                raise ValueError(f"text is not accepted for {action}")
+
+            if coordinate is not None:
+                x, y = self.validate_and_get_coordinates(coordinate)
+                self._page.mouse.move(x, y)
+                self._last_mouse_position = (x, y)
+                click_x, click_y = x, y
+            elif self._last_mouse_position:
+                click_x, click_y = self._last_mouse_position
+            else:
+                width, height = self.dimensions
+                click_x, click_y = width // 2, height // 2
+
+            if key:
+                modifier_key = key
+                if modifier_key in CUA_KEY_TO_PLAYWRIGHT_KEY:
+                    modifier_key = CUA_KEY_TO_PLAYWRIGHT_KEY[modifier_key]
+                self._page.keyboard.down(modifier_key)
+
+            if action == "left_click":
+                self._page.mouse.click(click_x, click_y)
+            elif action == "right_click":
+                self._page.mouse.click(click_x, click_y, button="right")
+            elif action == "double_click":
+                self._page.mouse.dblclick(click_x, click_y)
+            elif action == "triple_click":
+                for _ in range(3):
+                    self._page.mouse.click(click_x, click_y)
+            elif action == "middle_click":
+                self._page.mouse.click(click_x, click_y, button="middle")
+
+            if key:
+                self._page.keyboard.up(modifier_key)
+
+            return self.screenshot()
+
+        if action in ("mouse_move", "left_click_drag"):
+            if coordinate is None:
+                raise ValueError(f"coordinate is required for {action}")
+            if text is not None:
+                raise ValueError(f"text is not accepted for {action}")
+
+            x, y = self.validate_and_get_coordinates(coordinate)
+
+            if action == "mouse_move":
+                self._page.mouse.move(x, y)
+                self._last_mouse_position = (x, y)
+            elif action == "left_click_drag":
+                self._page.mouse.down()
+                self._page.mouse.move(x, y)
+                self._page.mouse.up()
+                self._last_mouse_position = (x, y)
+
+            return self.screenshot()
+
+        if action in ("key", "type"):
+            if text is None:
+                raise ValueError(f"text is required for {action}")
+            if coordinate is not None:
+                raise ValueError(f"coordinate is not accepted for {action}")
+
+            if action == "key":
+                press_key = text
+
+                if "+" in press_key:
+                    key_parts = press_key.split("+")
+                    modifier_keys = key_parts[:-1]
+                    main_key = key_parts[-1]
+
+                    playwright_modifiers = []
+                    for mod in modifier_keys:
+                        if mod.lower() in ("ctrl", "control"):
+                            playwright_modifiers.append("Control")
+                        elif mod.lower() in ("shift",):
+                            playwright_modifiers.append("Shift")
+                        elif mod.lower() in ("alt", "option"):
+                            playwright_modifiers.append("Alt")
+                        elif mod.lower() in ("cmd", "meta", "super"):
+                            playwright_modifiers.append("Meta")
+                        else:
+                            playwright_modifiers.append(mod)
+
+                    if main_key in CUA_KEY_TO_PLAYWRIGHT_KEY:
+                        main_key = CUA_KEY_TO_PLAYWRIGHT_KEY[main_key]
+
+                    press_key = "+".join(playwright_modifiers + [main_key])
+                else:
+                    if press_key in CUA_KEY_TO_PLAYWRIGHT_KEY:
+                        press_key = CUA_KEY_TO_PLAYWRIGHT_KEY[press_key]
+
+                self._page.keyboard.press(press_key)
+            elif action == "type":
+                for chunk in chunks(text, 50):
+                    self._page.keyboard.type(chunk, delay=12)
+                    time.sleep(0.01)
+
+            return self.screenshot()
+
+        if action in ("screenshot", "cursor_position"):
+            if text is not None:
+                raise ValueError(f"text is not accepted for {action}")
+            if coordinate is not None:
+                raise ValueError(f"coordinate is not accepted for {action}")
+
+            return self.screenshot()
+
+        raise ValueError(f"Invalid action: {action}")
 ```
 
-### Step 3: Create the Agent Class
+### Step 4: Create the Agent Class
 
 ```python
-class Agent:
-
-    def __init__(
-        self,
-        model: str = "computer-use-preview",
-        computer = None,
-        tools: List[dict] = None,
-        auto_acknowledge_safety: bool = True,
-    ):
-        self.model = model
+class ClaudeAgent:
+    def __init__(self, computer = None, model: str = "claude-3-5-sonnet-20241022"):
+        self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
         self.computer = computer
-        self.tools = tools or []
-        self.auto_acknowledge_safety = auto_acknowledge_safety
-        self.print_steps = True
-        self.debug = False
-        self.show_images = False
+        self.messages: List[BetaMessageParam] = []
+        self.model = model
 
         if computer:
-            scaled_width, scaled_height = computer.get_dimensions()
-            self.viewport_width = scaled_width
-            self.viewport_height = scaled_height
+            width, height = computer.get_dimensions()
+            self.viewport_width = width
+            self.viewport_height = height
 
-            # Create dynamic system prompt with viewport dimensions
             self.system_prompt = SYSTEM_PROMPT.replace(
                 '<COORDINATE_SYSTEM>',
-                f'<COORDINATE_SYSTEM>\n* The browser viewport dimensions are {scaled_width}x{scaled_height} pixels\n* The browser viewport has specific dimensions that you must respect'
+                f'<COORDINATE_SYSTEM>\n* The browser viewport dimensions are {width}x{height} pixels\n* The browser viewport has specific dimensions that you must respect'
             )
 
-            self.tools.append({
-                "type": "computer-preview",
-                "display_width": scaled_width,
-                "display_height": scaled_height,
-                "environment": computer.get_environment(),
-            })
+            if model not in MODEL_CONFIGS:
+                raise ValueError(f"Unsupported model: {model}. Available models: {list(MODEL_CONFIGS.keys())}")
 
-            # Add goto function tool for direct URL navigation
-            self.tools.append({
-                "type": "function",
-                "name": "goto",
-                "description": "Navigate directly to a specific URL.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "url": {
-                            "type": "string",
-                            "description": "Fully qualified URL to navigate to (e.g., https://example.com).",
-                        },
-                    },
-                    "additionalProperties": False,
-                    "required": ["url"],
-                },
-            })
+            self.model_config = MODEL_CONFIGS[model]
 
-            # Add back function tool for browser navigation
-            self.tools.append({
-                "type": "function",
-                "name": "back",
-                "description": "Go back to the previous page.",
-                "parameters": {},
-            })
+            self.tools = [{
+                "type": self.model_config["tool_type"],
+                "name": "computer",
+                "display_width_px": width,
+                "display_height_px": height,
+                "display_number": 1,
+            }]
         else:
             self.viewport_width = 1024
             self.viewport_height = 768
             self.system_prompt = SYSTEM_PROMPT
 
-    def debug_print(self, *args):
-        if self.debug:
-            pp(*args)
-
     def get_viewport_info(self) -> dict:
-        """Get detailed viewport information for debugging."""
         if not self.computer or not self.computer._page:
             return {}
 
@@ -497,7 +661,6 @@ class Agent:
             return {}
 
     def validate_screenshot_dimensions(self, screenshot_base64: str) -> dict:
-        """Validate screenshot dimensions against viewport."""
         try:
             image_data = base64.b64decode(screenshot_base64)
             image = Image.open(BytesIO(image_data))
@@ -514,7 +677,6 @@ class Agent:
                 "height_scale": screenshot_height / self.viewport_height if self.viewport_height > 0 else 1.0
             }
 
-            # Warn about scaling mismatches
             if scaling_info["width_scale"] != 1.0 or scaling_info["height_scale"] != 1.0:
                 print(f"⚠️  Screenshot scaling detected:")
                 print(f"   Screenshot: {screenshot_width}x{screenshot_height}")
@@ -527,98 +689,6 @@ class Agent:
             print(f"⚠️  Error validating screenshot dimensions: {e}")
             return {}
 
-    def validate_coordinates(self, action_args: dict) -> dict:
-        """Validate coordinates without clamping."""
-        validated_args = action_args.copy()
-
-        # Handle single coordinates (click, move, etc.)
-        if 'x' in action_args and 'y' in action_args:
-            validated_args['x'] = int(float(action_args['x']))
-            validated_args['y'] = int(float(action_args['y']))
-
-        # Handle path arrays (drag)
-        if 'path' in action_args and isinstance(action_args['path'], list):
-            validated_path = []
-            for point in action_args['path']:
-                validated_path.append({
-                    'x': int(float(point.get('x', 0))),
-                    'y': int(float(point.get('y', 0)))
-                })
-            validated_args['path'] = validated_path
-
-        return validated_args
-
-    def handle_item(self, item):
-        """Handle each item from OpenAI response."""
-        if item["type"] == "message":
-            if self.print_steps:
-                print(item["content"][0]["text"])
-
-        elif item["type"] == "function_call":
-            name, args = item["name"], json.loads(item["arguments"])
-            if self.print_steps:
-                print(f"{name}({args})")
-
-            if hasattr(self.computer, name):
-                method = getattr(self.computer, name)
-                method(**args)
-
-            return [{
-                "type": "function_call_output",
-                "call_id": item["call_id"],
-                "output": "success",
-            }]
-
-        elif item["type"] == "computer_call":
-            action = item["action"]
-            action_type = action["type"]
-            action_args = {k: v for k, v in action.items() if k != "type"}
-
-            # Validate coordinates and log any issues
-            validated_args = self.validate_coordinates(action_args)
-
-            if self.print_steps:
-                print(f"{action_type}({validated_args})")
-
-            method = getattr(self.computer, action_type)
-            method(**validated_args)
-
-            screenshot_base64 = self.computer.screenshot()
-
-            # Validate screenshot dimensions for debugging
-            if action_type == "screenshot" or self.debug:
-                self.validate_screenshot_dimensions(screenshot_base64)
-
-            if self.show_images:
-                show_image(screenshot_base64)
-
-            pending_checks = item.get("pending_safety_checks", [])
-            for check in pending_checks:
-                message = check["message"]
-                if self.auto_acknowledge_safety:
-                    print(f"⚠️  Auto-acknowledging safety check: {message}")
-                else:
-                    raise ValueError(f"Safety check failed: {message}")
-
-            call_output = {
-                "type": "computer_call_output",
-                "call_id": item["call_id"],
-                "acknowledged_safety_checks": pending_checks,
-                "output": {
-                    "type": "input_image",
-                    "image_url": f"data:image/png;base64,{screenshot_base64}",
-                },
-            }
-
-            if self.computer.get_environment() == "browser":
-                current_url = self.computer.get_current_url()
-                check_blocklisted_url(current_url)
-                call_output["output"]["current_url"] = current_url
-
-            return [call_output]
-
-        return []
-
     def execute_task(
         self,
         task: str,
@@ -626,15 +696,8 @@ class Agent:
         debug: bool = False,
         max_iterations: int = 50
     ) -> str:
-        self.print_steps = print_steps
-        self.debug = debug
-        self.show_images = False
 
         input_items = [
-            {
-                "role": "system",
-                "content": self.system_prompt,
-            },
             {
                 "role": "user",
                 "content": task,
@@ -650,15 +713,11 @@ class Agent:
         print("=" * 60)
 
         def is_task_complete(content: str) -> dict:
-            """Check if the task is complete based on content patterns."""
-
-            # Explicit completion markers
             if "TASK_COMPLETED:" in content:
                 return {"completed": True, "reason": "explicit_completion"}
             if "TASK_FAILED:" in content or "TASK_ABANDONED:" in content:
                 return {"completed": True, "reason": "explicit_failure"}
 
-            # Natural completion patterns
             completion_patterns = [
                 r'task\s+(completed|finished|done|accomplished)',
                 r'successfully\s+(completed|finished|found|gathered)',
@@ -668,7 +727,6 @@ class Agent:
                 r'final\s+(answer|result|summary)'
             ]
 
-            # Failure/abandonment patterns
             failure_patterns = [
                 r'cannot\s+(complete|proceed|access|continue)',
                 r'unable\s+to\s+(complete|access|find|proceed)',
@@ -689,7 +747,6 @@ class Agent:
             return {"completed": False}
 
         def detect_repetition(new_message: str) -> bool:
-            """Detect if the message is too similar to recent messages."""
             if len(last_assistant_messages) < 2:
                 return False
 
@@ -711,48 +768,104 @@ class Agent:
                 if last_message.get("content") and len(last_message["content"]) > 0:
                     content = last_message["content"][0].get("text", "")
 
-                    # Check for explicit completion
                     completion = is_task_complete(content)
                     if completion["completed"]:
                         print(f"✅ Task completed ({completion['reason']})")
                         break
 
-                    # Check for repetition
                     if detect_repetition(content):
                         print("🔄 Repetition detected - stopping execution")
                         last_assistant_messages.append(content)
                         break
 
-                    # Track assistant messages for repetition detection
                     last_assistant_messages.append(content)
                     if len(last_assistant_messages) > 3:
-                        last_assistant_messages.pop(0)  # Keep only last 3
+                        last_assistant_messages.pop(0)
 
-            self.debug_print([sanitize_message(msg) for msg in input_items + new_items])
+            if debug:
+                pp(input_items + new_items)
 
             try:
-                response = create_response(
+                response = self.client.beta.messages.create(
                     model=self.model,
-                    input=input_items + new_items,
+                    max_tokens=4096,
+                    system=self.system_prompt,
+                    messages=input_items + new_items,
                     tools=self.tools,
-                    truncation="auto",
+                    betas=[self.model_config["beta_flag"]]
                 )
-                self.debug_print(response)
 
-                if "output" not in response:
-                    if self.debug:
-                        print(response)
-                    raise ValueError("No output from model")
+                if debug:
+                    pp(response)
 
-                new_items += response["output"]
-
-                # Check if this iteration had any actions
-                for item in response["output"]:
-                    if item.get("type") in ["computer_call", "function_call"]:
+                for block in response.content:
+                    if block.type == "text":
+                        print(block.text)
+                        new_items.append({
+                            "role": "assistant",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": block.text
+                                }
+                            ]
+                        })
+                    elif block.type == "tool_use":
                         has_actions = True
-                    new_items += self.handle_item(item)
+                        if block.name == "computer":
+                            tool_input = block.input
+                            action = tool_input.get("action")
 
-                # Track consecutive iterations without actions
+                            print(f"🔧 {action}({tool_input})")
+
+                            screenshot_base64 = self.computer.execute_computer_action(
+                                action=action,
+                                text=tool_input.get("text"),
+                                coordinate=tool_input.get("coordinate"),
+                                scroll_direction=tool_input.get("scroll_direction"),
+                                scroll_amount=tool_input.get("scroll_amount"),
+                                duration=tool_input.get("duration"),
+                                key=tool_input.get("key")
+                            )
+
+                            if action == "screenshot":
+                                self.validate_screenshot_dimensions(screenshot_base64)
+
+                            new_items.append({
+                                "role": "assistant",
+                                "content": [
+                                    {
+                                        "type": "tool_use",
+                                        "id": block.id,
+                                        "name": block.name,
+                                        "input": tool_input
+                                    }
+                                ]
+                            })
+
+                            current_url = self.computer.get_current_url()
+                            check_blocklisted_url(current_url)
+
+                            new_items.append({
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "tool_result",
+                                        "tool_use_id": block.id,
+                                        "content": [
+                                            {
+                                                "type": "image",
+                                                "source": {
+                                                    "type": "base64",
+                                                    "media_type": "image/png",
+                                                    "data": screenshot_base64
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            })
+
                 if not has_actions:
                     consecutive_no_actions += 1
                     if consecutive_no_actions >= 3:
@@ -771,17 +884,22 @@ class Agent:
         assistant_messages = [item for item in new_items if item.get("role") == "assistant"]
         if assistant_messages:
             final_message = assistant_messages[-1]
-            if final_message.get("content") and len(final_message["content"]) > 0:
-                return final_message["content"][0].get("text", "Task execution completed (no final message)")
+            content = final_message.get("content")
+            if isinstance(content, list) and len(content) > 0:
+                for block in content:
+                    if isinstance(block, dict) and block.get("type") == "text":
+                        return block.get("text", "Task execution completed (no final message)")
 
         return "Task execution completed (no final message)"
 ```
 
-### Step 4: Create the Main Script
+### Step 5: Create the Main Script
+
+Create a `main.py` file to run the agent:
 
 ```python
 def main():
-    print("🚀 Steel + OpenAI Computer Use Assistant")
+    print("🚀 Steel + Claude Computer Use Assistant")
     print("=" * 60)
 
     if STEEL_API_KEY == "your-steel-api-key-here":
@@ -789,12 +907,10 @@ def main():
         print("   Get your API key at: https://app.steel.dev/settings/api-keys")
         return
 
-    if OPENAI_API_KEY == "your-openai-api-key-here":
-        print("⚠️  WARNING: Please replace 'your-openai-api-key-here' with your actual OpenAI API key")
-        print("   Get your API key at: https://platform.openai.com/")
+    if ANTHROPIC_API_KEY == "your-anthropic-api-key-here":
+        print("⚠️  WARNING: Please replace 'your-anthropic-api-key-here' with your actual Anthropic API key")
+        print("   Get your API key at: https://console.anthropic.com/")
         return
-
-    task = os.getenv("TASK") or TASK
 
     print("\nStarting Steel browser session...")
 
@@ -802,16 +918,16 @@ def main():
         with SteelBrowser() as computer:
             print("✅ Steel browser session started!")
 
-            agent = Agent(
+            agent = ClaudeAgent(
                 computer=computer,
-                auto_acknowledge_safety=True,
+                model="claude-3-5-sonnet-20241022",
             )
 
             start_time = time.time()
 
             try:
                 result = agent.execute_task(
-                    task,
+                    TASK,
                     print_steps=True,
                     debug=False,
                     max_iterations=50,
@@ -823,7 +939,7 @@ def main():
                 print("🎉 TASK EXECUTION COMPLETED")
                 print("=" * 60)
                 print(f"⏱️  Duration: {duration} seconds")
-                print(f"🎯 Task: {task}")
+                print(f"🎯 Task: {TASK}")
                 print(f"📋 Result:\n{result}")
                 print("=" * 60)
 
@@ -854,14 +970,35 @@ You will see the session URL printed in the console. You can view the live brows
 The agent will execute the task defined in the `TASK` environment variable or the default task. You can modify the task by setting the environment variable:
 
 ```bash
-export TASK="Search for the latest news on artificial intelligence"
+export TASK="Search for the latest developments in artificial intelligence"
 python main.py
 ```
+
+### Customizing your agent's task
+
+Try modifying the task to make your agent perform different actions:
+
+```python
+# Research specific topics
+TASK = "Go to https://arxiv.org, search for 'computer vision', and summarize the latest papers."
+
+# E-commerce tasks
+TASK = "Go to https://www.amazon.com, search for 'mechanical keyboards', and compare the top 3 results."
+
+# Information gathering
+TASK = "Go to https://docs.anthropic.com, find information about Claude's capabilities, and provide a summary."
+```
+
+:::scalar-callout{type=success icon="line/interface-alert-information-circle"}
+**Supported Models:**
+\
+This example uses **Claude 3.5 Sonnet**, but you can use any of the supported Claude models including Claude 3.7 Sonnet, Claude 4 Sonnet, or Claude 4 Opus. Update the model parameter in the ClaudeAgent constructor to switch models.
+:::
 
 ### Next Steps
 
 - Explore the [Steel API documentation](https://docs.steel.dev/) for more advanced features
 
-- Check out the [OpenAI documentation](https://platform.openai.com/docs/guides/tools-computer-use) for more information about the computer-use-preview model
+- Check out the [Anthropic documentation](https://docs.anthropic.com/en/docs/build-with-claude/computer-use) for more information about Claude's computer use capabilities
 
 - Add additional features like session recording or multi-session management

@@ -15,7 +15,9 @@ This guide walks you through creating an AI agent with OpenAI's `computer-use-pr
 ### Step 1: Setup and Helper Functions
 
 ```typescript
-// helpers.ts
+import { chromium } from "playwright";
+import type { Browser, Page } from "playwright";
+import { Steel } from "steel-sdk";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -235,12 +237,6 @@ export function checkBlocklistedUrl(url: string): void {
 ### Step 2: Create Steel Browser Integration
 
 ```typescript
-// steelBrowser.ts
-import { chromium } from "playwright";
-import type { Browser, Page } from "playwright";
-import { Steel } from "steel-sdk";
-import { checkBlocklistedUrl, CUA_KEY_TO_PLAYWRIGHT_KEY } from "./helpers";
-
 export class SteelBrowser {
   private client: Steel;
   private session: any;
@@ -549,20 +545,6 @@ export class SteelBrowser {
 ### Step 3: Create the Agent Class
 
 ```typescript
-// agent.ts
-import {
-  MessageItem,
-  FunctionCallItem,
-  ComputerCallItem,
-  OutputItem,
-  sanitizeMessage,
-  createResponse,
-  checkBlocklistedUrl,
-  pp,
-  SYSTEM_PROMPT,
-} from "./helpers";
-import { SteelBrowser } from "./steelBrowser";
-
 export class Agent {
   private model: string;
   private computer: SteelBrowser;
