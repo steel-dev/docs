@@ -2,7 +2,7 @@
 import type { PopoverContentProps, PopoverTriggerProps } from '@radix-ui/react-popover';
 import type { TOCItemType } from 'fumadocs-core/server';
 import * as Primitive from 'fumadocs-core/toc';
-import { useI18n, usePageStyles } from 'fumadocs-ui/provider';
+import { usePageStyles } from 'fumadocs-ui/provider';
 import { ChevronRight, Text } from 'lucide-react';
 import {
   type ComponentProps,
@@ -59,11 +59,9 @@ export function Toc(props: HTMLAttributes<HTMLDivElement>) {
 }
 
 export function TocItemsEmpty() {
-  const { text } = useI18n();
-
   return (
     <div className="rounded-lg border bg-card p-3 text-xs text-fd-muted-foreground">
-      {text.tocNoHeadings}
+      No headings
     </div>
   );
 }
@@ -160,7 +158,6 @@ export function TocPopoverTrigger({
   items,
   ...props
 }: PopoverTriggerProps & { items: TOCItemType[] }) {
-  const { text } = useI18n();
   const { open } = use(Context)!;
   const active = Primitive.useActiveAnchor();
   const current = useMemo(() => {
@@ -176,7 +173,7 @@ export function TocPopoverTrigger({
       )}
     >
       <Text className="size-4 shrink-0" />
-      {text.toc}
+      Table of contents
       <ChevronRight
         className={cn(
           'size-4 shrink-0 text-fd-muted-foreground transition-all',

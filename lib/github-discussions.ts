@@ -1,17 +1,21 @@
 import { App } from '@octokit/app';
 import { graphql } from '@octokit/graphql';
 
-// Decode base64 private key for Vercel deployment
-const privateKey = Buffer.from(process.env.GITHUB_APP_PRIVATE_KEY!, 'base64').toString('utf-8');
-
-const app = new App({
-  appId: process.env.GITHUB_APP_ID!,
-  privateKey: privateKey,
-});
+function getEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing required env var: ${name}`);
+  }
+  return value;
+}
 
 async function getGraphQLClient() {
+  const app = new App({
+    appId: Number(getEnv('GITHUB_APP_ID')),
+    privateKey: Buffer.from(getEnv('GITHUB_APP_PRIVATE_KEY'), 'base64').toString('utf-8'),
+  });
   const octokit = await app.getInstallationOctokit(
-    parseInt(process.env.GITHUB_APP_INSTALLATION_ID!),
+    Number(getEnv('GITHUB_APP_INSTALLATION_ID')),
   );
   return octokit.graphql;
 }
@@ -30,7 +34,7 @@ export interface Discussion {
 
 export async function findDiscussionByTitle(title: string): Promise<Discussion | null> {
   const graphqlClient = await getGraphQLClient();
-  const [owner, repo] = process.env.GITHUB_REPOSITORY!.split('/');
+  const [owner, repo] = getEnv('GITHUB_REPOSITORY').split('/');
 
   try {
     const response = await graphqlClient<{
@@ -43,7 +47,7 @@ export async function findDiscussionByTitle(title: string): Promise<Discussion |
       `
       query FindDiscussion($owner: String!, $repo: String!) {
         repository(owner: $owner, name: $repo) {
-          discussions(first: 10, categoryId: "${process.env.GITHUB_DISCUSSION_CATEGORY_ID}", orderBy: {field: CREATED_AT, direction: DESC}) {
+          discussions(first: 10, categoryId: "${getEnv('GITHUB_DISCUSSION_CATEGORY_ID')}", orderBy: {field: CREATED_AT, direction: DESC}) {
             nodes {
               id
               number
@@ -76,7 +80,7 @@ export async function findDiscussionByTitle(title: string): Promise<Discussion |
 
 export async function createDiscussion(title: string, body: string): Promise<Discussion> {
   const graphqlClient = await getGraphQLClient();
-  const [owner, repo] = process.env.GITHUB_REPOSITORY!.split('/');
+  const [owner, repo] = getEnv('GITHUB_REPOSITORY').split('/');
 
   const mutation = `
     mutation CreateDiscussion($repositoryId: ID!, $categoryId: ID!, $title: String!, $body: String!) {
@@ -120,7 +124,7 @@ export async function createDiscussion(title: string, body: string): Promise<Dis
     };
   }>(mutation, {
     repositoryId: repoResponse.repository.id,
-    categoryId: process.env.GITHUB_DISCUSSION_CATEGORY_ID!,
+    categoryId: getEnv('GITHUB_DISCUSSION_CATEGORY_ID'),
     title,
     body,
   });

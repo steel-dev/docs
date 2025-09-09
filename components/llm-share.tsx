@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ClaudeIcon, OpenAIIcon } from '@/components/ui/icon';
 import { useCurrentPageMarkdown, useLLMsTxt } from '@/hooks/use-llms-txt';
-import { useTranslations } from '@/hooks/use-translations';
 import { cn } from '@/lib/utils';
 import { processMarkdownLinks } from '@/utils/process-markdown-links';
 import { Button } from './ui/button';
@@ -20,18 +19,18 @@ interface LLMShareProps {
   content: string;
 }
 
-const getLLMProviders = (t: any) => [
+const getLLMProviders = () => [
   {
     name: 'ChatGPT',
     url: 'https://chat.openai.com',
     icon: OpenAIIcon,
-    description: t.navigation.llmShare.askQuestions,
+    description: 'Ask questions about this page',
   },
   {
     name: 'Claude',
     url: 'https://claude.ai',
     icon: ClaudeIcon,
-    description: t.navigation.llmShare.askQuestions,
+    description: 'Ask questions about this page',
   },
 ];
 
@@ -40,8 +39,7 @@ export function LLMShare({ content }: LLMShareProps) {
   const pathname = usePathname();
   const markdownUrl = useCurrentPageMarkdown();
   const { refetch } = useLLMsTxt();
-  const t = useTranslations();
-  const llmProviders = getLLMProviders(t);
+  const llmProviders = getLLMProviders();
 
   const handleCopy = async () => {
     try {
@@ -96,7 +94,7 @@ export function LLMShare({ content }: LLMShareProps) {
         onClick={handleCopy}
         type="button"
         className="cursor-pointer relative inline-flex items-center gap-2 rounded-l-md rounded-r-none px-2 py-1.5 text-sm font-fono focus:z-10 border-0 shadow-none transition-all duration-150 hover:bg-neutral-150 dark:hover:bg-neutral-700"
-        aria-label={t.navigation.llmShare.copyMarkdown}
+        aria-label="Copy markdown"
       >
         <span
           className={cn(
@@ -106,7 +104,7 @@ export function LLMShare({ content }: LLMShareProps) {
         >
           {isCopied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
         </span>
-        {t.navigation.llmShare.copyMarkdown}
+        Copy markdown
       </button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -129,9 +127,7 @@ export function LLMShare({ content }: LLMShareProps) {
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <provider.icon className="h-3 w-3 text-muted-foreground" />
-                  <span className="font-medium font-fono">
-                    {t.navigation.llmShare.openIn} {provider.name}
-                  </span>
+                  <span className="font-medium font-fono">Open in {provider.name}</span>
                 </div>
               </div>
               <ExternalLink className="ml-auto h-3 w-3 text-muted-foreground" />

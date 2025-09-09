@@ -1,5 +1,0 @@
-{
-  "title": "Hiro Archive",
-  "root": true,
-  "pages": ["index", "download-guide", "stacks-blockchain", "stacks-api", "token-metadata-api"]
-}

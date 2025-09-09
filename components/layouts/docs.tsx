@@ -8,12 +8,9 @@ import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
 import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree';
 import { ArrowUpRight, ChevronDown, ChevronRight, SidebarIcon } from 'lucide-react';
 import React, { type ButtonHTMLAttributes, type ReactNode, useMemo } from 'react';
-import { baseOptions } from '@/app/layout.config';
-import { LanguageSwitcher } from '@/components/language-switcher';
 import { MobileMenuProvider } from '@/contexts/mobile-menu';
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 import { useLocalizedNavigation } from '@/hooks/use-localized-navigation';
-import { useTranslations } from '@/hooks/use-translations';
 import { cn } from '@/lib/utils';
 import { MobileMenuButton } from '../layout/mobile-menu-button';
 import { SearchToggle } from '../layout/search-toggle';
@@ -34,7 +31,6 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
   const { registerShortcut } = useKeyboardShortcuts();
   const { collapsed } = useSidebar();
   const localizedLinks = useLocalizedNavigation();
-  const t = useTranslations();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -110,13 +106,12 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
               <div className="flex flex-1 items-center justify-end space-x-2 lg:space-x-3">
                 <SearchToggle />
                 <ThemeToggle />
-                <LanguageSwitcher />
                 <Button
                   asChild
                   className="bg-brand-orange font-fono text-neutral-900 flex items-baseline gap-0.5 px-3 py-2 hover:bg-brand-orange transition-colors duration-200 group hidden lg:flex"
                 >
                   <Link href="https://platform.hiro.so" target="_blank">
-                    {t.navigation.signIn}
+                    Sign in
                     <ArrowUpRight className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200" />
                   </Link>
                 </Button>

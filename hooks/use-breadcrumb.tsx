@@ -1,33 +1,20 @@
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { i18n } from '@/lib/i18n';
-import { useTranslations } from './use-translations';
 
 interface BreadcrumbItem {
   name: ReactNode;
   url?: string;
 }
 
-/**
- * Format breadcrumb names for display using translations
- */
-function formatBreadcrumbName(name: string, translations: any): string {
-  const lowerName = name.toLowerCase();
-  
-  // Check if we have a direct translation for this term
-  if (translations.breadcrumb[lowerName]) {
-    return translations.breadcrumb[lowerName];
-  }
-
-  // Handle hyphenated names
+function formatBreadcrumbName(name: string): string {
+  // Handle hyphenated names by splitting and capitalizing parts
   if (name.includes('-')) {
     return name
       .split('-')
-      .map((word) => formatBreadcrumbName(word, translations))
+      .map((word) => formatBreadcrumbName(word))
       .join(' ');
   }
-
-  // Default to capitalizing first letter
+  // Default: capitalize first letter
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
@@ -36,15 +23,7 @@ function formatBreadcrumbName(name: string, translations: any): string {
  */
 export function useBreadcrumb(): BreadcrumbItem[] {
   const pathname = usePathname();
-  const translations = useTranslations();
-
   const segments = pathname.split('/').filter(Boolean);
-  
-  // Remove locale prefix if it exists
-  const firstSegment = segments[0];
-  if (firstSegment && i18n.languages.includes(firstSegment)) {
-    segments.shift();
-  }
 
   const items: BreadcrumbItem[] = [];
   let currentPath = '';
@@ -67,7 +46,7 @@ export function useBreadcrumb(): BreadcrumbItem[] {
       return;
     }
 
-    const name = formatBreadcrumbName(segment, translations);
+    const name = formatBreadcrumbName(segment);
 
     // For the last segment, don't include URL (current page)
     if (index === segments.length - 1) {

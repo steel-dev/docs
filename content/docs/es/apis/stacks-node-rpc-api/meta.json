@@ -1,5 +1,0 @@
-{
-  "title": "APIs",
-  "root": true,
-  "pages": ["---Stacks Node RPC API---", "index", "usage", "---Reference---", "...reference"]
-}

@@ -1,6 +1,5 @@
 'use client';
 import Link, { type LinkProps } from 'fumadocs-core/link';
-import { useI18n } from 'fumadocs-ui/provider';
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { cn } from '../../lib/utils';
 
@@ -63,11 +62,9 @@ export function useNav(): NavContextType {
 }
 
 export function Title({ title, url, ...props }: TitleProps & Omit<LinkProps, 'title'>) {
-  const { locale } = useI18n();
-
   return (
     <Link
-      href={url ?? (locale ? `/${locale}` : '/')}
+      href={url ?? '/'}
       {...props}
       className={cn('inline-flex items-center gap-2.5 font-semibold', props.className)}
     >
