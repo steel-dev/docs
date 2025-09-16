@@ -21,16 +21,16 @@ export default function HomePage() {
         <div className="space-y-10">
           <div className="space-y-1">
             <div className="flex space-x-6 items-end">
-              <ImageZoom
+              {/*<ImageZoom
                 alt="banner"
                 src={heroImage}
                 className="mt-0 mb-6 first-line:rounded-xl bg-background"
                 priority
-              />
+              />*/}
 
               <div className="flex flex-col [&_p]:mb-6 space-y-3">
-                <h3 className="text-3xl">Welcome to Hiro Docs</h3>
-                <p>Find all the guides and resources you need to build on Stacks.</p>
+                <h3 className="text-3xl">Welcome to Steel Docs</h3>
+                <p>Find all the guides and resources you need to build on the Steel API.</p>
               </div>
             </div>
           </div>
@@ -40,9 +40,9 @@ export default function HomePage() {
               icon={
                 <API className="transition-colors duration-500 ease-in-out group-hover:text-primary" />
               }
-              href="/apis/stacks-blockchain-api"
-              title="Stacks API Reference"
-              description="Explore API endpoints for interacting with the Stacks Blockchain."
+              href="/apis/sessions-api"
+              title="Sessions API Reference"
+              description="Explore API endpoints for managing Steel Sessions."
             />
             <Card
               className="group space-y-1"
@@ -51,46 +51,9 @@ export default function HomePage() {
               }
               href="/resources/guides"
               title="Guides"
-              description="Explore guides for building on Stacks."
+              description="Explore guides for building on Steel."
             />
           </Cards>
-          <div className="flex flex-col">
-            <h4 id="explore-by-category" className="scroll-m-20">
-              <a
-                href="#explore-by-category"
-                className="not-prose group text-sm text-muted-foreground uppercase"
-              >
-                Tools
-              </a>
-            </h4>
-            <hr className="border-t border-border my-2" />
-            <Cards>
-              <SmallCard
-                icon={<Clarinet />}
-                href="/tools/clarinet"
-                title="Clarinet"
-                description="A comprehensive development environment for building and testing Clarity smart contracts."
-              />
-              <SmallCard
-                icon={<Chainhook />}
-                href="/tools/chainhook"
-                title="Chainhook"
-                description="Create custom event streams and triggers for real-time blockchain data processing."
-              />
-              <SmallCard
-                icon={<Braces />}
-                href="/tools/contract-monitoring"
-                title="Contract Monitoring"
-                description="Monitor and track smart contract activity and performance metrics."
-              />
-              <SmallCard
-                icon={<Database />}
-                href="/tools/bitcoin-indexer"
-                title="Bitcoin Indexer"
-                description="Index and query Bitcoin blockchain data with high-performance indexing."
-              />
-            </Cards>
-          </div>
           <div className="flex flex-col">
             <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
               <a href="#explore-by-category" className="not-prose group text-sm uppercase">
@@ -101,39 +64,33 @@ export default function HomePage() {
             <Cards>
               <SmallCard
                 icon={<StacksIcon />}
-                href="/apis/stacks-blockchain-api"
-                title="Stacks Blockchain API"
-                description="Comprehensive REST API for interacting with the Stacks blockchain and network data."
+                href="/apis/sessions-api"
+                title="Sessions API"
+                description="Comprehensive REST API for interacting with the Sessions API."
               />
               <SmallCard
                 icon={<API />}
-                href="/apis/token-metadata-api"
-                title="Token Metadata API"
-                description="Fast, reliable metadata for fungible and non-fungible tokens on Stacks."
+                href="/apis/captchas-api"
+                title="Captchas API"
+                description="Solve CAPTCHA challenges and check their status."
               />
               <SmallCard
                 icon={<Hiro />}
-                href="/apis/platform-api"
-                title="Platform API"
-                description="Programmatically manage devnets and chainhooks via REST interface."
+                href="/apis/files-api"
+                title="Files API"
+                description="Programmatically manage files and storage via REST interface."
               />
               <SmallCard
                 icon={<Ordinals />}
-                href="/apis/ordinals-api"
-                title="Ordinals API"
-                description="Complete Bitcoin ordinals and BRC-20 token data with caching optimization."
+                href="/apis/credentials-api"
+                title="Credentials API"
+                description="Manage and verify credentials using the Credentials API."
               />
               <SmallCard
                 icon={<Runes />}
-                href="/apis/runes-api"
-                title="Runes API"
-                description="Fast, reliable data for Bitcoin Runes via an easy-to-use REST interface."
-              />
-              <SmallCard
-                icon={<API />}
-                href="/apis/signer-metrics-api"
-                title="Signer Metrics API"
-                description="Monitor and analyze signer behavior and performance on the Stacks network."
+                href="/apis/extensions-api"
+                title="Extensions API"
+                description="Load custom extensions and plugins for your application."
               />
             </Cards>
           </div>
@@ -147,22 +104,16 @@ export default function HomePage() {
             <Cards>
               <SmallCard
                 icon={<Js />}
-                href="/reference/stacks.js"
-                title="Stacks.js"
-                description="JavaScript SDK for building applications on Stacks with transactions, network utilities, and wallet integration."
+                href="/reference/javascript-sdk"
+                title="Steel JavaScript SDK"
+                description="JavaScript SDK for building applications on Steel."
               />
               <SmallCard
                 icon={<Js />}
-                href="/tools/clarinet/sdk-introduction"
-                title="Clarinet JS SDK"
-                description="JavaScript SDK for testing and interacting with Clarity smart contracts in simulated environments."
+                href="/reference/python-sdk"
+                title="Steel Python SDK"
+                description="Python SDK for building applications on Steel."
               />
-              {/* <SmallCard
-                icon={<StacksIcon />}
-                href="/reference/stacks-blockchain-api"
-                title="Stacks Blockchain API Client"
-                description="Type-safe JavaScript client library for interacting with the Stacks Blockchain API."
-              /> */}
             </Cards>
           </div>
           <div className="flex flex-col">

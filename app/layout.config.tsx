@@ -8,7 +8,7 @@ import type { BaseLayoutProps } from '@/components/layouts/shared';
  */
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    title: 'Hiro Docs',
+    title: 'Steel Docs',
   },
   links: [
     // {
@@ -17,38 +17,6 @@ export const baseOptions: BaseLayoutProps = {
     //   active: "nested-url",
     // },
     // Menu type - uses NavigationMenu component
-    {
-      type: 'menu',
-      text: 'Tools',
-      items: [
-        {
-          text: 'Clarinet',
-          description: 'Development environment and testing framework for Clarity smart contracts.',
-          url: '/tools/clarinet',
-        },
-        {
-          text: 'Chainhook',
-          description: 'Monitor and analyze Clarity smart contract activity.',
-          url: '/tools/chainhook',
-        },
-        {
-          text: 'Contract Monitoring',
-          description: 'Monitor and analyze Clarity smart contract activity.',
-          url: '/tools/contract-monitoring',
-        },
-        {
-          text: 'Clarity VSCode Extension',
-          description: 'Monitor and analyze Clarity smart contract activity.',
-          url: '/tools/clarinet/vscode-extension',
-        },
-        {
-          text: 'Bitcoin Indexer',
-          description: 'Indexer for Bitcoin blockchain data.',
-          url: '/tools/bitcoin-indexer',
-          isNew: true,
-        },
-      ],
-    },
     {
       type: 'menu',
       text: 'APIs',
@@ -106,30 +74,16 @@ export const baseOptions: BaseLayoutProps = {
       text: 'Libraries & SDKs',
       items: [
         {
-          text: 'Stacks.js',
-          description: 'JavaScript library for building on Stacks.',
-          url: '/reference/stacks.js',
+          text: 'Steel JS SDK',
+          description: 'JavaScript SDK for Steel.',
+          url: '/tools/steel/sdk-introduction',
         },
         {
-          text: 'Stacks Connect',
-          description: 'JavaScript library for connecting to Stacks wallets.',
-          url: '/reference/stacks.js/connect-wallet',
+          text: 'Steel Python SDK',
+          description: 'Python SDK for Steel in the browser.',
+          url: '/tools/steel/python-sdk-reference',
         },
-        {
-          text: 'Clarinet JS SDK',
-          description: 'JavaScript SDK for Clarinet.',
-          url: '/tools/clarinet/sdk-introduction',
-        },
-        {
-          text: 'Clarinet JS Browser SDK',
-          description: 'JavaScript SDK for Clarinet in the browser.',
-          url: '/tools/clarinet/browser-sdk-reference',
-        },
-        // {
-        //   text: "Stacks Blockchain API Client",
-        //   description: "Client SDK for the Stacks blockchain API.",
-        //   url: "/reference/stacks-blockchain-api-client",
-        // },
+
       ],
     },
     {
