@@ -1,5 +1,11 @@
 {
   "title": "hiro",
   "root": true,
-  "pages": ["...tools", "...apis", "...reference", "...resources"]
+  "pages": [
+    "...getting-started",
+    "...tools",
+    "...apis",
+    "...reference",
+    "...resources"
+  ]
 }
