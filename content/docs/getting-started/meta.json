@@ -1,9 +1,11 @@
 {
   "title": "Getting Started",
-  "root": true,
+  "root": false,
   "pages": [
     "---Getting Started---",
-    "index",
-    "usage"
+    "overview",
+    "your-first-automation",
+    "setting-up-authentication",
+    "understanding-sessions"
   ]
 }

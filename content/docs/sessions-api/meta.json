@@ -1,9 +1,11 @@
 {
   "title": "Sessions API",
-  "root": true,
+  "root": false,
   "pages": [
     "---Sessions API---",
-    "index",
-    "usage"
+    "overview",
+    "quickstart",
+    "session-lifecycle",
+    "multi-region"
   ]
 }

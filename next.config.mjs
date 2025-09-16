@@ -21,6 +21,16 @@ const config = {
         destination: '/llms.txt',
         permanent: true, // 301 redirect - tells crawlers this is the canonical location
       },
+      {
+        source: '/api-reference',
+        destination: 'https://docs.steel.dev/api-reference',
+        permanent: true,
+      },
+      {
+        source: '/playground',
+        destination: 'https://playground.steel.dev/',
+        permanent: true,
+      }
     ];
   },
 };

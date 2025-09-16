@@ -1,5 +1,7 @@
 {
-  "title": "Hiro Archive",
+  "title": "Integrations",
   "root": true,
-  "pages": ["index", "download-guide", "stacks-blockchain", "stacks-api", "token-metadata-api"]
+  "pages": [
+    "index"
+  ]
 }
