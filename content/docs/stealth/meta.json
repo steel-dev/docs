@@ -1,0 +1,9 @@
+{
+  "title": "Stealth",
+  "root": true,
+  "pages": [
+    "---Stealth---",
+    "index",
+    "usage"
+  ]
+}

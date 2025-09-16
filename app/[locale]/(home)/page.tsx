@@ -1,4 +1,8 @@
-export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
 
   // Dynamically import the locale-specific page
@@ -7,8 +11,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     return <LocalePage />;
   } catch (error) {
     // Fallback to English if locale file doesn't exist
-    console.log(`No ${locale} translation found for home page, falling back to English`);
-    const EnglishPage = (await import('./_pages/page.en')).default;
+    console.log(
+      `No ${locale} translation found for home page, falling back to English`,
+    );
+    const EnglishPage = (await import("./_pages/page.en")).default;
     return <EnglishPage />;
   }
 }

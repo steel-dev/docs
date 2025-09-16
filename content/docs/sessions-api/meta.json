@@ -1,0 +1,9 @@
+{
+  "title": "Sessions API",
+  "root": true,
+  "pages": [
+    "---Sessions API---",
+    "index",
+    "usage"
+  ]
+}

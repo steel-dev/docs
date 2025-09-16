@@ -1,0 +1,9 @@
+{
+  "title": "Files API",
+  "root": true,
+  "pages": [
+    "---Files API---",
+    "index",
+    "usage"
+  ]
+}

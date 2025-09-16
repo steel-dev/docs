@@ -1,4 +1,4 @@
-import type { BaseLayoutProps } from '@/components/layouts/shared';
+import type { BaseLayoutProps } from "@/components/layouts/shared";
 /**
  * Shared layout configurations
  *
@@ -8,97 +8,99 @@ import type { BaseLayoutProps } from '@/components/layouts/shared';
  */
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    title: 'Steel Docs',
+    title: "Steel Docs",
   },
   links: [
-    // {
-    //   text: "Get started",
-    //   url: "/start",
-    //   active: "nested-url",
-    // },
+    {
+      text: "Getting started",
+      url: "/start",
+      active: "nested-url",
+    },
     // Menu type - uses NavigationMenu component
     {
-      type: 'menu',
-      text: 'APIs',
+      type: "menu",
+      text: "APIs",
       items: [
         {
-          text: 'API keys',
-          description: 'API keys for accessing Hiro APIs.',
-          url: '/resources/guides/api-keys',
+          text: "API keys",
+          description: "API keys for accessing Hiro APIs.",
+          url: "/resources/guides/api-keys",
         },
         {
-          text: 'Rate limits',
-          description: 'Rate limits for accessing Hiro APIs.',
-          url: '/resources/guides/rate-limits',
+          text: "Rate limits",
+          description: "Rate limits for accessing Hiro APIs.",
+          url: "/resources/guides/rate-limits",
         },
         {
-          text: 'Stacks API',
-          description: 'RESTful API for accessing Stacks blockchain data and functionality.',
-          url: '/apis/stacks-blockchain-api',
-        },
-        {
-          text: 'Stacks RPC Node API',
+          text: "Stacks API",
           description:
-            'Raw blockchain node methods: submit txs, call read-only contracts, query mempool/state.',
-          url: '/apis/stacks-node-rpc-api',
+            "RESTful API for accessing Stacks blockchain data and functionality.",
+          url: "/apis/stacks-blockchain-api",
         },
         {
-          text: 'Token Metadata API',
-          description: 'API for retrieving NFT and fungible token metadata.',
-          url: '/apis/token-metadata-api',
+          text: "Stacks RPC Node API",
+          description:
+            "Raw blockchain node methods: submit txs, call read-only contracts, query mempool/state.",
+          url: "/apis/stacks-node-rpc-api",
         },
         {
-          text: 'Platform API',
-          description: 'API for accessing Hiro Platform data and functionality.',
-          url: '/apis/platform-api',
+          text: "Token Metadata API",
+          description: "API for retrieving NFT and fungible token metadata.",
+          url: "/apis/token-metadata-api",
         },
         {
-          text: 'Ordinals API',
-          description: 'API for Bitcoin Ordinals and inscriptions data.',
-          url: '/apis/ordinals-api',
+          text: "Platform API",
+          description:
+            "API for accessing Hiro Platform data and functionality.",
+          url: "/apis/platform-api",
         },
         {
-          text: 'Runes API',
-          description: 'API for Bitcoin Runes data.',
-          url: '/apis/runes-api',
+          text: "Ordinals API",
+          description: "API for Bitcoin Ordinals and inscriptions data.",
+          url: "/apis/ordinals-api",
         },
         {
-          text: 'Signer Metrics API',
-          description: 'API for accessing Signer metrics data and functionality.',
-          url: '/apis/signer-metrics-api',
+          text: "Runes API",
+          description: "API for Bitcoin Runes data.",
+          url: "/apis/runes-api",
+        },
+        {
+          text: "Signer Metrics API",
+          description:
+            "API for accessing Signer metrics data and functionality.",
+          url: "/apis/signer-metrics-api",
         },
       ],
     },
     {
-      type: 'menu',
-      text: 'Libraries & SDKs',
+      type: "menu",
+      text: "Libraries & SDKs",
       items: [
         {
-          text: 'Steel JS SDK',
-          description: 'JavaScript SDK for Steel.',
-          url: '/tools/steel/sdk-introduction',
+          text: "Steel JS SDK",
+          description: "JavaScript SDK for Steel.",
+          url: "/tools/steel/sdk-introduction",
         },
         {
-          text: 'Steel Python SDK',
-          description: 'Python SDK for Steel in the browser.',
-          url: '/tools/steel/python-sdk-reference',
+          text: "Steel Python SDK",
+          description: "Python SDK for Steel in the browser.",
+          url: "/tools/steel/python-sdk-reference",
         },
-
       ],
     },
     {
-      type: 'menu',
-      text: 'Resources',
+      type: "menu",
+      text: "Resources",
       items: [
         {
-          text: 'Clarity Reference',
-          description: 'Clarity language reference.',
-          url: '/resources/clarity',
+          text: "Clarity Reference",
+          description: "Clarity language reference.",
+          url: "/resources/clarity",
         },
         {
-          text: 'Guides',
-          description: 'Guides for building on Stacks.',
-          url: '/resources/guides',
+          text: "Guides",
+          description: "Guides for building on Stacks.",
+          url: "/resources/guides",
         },
         // {
         //   text: "Project templates",
@@ -106,14 +108,14 @@ export const baseOptions: BaseLayoutProps = {
         //   url: "/resources/templates",
         // },
         {
-          text: 'Snippets',
-          description: 'Code snippets for building on Stacks and Bitcoin.',
-          url: '/resources/snippets',
+          text: "Snippets",
+          description: "Code snippets for building on Stacks and Bitcoin.",
+          url: "/resources/snippets",
         },
         {
-          text: 'Hiro Archive',
-          description: 'Archive of blockchain data.',
-          url: '/resources/archive',
+          text: "Hiro Archive",
+          description: "Archive of blockchain data.",
+          url: "/resources/archive",
         },
         // {
         //   text: "Faucets",

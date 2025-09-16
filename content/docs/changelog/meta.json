@@ -1,0 +1,9 @@
+{
+  "title": "Changelog",
+  "root": true,
+  "pages": [
+    "---Changelog---",
+    "index",
+    "usage"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Extensions API",
+  "root": true,
+  "pages": [
+    "---Extensions API---",
+    "index",
+    "usage"
+  ]
+}

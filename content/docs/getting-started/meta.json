@@ -1,0 +1,9 @@
+{
+  "title": "Getting Started",
+  "root": true,
+  "pages": [
+    "---Getting Started---",
+    "index",
+    "usage"
+  ]
+}

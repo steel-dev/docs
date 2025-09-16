@@ -1,0 +1,9 @@
+{
+  "title": "Credentials API",
+  "root": true,
+  "pages": [
+    "---Credentials API---",
+    "index",
+    "usage"
+  ]
+}

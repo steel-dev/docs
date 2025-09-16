@@ -1,11 +1,17 @@
 {
-  "title": "hiro",
+  "title": "steel",
   "root": true,
   "pages": [
     "...getting-started",
-    "...tools",
-    "...apis",
-    "...reference",
-    "...resources"
+    "...sessions-api",
+    "...credentials-api",
+    "...files-api",
+    "...extensions-api",
+    "...self-hosting",
+    "...stealth",
+    "...resources",
+    "...api-reference",
+    "...changelog",
+    "...playground"
   ]
 }

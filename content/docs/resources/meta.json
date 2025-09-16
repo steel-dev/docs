@@ -1,0 +1,8 @@
+{
+  "title": "Resources",
+  "root": true,
+  "pages": [
+    "---Resources---",
+    "...reference"
+  ]
+}
