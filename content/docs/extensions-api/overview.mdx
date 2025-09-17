@@ -3,116 +3,87 @@ title: Overview
 sidebarTitle: Overview
 description: Fast, reliable metadata for Stacks tokens via REST.
 full: true
-llm: false
+llm: true
 ---
-## Overview
+# Overview | Overview
+Add n Chrome extensions to your Steel sessions.
 
-Add in Chrome extensions to your Steel sessions.
-
-:::scalar-callout{type=warning}
-Steel’s Extensions system is currently in beta and is subject to improvements, updates, and changes.
-\
-If you have feedback, join our Discord or open an issue on GitHub.
-:::
+Steel’s Extensions system is currently in beta and is subject to improvements, updates, and changes. If you have feedback, join our Discord or open an issue on GitHub.
 
 Steel's extensions are designed to enhance the functionality of Steel sessions by providing additional features and capabilities. These extensions can be used to automate tasks, enhance security, and improve the overall agent experience. They can be installed through the API for your organization and attached to any session.
 
 Extensions have long been a part of the browser ecosystem, since the release of Internet Explorer version 4 in 1997, users have been able to create their own extensions and make their browser their own. With the advent of agentic browsing and browser agents, extensions have gained a whole new light. Allowing thousands of agents to extend their own browser sessions with custom functionality.
 
-### Table of Contents
-- [Getting Started](#getting-started)
-- [Upload Extensions](#upload-extensions-from-file)
-- [Upload Extensions From Chrome Web Store](#upload-extensions-from-chrome-web-store)
-- [Inject Extensions into Session](#inject-extensions-into-session)
-- [Update Extensions From File](#update-extensions-from-file)
-- [Update Extensions From Chrome Web Store](#update-extensions-from-chrome-web-store)
-- [Seeing your Extensions](#seeing-your-extensions)
+### Getting Started
 
-## Getting Started
 Before extensions can be used in a browser session, they must first be uploaded either with a .zip/.crx file or downloaded from the Chrome Web Store.
 
-:::scalar-callout{type=info}
-All extensions are stored globally against your organization. You only need to upload them once. The supported formats include .zip and .crx.
-:::
+All extensions are stored globally against your organization. You only need to upload them once. The supported formats include .zip and .crx
 
 ### Upload Extension From File
 
-The extensions uploaded have a couple of requirements. They need a [preliminary manifest.json](https://developer.chrome.com/docs/extensions/reference/manifest) file to define the extension's metadata and functionality. This file should include details such as the extension's name, version, and any permissions required.
+The extensions uploaded have a couple of requirements. They need a preliminary manifest.json file to define the extension's metadata and functionality. This file should include details such as the extension's name, version, and any permissions required.
 
-::::scalar-tabs{}
+RESTNode.jsPython
 
-:::scalar-tab{title="REST"}
-```bash
+```
 curl -X POST https://api.steel.dev/v1/extensions \
-  -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
   -F "file=@extensions/recorder/recorder.zip"
 ```
-:::
 
-:::scalar-tab{title="Node.js"}
-```typescript
+
+```
 await client.extensions.upload({
     file: fs.readFileSync('extensions/recorder/recorder.zip')
   });
 ```
-:::
 
-:::scalar-tab{title="Python"}
-```python
+
+```
 with open("extensions/recorder/recorder.zip", "rb") as file:
     client.extensions.upload(
         file=file
     )
 ```
-:::
+
 
 ### Upload Extension from Chrome Web Store
 
-Go to the [Chrome Web Store](https://chrome.google.com/webstore) and click on the extension you want to upload. In the URL of the extension's page, you will see a layout like this https://chromewebstore.google.com/detail/{extensionName}/{extensionId}. Copy the extension ID and replace the placeholder with the actual ID.
+Go to the Chrome Web Store and click on the extension you want to upload. Copy the URL and include it in the request below
 
-::::scalar-tabs{}
+RESTNode.jsPython
 
-:::scalar-tab{title="REST"}
-```bash
-curl -X POST https://api.steel.dev/v1/extensions/store \
-  -H "Content-Type: application/json" \
+```
+curl -X POST https://api.steel.dev/v1/extensions \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
-  --data '{"store":"chrome-web-store","extensionId":"extensionId","version":"latest"}'
-  # uBlock Origin ID: epcnnfbjfcgphgdmggkamkmgojdagdnn
+  -F "url=https://chromewebstore.google.com/detail/.../..."
 ```
-:::
 
-:::scalar-tab{title="Node.js"}
-```typescript
-await client.extensions.uploadStore({
-    store: "chrome-web-store",
-    extensionId: "extensionId", // uBlock Origin ID: epcnnfbjfcgphgdmggkamkmgojdagdnn
-    version: "latest"
-  });
+
 ```
-:::
+await client.extensions.upload({
+   url: "https://chromewebstore.google.com/detail/.../..."
+});
+```
 
-:::scalar-tab{title="Python"}
-```python
-client.extensions.upload_store(
-    store="chrome-web-store",
-    extension_id="extensionId", # uBlock Origin ID: epcnnfbjfcgphgdmggkamkmgojdagdnn
-    version="latest"
+
+```
+client.extensions.upload(
+    url="https://chromewebstore.google.com/detail/.../..."
 )
 ```
-::::
+
 
 Once they are installed for your organization, you can inject them into your sessions.
 
-### Inject Extensions into Session
+### Injecting Extensions into a Session
 
 You can inject specific extensions into your sessions based on the `extensionId` field or you can pass `all_ext` to inject all extensions from your organization.
 
-::::scalar-tabs{}
+RESTNode.jsPython
 
-:::scalar-tab{title="REST"}
-```bash
+```
 curl -X POST https://api.steel.dev/v1/sessions \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
@@ -123,25 +94,21 @@ curl -X POST https://api.steel.dev/v1/sessions \
   #  "extensionIds": ['extensionId_1', 'extensionId_2']
   # }'
 ```
-:::
 
-:::scalar-tab{title="Node.js"}
-```typescript
+
+```
 const session = await client.sessions.create({
   extensionIds: ['all_ext'] // extensionIds=['extensionId_1', 'extensionId_2']
 });
 ```
-:::
 
-:::scalar-tab{title="Python"}
-```python
+
+```
 client.sessions.create(
     extension_ids=['all_ext'] # extension_ids=['extensionId_1', 'extensionId_2']
 )
 ```
-:::
 
-::::
 
 And now your sessions have extensions!
 
@@ -151,92 +118,122 @@ These extensions will be injected into the Steel browser session that then runs 
 
 After using your extensions, you can update them by uploading a new version of the extension. You will need to specify the `extensionId` of the extension you want to update.
 
-::::scalar-tabs{}
+RESTNode.jsPython
 
-:::scalar-tab{title="REST"}
-```bash
+```
 curl -X PUT https://api.steel.dev/v1/extensions/{extensionId} \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
-  -F "file=@extensions/recorder/recorder.zip"
+  -F "file=@extensions/recorder2/recorder2.zip"
 ```
-:::
 
-:::scalar-tab{title="Node.js"}
-```typescript
-await client.extensions.update("extensionId",{
-    file: fs.readFileSync("extensions/recorder/recorder.zip")
+
+```
+await client.extensions.update("{extensionId}",{
+    file: fs.readFileSync("extensions/recorder2/recorder2.zip")
   });
 ```
-:::
 
-:::scalar-tab{title="Python"}
-```python
-with open("extensions/recorder/recorder.zip", "rb") as file:
-    client.extensions.update("extensionId",
+
+```
+with open("extensions/recorder2/recorder2.zip", "rb") as file:
+    client.extensions.update("{extensionId}",
         file=file
     )
 ```
-::::
+
 
 ### Updating Extensions From Chrome Web Store
 
-You will need to specify the `extensionId` of the extension you want to update which will be found in the Chrome Web Store URL, like this https://chromewebstore.google.com/detail/{extensionName}/{extensionId}
+You will need to specify the `extensionId` of the extension you want to update
 
-::::scalar-tabs{}
+RESTNode.jsPython
 
-:::scalar-tab{title="REST"}
-```bash
-curl -X PUT https://api.steel.dev/v1/extensions/store \
-  -H "Content-Type: application/json" \
+```
+curl -X PUT https://api.steel.dev/v1/extensions/{extensionId} \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
-  --data '{"store":"chrome-web-store","extensionId":"extensionId","version":"latest"}'
-  # uBlock Origin ID: epcnnfbjfcgphgdmggkamkmgojdagdnn
+  -F "url=https://chromewebstore.google.com/detail/.../..."
 ```
-:::
 
-:::scalar-tab{title="Node.js"}
-```typescript
-await client.extensions.updateStore({
-    store: "chrome-web-store",
-    extensionId: "extensionId", // uBlock Origin ID: epcnnfbjfcgphgdmggkamkmgojdagdnn
-    version: "latest"
-  });
+
 ```
-:::
+await client.extensions.update({
+   url: "https://chromewebstore.google.com/detail/.../..."
+});
+```
 
-:::scalar-tab{title="Python"}
-```python
-client.extensions.update_store(
-    store="chrome-web-store",
-    extension_id="extensionId", # uBlock Origin ID: epcnnfbjfcgphgdmggkamkmgojdagdnn
-    version="latest"
+
+```
+client.extensions.update("{extensionId}",
+    url="https://chromewebstore.google.com/detail/.../..."
 )
 ```
-::::
+
 
 ### Seeing your Extensions
 
 To see your organization's installed extensions, you can use the `GET /v1/extensions` endpoint.
 
-::::scalar-tabs{}
+RESTNode.jsPython
 
-:::scalar-tab{title="REST"}
-```bash
+```
 curl -X GET https://api.steel.dev/v1/extensions \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
-:::
 
-:::scalar-tab{title="Node.js"}
-```typescript
-await client.extensions.list();
-```
-:::
 
-:::scalar-tab{title="Python"}
-```python
-client.extensions.list()
 ```
-::::
+const extensions = await client.extensions.list();
+```
+
+
+```
+extensions = client.extensions.list()
+```
+
+
+### Deleting an Extension
+
+To delete one of your organization's installed extensions, you can use the `DELETE /v1/extensions/{extensionId}` endpoint.
+
+RESTNode.jsPython
+
+```
+curl -X DELETE https://api.steel.dev/v1/extensions/{extensionId} \
+  -H "Content-Type: application/json" \
+  -H "steel-api-key: YOUR_API_KEY_HERE"
+```
+
+
+```
+await client.extensions.delete("{extensonId}")
+```
+
+
+```
+client.extensions.delete("{extensionId}")
+```
+
+
+### Deleting all Extensions
+
+To delete all of your organization's installed extensions, you can use the `DELETE /v1/extensions/` endpoint.
+
+RESTNode.jsPython
+
+```
+curl -X DELETE https://api.steel.dev/v1/extensions \
+  -H "Content-Type: application/json" \
+  -H "steel-api-key: YOUR_API_KEY_HERE"
+```
+
+
+```
+await client.extensions.deleteAll()
+```
+
+
+```
+client.extensions.deleteAll()
+```

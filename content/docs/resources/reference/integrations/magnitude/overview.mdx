@@ -1,0 +1,375 @@
+---
+title: Integrations
+sidebarTitle: Integrations
+llm: false
+---
+# Magnitude | Overview
+[Magnitude](https://magnitude.run/) is an open-source library that allows you to control your browser with natural language. This integration connects Magnitude with Steel's infrastructure, allowing for seamless automation of web tasks and workflows in the cloud.
+
+ [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/QwKxTmIdM9VJSOsBdjkYu.png) Try in Playground](https://playground.steel.dev/?template=steel-magnitude-starter)
+
+This guide shows how to use **Magnitude** with **Steel** to create an AI browser agent that visits the Steel leaderboard Github repo, extracts the details behind the latest commit, and if associated with a pull request, it will summarize the details.
+
+Scroll to the bottom to see a full example!
+
+### Requirements
+
+*   **Anthropic API Key**
+
+*   **Steel API Key**
+
+*   **Node.js 20+**
+
+
+### Step 1: Project Setup
+
+Create a new TypeScript project and basic script:
+
+```
+mkdir steel-magnitude && \
+cd steel-magnitude && \
+npm init -y && \
+npm install -D typescript @types/node ts-node && \
+npx tsc --init && \
+npm pkg set scripts.start="ts-node index.ts" && \
+touch index.ts .env
+```
+
+
+### Step 2: Install Dependencies
+
+```
+npm install steel-sdk magnitude-core zod dotenv
+```
+
+
+### Step 3: Environment Variables
+
+Create a `.env` file with your API keys:
+
+```
+STEEL_API_KEY=your-steel-api-key-here
+ANTHROPIC_API_KEY=your-anthropic-api-key-here
+```
+
+
+### Step 4: Initialize Steel & Magnitude
+
+Set up Steel, load env vars, and prepare to start the Magnitude agent.
+
+```
+// index.ts
+import * as dotenv from "dotenv";
+import { Steel } from "steel-sdk";
+import { startBrowserAgent } from "magnitude-core";
+import { z } from "zod";
+
+dotenv.config();
+
+const STEEL_API_KEY = process.env.STEEL_API_KEY || "your-steel-api-key-here";
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "your-anthropic-api-key-here";
+
+const client = new Steel({ steelAPIKey: STEEL_API_KEY });
+
+```
+
+
+### Step 5: Create a Steel Session & Start the Agent
+
+Create a Steel session, then connect Magnitude via **CDP**. Turn on `narrate` for easy debugging.
+
+```
+async function main() {
+  console.log("🚀 Steel + Magnitude Node Starter");
+  console.log("=".repeat(60));
+
+  if (STEEL_API_KEY === "your-steel-api-key-here") {
+    console.warn("⚠️  Please set STEEL_API_KEY in your .env");
+    console.warn("    Get one at https://app.steel.dev/settings/api-keys");
+    return;
+  }
+
+  if (ANTHROPIC_API_KEY === "your-anthropic-api-key-here") {
+    console.warn("⚠️  Please set ANTHROPIC_API_KEY in your .env");
+    console.warn("    Get one at https://console.anthropic.com/");
+    return;
+  }
+
+  let session: any;
+  let agent: any;
+
+  try {
+    console.log("\nCreating Steel session...");
+    session = await client.sessions.create({
+      // Optional knobs:
+      // useProxy: true,
+      // proxyUrl: 'http://user:pass@host:port',
+      // solveCaptcha: true,
+      // sessionTimeout: 1800000, // ms
+      // userAgent: 'custom-ua'
+    });
+
+    console.log(`Steel session created!`);
+    console.log(`View session at: ${session.sessionViewerUrl}`);
+
+    agent = await startBrowserAgent({
+      url: "https://github.com/steel-dev/leaderboard",
+      narrate: true,
+      llm: {
+        provider: "anthropic",
+        options: {
+          model: "claude-3-7-sonnet-latest",
+          apiKey: process.env.ANTHROPIC_API_KEY,
+        },
+      },
+      browser: {
+        cdp: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+      },
+    });
+
+    console.log("Connected to browser via Magnitude");
+```
+
+
+Use Magnitude’s `agent.extract` to pull structured data (user behind commit + commit itself) using a Zod schema.
+
+```
+    console.log("Looking for commits");
+
+    const mostRecentCommitter = await agent.extract(
+      "Find the user with the most recent commit",
+      z.object({
+        user: z.string(),
+        commit: z.string(),
+      })
+    );
+
+    console.log("\n\x1b[1;92mMost recent committer:\x1b[0m");
+    console.log(`${mostRecentCommitter.user} has the most recent commit`);
+
+```
+
+
+### Step 7: Perform Natural-Language Actions
+
+Use `agent.act` to summarize the pull request (if there’s a pull request behind the commit).
+
+```
+    console.log("\nLooking for pull request behind the most recent commit\x1b[0m");
+
+    try {
+      await agent.act(
+        "Find the pull request behind the most recent commit if there is one"
+      );
+      console.log("Found pull request!");
+
+      const pullRequest = await agent.extract(
+        "What was added in this pull request?",
+        z.object({
+          summary: z.string(),
+        })
+      );
+      console.log("Pull request found!");
+      console.log(`${pullRequest.summary}`);
+    } catch (error) {
+      console.log("No pull request found or accessible");
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    console.log("\nAutomation completed successfully!");
+```
+
+
+### Step 8: Clean Up
+
+Stop the agent and release the Steel session.
+
+```
+  } catch (error) {
+    console.error("Error during automation:", error);
+  } finally {
+    if (agent) {
+      console.log("Stopping Magnitude agent...");
+      try {
+        await agent.stop();
+      } catch (error) {
+        console.error("Error stopping agent:", error);
+      }
+    }
+
+    if (session) {
+      console.log("Releasing Steel session...");
+      try {
+        await client.sessions.release(session.id);
+        console.log("Steel session released successfully");
+      } catch (error) {
+        console.error("Error releasing session:", error);
+      }
+    }
+  }
+}
+
+main().catch((error) => {
+  console.error("Unhandled error:", error);
+  process.exit(1);
+});
+```
+
+
+#### Run It
+
+You’ll see a **session viewer URL** in your console, open it to watch the automation live.
+
+### Full Example
+
+Complete `index.ts` you can paste and run:
+
+```
+/*
+ * AI-powered browser automation using Magnitude with Steel browsers.
+ * https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-magnitude-starter
+ */
+
+import * as dotenv from "dotenv";
+import { Steel } from "steel-sdk";
+import { z } from "zod";
+import { startBrowserAgent } from "magnitude-core";
+
+dotenv.config();
+
+// Replace with your own API keys
+const STEEL_API_KEY = process.env.STEEL_API_KEY || "your-steel-api-key-here";
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "your-anthropic-api-key-here";
+
+// Initialize Steel client with the API key from environment variables
+const client = new Steel({ steelAPIKey: STEEL_API_KEY });
+
+async function main() {
+  console.log("🚀 Steel + Magnitude Node Starter");
+  console.log("=".repeat(60));
+
+  if (STEEL_API_KEY === "your-steel-api-key-here") {
+    console.warn("⚠️  WARNING: Please replace 'your-steel-api-key-here' with your actual Steel API key");
+    console.warn("   Get your API key at: https://app.steel.dev/settings/api-keys");
+    return;
+  }
+
+  if (ANTHROPIC_API_KEY === "your-anthropic-api-key-here") {
+    console.warn("⚠️  WARNING: Please replace 'your-anthropic-api-key-here' with your actual Anthropic API key");
+    console.warn("   Get your API key at: https://console.anthropic.com/");
+    return;
+  }
+
+  let session: any;
+  let agent: any;
+
+  try {
+    console.log("\nCreating Steel session...");
+    session = await client.sessions.create({
+      // Optional knobs:
+      // useProxy: true,
+      // proxyUrl: 'http://user:pass@host:port',
+      // solveCaptcha: true,
+      // sessionTimeout: 1800000, // ms
+      // userAgent: 'custom-ua'
+    });
+
+    console.log(`Steel session created!`);
+    console.log(`View session at: ${session.sessionViewerUrl}`);
+
+    agent = await startBrowserAgent({
+      url: "https://github.com/steel-dev/leaderboard",
+      narrate: true,
+      llm: {
+        provider: "anthropic",
+        options: {
+          model: "claude-3-7-sonnet-latest",
+          apiKey: process.env.ANTHROPIC_API_KEY,
+        },
+      },
+      browser: {
+        cdp: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+      },
+    });
+
+    console.log("Connected to browser via Magnitude");
+    console.log("Looking for commits");
+
+    const mostRecentCommitter = await agent.extract(
+      "Find the user with the most recent commit",
+      z.object({
+        user: z.string(),
+        commit: z.string(),
+      })
+    );
+
+    console.log("Most recent committer:");
+    console.log(`${mostRecentCommitter.user} has the most recent commit`);
+
+    console.log("\nLooking for pull request behind the most recent commit\x1b[0m");
+
+    try {
+      await agent.act(
+        "Find the pull request behind the most recent commit if there is one"
+      );
+      console.log("Found pull request!");
+
+      const pullRequest = await agent.extract(
+        "What was added in this pull request?",
+        z.object({
+          summary: z.string(),
+        })
+      );
+      console.log("Pull request found!");
+      console.log(`${pullRequest.summary}`);
+    } catch (error) {
+      console.log("No pull request found or accessible");
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    console.log("\nAutomation completed successfully!");
+  } catch (error) {
+    console.error("Error during automation:", error);
+  } finally {
+    if (agent) {
+      console.log("Stopping Magnitude agent...");
+      try {
+        await agent.stop();
+      } catch (error) {
+        console.error("Error stopping agent:", error);
+      }
+    }
+
+    if (session) {
+      console.log("Releasing Steel session...");
+      try {
+        await client.sessions.release(session.id);
+        console.log("Steel session released successfully");
+      } catch (error) {
+        console.error("Error releasing session:", error);
+      }
+    }
+  }
+}
+
+main().catch((error) => {
+  console.error("Unhandled error:", error);
+  process.exit(1);
+});
+
+```
+
+
+### Next Steps
+
+*   **Magnitude Documentation**: [https://docs.magnitude.run/getting-started/introduction](https://docs.magnitude.run/getting-started/introduction)
+
+*   **Session Lifecycles**: [https://docs.steel.dev/overview/sessions-api/session-lifecycle](https://docs.steel.dev/overview/sessions-api/session-lifecycle)
+
+*   **Steel Sessions API**: [https://docs.steel.dev/overview/sessions-api/overview](https://docs.steel.dev/overview/sessions-api/overview)
+
+*   **Steel Node SDK**: [https://github.com/steel-dev/steel-node](https://github.com/steel-dev/steel-node)
+
+*   **This Example on Github**: [https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-magnitude-starter](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-magnitude-starter)

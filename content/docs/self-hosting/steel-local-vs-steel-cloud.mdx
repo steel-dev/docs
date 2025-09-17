@@ -1,0 +1,40 @@
+---
+title: Docker
+sidebarTitle: Docker
+description: Monitor and analyze signer behavior on the Stacks network via REST.
+llm: false
+---
+# Steel Local vs Steel Cloud | Overview
+What's the difference between local Steel and Steel Cloud?
+
+
+
+*             Feature          :             Concurrency
+  *             Steel Local          :             1
+  *             Steel Cloud          :             100+
+*             Feature          :             Stealth
+  *             Steel Local          :             Limited
+  *             Steel Cloud          :             Advanced Stealth (docs)
+*             Feature          :             Captcha Solving
+  *             Steel Local          :             None
+  *             Steel Cloud          :             Supported with the Captchas API
+*             Feature          :             Proxies
+  *             Steel Local          :             Bring your own
+  *             Steel Cloud          :             Bring your own + Steel Managed Proxies
+*             Feature          :             Multi-Region
+  *             Steel Local          :             Host it yourself
+  *             Steel Cloud          :             Supported with region flag during session creation
+*             Feature          :             Credentials
+  *             Steel Local          :             Not supported
+  *             Steel Cloud          :             Supported with the Credentials API
+*             Feature          :             Extensions
+  *             Steel Local          :             Supported by loading in `api/extensions/`
+  *             Steel Cloud          :             Supported by using the Extensions API
+*             Feature          :             Files
+  *             Steel Local          :             Not supported
+  *             Steel Cloud          :             Supported by the Files API
+
+
+The defining factor between running Steel locally and using Steel Cloud is concurrency.
+
+For the Extensions API, if you put the extensions you would like to build/load in the \``` api/src/extensions/` `` folder then Steel Local will build these and inject them into the session. Credentials are not supported in Steel Local.

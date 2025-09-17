@@ -4,45 +4,263 @@ sidebarTitle: Proxies
 description: Learn the basics of using the Signer Metrics API.
 ---
 
-## Usage
+# Proxies | Overview
+Proxies make your browser sessions appear to originate from different locations and IP addresses. This is essential for accessing geo-restricted content, avoiding rate limits, and maintaining anonymity during web automation.
 
-The Signer Metrics API is built on REST principles, enforcing HTTPS for all requests to ensure data security, integrity, and privacy.
+Steel offers two powerful ways to use proxies: our built-in **Managed Residential Proxies** or connecting to your own proxy provider with our **Bring Your Own Proxy (BYOP)** feature.
 
-### Base URL
+### Which Proxy Approach Should you choose?
 
-```console -c
-https://api.hiro.so
+Use this table to pick the right option for your project.
+
+
+
+*             Feature          :             Best For
+  *             Steel-Managed Proxies          :             Quickly accessing high-quality residential IPs from specific countries without any setup.
+  *             Default Behavior(No proxies)          :             General web access, testing, or sites that don't block datacenter IPs.
+  *             Bring Your Own Proxies(BYOP)          :             Full control over your proxy infrastructure, using specialized providers.
+*             Feature          :             IP Type
+  *             Steel-Managed Proxies          :             High-quality residential IPs
+  *             Default Behavior(No proxies)          :             Datacenter
+  *             Bring Your Own Proxies(BYOP)          :             Any (Datacenter, Residential, Mobile)
+*             Feature          :             Control
+  *             Steel-Managed Proxies          :             Managed by Steel (automatic rotation)
+  *             Default Behavior(No proxies)          :             Static datacenter IP assigned by Steel
+  *             Bring Your Own Proxies(BYOP)          :             Full control over IPs and rotation logic
+*             Feature          :             Cost
+  *             Steel-Managed Proxies          :             Billed per GB of usage by Steel
+  *             Default Behavior(No proxies)          :             Free (included in all plans)
+  *             Bring Your Own Proxies(BYOP)          :             No charge from Steel; you pay your own proxy provider.
+*             Feature          :             Availability
+  *             Steel-Managed Proxies          :             Developer, Pro, & Enterprise plans
+  *             Default Behavior(No proxies)          :             All plans, including Hobby (free)
+  *             Bring Your Own Proxies(BYOP)          :             All plans, including Hobby (free)
+
+
+### Steel-Managed Proxies
+
+⭐ **_This is the best option for most use-cases._**
+
+Steel maintains a high-quality pool of residential IP addresses that make your browser sessions appear to come from real user connections. Our residential proxy network includes:
+
+*   **Hundreds of millions of IP addresses** sourced from legitimate residential connections
+
+*   **United States locations by default** with options for global geographic targeting
+
+*   **Continuous quality monitoring** through our internal testing and validation systems
+
+*   **Automatic IP rotation** to ensure fresh addresses for each session
+
+
+These proxies are ideal for accessing sites that block datacenter IPs or when you need to appear as a genuine residential user.
+
+### Default Behavior (No Proxies)
+
+When you create a Steel session without enabling proxies, your requests originate from the datacenter/machine’s IP addresses where Steel's browser infrastructure is hosted. This option is free, available on all plans, and incurs no charges on proxy bandwidth. This approach works well for:
+
+*   Interacting with websites that aren’t blocking default these datacenter IPs
+
+*   General web scraping that doesn't require specific geographic locations
+
+*   Internal applications or APIs that don't have geo-restrictions
+
+*   Testing and development where IP location isn't critical
+
+
+### Bring Your Own Proxies (BYOP)
+
+If you have existing proxy infrastructure or specific proxy requirements, you can route Steel sessions through your own proxy servers. This approach gives you:
+
+*   **Complete control** over your proxy infrastructure and IP sources
+
+*   **No additional costs** from Steel - you only pay for your own proxy services
+
+*   **Flexibility** to use specialized proxy providers or custom configurations
+
+*   **Compatibility** with both Steel Cloud and the open-source Steel browser
+
+
+By default, proxies are disabled (`useProxy: false` is the implicit setting). This means your traffic originates from Steel's own datacenter IPs.
+
+### Using Steel-Managed Residential Proxies
+
+To enable it, simply set `useProxy: true` when creating a session. By default, your traffic will be routed through a new US-based IP address each session:
+
+PythonNode
+
+```
+# Python SDK
+session = client.sessions.create(
+    use_proxy=True
+)
 ```
 
-### Making requests
 
-To make a request to the Signer Metrics API, you can paste the curl command below in your terminal.
-
-```terminal
-$ curl -L 'https://api.hiro.so/signer-metrics/v1/cycles/95/signers' \
-  -H 'Accept: application/json'
+```
+// Node.js SDK
+const session = await client.sessions.create({
+    useProxy: true
+});
 ```
 
-### Authentication
 
-If you are using an api-key, replace `$HIRO_API_KEY` with your secret API key.
+### Geographic Targeting
 
-```terminal
-$ curl -L 'https://api.hiro.so/signer-metrics/v1/cycles/95/signers' \
-  -H 'Accept: application/json' \
-  -H 'x-api-key: $HIRO_API_KEY'
+You can easily target countries, states (US only), or cities:
+
+**Quality vs. Specificity**
+
+The more specific your targeting, the smaller the IP pool. For the best performance and highest quality IPs, use the broadest targeting that meets your needs (e.g., prefer country-level over city-level). Generally, we’ve seen US and GB proxies have the highest quality.
+
+PythonNode
+
+```
+# Target specific state
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "country": "US", "state": "NY" }
+    }
+)
+
+# Target specific city
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "city": "LOS_ANGELES" }
+    }
+)
 ```
 
-## Response codes
 
-The Signer Metrics API uses standard HTTP response codes to indicate request success or failure.
+```
+// Target specific state
+const session = await client.sessions.create({
+  useProxy: {
+    geolocation: { country: "US", state: "NY" },
+  },
+});
 
-| Code | Description |
-|------|-------------|
-| `200` | Successful request |
-| `400` | Check that the parameters were correct |
-| `401` | Missing API key |
-| `403` | Invalid API key |
-| `404` | Resource not found |
-| `429` | Rate limit exceeded |
-| `5xx` | Server errors |
+// Target specific city
+const session = await client.sessions.create({
+  useProxy: {
+    geolocation: { city: "LOS_ANGELES" },
+  },
+});
+```
+
+
+**Available targeting options:**
+
+*   **Countries**: We support over 200 countries via their two-letter Alpha-2 codes
+
+*   **States**: Supported for the US only
+
+*   **Cities**: Available for major global cities
+
+
+### Bring Your Own Proxies (BYOP)
+
+If you already have a proxy provider or need highly specialized configurations, you can route Steel sessions through your own proxy server. This gives you complete control and avoids any additional proxy fees from Steel.
+
+PythonNode
+
+```
+# Python SDK
+session = client.sessions.create(
+    use_proxy={
+        "server": "http://username:password@proxy.example.com:8080"
+    }
+)
+```
+
+
+```
+// Node.js SDK
+const session = await client.sessions.create({
+  useProxy: {
+    server: "http://username:password@proxy.example.com:8080",
+  },
+});
+```
+
+
+**Supported proxy formats:**
+
+*   `http://username:password@hostname:port`
+
+*   `https://username:password@hostname:port`
+
+*   `socks5://username:password@hostname:port`
+
+
+Your proxy credentials are handled securely and never logged or stored by Steel beyond the duration of your session.
+
+#### Proxy Connection Errors
+
+You may occasionally encounter proxy connection errors like `ERR_TUNNEL_CONNECTION_FAILED`, `ERR_PROXY_CONNECTION_FAILED`, or `ERR_CONN_REFUSED`. This error indicates a connectivity issue between Steel's infrastructure and the proxy server.
+
+**This is normal behavior** and can happen for several reasons:
+
+*   Temporary proxy server unavailability
+
+*   Network connectivity issues between Steel and the proxy
+
+*   The target website blocking the specific proxy IP
+
+
+**When this happens:**
+
+1.  **Retry your request.** These errors are usually transient.
+
+2.  If using **Steel-Managed proxies,** we automatically rotate to a new IP on retry.
+
+3.  If using **BYOP**, ensure your proxy server is online and accessible.
+
+
+If the error persists across multiple retries, it may point to a more systemic issue.
+
+#### **Website Blocking**
+
+To maintain a high-quality and compliant network, Steel and its partners may restrict access to certain websites. We do this to ensure the long-term health and reputation of our IP pool. Blocklists are typically maintained for:
+
+*   Gambling and betting websites
+
+*   Government and restricted institutional sites
+
+*   Ticketing websites
+
+*   Other categories flagged for compliance reasons
+
+
+**If you're experiencing unexpected or persistent blocking:**
+
+1.  **Change the geographic region.** A different IP block might solve the problem.
+
+2.  **Use BYOP.** If you need access to specific restricted content, using your own proxy provider gives you full control.
+
+3.  **Contact Support.** If you believe a legitimate site is being blocked, please let us know. If retries and changing regions consistently fail, it might indicate the domain is on a compliance blocklist. Escalating to our team helps us investigate.
+
+
+Most blocking issues can be resolved through configuration adjustments or by working with our team to whitelist specific domains.
+
+Follow these guidelines to get the most out of your proxies and build more resilient automations.
+
+1.  **Establish a Baseline Without Proxies**
+    Before assuming you need a proxy for anti-bot measures, try accessing the target website without one. If Steel's default datacenter IPs work, you can save on costs. Use proxies as the next step if you encounter blocks.
+
+2.  **Start with Broad Targeting**
+    For the best performance, always start with country-level targeting. The larger IP pool provides higher quality and better success rates. Only use state or city-level targeting when it is a strict requirement for your use case.
+
+3.  **Build Fallback Logic in Your Code**
+    Proxy connections can sometimes fail (e.g., `ERR_TUNNEL_CONNECTION_FAILED`). This is normal. Your code should anticipate this by including retry logic. For critical tasks, consider having a fallback plan, such as retrying the request without a proxy or with a different proxy configuration.
+
+4.  **Monitor Success Rates with Narrow Targeting**
+    If you must use city-level targeting, closely monitor your job success rates. A high rate of failure could mean the local IP pool is too small or contains IPs that have been blocked or are of lower quality.
+
+5.  **Test Different Regions for Blocked Content**
+    If you're consistently blocked when targeting a specific country, try your request again from a different region. The target website may have different rules or restrictions for different geographic locations.
+
+:::callout
+type: help
+### Need help building with the Signer Metrics API?
+Reach out to us on the <span className="font-bold">#api</span> channel on [Discord](https://stacks.chat/) under the Hiro Developer Tools section. There's also a [weekly office hours](https://www.addevent.com/event/kI22007085) call every Wednesday at 1pm ET.
+:::

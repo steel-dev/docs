@@ -5,27 +5,298 @@ description: Fast, reliable data for Bitcoin ordinals and BRC-20 tokens via REST
 llm: false
 ---
 
-## Overview
+# Overview | Overview
+Automatically detect and solve CAPTCHAs in browser sessions using Steel's integrated captcha solvers and the CAPTCHAs API.
 
-The Ordinals API provides comprehensive inscription data for Bitcoin ordinals through a high-performance REST interface. Built with cached responses and optimized indexing, it delivers inscription metadata, trading activity, BRC-20 token information, and satoshi-level data with minimal latency.
+Steel's CAPTCHA system is designed to work seamlessly with browser automation workflows, automatically detecting and solving CAPTCHAs without interrupting your automation flow.
 
-## Key features
+Steel's CAPTCHAs API provides a robust solution for handling CAPTCHAs that appear during your automations. The system uses a bridge architecture that connects browser sessions with our CAPTCHA-solving capabilities, enabling real-time detection, solving, and state management.
 
-- **Complete inscription data** - Metadata, content, and ownership for all ordinals
-- **BRC-20 token support** - Full token metadata, balances, and holder information
-- **Satoshi-level tracking** - Inscription data tied to specific satoshis
+CAPTCHA solving is particularly useful for:
 
-## Usage
+*   Scraping jobs that encounter CAPTCHA challenges
 
-```terminal
-$ curl -L 'https://api.hiro.so/ordinals/v1/inscriptions' -H 'Accept: application/json'
+*   Browser workflows that need to submit forms or handle authentication flows
+
+*   AI agents that need to navigate CAPTCHA-protected websites
+
+
+### How CAPTCHA Solving Works with the CAPTCHAs API
+
+Steel's CAPTCHAs API operates through a bridge architecture that connects your browser sessions with our external CAPTCHA-solving capabilities. It helps with four key parts:
+
+1.  **Detection**: The system automatically detects when CAPTCHAs appear on pages
+
+2.  **State Management**: CAPTCHA states are tracked per page with real-time updates
+
+3.  **Solving**: CAPTCHAs are then solved by us using various methods
+
+4.  **Completion**: The system reports back when CAPTCHAs are solved or failed
+
+
+### Getting CAPTCHA Status
+
+You can check the current CAPTCHA status for any session to understand what CAPTCHAs are active and their current solving progress.
+
+cURLJavascript/TypescriptPython
+
+```
+curl -X GET https://api.steel.dev/v1/sessions/{sessionId}/captchas/status \
+-H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-For more usage examples, click [here](/apis/ordinals-api/usage).
 
-:::callout
-All Ordinals API responses include [rate limit headers](/resources/guides/response-headers) that help you monitor your API usage with Bitcoin-specific quota information.
-:::
+```
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+const response = await client.sessions.captchas.status('sessionId');
+
+console.log(response);
+```
+
+
+```
+from steel import Steel
+
+client = Steel()
+response = client.sessions.captchas.status(
+    "sessionId",
+)
+print(response)
+```
+
+
+#### Response Format
+
+The status endpoint returns an array of current pages and their CAPTCHA states. An example output might look like:
+
+```
+[
+   {
+      "pageId":"page_12345",
+      "url":"https://example.com/login",
+      "isSolvingCaptcha":true,
+      "tasks":[
+         {
+            "id":"task_67890",
+            "type":"image_to_text",
+            "status":"solving",
+            "created":1640995200000,
+            "totalDuration":5000
+         }
+      ],
+      "created":1640995200000,
+      "lastUpdated":1640995205000
+   }
+]
+```
+
+
+#### CAPTCHA Task Status
+
+Tasks can have the following statuses:
+
+*   `undetected`: CAPTCHA has not been detected
+
+*   `detected`: CAPTCHA has been detected but solving hasn't started
+
+*   `solving`: CAPTCHA is currently being solved
+
+*   `solved`: CAPTCHA has been successfully solved
+
+*   `failed_to_detect`: CAPTCHA detection failed
+
+*   `failed_to_solve`: CAPTCHA solving failed
+
+
+### Solving Image CAPTCHAs
+
+For image-based CAPTCHAs, you can provide XPath selectors to help the system locate and solve the CAPTCHA.
+
+The `url` parameter is optional and defaults to the current page.
+
+cURLJavascript/TypesriptPython
+
+```
+curl -X POST https://api.steel.dev/v1/sessions/{sessionId}/captchas/solve-image \
+   -H "Content-Type: application/json" \
+   -H "steel-api-key: YOUR_API_KEY_HERE" \
+   -d '{     "imageXPath": "//img[@id=\"captcha-image\"]",     "inputXPath": "//input[@name=\"captcha\"]",     "url": "https://example.com/login"   }'
+```
+
+
+```
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+const response = await client.sessions.captchas.solveImage('sessionId', {
+  imageXPath: '//img[@id="captcha-image"]',
+  inputXPath: '//input[@name="captcha"]',
+});
+
+console.log(response.success);
+```
+
+
+```
+from steel import Steel
+
+client = Steel()
+response = client.sessions.captchas.solve_image(
+    session_id=session.id,
+    image_x_path='//img[@id="captcha-image"]',
+    input_x_path='//input[@name="captcha"]',
+)
+print(response.success)
+```
+
+
+#### Parameters
+
+*   `imageXPath` (required): XPath selector for the CAPTCHA image element
+
+*   `inputXPath` (required): XPath selector for the CAPTCHA input field
+
+*   `url` (optional): URL where the CAPTCHA is located (defaults to current page)
+
+
+#### Response
+
+```
+{
+	"success": true,
+	"message": "Image captcha solve request sent"
+}
+```
+
+
+### WebSocket Bridge
+
+The CAPTCHA bridge uses WebSocket connections to maintain real-time communication between browser sessions and CAPTCHA-solving extensions. This enables:
+
+*   **Real-time state updates**: Immediate notification when CAPTCHAs are detected or solved
+
+*   **Bidirectional communication**: Extensions can send updates and receive solve requests
+
+*   **Persistent connections**: Maintains connection throughout the session lifecycle
+
+
+### State Management
+
+The CAPTCHA bridge uses intelligent state management to handle complex scenarios:
+
+#### Page-Based Tracking
+
+States are tracked by `pageId` rather than URL to avoid duplicates and handle dynamic URLs effectively.
+
+#### Task Merging
+
+When multiple updates occur for the same CAPTCHA task, the system intelligently merges the information, preserving important details like:
+
+*   Creation and detection timestamps
+
+*   Solving duration calculations
+
+*   Status progression
+
+
+#### Duration Calculation
+
+The system automatically calculates task durations based on:
+
+*   `created` or `detectedTime`: When the CAPTCHA was first detected
+
+*   `solveTime` or `failureTime`: When the CAPTCHA was solved or failed
+
+*   Real-time updates during the solving process
+
+
+### Integrating with Existing Automations
+
+Steel's CAPTCHA system is designed to work seamlessly with your existing automations using Playwright/Puppeteer:
+
+#### Monitoring CAPTCHA Progress
+
+```
+async function waitForCaptchaSolution(sessionId, timeout = 30000) {
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeout) {
+    const status = await getCaptchaStatus(sessionId);
+
+    const activeCaptchas = status.filter(state => state.isSolvingCaptcha);
+
+    if (activeCaptchas.length === 0) {
+      console.log('All CAPTCHAs solved!');
+      return true;
+    }
+
+    // Log progress
+    activeCaptchas.forEach(captcha => {
+      console.log(`CAPTCHA on ${captcha.url}: ${captcha.tasks.length} tasks`);
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  throw new Error('CAPTCHA solving timeout');
+}
+```
+
+
+#### Basic Integration Pattern
+
+```
+// Navigate to a page that might have CAPTCHAs
+await page.goto('https://example.com/protected-page');
+
+// Check if CAPTCHAs are present
+const captchaStatus = await checkCaptchaStatus(sessionId);
+
+if (captchaStatus.some(state => state.isSolvingCaptcha)) {
+  // Wait for CAPTCHA to be solved
+  await waitForCaptchaSolution(sessionId);
+}
+
+// Continue with automation
+await page.click('#submit-button');
+```
+
+
+#### Handling Different CAPTCHA Types
+
+The CAPTCHA bridge automatically handles most common CAPTCHA types. For image CAPTCHAs, you can use the image solving endpoint with specific XPath selectors.
+
+The captcha types for each task are mapped to the CAPTCHA types we support like so:
+
+*   `recaptchaV2`: Google's reCAPTCHA v2 with "I'm not a robot" checkbox and image challenges
+
+*   `recaptchaV3`: Google's reCAPTCHA v3 with invisible background scoring and risk analysis
+
+*   `hcaptcha`: hCaptcha image-based challenges (alternative to reCAPTCHA)
+
+*   `turnstile`: Cloudflare Turnstile with minimal user interaction verification
+
+*   `image_to_text:` Traditional text-based CAPTCHA requiring OCR of distorted characters
+
+
+#### Best Practices
+
+1.  **Monitor State Changes**: Regularly check CAPTCHA status during automation
+
+2.  **Handle Timeouts**: Set reasonable timeouts for automatic CAPTCHA solving operations
+
+3.  **Use Specific Selectors**: Provide accurate XPath selectors for image CAPTCHAs
+
+4.  **Error Handling**: Implement proper error handling for failed CAPTCHA attempts
+
+5.  **Logging**: Log CAPTCHA events for debugging and monitoring
+
+
+The CAPTCHA system is designed to be as transparent as possible to your automation workflows, handling the complexity of CAPTCHA detection and solving while providing you with the control and visibility you need.
 
 :::callout
 type: help

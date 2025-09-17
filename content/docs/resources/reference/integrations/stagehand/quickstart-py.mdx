@@ -1,0 +1,400 @@
+---
+title: Integrations
+sidebarTitle: Integrations
+llm: false
+---
+
+# Quickstart (Python) | Overview
+Build scripts that navigate the web using natural language instructions
+
+ [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/6-HUGa1OzY0BjoJZIu1Pd.png) Try in Playground](https://playground.steel.dev/?template=steel-stagehand-python-starter)
+
+This guide shows you how to use Stagehand with Steel browsers to create scripts that can interact with websites using natural language commands. We'll build a simple automation that extracts data from Hacker News and demonstrates search functionality.
+
+### Prerequisites
+
+Ensure you have the following:
+
+*   Python 3.8 or higher
+
+*   A Steel API key ([sign up here](https://app.steel.dev/))
+
+*   An OpenAI API key ([get one here](https://platform.openai.com/))
+
+
+### Step 1: Set up your environment
+
+First, create a project directory and install the required packages:
+
+```
+# Create a project directory
+mkdir steel-stagehand-starter
+cd steel-stagehand-starter
+
+# Install required packages
+pip install steel-sdk stagehand pydantic python-dotenv
+```
+
+
+Create a `.env` file with your API keys:
+
+```
+# .env
+STEEL_API_KEY=your_steel_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+
+### Step 2: Create your data models
+
+```
+import asyncio
+import os
+from dotenv import load_dotenv
+from pydantic import BaseModel, Field
+from steel import Steel
+from stagehand import StagehandConfig, Stagehand
+
+# Load environment variables
+load_dotenv()
+
+# Get API keys from environment
+STEEL_API_KEY = os.getenv("STEEL_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Define data models for structured extraction
+class Story(BaseModel):
+    title: str = Field(..., description="Story title")
+    rank: int = Field(..., description="Story rank number")
+
+class Stories(BaseModel):
+    stories: list[Story] = Field(..., description="List of top stories")
+
+```
+
+
+These models will help Stagehand extract structured data from web pages.
+
+### Step 3: Create a Steel browser session
+
+Add the session creation logic to connect with Steel's cloud browsers:
+
+```
+async def main():
+    print("🚀 Steel + Stagehand Automation")
+    print("=" * 50)
+
+    # Initialize Steel client
+    client = Steel(steel_api_key=STEEL_API_KEY)
+
+    # Create a new browser session
+    session = client.sessions.create()
+
+    print("✅ Steel browser session created!")
+    print(f"View live session at: {session.session_viewer_url}")
+
+```
+
+
+When you run this, you'll see a URL where you can watch your browser session live.
+
+### Step 4: Configure and connect Stagehand
+
+Now we'll connect Stagehand to your Steel session:
+
+```
+    # Configure Stagehand to use Steel session
+    config = StagehandConfig(
+        env="LOCAL",
+        model_name="gpt-4o-mini",
+        model_api_key=OPENAI_API_KEY,
+        local_browser_launch_options={
+            "cdp_url": f"{session.websocket_url}&apiKey={STEEL_API_KEY}",
+        }
+    )
+
+    # Initialize Stagehand
+    stagehand = Stagehand(config)
+    await stagehand.init()
+
+    print("🤖 Stagehand connected to Steel browser")
+
+```
+
+
+This connects Stagehand to your Steel browser session via Chrome DevTools Protocol.
+
+### Step 5: Navigate and extract data
+
+Add the automation logic to navigate to a website and extract information:
+
+```
+    try:
+        # Navigate to Hacker News
+        print("📰 Navigating to Hacker News...")
+        await stagehand.page.goto("https://news.ycombinator.com")
+
+        # Extract top stories using AI
+        print("🔍 Extracting top stories...")
+        stories_data = await stagehand.page.extract(
+            "Extract the titles and ranks of the first 5 stories on the page",
+            schema=Stories
+        )
+
+        # Display results
+        print("\n📋 Top 5 Hacker News Stories:")
+        for story in stories_data.stories:
+            print(f"{story.rank}. {story.title}")
+
+        print("\n✅ Automation completed successfully!")
+
+    except Exception as error:
+        print(f"❌ Error during automation: {error}")
+
+```
+
+
+You'll see the extracted story titles and rankings printed to your console.
+
+### Step 6: Add proper cleanup
+
+Always clean up your resources when finished:
+
+```
+    finally:
+        # Close Stagehand
+        if stagehand:
+            await stagehand.close()
+
+        # Release Steel session
+        if session and client:
+            client.sessions.release(session.id)
+            print("🧹 Resources cleaned up")
+
+# Run the automation
+if __name__ == "__main__":
+    asyncio.run(main())
+
+```
+
+
+### Step 7: Run your automation
+
+Execute your script:
+
+You should see output like this:
+
+```
+🚀 Steel + Stagehand Automation
+==================================================
+✅ Steel browser session created!
+View live session at: https://app.steel.dev/v1/sessions/uuid
+🤖 Stagehand connected to Steel browser
+📰 Navigating to Hacker News...
+🔍 Extracting top stories...
+
+📋 Top 5 Hacker News Stories:
+1. Ask HN: What are you working on this week?
+2. Show HN: I built a tool to analyze my GitHub contributions
+3. The future of web development
+4. Why I switched from React to Vue
+5. Building scalable microservices with Go
+
+✅ Automation completed successfully!
+🧹 Resources cleaned up
+
+```
+
+
+### Complete Example
+
+Here's the complete script that puts all steps together:
+
+```
+"""
+AI-powered browser automation using Stagehand with Steel browsers.
+https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-stagehand-python-starter
+"""
+
+import asyncio
+import os
+from dotenv import load_dotenv
+from pydantic import BaseModel, Field
+from steel import Steel
+from stagehand import StagehandConfig, Stagehand
+
+# Load environment variables
+load_dotenv()
+
+# Replace with your own API keys
+STEEL_API_KEY = os.getenv("STEEL_API_KEY") or "your-steel-api-key-here"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or "your-openai-api-key-here"
+
+# Define Pydantic models for structured data extraction
+class Story(BaseModel):
+    title: str = Field(..., description="Story title")
+    rank: int = Field(..., description="Story rank number")
+
+class Stories(BaseModel):
+    stories: list[Story] = Field(..., description="List of top stories")
+
+async def main():
+    print("🚀 Steel + Stagehand Python Starter")
+    print("=" * 60)
+
+    if STEEL_API_KEY == "your-steel-api-key-here":
+        print("⚠️  WARNING: Please replace 'your-steel-api-key-here' with your actual Steel API key")
+        print("   Get your API key at: https://app.steel.dev/settings/api-keys")
+        return
+
+    if OPENAI_API_KEY == "your-openai-api-key-here":
+        print("⚠️  WARNING: Please replace 'your-openai-api-key-here' with your actual OpenAI API key")
+        print("   Get your API key at: https://platform.openai.com/")
+        return
+
+    session = None
+    stagehand = None
+    client = None
+
+    try:
+        print("\nCreating Steel session...")
+
+        # Initialize Steel client with the API key from environment variables
+        client = Steel(steel_api_key=STEEL_API_KEY)
+
+        session = client.sessions.create(
+            # === Basic Options ===
+            # use_proxy=True,              # Use Steel's proxy network (residential IPs)
+            # proxy_url='http://...',      # Use your own proxy (format: protocol://username:password@host:port)
+            # solve_captcha=True,          # Enable automatic CAPTCHA solving
+            # session_timeout=1800000,     # Session timeout in ms (default: 5 mins)
+            # === Browser Configuration ===
+            # user_agent='custom-ua',      # Set a custom User-Agent
+        )
+
+        print(f"\033[1;93mSteel Session created!\033[0m")
+        print(f"View session at \033[1;37m{session.session_viewer_url}\033[0m")
+
+        config = StagehandConfig(
+            env="LOCAL",
+            model_name="gpt-4.1-mini",
+            model_api_key=OPENAI_API_KEY,
+            # Connect to Steel session via CDP
+            local_browser_launch_options={
+                "cdp_url": f"{session.websocket_url}&apiKey={STEEL_API_KEY}",
+            }
+        )
+
+        stagehand = Stagehand(config)
+
+        print("Initializing Stagehand...")
+        await stagehand.init()
+
+        print("Connected to browser via Stagehand")
+
+        print("Navigating to Hacker News...")
+        await stagehand.page.goto("https://news.ycombinator.com")
+
+        print("Extracting top stories using AI...")
+
+        stories_data = await stagehand.page.extract(
+            "Extract the titles and ranks of the first 5 stories on the page",
+            schema=Stories
+        )
+
+        print("\n\033[1;92mTop 5 Hacker News Stories:\033[0m")
+        for story in stories_data.stories:
+            print(f"{story.rank}. {story.title}")
+
+        print("\n\033[1;92mAutomation completed successfully!\033[0m")
+
+    except Exception as error:
+        print(f"Error during automation: {error}")
+        import traceback
+        traceback.print_exc()
+
+    finally:
+        if stagehand:
+            print("Closing Stagehand...")
+            try:
+                await stagehand.close()
+            except Exception as error:
+                print(f"Error closing Stagehand: {error}")
+
+        if session and client:
+            print("Releasing Steel session...")
+            try:
+                client.sessions.release(session.id)
+                print("Steel session released successfully")
+            except Exception as error:
+                print(f"Error releasing session: {error}")
+
+# Run the main function
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+
+### Advanced Usage Examples
+
+#### Custom Data Extraction Schema
+
+```
+const ProductSchema = z.object({
+  products: z.array(
+    z.object({
+      name: z.string(),
+      price: z.string(),
+      rating: z.number().optional(),
+      inStock: z.boolean(),
+    })
+  ),
+});
+
+const productData = await stagehand.page.extract({
+  instruction: "extract product information from this e-commerce page",
+  schema: ProductSchema,
+});
+```
+
+
+#### Complex Actions with Natural Language
+
+```
+// Fill out a form using natural language
+await stagehand.page.act(
+  "fill out the contact form with name 'John Doe', email 'john@example.com', and message 'Hello!'"
+);
+
+// Navigate through multi-step processes
+await stagehand.page.act(
+  "click on the 'Sign Up' button and then fill out the registration form"
+);
+
+// Handle dynamic content
+await stagehand.page.act(
+  "wait for the page to load completely, then click on the first product"
+);
+```
+
+
+### Next Steps
+
+Now that you have a working Stagehand + Steel automation, try these enhancements:
+
+*   **Custom data extraction**: Create your own Pydantic models for different websites
+
+*   **Complex interactions**: Use `stagehand.page.act()` for clicking, typing, and navigation
+
+*   **Multiple pages**: Navigate through multi-step workflows
+
+*   **Error handling**: Add retry logic and better error management
+
+
+For more advanced features, check out:
+
+*   [Stagehand documentation](https://docs.stagehand.dev/) for natural language automation
+
+*   [Steel API documentation](https://docs.steel.dev/api-reference) for session management options
+
+*   [Steel GitHub examples](https://github.com/steel-dev/steel-cookbook) for more integration patterns

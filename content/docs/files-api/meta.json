@@ -3,7 +3,6 @@
   "root": true,
   "pages": [
     "---Files API---",
-    "index",
-    "usage"
+    "overview"
   ]
 }

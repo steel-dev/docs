@@ -4,45 +4,110 @@ sidebarTitle: Quickstart
 description: Learn the basics of using the Ordinals API.
 ---
 
-## Usage
+# Quickstart | Overview
+Get up a running with your first Steel Session in a few minutes
 
-The Ordinals API is built on REST principles, enforcing HTTPS for all requests to ensure data security, integrity, and privacy.
+This guide will walk you through setting up your Steel account, creating your first browser session in the cloud, and driving it using Typescript/Playwright. In just a few minutes, you'll be up and programatically controlling a Steel browser Session.
 
-### Base URL
+### Initial Setup
 
-```console -c
-https://api.hiro.so
+#### 1\. Create a Steel Account
+
+1.  Sign up for a free account at steel.dev
+
+2.  The free plan includes 100 browser hours to get you started
+
+3.  No credit card required
+
+
+#### 2\. Get Your API Key
+
+1.  After signing up, navigate to Settings > API Keys
+
+2.  Create an API key and save it somewhere safe. You will not be able to generate the same key again.
+
+
+#### 3\. Set Up Environment Variables
+
+1.  Create a `.env` file in your project root (if you don't have one)
+
+2.  Add your Steel API key:
+
+
+Make sure to add `.env` to your `.gitignore` file to keep your key secure
+
+### Installing Dependencies
+
+Install the Steel SDK and Playwright:
+
+```
+npm install steel-sdk playwright
 ```
 
-### Making requests
 
-To make a request to the Ordinals API, you can paste the curl command below in your terminal.
+### Create Your First Session
 
-```terminal
-$ curl -L 'https://api.hiro.so/ordinals/v1/inscriptions' \
-  -H 'Accept: application/json'
+Let's create a simple script that launches and then releases a Steel session:
+
+```
+import Steel from 'steel-sdk';
+import { chromium } from 'playwright';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const client = new Steel({
+  steelAPIKey: process.env.STEEL_API_KEY,
+});
+
+async function main() {
+  // Create a session
+  const session = await client.sessions.create();
+  console.log('Session created:', session.id);
+  console.log(`View live session at: ${session.sessionViewerUrl}`);
+
+  // Your session is now ready to use!
+  // When done, release the session
+  await client.sessions.release(session.id);
+  console.log('Session released');
+}
+
+main().catch(console.error);
 ```
 
-### Authentication
 
-If you are using an api-key, replace `$HIRO_API_KEY` with your secret API key.
+### Connecting to Your Session
 
-```terminal
-$ curl -L 'https://api.hiro.so/ordinals/v1/inscriptions' \
-  -H 'Accept: application/json' \
-  -H 'x-api-key: $HIRO_API_KEY'
+Now that you have a session, you can connect to it using your preferred automation tool.
+
+Node.js / Puppeteer
+
+```
+import puppeteer from 'puppeteer';
+
+const browser = await puppeteer.connect({
+    browserWSEndpoint: `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`,
+});
+
+const page = await browser.newPage();
+await page.goto('https://example.com');
 ```
 
-## Response codes
 
-The Ordinals API uses standard HTTP response codes to indicate request success or failure.
+### Session Features
 
-| Code | Description |
-|------|-------------|
-| `200` | Successful request |
-| `400` | Check that the parameters were correct |
-| `401` | Missing API key |
-| `403` | Invalid API key |
-| `404` | Resource not found |
-| `429` | Rate limit exceeded |
-| `5xx` | Server errors |
+Want to do more with your session? Here are some common options you can add when creating:
+
+```
+const session = await client.sessions.create({
+    useProxy: true,           // Use Steel's residential proxy network
+    solveCaptcha: true,       // Enable automatic CAPTCHA solving
+    timeout: 1800000,  // Set 30-minute timeout (default is 5 minutes)
+    userAgent: 'custom-ua'    // Set a custom user agent
+});
+```
+
+
+You've now created your first Steel session and learned the basics of session management. With these fundamentals, you can start building more complex automations using Steel's cloud browser infrastructure.
+
+Need help? Join our Discord community or check out our full API Reference.

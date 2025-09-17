@@ -4,28 +4,45 @@ sidebarTitle: Multi-region
 description: Fast, reliable data for Bitcoin ordinals and BRC-20 tokens via REST.
 llm: false
 ---
+# Overview
+Manage fleets of browser sessions with ease
 
-## Overview
+The Sessions API lets you create and control cloud-based browser sessions through simple API calls. Each session is like a fresh incognito window, but running in our cloud and controlled through code.
 
-The Ordinals API provides comprehensive inscription data for Bitcoin ordinals through a high-performance REST interface. Built with cached responses and optimized indexing, it delivers inscription metadata, trading activity, BRC-20 token information, and satoshi-level data with minimal latency.
+Go to Quickstart Example
 
-## Key features
+### What is a Session?
 
-- **Complete inscription data** - Metadata, content, and ownership for all ordinals
-- **BRC-20 token support** - Full token metadata, balances, and holder information
-- **Satoshi-level tracking** - Inscription data tied to specific satoshis
+Sessions are the atomic unit of our Sessions API. Think of sessions as giving your AI agents their own dedicated browser windows. Just like you might open an incognito window to start a fresh browsing session, the Sessions API lets your agents spin up isolated browser instances on demand. Each session maintains its own state, cookies, and storage - perfect for AI agents that need to navigate the web, interact with sites, and maintain context across multiple steps.
 
-## Usage
+### Get started
 
-```terminal
-$ curl -L 'https://api.hiro.so/ordinals/v1/inscriptions' -H 'Accept: application/json'
-```
+Getting Started
 
-For more usage examples, click [here](/apis/ordinals-api/usage).
+### Connect with your preferred tools
 
-:::callout
-All Ordinals API responses include [rate limit headers](/resources/guides/response-headers) that help you monitor your API usage with Bitcoin-specific quota information.
-:::
+Connect with Puppeteer
+
+Drive a Steel session with Puppeteer via WebSocket connection
+
+Connect with Playwright
+
+Drive a Steel session with Playwright via WebSocket connection
+
+Connect with Playwright (Python)Connect with Selenium
+
+How to drive and connect to Steel browser sessions with Selenium
+
+Python SDK ReferenceNode SDK Reference
+
+### Understanding sessions
+
+Session Lifecycle
+
+### **Built-in and customizable features**
+
+Steel’s Session API has the following built-in and customizable features:
+
 
 :::callout
 type: help

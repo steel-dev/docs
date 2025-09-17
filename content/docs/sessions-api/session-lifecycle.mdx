@@ -5,27 +5,92 @@ description: Fast, reliable data for Bitcoin ordinals and BRC-20 tokens via REST
 llm: false
 ---
 
-## Overview
+# Session Lifecycle | Overview
+Learn how to start and release browser sessions programatically.
 
-The Ordinals API provides comprehensive inscription data for Bitcoin ordinals through a high-performance REST interface. Built with cached responses and optimized indexing, it delivers inscription metadata, trading activity, BRC-20 token information, and satoshi-level data with minimal latency.
+Sessions are the foundation of browser automation in Steel. Each session represents an isolated browser instance that persists until it's either explicitly released or times out.
 
-## Key features
+Each session can be in one of three states:
 
-- **Complete inscription data** - Metadata, content, and ownership for all ordinals
-- **BRC-20 token support** - Full token metadata, balances, and holder information
-- **Satoshi-level tracking** - Inscription data tied to specific satoshis
+*   **Live**: The session is active and ready to accept commands/connections. This is the state right after creation and during normal operation.
 
-## Usage
+*   **Released**: The session has been intentionally shut down, either through explicit release or timeout. Resources have been cleaned up. Can no longer accept commands/connections.
 
-```terminal
-$ curl -L 'https://api.hiro.so/ordinals/v1/inscriptions' -H 'Accept: application/json'
+*   **Failed**: Something went wrong during the session's lifetime (like a crash or connection loss). These sessions are automatically cleaned up.
+
+
+Browser sessions are billed and metered by the minute. A session can last up to 24 hours depending on your plan.
+
+Understanding how sessions live and die helps you manage resources effectively and build more reliable applications.
+
+### Session Lifetime and Timeout
+
+When you start a session, it stays alive for 5 minutes by default but you can change it by passing the `timeout` parameter. After the time passes, the session will be automatically released.
+
+Node.jsPython
+
+```
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+// Create session and keep it running for 10 minutes.
+const session = await client.sessions.create({
+  timeout: 600000 // 10 minutes (NOTE: Units are in milliseconds)
+});
 ```
 
-For more usage examples, click [here](/apis/ordinals-api/usage).
 
-:::callout
-All Ordinals API responses include [rate limit headers](/resources/guides/response-headers) that help you monitor your API usage with Bitcoin-specific quota information.
-:::
+```
+import os
+from steel import Steel
+
+client = Steel()
+
+# Create session and keep it running for 10 minutes.
+session = client.sessions.create(
+    timeout=600000 # 10 minutes (NOTE: Units are in milliseconds)
+)
+```
+
+
+**Note:** Currently, Steel doesn’t support editing a the timeout duration of a live session.
+
+### **Releasing a Session**
+
+When you're done with a session, it's best practice to release it explicitly rather than waiting for the timeout. You can release a session any time before the timeout is up by calling the `release` method.
+
+Node.jsPython
+
+```
+const response = await client.sessions.release(session.id);
+```
+
+
+```
+response = client.sessions.release(session.id)
+```
+
+
+#### Bulk Session Release
+
+Sometimes you need to clean up all active sessions at once. Steel provides a convenient way to do this:
+
+Node.jsPython
+
+```
+// Release all active sessions
+const response = await client.sessions.releaseAll();
+console.log(response.message); // "All sessions released successfully"
+```
+
+
+```
+# Release all active sessions
+response = client.sessions.release_all()
+print(response.message) # "All sessions released successfully"
+```
+
 
 :::callout
 type: help

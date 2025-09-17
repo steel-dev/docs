@@ -5,27 +5,128 @@ description: Fast, reliable data for Bitcoin ordinals and BRC-20 tokens via REST
 llm: false
 ---
 
-## Overview
+# Multi-region | Overview
+Control where your Steel browser sessions are hosted for optimal performance and latency.
 
-The Ordinals API provides comprehensive inscription data for Bitcoin ordinals through a high-performance REST interface. Built with cached responses and optimized indexing, it delivers inscription metadata, trading activity, BRC-20 token information, and satoshi-level data with minimal latency.
+### Overview
 
-## Key features
+By default, Steel automatically selects the data center closest to the client’s request location when creating a new browser session. This ensures optimal performance and minimal latency for your browser automation tasks. However, you can also manually specify which region you want your browser session to run in using the `region` parameter.
 
-- **Complete inscription data** - Metadata, content, and ownership for all ordinals
-- **BRC-20 token support** - Full token metadata, balances, and holder information
-- **Satoshi-level tracking** - Inscription data tied to specific satoshis
+This region selection determines the physical location of the browser instance itself, which can help reduce latency for applications targeting specific geographic areas or comply with data residency requirements.
 
-## Usage
+### Automatic Region Selection
 
-```terminal
-$ curl -L 'https://api.hiro.so/ordinals/v1/inscriptions' -H 'Accept: application/json'
+When you create a session without specifying a region, Steel automatically determines the closest data center based on your request location:
+
+PythonNode
+
+```
+from steel import Steel
+
+client = Steel()
+
+# Automatically uses the closest region
+session = client.sessions.create()
 ```
 
-For more usage examples, click [here](/apis/ordinals-api/usage).
 
-:::callout
-All Ordinals API responses include [rate limit headers](/resources/guides/response-headers) that help you monitor your API usage with Bitcoin-specific quota information.
-:::
+```
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+// Automatically uses the closest region
+const session = await client.sessions.create();
+```
+
+
+### Manual Region Selection
+
+To specify a particular region for your browser session, use the `region` parameter when creating a session:
+
+PythonNode
+
+```
+from steel import Steel
+
+client = Steel()
+
+# Create session in Los Angeles data center
+session = client.sessions.create(
+    region="LAX"
+)
+```
+
+
+```
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+// Create session in Los Angeles data center
+const session = await client.sessions.create({
+    region: "LAX"
+});
+```
+
+
+### Available Regions
+
+Steel is available in the following regions:
+
+
+
+*             Region          :             Los Angeles
+  *             Code          :             LAX
+  *             Data Center Location          :             Los Angeles, USA
+*             Region          :             Chicago
+  *             Code          :             ORD
+  *             Data Center Location          :             Chicago, USA
+*             Region          :             Washington DC
+  *             Code          :             IAD
+  *             Data Center Location          :             Washington DC, USA
+*             Region          :             Mumbai
+  *             Code          :             BOM
+  *             Data Center Location          :             Mumbai, India
+*             Region          :             Santiago
+  *             Code          :             SCL
+  *             Data Center Location          :             Santiago, Chile
+*             Region          :             Frankfurt
+  *             Code          :             FRA
+  *             Data Center Location          :             Frankfurt, Germany
+*             Region          :             Hong Kong
+  *             Code          :             HKG
+  *             Data Center Location          :             Hong Kong
+
+
+### Region vs Proxy Selection
+
+Region selection determines where your browser session runs, which is different from proxy selection. The region parameter controls the physical location of the browser instance, while the useProxy and proxyUrl parameters control the network routing and IP address used by the browser for web requests.
+
+You can combine region selection with proxy settings:
+
+PythonNode
+
+```
+# Browser runs in Hong Kong, but uses a US proxy for requests
+session = client.sessions.create(
+    region="HKG",
+    use_proxy=True
+)
+```
+
+
+```
+// Browser runs in Hong Kong, but uses a US proxy for requests
+const session = await client.sessions.create({
+    region: "HKG",
+    useProxy: true
+});
+
+```
+
+
+We’ll be launching new features soon to allow you to control regions for proxies as well. Right now, all are US based.
 
 :::callout
 type: help
