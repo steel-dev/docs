@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { baseOptions } from "@/app/layout.config";
-// import { HomeLayout } from '@/components/layouts/home';
 import { source } from "@/lib/source";
-import { DocsLayout } from "fumadocs-ui/layouts/notebook";
+import { DocsLayout } from "@/components/layouts/docs";
+// import { HomeLayout } from "fumadocs-ui/layouts/home";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
