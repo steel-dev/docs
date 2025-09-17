@@ -30,6 +30,16 @@ const config = {
         source: '/playground',
         destination: 'https://playground.steel.dev/',
         permanent: true,
+      },
+      {
+        source: '/render',
+        destination: 'https://playground.steel.dev/',
+        permanent: true,
+      },
+      {
+        source: '/railway',
+        destination: 'https://railway.app/template/FQG9Ca',
+        permanent: true,
       }
     ];
   },

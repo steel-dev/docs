@@ -2,6 +2,20 @@
   "title": "Integrations",
   "root": true,
   "pages": [
-    "index"
+    "---Integrations---",
+    "index",
+    "...agentkit",
+    "...agno",
+    "...bolt.new",
+    "...browser-use",
+    "...claude-computer-use",
+    "...crewai",
+    "...magnitude",
+    "...notte",
+    "...openai-computer-use",
+    "...replit",
+    "...stackblitz",
+    "...stagehand",
+    "...valtown"
   ]
 }

@@ -1,0 +1,10 @@
+{
+  "title": "OpenAI Computer Use",
+  "root": true,
+  "pages": [
+    "---OpenAI Computer Use---",
+    "overview",
+    "quickstart-py",
+    "quickstart-ts"
+  ]
+}

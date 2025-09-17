@@ -1,0 +1,9 @@
+{
+  "title": "Browser-use",
+  "root": true,
+  "pages": [
+    "---Browser-use---",
+    "overview",
+    "quickstart"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Stagehand",
+  "root": true,
+  "pages": [
+    "---Stagehand---",
+    "overview",
+    "quickstart-py",
+    "quickstart-ts"
+  ]
+}

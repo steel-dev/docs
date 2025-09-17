@@ -1,0 +1,9 @@
+{
+  "title": "Valtown",
+  "root": true,
+  "pages": [
+    "---Valtown---",
+    "overview",
+    "quickstart"
+  ]
+}

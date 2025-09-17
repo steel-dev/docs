@@ -1,25 +1,13 @@
 {
   "title": "Examples",
-  "root": true,
+  "root": false,
   "pages": [
-    "---Guides---",
+    "---Examples---",
     "index",
-    "---APIs---",
-    "api-keys",
-    "rate-limits",
-    "response-headers",
-    "---Building Projects---",
-    "build-an-nft-marketplace",
-    "build-a-decentralized-kickstarter",
-    "---Stacks.js---",
-    "using-clarity-values",
-    "---Applications---",
-    "no-loss-lottery",
-    "---Integrations---",
-    "using-pyth-price-feeds",
-    "---Infrastructure---",
-    "installing-docker",
-    "sync-a-bitcoin-node",
-    "sync-a-stacks-node"
+    "playwright",
+    "puppeteer",
+    "selenium",
+    "stagehand",
+    "stagehand-python"
   ]
 }

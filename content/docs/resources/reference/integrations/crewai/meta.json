@@ -1,0 +1,9 @@
+{
+  "title": "CrewAI",
+  "root": true,
+  "pages": [
+    "---CrewAI---",
+    "overview",
+    "quickstart"
+  ]
+}
