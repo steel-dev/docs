@@ -1,9 +1,8 @@
 {
   "title": "Credentials API",
-  "root": true,
+  "root": false,
   "pages": [
     "---Credentials API---",
-    "index",
-    "usage"
+    "overview"
   ]
 }
