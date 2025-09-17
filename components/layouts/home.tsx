@@ -95,9 +95,9 @@ export function Header({ nav = {}, links, githubUrl, themeSwitch, searchToggle }
             <ThemeToggle />
             <Button
               asChild
-              className="bg-brand-orange font-fono text-neutral-900 flex items-baseline gap-0.5 px-3 py-2 hover:bg-brand-orange transition-colors duration-200 group hidden lg:flex"
+              className="bg-yellow-300 font-fono text-neutral-900 flex items-baseline gap-0.5 px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden lg:flex"
             >
-              <Link href="https://platform.hiro.so" target="_blank">
+              <Link href="https://app.steel.dev" target="_blank">
                 Sign in
                 <ArrowUpRight className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200" />
               </Link>

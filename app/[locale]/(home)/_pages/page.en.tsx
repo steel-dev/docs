@@ -13,20 +13,21 @@ import {
   StacksIcon,
 } from '@/components/ui/icon';
 import heroImage from '@/public/stacks-hero.svg';
+import SteelLogo from '@/public/images/6-qmg3uQon_NBbndvw340.png';
 
 export default function HomePage() {
   return (
     <main className="my-2 space-y-10">
-      <div className="px-4 md:px-[var(--nav-offset)] py-6">
+      <div className="px-4 md:px-[var(--nav-offset)] py-20">
         <div className="space-y-10">
           <div className="space-y-1">
             <div className="flex space-x-6 items-end">
-              {/*<ImageZoom
+              <ImageZoom
                 alt="banner"
-                src={heroImage}
+                src={SteelLogo}
                 className="mt-0 mb-6 first-line:rounded-xl bg-background"
                 priority
-              />*/}
+              />
 
               <div className="flex flex-col [&_p]:mb-6 space-y-3">
                 <h3 className="text-3xl">Welcome to Steel Docs</h3>

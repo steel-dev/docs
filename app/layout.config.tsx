@@ -27,49 +27,30 @@ export const baseOptions: BaseLayoutProps = {
           url: "/resources/guides/api-keys",
         },
         {
-          text: "Rate limits",
-          description: "Rate limits for accessing Hiro APIs.",
-          url: "/resources/guides/rate-limits",
+          text: "Sessions API",
+          description: "API for managing user sessions.",
+          url: "/sessions-api/overview",
         },
         {
-          text: "Stacks API",
-          description:
-            "RESTful API for accessing Stacks blockchain data and functionality.",
-          url: "/apis/stacks-blockchain-api",
+          text: "Credentials API",
+          description: "API for managing user credentials.",
+          url: "/credentials-api/overview",
         },
         {
-          text: "Stacks RPC Node API",
-          description:
-            "Raw blockchain node methods: submit txs, call read-only contracts, query mempool/state.",
-          url: "/apis/stacks-node-rpc-api",
+          text: "Files API",
+          description: "API for managing user files.",
+          url: "/files-api/overview",
         },
         {
-          text: "Token Metadata API",
-          description: "API for retrieving NFT and fungible token metadata.",
-          url: "/apis/token-metadata-api",
+          text: "Extensions API",
+          description: "API for managing user extensions.",
+          url: "/extensions-api/overview",
         },
         {
-          text: "Platform API",
-          description:
-            "API for accessing Hiro Platform data and functionality.",
-          url: "/apis/platform-api",
-        },
-        {
-          text: "Ordinals API",
-          description: "API for Bitcoin Ordinals and inscriptions data.",
-          url: "/apis/ordinals-api",
-        },
-        {
-          text: "Runes API",
-          description: "API for Bitcoin Runes data.",
-          url: "/apis/runes-api",
-        },
-        {
-          text: "Signer Metrics API",
-          description:
-            "API for accessing Signer metrics data and functionality.",
-          url: "/apis/signer-metrics-api",
-        },
+          text: "Captcha API",
+          description: "API for managing user sessions.",
+          url: "/captcha-api/overview",
+        }
       ],
     },
     {
