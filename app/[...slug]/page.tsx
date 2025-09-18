@@ -1,3 +1,4 @@
+//@ts-nocheck
 import fs from 'node:fs/promises';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import matter from 'gray-matter';
@@ -44,7 +45,6 @@ export default async function Page(props: {
   }
 
   if (!page) notFound();
-
   const fileContent = await fs.readFile(page.data._file.absolutePath, 'utf-8');
   const { content: rawMarkdownContent } = matter(fileContent);
 
@@ -53,7 +53,6 @@ export default async function Page(props: {
     .filter((line) => !line.trim().startsWith('import'))
     .join('\n')
     .trim();
-
   const MDX = page.data.body;
 
   if (!MDX) {

@@ -1,8 +1,0 @@
-{
-  "title": "Agentkit",
-  "root": true,
-  "pages": [
-    "overview",
-    "quickstart"
-  ]
-}

@@ -1,4 +1,4 @@
-import type { BaseLayoutProps } from "@/components/layouts/shared";
+import type { BaseLayoutProps } from '@/components/layouts/shared';
 /**
  * Shared layout configurations
  *
@@ -8,80 +8,80 @@ import type { BaseLayoutProps } from "@/components/layouts/shared";
  */
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    title: "Steel Docs",
+    title: 'Steel Docs',
   },
   links: [
     {
-      text: "Getting started",
-      url: "/start",
-      active: "nested-url",
+      text: 'Getting started',
+      url: '/start',
+      active: 'nested-url',
     },
     // Menu type - uses NavigationMenu component
     {
-      type: "menu",
-      text: "APIs",
+      type: 'menu',
+      text: 'APIs',
       items: [
         {
-          text: "API keys",
-          description: "API keys for accessing Hiro APIs.",
-          url: "/resources/guides/api-keys",
+          text: 'API keys',
+          description: 'API keys for accessing Hiro APIs.',
+          url: '/resources/guides/api-keys',
         },
         {
-          text: "Sessions API",
-          description: "API for managing user sessions.",
-          url: "/sessions-api/overview",
+          text: 'Sessions API',
+          description: 'API for managing user sessions.',
+          url: '/sessions-api/overview',
         },
         {
-          text: "Credentials API",
-          description: "API for managing user credentials.",
-          url: "/credentials-api/overview",
+          text: 'Credentials API',
+          description: 'API for managing user credentials.',
+          url: '/credentials-api/overview',
         },
         {
-          text: "Files API",
-          description: "API for managing user files.",
-          url: "/files-api/overview",
+          text: 'Files API',
+          description: 'API for managing user files.',
+          url: '/files-api/overview',
         },
         {
-          text: "Extensions API",
-          description: "API for managing user extensions.",
-          url: "/extensions-api/overview",
+          text: 'Extensions API',
+          description: 'API for managing user extensions.',
+          url: '/extensions-api/overview',
         },
         {
-          text: "Captcha API",
-          description: "API for managing user sessions.",
-          url: "/captcha-api/overview",
-        }
-      ],
-    },
-    {
-      type: "menu",
-      text: "Libraries & SDKs",
-      items: [
-        {
-          text: "Steel JS SDK",
-          description: "JavaScript SDK for Steel.",
-          url: "/tools/steel/sdk-introduction",
-        },
-        {
-          text: "Steel Python SDK",
-          description: "Python SDK for Steel in the browser.",
-          url: "/tools/steel/python-sdk-reference",
+          text: 'Captcha API',
+          description: 'API for managing user sessions.',
+          url: '/captcha-api/overview',
         },
       ],
     },
     {
-      type: "menu",
-      text: "Resources",
+      type: 'menu',
+      text: 'Libraries & SDKs',
       items: [
         {
-          text: "Clarity Reference",
-          description: "Clarity language reference.",
-          url: "/resources/clarity",
+          text: 'Steel JS SDK',
+          description: 'JavaScript SDK for Steel.',
+          url: '/tools/steel/sdk-introduction',
         },
         {
-          text: "Guides",
-          description: "Guides for building on Stacks.",
-          url: "/resources/guides",
+          text: 'Steel Python SDK',
+          description: 'Python SDK for Steel in the browser.',
+          url: '/tools/steel/python-sdk-reference',
+        },
+      ],
+    },
+    {
+      type: 'menu',
+      text: 'Resources',
+      items: [
+        {
+          text: 'Clarity Reference',
+          description: 'Clarity language reference.',
+          url: '/resources/clarity',
+        },
+        {
+          text: 'Guides',
+          description: 'Guides for building on Stacks.',
+          url: '/resources/guides',
         },
         // {
         //   text: "Project templates",
@@ -89,14 +89,14 @@ export const baseOptions: BaseLayoutProps = {
         //   url: "/resources/templates",
         // },
         {
-          text: "Snippets",
-          description: "Code snippets for building on Stacks and Bitcoin.",
-          url: "/resources/snippets",
+          text: 'Snippets',
+          description: 'Code snippets for building on Stacks and Bitcoin.',
+          url: '/resources/snippets',
         },
         {
-          text: "Hiro Archive",
-          description: "Archive of blockchain data.",
-          url: "/resources/archive",
+          text: 'Hiro Archive',
+          description: 'Archive of blockchain data.',
+          url: '/resources/archive',
         },
         // {
         //   text: "Faucets",

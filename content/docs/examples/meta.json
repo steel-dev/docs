@@ -1,0 +1,12 @@
+{
+  "title": "Examples",
+  "root": true,
+  "pages": [
+    "---Examples---",
+    "playwright",
+    "puppeteer",
+    "selenium",
+    "stagehand-ts",
+    "stagehand-py"
+  ]
+}

@@ -40,6 +40,11 @@ const config = {
         source: '/railway',
         destination: 'https://railway.app/template/FQG9Ca',
         permanent: true,
+      },
+      {
+        source: '/resources/reference/integrations/valtown/quickstart',
+        destination: 'https://www.val.town/v/steel/steel_puppeteer_starter',
+        permanent: true,
       }
     ];
   },

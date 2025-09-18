@@ -1,0 +1,83 @@
+---
+title: "npx create-steel-app & Multitab"
+sidebarTitle: "create-steel-app & Multitab"
+llm: false
+---
+
+Wooooooooooooo!! We got some new updates we’re pumped to share.
+
+### ⭐ New
+
+#### npx create-steel-app
+
+The easiest way to get started with Steel just dropped!
+
+Run `npx create-steel-app` to spin up a full project based on any of the recipes in the Steel cookbook repo.
+
+**_Note:_** This works with pure Python projects too! As long as you have npm installed, you’ll be able quick spin up projects like Browser-use and Playwright-python on Steel!
+
+![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/jEdp6vzjOSMWbz2ePv3gO.png)
+
+#### Multitab Support
+
+We shipped support for multiple tabs via the debug URL. This comes with support for embedding specific pages as well as a full browser view that displays all tabs with full interactivity. Essentially a fully embeddable browser UI can now exist right in your app. Light/dark mode supported ;)
+
+![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/8LAdzG-x1Li9Nf3Q6VB4P.png)
+
+[Documentation Link](https://docs.steel.dev/overview/guides/view-and-embed-live-sessions)
+
+#### Embed and view session recordings
+
+We’ve published an endpoint (`v1/sessions/:id/events)` and docs around how you can simply embed and view session recordings inside your app.
+
+Here’s a code snippet of how to create an embeddable session replay component:
+
+```js
+import rrwebPlayer from 'rrweb-player';
+import 'rrweb-player/dist/style.css'; // important for styling of the player
+
+// Once you've fetched the events
+const events = await client.sessions.events(session.id)
+
+// Create player element
+const playerElement = document.getElementById('player-container');
+
+// Initialize the player with events
+const player = new rrwebPlayer({
+  target: playerElement,
+  props: {
+    events: events,
+    width: 800,  // Width of the player
+    height: 600, // Height of the player
+    autoPlay: true,
+    skipInactive: true  // Skip periods of inactivity
+  }
+});
+```
+
+[Documentation Link](https://docs.steel.dev/overview/guides/embed-session-recordings)
+
+#### CUA x Steel
+
+OpenAI’s Computer-use agent just dropped and it’s awesome! We’ve added a whole bunch of resources across the Steel universe to demo how the CUA agent can control a Steel browser!
+
+*   [Cookbook: Simple CUA Loop (Python)](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-oai-computer-use-python-starter)
+*   [Cookbook: Simple CUA Loop (Node)](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-oai-computer-use-node-starter)
+*   Coming soon to [Surf.new](http://surf.new/) 🌊
+
+### 🔧 Bugfixes/Improvements
+
+*   Python/Node SDKs are out of beta and official starting on version `0.0.1` 🥂 This update comes with all the afore mentioned capabilities incorporated into the SDKs.
+*   Lots of improvements and fixes to the Surf UI
+*   Added guide to docs on how to re-use contexts between sessions for carrying over things like authenticated state ([docs](https://docs.steel.dev/overview/guides/reusing-contexts-auth))
+*   Patches some source of memory leak errors causing slower session times
+
+### 🏡 Housekeeping
+
+*   Carti dropped 🗣️
+
+### 💖 First-time contributors
+
+Special thanks to [@PaperBoardOfficial](https://github.com/PaperBoardOfficial) for making some key PRs and issues on Surf 💖
+
+As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.

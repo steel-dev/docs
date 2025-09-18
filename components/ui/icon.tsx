@@ -1,9 +1,9 @@
 import type { LucideIcon } from 'lucide-react';
 import { TerminalIcon } from 'lucide-react';
+import Image from 'next/image';
 import type React from 'react';
 import type { JSX, SVGProps } from 'react';
-import Image from 'next/image'
-import SteelLogo from '../../public/images/6-qmg3uQon_NBbndvw340.png'
+import SteelLogo from '../../public/images/6-qmg3uQon_NBbndvw340.png';
 
 export function create({ icon: Icon }: { icon?: LucideIcon }) {
   return (
@@ -267,9 +267,7 @@ export function Bug(props: any) {
 }
 
 export function DocsLogo(props: any) {
-  return (
-    <Image {...props} src={SteelLogo} width="50" height="50"/>
-  );
+  return <Image {...props} src={SteelLogo} width="50" height="50" />;
 }
 
 export function API(props: SVGProps<SVGSVGElement>): JSX.Element {

@@ -1,5 +1,5 @@
-import { App } from '@octokit/app';
-import { graphql } from '@octokit/graphql';
+import { App } from "@octokit/app";
+import { graphql } from "@octokit/graphql";
 
 function getEnv(name: string): string {
   const value = process.env[name];
@@ -11,11 +11,14 @@ function getEnv(name: string): string {
 
 async function getGraphQLClient() {
   const app = new App({
-    appId: Number(getEnv('GITHUB_APP_ID')),
-    privateKey: Buffer.from(getEnv('GITHUB_APP_PRIVATE_KEY'), 'base64').toString('utf-8'),
+    appId: Number(getEnv("GITHUB_APP_ID")),
+    privateKey: Buffer.from(
+      getEnv("GITHUB_APP_PRIVATE_KEY"),
+      "base64",
+    ).toString("utf-8"),
   });
   const octokit = await app.getInstallationOctokit(
-    Number(getEnv('GITHUB_APP_INSTALLATION_ID')),
+    Number(getEnv("GITHUB_APP_INSTALLATION_ID")),
   );
   return octokit.graphql;
 }
@@ -32,9 +35,11 @@ export interface Discussion {
   };
 }
 
-export async function findDiscussionByTitle(title: string): Promise<Discussion | null> {
+export async function findDiscussionByTitle(
+  title: string,
+): Promise<Discussion | null> {
   const graphqlClient = await getGraphQLClient();
-  const [owner, repo] = getEnv('GITHUB_REPOSITORY').split('/');
+  const [owner, repo] = getEnv("GITHUB_REPOSITORY").split("/");
 
   try {
     const response = await graphqlClient<{
@@ -47,7 +52,7 @@ export async function findDiscussionByTitle(title: string): Promise<Discussion |
       `
       query FindDiscussion($owner: String!, $repo: String!) {
         repository(owner: $owner, name: $repo) {
-          discussions(first: 10, categoryId: "${getEnv('GITHUB_DISCUSSION_CATEGORY_ID')}", orderBy: {field: CREATED_AT, direction: DESC}) {
+          discussions(first: 10, categoryId: "${getEnv("GITHUB_DISCUSSION_CATEGORY_ID")}", orderBy: {field: CREATED_AT, direction: DESC}) {
             nodes {
               id
               number
@@ -69,18 +74,23 @@ export async function findDiscussionByTitle(title: string): Promise<Discussion |
       },
     );
 
-    const discussion = response.repository.discussions.nodes.find((d) => d.title === title);
+    const discussion = response.repository.discussions.nodes.find(
+      (d) => d.title === title,
+    );
 
     return discussion || null;
   } catch (error) {
-    console.error('Error finding discussion:', error);
+    console.error("Error finding discussion:", error);
     return null;
   }
 }
 
-export async function createDiscussion(title: string, body: string): Promise<Discussion> {
+export async function createDiscussion(
+  title: string,
+  body: string,
+): Promise<Discussion> {
   const graphqlClient = await getGraphQLClient();
-  const [owner, repo] = getEnv('GITHUB_REPOSITORY').split('/');
+  const [owner, repo] = getEnv("GITHUB_REPOSITORY").split("/");
 
   const mutation = `
     mutation CreateDiscussion($repositoryId: ID!, $categoryId: ID!, $title: String!, $body: String!) {
@@ -124,7 +134,7 @@ export async function createDiscussion(title: string, body: string): Promise<Dis
     };
   }>(mutation, {
     repositoryId: repoResponse.repository.id,
-    categoryId: getEnv('GITHUB_DISCUSSION_CATEGORY_ID'),
+    categoryId: getEnv("GITHUB_DISCUSSION_CATEGORY_ID"),
     title,
     body,
   });
@@ -132,7 +142,10 @@ export async function createDiscussion(title: string, body: string): Promise<Dis
   return response.createDiscussion.discussion;
 }
 
-export async function addDiscussionComment(discussionId: string, body: string): Promise<void> {
+export async function addDiscussionComment(
+  discussionId: string,
+  body: string,
+): Promise<void> {
   const graphqlClient = await getGraphQLClient();
 
   await graphqlClient(
@@ -155,10 +168,13 @@ export async function addDiscussionComment(discussionId: string, body: string): 
   );
 }
 
-export function formatDiscussionTitle(pageTitle: string, pagePath: string): string {
+export function formatDiscussionTitle(
+  pageTitle: string,
+  pagePath: string,
+): string {
   let formattedPath = pagePath;
 
-  const pathParts = pagePath.split('/').filter(Boolean);
+  const pathParts = pagePath.split("/").filter(Boolean);
   if (pathParts.length === 2) {
     formattedPath = `${pagePath}/index`;
   }
@@ -166,8 +182,14 @@ export function formatDiscussionTitle(pageTitle: string, pagePath: string): stri
   return formattedPath;
 }
 
-export function formatDiscussionBody(pageTitle: string, pageUrl: string): string {
-  const productionUrl = pageUrl.replace('http://localhost:3000', 'https://docs.hiro.so');
+export function formatDiscussionBody(
+  pageTitle: string,
+  pageUrl: string,
+): string {
+  const productionUrl = pageUrl.replace(
+    "http://localhost:3000",
+    "https://docs.hiro.so",
+  );
 
   return `## Documentation Feedback
 

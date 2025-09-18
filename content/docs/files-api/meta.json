@@ -1,8 +1,5 @@
 {
   "title": "Files API",
   "root": true,
-  "pages": [
-    "---Files API---",
-    "overview"
-  ]
+  "pages": ["---Files API---", "overview"]
 }

@@ -1,9 +1,0 @@
-{
-  "title": "Agno",
-  "root": true,
-  "pages": [
-    "---Agno---",
-    "overview",
-    "quickstart"
-  ]
-}

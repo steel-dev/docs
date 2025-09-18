@@ -12,8 +12,8 @@ import {
   Runes,
   StacksIcon,
 } from '@/components/ui/icon';
-import heroImage from '@/public/stacks-hero.svg';
 import SteelLogo from '@/public/images/6-qmg3uQon_NBbndvw340.png';
+import heroImage from '@/public/stacks-hero.svg';
 
 export default function HomePage() {
   return (

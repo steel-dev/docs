@@ -10,9 +10,11 @@
     "...captchas-api",
     "...self-hosting",
     "...stealth",
+    "...examples",
+    "...integrations",
     "...resources",
     "...api-reference",
-    "...changelog",
-    "...playground"
+    "...playground",
+    "...changelog"
   ]
 }

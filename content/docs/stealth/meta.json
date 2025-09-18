@@ -1,9 +1,5 @@
 {
   "title": "Stealth",
   "root": true,
-  "pages": [
-    "---Stealth---",
-    "captcha-solving",
-    "proxies"
-  ]
+  "pages": ["---Stealth---", "captcha-solving", "proxies"]
 }

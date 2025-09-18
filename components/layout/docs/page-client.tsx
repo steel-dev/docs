@@ -1,35 +1,21 @@
 'use client';
 
-import {
-  type ComponentProps,
-  Fragment,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'fumadocs-core/link';
-import { cn } from '../../../lib/cn';
-import { useI18n } from 'fumadocs-ui/contexts/i18n';
-import { useTreeContext, useTreePath } from 'fumadocs-ui/contexts/tree';
-import type { PageTree } from 'fumadocs-core/server';
+import { type BreadcrumbOptions, getBreadcrumbItemsFromPath } from 'fumadocs-core/breadcrumb';
 import { createContext, usePathname } from 'fumadocs-core/framework';
-import {
-  type BreadcrumbOptions,
-  getBreadcrumbItemsFromPath,
-} from 'fumadocs-core/breadcrumb';
-import { useNav } from 'fumadocs-ui/contexts/layout';
-import { isActive } from '../../../lib/is-active';
-import { useEffectEvent } from 'fumadocs-core/utils/use-effect-event';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '../../ui/collapsible';
-import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
-import { useTOCItems } from '../../ui/toc';
+import Link from 'fumadocs-core/link';
+import type { PageTree } from 'fumadocs-core/server';
 import { useActiveAnchor } from 'fumadocs-core/toc';
+import { useEffectEvent } from 'fumadocs-core/utils/use-effect-event';
+import { useI18n } from 'fumadocs-ui/contexts/i18n';
+import { useNav } from 'fumadocs-ui/contexts/layout';
+import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
+import { useTreeContext, useTreePath } from 'fumadocs-ui/contexts/tree';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { type ComponentProps, Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { cn } from '../../../lib/cn';
+import { isActive } from '../../../lib/is-active';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../ui/collapsible';
+import { useTOCItems } from '../../ui/toc';
 
 const TocPopoverContext = createContext<{
   open: boolean;
@@ -80,18 +66,12 @@ export function PageTOCPopoverTrigger(props: ComponentProps<'button'>) {
           {items[selected]?.title}
         </span>
       </span>
-      <ChevronDown
-        className={cn(
-          'shrink-0 transition-transform mx-0.5',
-          open && 'rotate-180',
-        )}
-      />
+      <ChevronDown className={cn('shrink-0 transition-transform mx-0.5', open && 'rotate-180')} />
     </CollapsibleTrigger>
   );
 }
 
-interface ProgressCircleProps
-  extends Omit<React.ComponentProps<'svg'>, 'strokeWidth'> {
+interface ProgressCircleProps extends Omit<React.ComponentProps<'svg'>, 'strokeWidth'> {
   value: number;
   strokeWidth?: number;
   size?: number;
@@ -169,8 +149,7 @@ export function PageTOCPopover(props: ComponentProps<'div'>) {
   const onClick = useEffectEvent((e: Event) => {
     if (!open) return;
 
-    if (ref.current && !ref.current.contains(e.target as HTMLElement))
-      setOpen(false);
+    if (ref.current && !ref.current.contains(e.target as HTMLElement)) setOpen(false);
   });
 
   useEffect(() => {
@@ -231,10 +210,7 @@ export function PageLastUpdate({
   }, [value]);
 
   return (
-    <p
-      {...props}
-      className={cn('text-sm text-fd-muted-foreground', props.className)}
-    >
+    <p {...props} className={cn('text-sm text-fd-muted-foreground', props.className)}>
       {text.lastUpdate} {date}
     </p>
   );
@@ -360,16 +336,10 @@ export function PageBreadcrumb({
   return (
     <div
       {...props}
-      className={cn(
-        'flex items-center gap-1.5 text-sm text-fd-muted-foreground',
-        props.className,
-      )}
+      className={cn('flex items-center gap-1.5 text-sm text-fd-muted-foreground', props.className)}
     >
       {items.map((item, i) => {
-        const className = cn(
-          'truncate',
-          i === items.length - 1 && 'text-fd-primary font-medium',
-        );
+        const className = cn('truncate', i === items.length - 1 && 'text-fd-primary font-medium');
 
         return (
           <Fragment key={i}>
