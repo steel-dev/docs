@@ -1,5 +1,11 @@
 {
   "title": "Self-Hosting",
   "root": true,
-  "pages": ["---Self-Hosting---", "index", "usage"]
+  "pages": [
+    "---Self-Hosting---",
+    "docker",
+    "railway",
+    "render",
+    "steel-local-vs-steel-cloud"
+  ]
 }

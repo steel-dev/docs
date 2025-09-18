@@ -1,12 +1,10 @@
 ---
-title: Files API
+title: Overview
 sidebarTitle: Overview
-description: Fast, reliable data for Bitcoin Runes via REST.
-llm: false
+description: How to upload, download, manage and work with files within an active session
+full: true
+llm: true
 ---
-
-# Overview
-How to upload, download, manage and work with files within an active session
 
 ![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/AZtqJmCS-b3Skd0l83dcH.png)
 
@@ -342,7 +340,7 @@ print(response.status_code)
 
 Reference uploaded files in file input elements using CDP (Chrome DevTools Protocol).
 
-```
+```typescript
 // Create CDP session for advanced controls
 const cdpSession = await currentContext.newCDPSession(page);
 const document = await cdpSession.send("DOM.getDocument");
@@ -364,7 +362,7 @@ await cdpSession.send("DOM.setFileInputFiles", {
 
 #### Standard Playwright/Puppeteer Upload
 
-```
+```typescript
 // For simple/smaller file uploads,
 // using standard automation library methods will look at local files
 await page.setInputFiles("#file-input", [uploadedSessionFile.path]);
@@ -375,7 +373,7 @@ await page.setInputFiles("#file-input", [uploadedSessionFile.path]);
 
 End-to-end workflow demonstrating global file management and session file operations.
 
-```
+```typescript
 import dotenv from "dotenv";
 import fs from "fs";
 import { chromium } from "playwright";
@@ -463,6 +461,6 @@ main();
 
 :::callout
 type: help
-### Need help building with the Runes API?
-Reach out to us on the <span className="font-bold">#ordinals</span> channel on [Discord](https://stacks.chat/) under the Hiro Developer Tools section. There's also a [weekly office hours](https://www.addevent.com/event/kI22007085) call every Wednesday at 1pm ET.
+### Need help building with the Files API?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::

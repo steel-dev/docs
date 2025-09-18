@@ -4,7 +4,7 @@ import * as Primitive from "fumadocs-core/toc";
 import { useI18n } from "fumadocs-ui/contexts/i18n";
 import { type ComponentProps, useEffect, useRef, useState } from "react";
 import { cn } from "../../lib/cn";
-import { mergeRefs } from "../../lib/merge-refs";
+// import { mergeRefs } from "../../lib/merge-refs";
 import { useTOCItems } from "./toc";
 import { TocThumb } from "./toc-thumb";
 
@@ -99,7 +99,7 @@ export default function ClerkTOCItems({
         </div>
       ) : null}
       <div
-        ref={mergeRefs(containerRef, ref)}
+        // ref={mergeRefs(containerRef, ref)}
         className={cn("flex flex-col", className)}
         {...props}
       >

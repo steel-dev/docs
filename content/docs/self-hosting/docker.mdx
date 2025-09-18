@@ -1,12 +1,11 @@
 ---
 title: Docker
 sidebarTitle: Docker
-description: Monitor and analyze signer behavior on the Stacks network via REST.
-llm: false
+description: Self-Hosting Steel Browser Using Docker
+full: true
+llm: true
 ---
-# Docker | Overview
-Self-Hosting Steel Browser Using Docker
-
+# Overview
 This guide provides step-by-step instructions to set up your own Steel Browser instance using Docker. The setup consists of two main components: an API service that manages Chrome instances and a user interface for interaction.
 
 ### Prerequisites
@@ -22,7 +21,7 @@ This guide provides step-by-step instructions to set up your own Steel Browser i
 
 1.  Create a new directory for your Steel Browser instance:
 
-    ```
+```sh Terminal -w
 mkdir steel-browser && cd steel-browser
 ```
 
@@ -31,7 +30,7 @@ mkdir steel-browser && cd steel-browser
 
     #### docker-compose.yml
 
-    ```
+```yaml
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:latest
@@ -61,6 +60,10 @@ networks:
 
 3.  Launch the containers:
 
+```sh Terminal -w
+docker compose up -d
+```
+
 4.  Access Steel Browser by opening `http://localhost:5173`in your web browser.
 
 
@@ -72,7 +75,7 @@ If you prefer to build the containers yourself:
 
 1.  Clone the repository:
 
-    ```
+```sh Terminal -w
 git clone https://github.com/steel-dev/steel-browser.git
 cd steel-browser
 ```
@@ -82,7 +85,7 @@ cd steel-browser
 
 3.  Build and start using the development compose file:
 
-    ```
+```sh Terminal -w
 docker compose -f docker-compose.dev.yml up -d --build
 ```
 
@@ -105,7 +108,7 @@ docker compose -f docker-compose.dev.yml up -d --build
 
 The `.cache` directory stores Chrome data and extensions. Mount it as a volume for persistence:
 
-```
+```yaml
 volumes:
   - ./.cache:/app/.cache
 ```
@@ -131,7 +134,7 @@ The API container uses Chrome 128.0.6613.119 by default. To use a different vers
 2.  Modify the Chrome installation section:
 
 
-```
+```dockerfile
 ARG CHROME_VERSION="128.0.6613.119"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -149,7 +152,7 @@ RUN apt-get update && \
 
 Both containers use Node 22.13.0 by default. To use a different version, modify the build arguments:
 
-```
+```yaml
 services:
   api:
     build:
@@ -166,7 +169,7 @@ services:
 
 Ensure your host has enough resources and check the API container logs:
 
-```
+```sh Terminal -w
 docker logs steel-browser_api_1
 ```
 
@@ -190,14 +193,14 @@ If the UI can't connect to the API:
 
 2.  Check if the API is accessible:
 
-    ```
+```sh Terminal -w
 curl http://localhost:3000/api/health
 ```
 
 
 3.  Ensure the containers can communicate over the network:
 
-    ```
+```sh Terminal -w
 docker exec steel-browser_ui_1 curl http://api:3000/api/health
 ```
 
@@ -216,7 +219,7 @@ For production environments:
 
 Example production compose file:
 
-```
+```yaml
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:sha256:...
@@ -262,7 +265,7 @@ networks:
 
 To update to the latest version:
 
-```
+```sh Terminal -w
 docker compose pull
 docker compose up -d
 ```
@@ -270,10 +273,16 @@ docker compose up -d
 
 For custom builds:
 
-```
+```sh Terminal -w
 git pull
 docker compose -f docker-compose.dev.yml up -d --build
 ```
 
 
 Now your Steel Browser instance is up and running on your own infrastructure!
+
+:::callout
+type: help
+### Need help building with the running locally?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::

@@ -1,11 +1,19 @@
-import { type CodeHikeConfig, recmaCodeHike, remarkCodeHike } from 'codehike/mdx';
-import { defineConfig, defineDocs, frontmatterSchema } from 'fumadocs-mdx/config';
-import remarkDirective from 'remark-directive';
-import { z } from 'zod';
-import { remarkCustomDirectives } from './lib/remark-custom-directives';
+import {
+  type CodeHikeConfig,
+  recmaCodeHike,
+  remarkCodeHike,
+} from "codehike/mdx";
+import {
+  defineConfig,
+  defineDocs,
+  frontmatterSchema,
+} from "fumadocs-mdx/config";
+import remarkDirective from "remark-directive";
+import { z } from "zod";
+import { remarkCustomDirectives } from "./lib/remark-custom-directives";
 
 export const docs = defineDocs({
-  dir: 'content/docs',
+  dir: "content/docs",
   docs: {
     schema: frontmatterSchema.extend({
       llm: z.boolean().optional(),
@@ -38,8 +46,8 @@ export const docs = defineDocs({
 
 const chConfig: CodeHikeConfig = {
   components: {
-    code: 'DocsKitCode',
-    inlineCode: 'DocsKitInlineCode',
+    code: "DocsKitCode",
+    inlineCode: "DocsKitInlineCode",
   },
 };
 

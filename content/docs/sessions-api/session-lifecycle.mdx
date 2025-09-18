@@ -1,12 +1,10 @@
 ---
 title: Session Lifecycle
 sidebarTitle: Session Lifecycle
-description: Fast, reliable data for Bitcoin ordinals and BRC-20 tokens via REST.
-llm: false
+description: Learn how to start and release browser sessions programatically.
+full: true
+llm: true
 ---
-
-# Session Lifecycle | Overview
-Learn how to start and release browser sessions programatically.
 
 Sessions are the foundation of browser automation in Steel. Each session represents an isolated browser instance that persists until it's either explicitly released or times out.
 
@@ -27,9 +25,9 @@ Understanding how sessions live and die helps you manage resources effectively a
 
 When you start a session, it stays alive for 5 minutes by default but you can change it by passing the `timeout` parameter. After the time passes, the session will be automatically released.
 
-Node.jsPython
+<CodeTabs storage="languageSwitcher">
 
-```
+```typescript !! Typescript
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -41,7 +39,7 @@ const session = await client.sessions.create({
 ```
 
 
-```
+```python !! Python
 import os
 from steel import Steel
 
@@ -52,7 +50,7 @@ session = client.sessions.create(
     timeout=600000 # 10 minutes (NOTE: Units are in milliseconds)
 )
 ```
-
+</CodeTabs>
 
 **Note:** Currently, Steel doesn’t support editing a the timeout duration of a live session.
 
@@ -60,40 +58,44 @@ session = client.sessions.create(
 
 When you're done with a session, it's best practice to release it explicitly rather than waiting for the timeout. You can release a session any time before the timeout is up by calling the `release` method.
 
-Node.jsPython
 
-```
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript
+// Release a single session
 const response = await client.sessions.release(session.id);
 ```
 
 
-```
+```python !! Python
+# Release a single session
 response = client.sessions.release(session.id)
 ```
-
+</CodeTabs>
 
 #### Bulk Session Release
 
 Sometimes you need to clean up all active sessions at once. Steel provides a convenient way to do this:
 
-Node.jsPython
+<CodeTabs storage="languageSwitcher">
 
-```
+```typescript !! Typescript
 // Release all active sessions
 const response = await client.sessions.releaseAll();
 console.log(response.message); // "All sessions released successfully"
 ```
 
 
-```
+```python !! Python
 # Release all active sessions
 response = client.sessions.release_all()
 print(response.message) # "All sessions released successfully"
 ```
 
+</CodeTabs>
 
 :::callout
 type: help
-### Need help building with the Ordinals API?
-Reach out to us on the <span className="font-bold">#ordinals</span> channel on [Discord](https://stacks.chat/) under the Hiro Developer Tools section. There's also a [weekly office hours](https://www.addevent.com/event/kI22007085) call every Wednesday at 1pm ET.
+### Need help building with the Sessions API?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::

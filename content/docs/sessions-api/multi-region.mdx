@@ -1,12 +1,10 @@
 ---
-title: Overview
-sidebarTitle: Overview
-description: Fast, reliable data for Bitcoin ordinals and BRC-20 tokens via REST.
-llm: false
+title: Multi-region
+sidebarTitle: Multi-region
+description: Control where your Steel browser sessions are hosted for optimal performance and latency.
+full: true
+llm: true
 ---
-
-# Multi-region | Overview
-Control where your Steel browser sessions are hosted for optimal performance and latency.
 
 ### Overview
 
@@ -18,19 +16,9 @@ This region selection determines the physical location of the browser instance i
 
 When you create a session without specifying a region, Steel automatically determines the closest data center based on your request location:
 
-PythonNode
+<CodeTabs storage="languageSwitcher">
 
-```
-from steel import Steel
-
-client = Steel()
-
-# Automatically uses the closest region
-session = client.sessions.create()
-```
-
-
-```
+```typescript !! Typescript
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -39,26 +27,23 @@ const client = new Steel();
 const session = await client.sessions.create();
 ```
 
+```python !! Python
+from steel import Steel
+
+client = Steel()
+
+# Automatically uses the closest region
+session = client.sessions.create()
+```
+</CodeTabs>
 
 ### Manual Region Selection
 
 To specify a particular region for your browser session, use the `region` parameter when creating a session:
 
-PythonNode
+<CodeTabs storage="languageSwitcher">
 
-```
-from steel import Steel
-
-client = Steel()
-
-# Create session in Los Angeles data center
-session = client.sessions.create(
-    region="LAX"
-)
-```
-
-
-```
+```typescript !! Typescript
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -69,35 +54,32 @@ const session = await client.sessions.create({
 });
 ```
 
+```python !! Python
+from steel import Steel
+
+client = Steel()
+
+# Create session in Los Angeles data center
+session = client.sessions.create(
+    region="LAX"
+)
+```
+</CodeTabs>
+
 
 ### Available Regions
 
 Steel is available in the following regions:
 
-
-
-*             Region          :             Los Angeles
-  *             Code          :             LAX
-  *             Data Center Location          :             Los Angeles, USA
-*             Region          :             Chicago
-  *             Code          :             ORD
-  *             Data Center Location          :             Chicago, USA
-*             Region          :             Washington DC
-  *             Code          :             IAD
-  *             Data Center Location          :             Washington DC, USA
-*             Region          :             Mumbai
-  *             Code          :             BOM
-  *             Data Center Location          :             Mumbai, India
-*             Region          :             Santiago
-  *             Code          :             SCL
-  *             Data Center Location          :             Santiago, Chile
-*             Region          :             Frankfurt
-  *             Code          :             FRA
-  *             Data Center Location          :             Frankfurt, Germany
-*             Region          :             Hong Kong
-  *             Code          :             HKG
-  *             Data Center Location          :             Hong Kong
-
+| Region         | Code | Data Center Location      |
+|----------------|------|---------------------------|
+| Los Angeles    | LAX  | Los Angeles, USA          |
+| Chicago        | ORD  | Chicago, USA              |
+| Washington DC  | IAD  | Washington DC, USA        |
+| Mumbai         | BOM  | Mumbai, India             |
+| Santiago       | SCL  | Santiago, Chile           |
+| Frankfurt      | FRA  | Frankfurt, Germany        |
+| Hong Kong      | HKG  | Hong Kong                 |
 
 ### Region vs Proxy Selection
 
@@ -105,18 +87,9 @@ Region selection determines where your browser session runs, which is different 
 
 You can combine region selection with proxy settings:
 
-PythonNode
+<CodeTabs storage="languageSwitcher">
 
-```
-# Browser runs in Hong Kong, but uses a US proxy for requests
-session = client.sessions.create(
-    region="HKG",
-    use_proxy=True
-)
-```
-
-
-```
+```typescript !! Typescript
 // Browser runs in Hong Kong, but uses a US proxy for requests
 const session = await client.sessions.create({
     region: "HKG",
@@ -125,11 +98,19 @@ const session = await client.sessions.create({
 
 ```
 
+```python !! Python
+# Browser runs in Hong Kong, but uses a US proxy for requests
+session = client.sessions.create(
+    region="HKG",
+    use_proxy=True
+)
+```
+</CodeTabs>
 
 We’ll be launching new features soon to allow you to control regions for proxies as well. Right now, all are US based.
 
 :::callout
 type: help
-### Need help building with the Ordinals API?
-Reach out to us on the <span className="font-bold">#ordinals</span> channel on [Discord](https://stacks.chat/) under the Hiro Developer Tools section. There's also a [weekly office hours](https://www.addevent.com/event/kI22007085) call every Wednesday at 1pm ET.
+### Need help building with multi-region?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
