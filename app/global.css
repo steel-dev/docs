@@ -114,9 +114,9 @@
 }
 
 .dark {
-  --background: var(--color-neutral-900);
-  --foreground: var(--color-neutral-50);
-  --card: var(--color-neutral-800);
+  --background: var(--color-stone-950);
+  --foreground: var(--color-stone-50);
+  --card: var(--color-stone-900);
   --card-foreground: 0 0% 95%;
   --popover: 0 0% 9%;
   --popover-foreground: 0 0% 95%;

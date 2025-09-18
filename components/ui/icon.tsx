@@ -267,7 +267,7 @@ export function Bug(props: any) {
 }
 
 export function DocsLogo(props: any) {
-  return <Image {...props} src={SteelLogo} width="50" height="50" />;
+  return <Image {...props} src={SteelLogo} alt="Steel Docs Logo" width="50" height="50" />;
 }
 
 export function API(props: SVGProps<SVGSVGElement>): JSX.Element {

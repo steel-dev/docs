@@ -15,7 +15,9 @@ export default function HomePage() {
               <ImageZoom
                 alt="banner"
                 src={SteelLogo}
-                className="mt-0 mb-6 first-line:rounded-xl bg-background"
+                width={100}
+                height={100}
+                className="mt-0 mb-6 first-line:rounded-md bg-background"
                 priority
               />
 

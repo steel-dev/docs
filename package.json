@@ -2,7 +2,7 @@
   "name": "hiro-docs",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack -p 3030",
     "build": "bun run generate && next build --turbopack",
     "start": "next start",
     "postinstall": "fumadocs-mdx",
