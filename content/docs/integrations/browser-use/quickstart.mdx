@@ -1,0 +1,296 @@
+---
+title: Integrations
+sidebarTitle: Integrations
+llm: false
+---
+# Quickstart | Overview
+A step-by-step guide to connecting Steel with Browser-use.
+
+ [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/UgqXSnOj7YuKyieypFDU2.png) Try in Playground](https://playground.steel.dev/?template=steel-browser-use-starter)
+
+This guide walks you through connecting a Steel cloud browser session with the browser-use framework, enabling an AI agent to interact with websites.
+
+#### Prerequisites
+
+Ensure you have the following:
+
+*   Python 3.11 or higher
+
+*   Steel API key (sign up at [app.steel.dev](https://app.steel.dev/))
+
+*   OpenAI API key (sign up at [platform.openai.com](https://platform.openai.com/))
+
+
+#### Step 1: Set up your environment
+
+First, create a project directory, set up a virtual environment, and install the required packages:
+
+```
+# Create a project directory
+mkdir steel-browser-use-agent
+cd steel-browser-use-agent
+
+# Recommended: Create and activate a virtual environment
+uv venv
+source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
+
+# Install required packages
+pip install steel-sdk browser-use python-dotenv
+```
+
+
+Create a `.env` file with your API keys:
+
+```
+STEEL_API_KEY=your_steel_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+TASK=Go to Wikipedia and search for machine learning
+```
+
+
+#### Step 2: Create a Steel browser session
+
+Use the Steel SDK to start a new browser session for your agent:
+
+```
+import os
+from steel import Steel
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+STEEL_API_KEY = os.getenv("STEEL_API_KEY") or "your-steel-api-key-here"
+
+# Validate API key
+if STEEL_API_KEY == "your-steel-api-key-here":
+    print("⚠️  WARNING: Please replace with your actual Steel API key")
+    print("   Get your API key at: https://app.steel.dev/settings/api-keys")
+    return
+
+# Create a Steel browser session
+client = Steel(steel_api_key=STEEL_API_KEY)
+session = client.sessions.create()
+
+print("✅ Steel browser session started!")
+print(f"View live session at: {session.session_viewer_url}")
+```
+
+
+This creates a new browser session in Steel's cloud. The session\_viewer\_url allows you to watch your agent's actions in real-time.
+
+#### Step 3: Define Your Browser Session
+
+Connect the browser-use BrowserSession class to your Steel session using the CDP URL:
+
+```
+from browser_use import Agent, BrowserSession
+
+# Connect browser-use to the Steel session
+cdp_url = f"wss://connect.steel.dev?apiKey={STEEL_API_KEY}&sessionId={session.id}"
+browser_session = BrowserSession(cdp_url=cdp_url)
+```
+
+
+#### Step 4: Define your AI Agent
+
+Here we bring it all together by defining our agent with what browser, browser context, task, and LLM to use.
+
+```
+# After setting up the browser session
+from browser_use import Agent
+from browser_use.llm import ChatOpenAI
+
+# Create a ChatOpenAI model for agent reasoning
+model = ChatOpenAI(
+    model="gpt-4o",
+    temperature=0.3,
+    api_key=os.getenv('OPENAI_API_KEY')
+)
+
+# Define the task for the agent
+task = os.getenv("TASK") or "Go to Wikipedia and search for machine learning"
+
+# Create the agent with the task, model, and browser session
+agent = Agent(
+    task=task,
+    llm=model,
+    browser_session=browser_session,
+)
+```
+
+
+This configures the AI agent with:
+
+*   An OpenAI model for reasoning
+
+*   The browser session instance from Step 3
+
+*   A specific task to perform
+
+
+**Models:**
+This example uses **GPT-4o**, but you can use any browser-use compatible models like Anthropic, DeepSeek, or Gemini. See the full list of supported models here.
+
+#### Step 5: Run your Agent
+
+```
+import time
+
+# Define the main function with the agent execution
+async def main():
+    try:
+        start_time = time.time()
+
+        print(f"🎯 Executing task: {task}")
+        print("=" * 60)
+
+        # Run the agent
+        result = await agent.run()
+
+        duration = f"{(time.time() - start_time):.1f}"
+
+        print("\n" + "=" * 60)
+        print("🎉 TASK EXECUTION COMPLETED")
+        print("=" * 60)
+        print(f"⏱️  Duration: {duration} seconds")
+        print(f"🎯 Task: {task}")
+        if result:
+            print(f"📋 Result:\n{result}")
+        print("=" * 60)
+
+    except Exception as e:
+        print(f"❌ Task execution failed: {e}")
+    finally:
+        # Clean up resources
+        if session:
+            print("Releasing Steel session...")
+            client.sessions.release(session.id)
+            print(f"Session completed. View replay at {session.session_viewer_url}")
+        print("Done!")
+
+# Run the async main function
+if __name__ == '__main__':
+    asyncio.run(main())
+```
+
+
+The agent will spin up a steel browser session and interact with it to complete the task. After completion, it's important to properly close the browser and release the Steel session.
+
+#### Complete example
+
+Here's the complete script that puts all steps together:
+
+```
+"""
+AI-powered browser automation using browser-use library with Steel browsers.
+https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-browser-use-starter
+"""
+
+import os
+import time
+import asyncio
+from dotenv import load_dotenv
+from steel import Steel
+from browser_use import Agent, BrowserSession
+from browser_use.llm import ChatOpenAI
+
+load_dotenv()
+
+# Replace with your own API keys
+STEEL_API_KEY = os.getenv("STEEL_API_KEY") or "your-steel-api-key-here"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or "your-openai-api-key-here"
+
+# Replace with your own task
+TASK = os.getenv("TASK") or "Go to Wikipedia and search for machine learning"
+
+
+async def main():
+    print("🚀 Steel + Browser Use Assistant")
+    print("=" * 60)
+
+    if STEEL_API_KEY == "your-steel-api-key-here":
+        print("⚠️  WARNING: Please replace 'your-steel-api-key-here' with your actual Steel API key")
+        print("   Get your API key at: https://app.steel.dev/settings/api-keys")
+        return
+
+    if OPENAI_API_KEY == "your-openai-api-key-here":
+        print("⚠️  WARNING: Please replace 'your-openai-api-key-here' with your actual OpenAI API key")
+        print("   Get your API key at: https://platform.openai.com/api-keys")
+        return
+
+    print("\nStarting Steel browser session...")
+
+    client = Steel(steel_api_key=STEEL_API_KEY)
+
+    try:
+        session = client.sessions.create()
+        print("✅ Steel browser session started!")
+        print(f"View live session at: {session.session_viewer_url}")
+
+        print(
+            f"\033[1;93mSteel Session created!\033[0m\n"
+            f"View session at \033[1;37m{session.session_viewer_url}\033[0m\n"
+        )
+
+        cdp_url = f"wss://connect.steel.dev?apiKey={STEEL_API_KEY}&sessionId={session.id}"
+
+        model = ChatOpenAI(model="gpt-4o", temperature=0.3, api_key=OPENAI_API_KEY)
+        agent = Agent(task=TASK, llm=model, browser_session=BrowserSession(cdp_url=cdp_url))
+
+        start_time = time.time()
+
+        print(f"🎯 Executing task: {TASK}")
+        print("=" * 60)
+
+        try:
+            result = await agent.run()
+
+            duration = f"{(time.time() - start_time):.1f}"
+
+            print("\n" + "=" * 60)
+            print("🎉 TASK EXECUTION COMPLETED")
+            print("=" * 60)
+            print(f"⏱️  Duration: {duration} seconds")
+            print(f"🎯 Task: {TASK}")
+            if result:
+                print(f"📋 Result:\n{result}")
+            print("=" * 60)
+
+        except Exception as e:
+            print(f"❌ Task execution failed: {e}")
+        finally:
+            if session:
+                print("Releasing Steel session...")
+                client.sessions.release(session.id)
+                print(f"Session completed. View replay at {session.session_viewer_url}")
+            print("Done!")
+
+    except Exception as e:
+        print(f"❌ Failed to start Steel browser: {e}")
+        print("Please check your STEEL_API_KEY and internet connection.")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+
+Save this as main.py and run it with:
+
+#### Customizing your agent's task
+
+Try modifying the task to make your agent perform different actions:
+
+```
+# Search for weather information
+TASK = "Go to https://weather.com, search for 'San Francisco', and tell me today's forecast."
+
+# Research product information
+TASK = "Go to https://www.amazon.com, search for 'wireless headphones', and summarize the features of the first product."
+
+# Visit a documentation site
+TASK = "Go to https://docs.steel.dev, find information about the Steel API, and summarize the key features."
+```
+
+
+Congratulations! You've successfully connected a Steel browser session with browser-use to automate a task with AI.
