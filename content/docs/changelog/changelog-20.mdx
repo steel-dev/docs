@@ -1,38 +1,25 @@
 ---
-title: "AGI Day & Claude Desktop Integration"
-sidebarTitle: "AGI Day & Claude Desktop"
+title: "Changelog 20"
+sidebarTitle: "Changelog 20"
 llm: false
 ---
 
-Happy AGI day (?) & inaugural changelog post. I wanted to share some updates we made to Steel over the last few weeks!
+![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/sYSAX3Mir1aRwCamEtADU.png)
 
-### ⭐ New
+Hey everyone! This week was a quite one with a number fixes and qol improvements while we iron out kinks in a larger upgrade we’re bumped to share with you soon.
 
-*   Just launched a new MCP server for Claude Desktop integration that lets Claude visually browse & interact with the web using our Browser API and Web Voyager
-*   Works with self-hosted, local, and cloud implementations
-*   Built on a custom Web Voyager implementation using Bounding Boxes and Custom tools to map webpages into LLM action spaces
-*   Check it out: [https://github.com/steel-dev/steel-mcp-server](https://github.com/steel-dev/steel-mcp-server)
+**🔧 Improvements**
 
-### 🔧 **40+ Bugfixes like**
+*   Added a Steel Extensions examples to Steel cookbook showcasing an e2e usecase visualizing Github profile Stats: [Link](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-extensions-starter)
+*   Added onBrowserReady hook to CDP plugin manager for improved plugin initialization timing on steel-browser
+*   Shipped UI updates for improved load speed and interaction clarity
+*   Updated extensions demo to utilize GitHub's isometric design for enhanced visual consistency
+*   Added internal gateway for whitelisting Session IPs in the Steel browser API
 
-*   Fixed billing page + usage tracking issues
-*   Resolved rate limit errors
-*   Resolved session creation bugs with large request volumes
-*   Fixed compatibility issues with Windows for OS repo
-*   Improved recording extension handling, so it should be more stable now
-*   Resolved session viewer crashes for sites >10MB
-*   Fixed performance issues with loading certain sites in the open source repo
+**_🐛 Bug Fixes_**
 
-### ⚡**Improvements**
+*   Adjusted timeout duration before executing machine checks to improve reliability in Steel Cloud
+*   Pushed updates to various examples in the Steel cookbook
+*   Smoothed over fixes with selenium, Notte, & Playwright examples in Steel Playground
 
-*   Large, complex sites now render in just a few seconds (instead of forever like before)
-*   Session launch time improved by ~30%
-*   Faster and clearer error messaging
-*   Enhanced session viewer stability
-
-### 🏡 Housekeeping
-
-*   We're rolling out a Research Grants program to support AI researchers with Steel Credits! If you're working on web scraping research or exploring new ways for agents to use the web, reach out to [research@steel.dev](mailto:research@steel.dev) and we'd love to support you.
-*   We're hiring across engineering roles! Looking for full stack, Applied AI, and infra developers who love open source, AI, and tackling challenging problems. Plus, there's a $5,000 referral bonus if you help us find the right person! More details: [https://steel-dev.notion.site/jobs-at-steel](https://steel-dev.notion.site/jobs-at-steel)
-
-Thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community. Happy Holidays ☃️
+As always, thanks for testing out Steel. Can’t wait to show you what we’ve been cooking next week.

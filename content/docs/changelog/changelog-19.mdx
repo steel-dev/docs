@@ -1,89 +1,51 @@
 ---
-title: "Surf.new, Embedding, and Dimensions"
-sidebarTitle: "Surf.new, Embedding & Dimensions"
+title: "Changelog 19"
+sidebarTitle: "Changelog 19"
 llm: false
 ---
 
-Happy Super Bowl Sunday 🏈 Before we settle in to lose money on our respective betting apps, we have some updates we NEED to tell you about.
+![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/1qPnwADZHqUbfaVWwOTmc.png)
 
-### **⭐ New**
+This week brought some open-source improvements and enhanced developer experience across Steel's ecosystem. We focused on improving onboarding, docs, and fixing critical session management issues.
 
-#### Introducing [Surf.new](http://surf.new/)
+### ⭐ New
 
-[Surf.new](http://surf.new/) is an open-source playground for chatting with different web-agents via Steel. We want it to serve as a resource for the community to try out new web agents as they become available, helping developers evaluate what works best for their use-cases. Currently, you can try browser-use's web agent and a browser-specific fork of Claude’s Computer-use agent. We'll be actively maintaining it while using it as a launching pad to showcase new Steel features and improvements in web automation.
+#### Steel CAPTCHAs API
 
-It’s pretty neat if you ask us 🤠 Give it a try and let us know what you think! Contributions are more than welcome too :)
+Launched a complete CAPTCHAs API with real-time visibility and control over CAPTCHA detection, solving progress, and completion status. The API provides two powerful capabilities: status monitoring for tracking all CAPTCHAs across pages in real-time, and direct solving of image CAPTCHAs using XPath selectors for precise control over the solving process. No more waiting blindly or checking the DOM repeatedly - you get instant visibility into what CAPTCHAs are active, which are being solved, and exactly how long each task is taking.
 
-Finding Flights on Surf
-
-#### Embedding and interactive with Live Sessions
-
-Our debugURL has some new life blown into it and, oh boy, are we ever pumped about it. The debugURL you get returned when creating a session is most commonly used for viewing what’s happening live in the browser. A common use-case is embedding that view into your app, such that people can see what’s going on in the browser as actions are being taken. It’s what powers our live session viewer in the Steel dashboard.
-
-In addition to a complete refactoring to improve performance, some of the improvements include:
-
-*   Ability to let a viewer interact with the browser sessions directly via clicking, typing, scrolling, etc. This was a big one lots of people have asked for to powering human-in-the-loop features (think “take control” in OpenAI’s Operator).
-*   Ability to show/hide mouse on screen
-*   Show/hide URL bar & to toggle be light mode or dark mode
-
-All of which can be turned on or off via UTM params. Check out [the docs](https://docs.steel.dev/overview/guides/viewing-and-embedding-live-sessions) for more on this here!
-
-Available on Steel Cloud and available soon on the steel-browser repo.
-
-#### Dimensions for sessions
-
-We now support the ability to set screen + viewport dimensions when creating a session (`POST/v1/sessions`).
-
-```python
-from steel import Steel
-
-client = Steel()
-
-session = client.sessions.create(
-    dimensions={
-        "width":1280,
-        "height":800
-    }
-)
+```js
+# Solving an image captcha, common on legacy sites like govt portals
+const response = await client.sessions.captchas.solveImage('sessionId', {
+  imageXPath: '//img[@id="captcha-image"]',
+  inputXPath: '//input[@name="captcha"]',
+});
 ```
 
-This helps save you from having to set page viewport on every page load. Which can cause buggy resizing behaviour with your sessions.
+**_Available on:_** Steel Cloud ☁️
 
-Available on Steel Cloud and the steel-browser repo.
+[Captcha API Overview Docs](https://docs.steel.dev/overview/captchas-api/overview)
 
-#### Ad blocking
+### 🔧 Improvements
 
-You can now block ads from rendering in your sessions. This is useful for saving on proxy bandwidth, simplifying action space for agents (so they don’t have the option of clicking on ads), and generally speeding up page load times.
+* Revamped Quickstart page in Steel Cloud dashboard with new examples, CLI instructions, and a refreshed design for smoother onboarding/building
+* Shipped integrations with Magnitude, Claude CUA, and Notte
+* Enhanced Steel CLI with multiple fixes and stability improvements
+* Added body validation compiler to improve request validation and error handling
+* Streamlined extensions starter template with improved documentation and configuration
+* Updated documentation across steel-browser repo for better clarity and accessibility
+* Improved cross-platform compatibility by replacing bash scripts with text-based commands in steel-browser
+* Enhanced session management patterns in cookbook examples
+* Added comprehensive links to API documentation for better developer resources
 
-It’s defaulted to `true` when starting a session but you can explicitly turn it on/off by passing a bool into the `blockAds` param in the create session endpoint (`POST/v1/sessions`) or via the SDK like so:
+### 🐛 Bug Fixes
 
-```python
-from steel import Steel
+* Fixed Redis TTL session storage that was causing premature session expirations
+* Resolved Puppeteer page mismatch issue that affected session control reliability
+* Corrected extension ID mismatch in the list extensions component
+* Fixed memory allocation issues for worker machines in the Steel API
+* Fixed onboarding scroll behavior that caused navigation issues
+* Corrected formatting and syntax errors in multiple code blocks across steel-browser repo
+* Fixed missing package lock file issues in session management
 
-client = Steel()
-
-session = client.sessions.create(
-    block_ads=true
-)
-```
-
-### **🔧 Fixes/Improvements**
-
-Lots of bug fixes and improvements across the board including:
-
-*   Fixed with inability to view sessions where proxy was enabled
-*   Better scrape errors
-*   Improved Proxy usage tracking
-*   Fixed multiple issues with Recording sessions
-*   Implemented graceful shutdowns
-*   Various dockerfile optimizations
-*   Custom executable paths for local browsers when running steel-browser repo locally
-
-### 💖 First time contributors
-
-Special thanks to the following new contributors to steel-browser who've made the above improvements possible 💖
-[@marclave](https://github.com/marclave), [@krichprollsch](https://github.com/krichprollsch), [@BrentBrightling](https://github.com/BrentBrightling) , [@Envek](https://github.com/Envek), [@danew](https://github.com/danew), [@raymelon](https://github.com/raymelon), [@21e8](https://github.com/21e8), [@QAComet](https://github.com/QAComet), [@mislavjc](https://github.com/mislavjc), and [@Emmanuel-Melon](https://github.com/Emmanuel-Melon)
-
-As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.
-
-* * *
+As always, thanks for testing out Steel. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.

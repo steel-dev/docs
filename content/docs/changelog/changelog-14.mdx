@@ -1,28 +1,53 @@
 ---
-title: "April Fools & Bugfixes"
-sidebarTitle: "April Fools & Bugfixes"
+title: "Changelog 14"
+sidebarTitle: "Changelog 14"
 llm: false
 ---
 
-![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/3Ih08HgMtUZuZeoyvEERp.png)
+![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/rkcB3za0kbZkorDRjHbnV.png)
 
-Happy April Fools day y’all! We’ve been heads down this week on some large features that we have coming soon — but thought we should give you guys a little update
+Hey everyone! This week we've been focused on quality-of-life improvements and expanding our CAPTCHA solving capabilities. We've also squashed a bunch of bugs to make your Steel experience smoother than ever. Let's dive in!
+
+### ⭐ New
+
+#### Enhanced Copy/Paste Support for Browser Control
+
+Taking control of a browser session just got more intuitive! You can now copy and paste content when manually interacting with Steel sessions through the debug URL. This makes human-in-the-loop workflows much smoother, especially when you need to quickly input data or transfer information between applications. (huge shoutout to [@aspectrr](https://github.com/aspectrr) for implementing it!)
+
+**_Available on:_** Steel-browser (OSS) 🛠️
+
+#### hCaptcha Solving Support
+
+Our CAPTCHA solver just leveled up with hCaptcha support. This expands our solving capabilities beyond reCAPTCHA and Cloudflare Turnstile, giving you more flexibility when automating sites with various CAPTCHA types.
+
+**_Available on:_** Steel Cloud ☁️
 
 ### 🔧 Bugfixes/Improvements
 
-*   Bug causing the session viewer to flicker on certain websites is no longer
-*   Issue with non-existent session directory when starting up steel-browser is now gone
-*   "proxyTxBytes is required!" error when accessing past session details was also fixed
-*   On steel-browser, you can now pass in `SKIP_FINGERPRINT_INJECTION` to override our stealth logic and use your own
+*   **Added custom WebSocket proxy handlers** for CDP service, enabling advanced traffic routing configurations _(Steel-browser)_
+*   **Fixed WSL2 compatibility** - resolved 0.0.0.0 host binding issues for Windows Subsystem for Linux users _(Steel-browser)_
+*   **Optimized session recording** **extension**, increasing coverage of events and proper length tracking
+*   **Fixed multi-region support** issues that were causing connectivity problems for some users
+*   **Resolved circular reference errors** that occasionally caused stack trace failures
+*   **Improved address bar behavior** in live sessions - now uses Google search for non-HTTP queries
+*   **Fixed race conditions** during deployment that could cause session initialization delays
+*   **Made API key optional** in SDK for easier local development workflows
+*   **Re-enabled exhaustive stealth tests** to ensure our anti-bot measures stay effective
+*   **Updated user agent metadata** to maintain compatibility with latest browser standards
 
 ### 🏡 Housekeeping
 
-*   HUUUGE welcome to the newest members of the Steel team [Dane](https://x.com/daneo_w) and [JunHyoung](https://github.com/junhsss)! They’ll both be pushing tons of features to steel-browser and Steel Cloud and join us in building out the rest of the Steel universe!
+We've been investing heavily in our testing and monitoring infrastructure. While these changes happen behind the scenes, they help us:
+
+*   Catch and fix issues before they impact your automations
+*   Monitor success rates across different sites and scenarios
+*   Continuously improve our anti-bot detection avoidance
+*   Ensure Steel stays fast and reliable at scale
+
+This foundational work might not be flashy, but it's crucial for delivering the rock-solid browser automation platform you deserve.
 
 ### 💖 First-time contributors
 
-Special thanks to the following new contributors who've made the above improvements possible 💖 [@jagadeshjai](https://github.com/jagadeshjai)
+Special thanks to [@akarray](https://github.com/akarray) for introducing `CDP_DOMAIN` to enhance flexibility in setting the debugger's domain + fixing WSL2 compatibility issues for Windows users!
 
 As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.
-
-Got questions or want to chat? Join us on [Discord](https://discord.gg/steel-dev) or reach out on [Twitter/X](https://twitter.com/steeldotdev).

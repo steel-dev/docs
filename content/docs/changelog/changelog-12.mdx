@@ -1,80 +1,25 @@
 ---
-title: "Enhanced Session Context & Chromium Default"
-sidebarTitle: "Session Context & Chromium"
+title: "Changelog 12"
+sidebarTitle: "Changelog 12"
 llm: false
 ---
 
-Howdy y’all! These last few weeks brought significant improvements to session state management and browser control capabilities, along with several important bugfixes to enhance the Steel experience.
-
-### ⭐ New
-
-#### Enhanced Session Context Support 🔄
-
-Session contexts have been extended to cover indexedDB and sessionStorage, providing more robust state persistence and authentication handling. This improvement allows for more reliable user sessions, especially for sites that rely heavily on client-side storage for auth tokens and application state.
-
-```js
-// Example: Working with the enhanced session context
-const session = await client.sessions.create();
-let browser = await chromium.connectOverCDP(
-  `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`
-);
-const page = await browser.contexts()
-[0].pages()
-[0];
-
-// Session now maintains indexedDB and sessionStorage state
-// Perfect for sites using modern auth patterns
-await page.goto('https://app.example.com/login');
-await page.fill('#email', 'user@example.com');
-await page.fill('#password', 'password123');
-await page.click('#login-button');
-
-const sessionContext = await client.sessions.context(session.id);
-
-const session = await client.sessions.create({ sessionContext });
-browser = await chromium.connectOverCDP(
-    `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`
-);
-
-const page = await browser.contexts()
-[0].pages()
-[0];
-
-// State persists across navigation
-await page.goto('https://app.example.com/dashboard');
-// User remains logged in!
-```
-
-[Documentation Link](https://docs.steel.dev/overview/guides/reusing-contexts-auth) | [Auth Examples](https://github.com/steel-dev/steel-cookbook/tree/main/examples/reuse_auth_context_example)
-
-**Steel Browser Now Uses Chromium By Default 🌐**
-
-We've upgraded Steel Browser to use Chromium as our default browser, replacing our previous Chrome implementation. While Chrome served us well for bypassing basic anti-bot measures and stealth detection, it presented compatibility challenges for M-chip Mac users.
-
-The key issue was that Mac users running Steel Browser through Docker couldn't operate properly, as Chrome lacked distribution support for ARM Linux machines (which our Docker image utilized for Mac compatibility).
-
-Now that we use Chromium by default (which DOES have an ARM Linux compatible distribution); all the issues that Mac users were facing should now be gone.
+Clean up and fixes galore 🧹 Sometimes the best updates are the ones that make everything just _work better_ - and that's exactly what we focused on this week.
 
 ### 🔧 Bugfixes/Improvements
 
-*   Steel Browser is now plugin-based, allowing
-*   Fixed multiple UI bugs for a smoother user experience
-*   Resolved an issue with browser updates happening in the background causing interruptions
-*   Added support for custom Chrome arguments via environment variables
-*   Improved session stability when working with sites that use indexedDB heavily
-*   Fixed state synchronization issues between browser restarts
-*   Repaired the live viewer for Railway deployments in Steel Browser
-*   You can now call browser actions with existing sessions
-*   Improved URL and environment variable management in the open-source repository
-*   Custom domain support throughout steel browser
-*   +10 other small bugfixes all around
+**Steel Cloud**
 
-### 💖 First-time contributors
+*   Fixed infinite websocket connection issues for frontend logs that were causing performance degradation
+*   Resolved bug where recording snapshots larger than 5MB were being dropped, ensuring complete session recordings
+*   Fixed user agent string passing functionality that wasn't working correctly in session creation
+*   Patched frontend crash that occurred when clicking on newly ended sessions
+*   Implemented performance improvements across the dashboard for smoother and faster data fetching
+*   Added better error boundaries throughout the frontend for improved stability and user experience
 
-Special thanks to [@aspectrr](https://github.com/aspectrr) for their help on enabling custom Chrome args for Steel Browser; as well as the ability to run browser actions on current pages within a session.
+**Steel Playground**
+
+*   Enhanced error handling for code execution, providing clearer feedback when things go wrong
+*   Improved animations and created a smoother terminal experience for better developer workflow
 
 As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.
-
-Got questions or want to chat? Join us on [Discord](https://discord.gg/steel-dev) or reach out on [Twitter/X](https://twitter.com/steeldotdev).
-
-![Image](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/fYgqRSCjhbqLejUq4fjy8.jpeg)

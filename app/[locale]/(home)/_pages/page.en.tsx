@@ -1,19 +1,9 @@
-import { ImageZoom } from 'fumadocs-ui/components/image-zoom';
-import { Braces, Database, Play } from 'lucide-react';
-import { Card, Cards, SmallCard } from '@/components/card';
-import {
-  API,
-  Chainhook,
-  Clarinet,
-  Clarity,
-  Hiro,
-  Js,
-  Ordinals,
-  Runes,
-  StacksIcon,
-} from '@/components/ui/icon';
-import SteelLogo from '@/public/images/6-qmg3uQon_NBbndvw340.png';
-import heroImage from '@/public/stacks-hero.svg';
+import { ImageZoom } from "fumadocs-ui/components/image-zoom";
+import { Braces, Database, Play } from "lucide-react";
+import { Card, Cards, SmallCard } from "@/components/card";
+import { API, Js, StacksIcon } from "@/components/ui/icon";
+import SteelLogo from "@/public/images/6-qmg3uQon_NBbndvw340.png";
+import heroImage from "@/public/stacks-hero.svg";
 
 export default function HomePage() {
   return (
@@ -31,7 +21,10 @@ export default function HomePage() {
 
               <div className="flex flex-col [&_p]:mb-6 space-y-3">
                 <h3 className="text-3xl">Welcome to Steel Docs</h3>
-                <p>Find all the guides and resources you need to build on the Steel API.</p>
+                <p>
+                  Find all the guides and resources you need to build on the
+                  Steel API.
+                </p>
               </div>
             </div>
           </div>
@@ -56,8 +49,14 @@ export default function HomePage() {
             />
           </Cards>
           <div className="flex flex-col">
-            <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
-              <a href="#explore-by-category" className="not-prose group text-sm uppercase">
+            <h4
+              id="explore-by-category"
+              className="text-muted-foreground scroll-m-20"
+            >
+              <a
+                href="#explore-by-category"
+                className="not-prose group text-sm uppercase"
+              >
                 APIs
               </a>
             </h4>
@@ -76,19 +75,19 @@ export default function HomePage() {
                 description="Solve CAPTCHA challenges and check their status."
               />
               <SmallCard
-                icon={<Hiro />}
+                icon={<API />}
                 href="/apis/files-api"
                 title="Files API"
                 description="Programmatically manage files and storage via REST interface."
               />
               <SmallCard
-                icon={<Ordinals />}
+                icon={<API />}
                 href="/apis/credentials-api"
                 title="Credentials API"
                 description="Manage and verify credentials using the Credentials API."
               />
               <SmallCard
-                icon={<Runes />}
+                icon={<API />}
                 href="/apis/extensions-api"
                 title="Extensions API"
                 description="Load custom extensions and plugins for your application."
@@ -96,8 +95,14 @@ export default function HomePage() {
             </Cards>
           </div>
           <div className="flex flex-col">
-            <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
-              <a href="#explore-by-category" className="not-prose group text-sm uppercase">
+            <h4
+              id="explore-by-category"
+              className="text-muted-foreground scroll-m-20"
+            >
+              <a
+                href="#explore-by-category"
+                className="not-prose group text-sm uppercase"
+              >
                 Libraries &amp; SDKs
               </a>
             </h4>
@@ -118,24 +123,30 @@ export default function HomePage() {
             </Cards>
           </div>
           <div className="flex flex-col">
-            <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
-              <a href="#explore-by-category" className="not-prose group text-sm uppercase">
+            <h4
+              id="explore-by-category"
+              className="text-muted-foreground scroll-m-20"
+            >
+              <a
+                href="#explore-by-category"
+                className="not-prose group text-sm uppercase"
+              >
                 Resources
               </a>
             </h4>
             <hr className="border-t border-border my-2" />
             <Cards>
               <SmallCard
-                icon={<Clarity />}
-                href="/resources/clarity"
-                title="Clarity Reference"
-                description="Comprehensive guides and function reference for the Clarity smart contract language."
+                icon={<API />}
+                href="/resources/api-reference"
+                title="API Reference"
+                description="View the Steel API reference."
               />
               <SmallCard
                 icon={<Database />}
-                href="/resources/archive"
-                title="Hiro Archive"
-                description="Data snapshots for quickly bootstrapping Stacks ecosystem services with pre-loaded data."
+                href="/resources/playground"
+                title="Playground"
+                description="Explore the examples and quick-start guides in Steel playground."
               />
             </Cards>
           </div>

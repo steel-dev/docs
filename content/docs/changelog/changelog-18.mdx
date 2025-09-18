@@ -1,56 +1,54 @@
 ---
-title: "New Dashboard & Docs Updates"
-sidebarTitle: "Dashboard & Docs Updates"
+title: "Changelog 18"
+sidebarTitle: "Changelog 18"
 llm: false
 ---
 
-We decided to maniacally focus on the Steel UX this week and we’re crazy pumped to show you what’s new. Let’s get it 🫡
+![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/FLSc3KPyPAskPqpEp6oio.png)
+
+Chrome extension support, enhanced scraping capabilities, and improved reliability across the platform with 25+ bug fixes.
 
 ### ⭐ New
 
-**New Steel Dashboard Experience ✨**
+#### Chrome Extension Support
 
-The Steel dashboard has a sleek new look and feel! We’ve redesigned what it feels like to use Steel Cloud and get onboarded for the first time. We focused on quickly getting started for new users and starting new projects for experienced users.
+Steel now supports the ability to customize your browser sessions with Chrome Extensions. You can upload and use extensions from files or directly from the Chrome Web Store. Extensions are stored globally per organization and can be injected into any session using extension IDs or the `all_ext` parameter.
 
-We’re super proud of this one and look forward to your feedback.
+```python
+# Upload extension from Chrome Web Store
+response = client.extensions.upload_from_store(
+    url="https://chromewebstore.google.com/detail/..."
+)
 
-Quick run through of new Steel Quickstart Experience
+# Inject extensions into session
+session = client.sessions.create(
+    extension_ids=['all_ext']  # or specific extension IDs
+)
+```
 
-*Coming to the steel-browser repo experience soon!*
+Extensions integrate with Steel's browser sessions through the Chrome DevTools Protocol and are initialized when sessions start.
 
-#### Docs & cookbook updates👨‍🍳
+**_Available on:_** Steel Cloud ☁️ | Steel-browser (OSS) 🔧
 
-You asked and we listened: A bunch of new resources have been created across the Steel Universe.
+[Documentation Link](https://docs.steel.dev/overview/extensions-api/overview)
 
-* **Browser-use:** We’ve added a cookbook example and quickstart guide to using browser-use with Steel. Browser-use x Steel is an insanely powerful combo we’ve seen many users deploy and wanted to help make it even easier to get started.
-    * [Cookbook Example](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-browser-use-starter) | [Quickstart Guide](https://docs.steel.dev/overview/integrations/browser-use/quickstart)
-* **DebugURL use-cases:** We’ve added new guides to our docs with a focus on how to best leverage the powerful little debug URL you get back from a Steel session response. Check em out:
-    * [Embed and view live sessions](https://docs.steel.dev/overview/guides/view-and-embed-live-sessions) | [Human in the Loop Controls](https://docs.steel.dev/overview/guides/implement-human-in-the-loop-controls)
+#### Enhanced HTML to Markdown Conversion
 
-**Surf model updates**
+Improved scraping algorithms on the `/scrape` endpoint now include HTML sanitization before markdown conversion and other reliability improvements, ensuring cleaner output and preventing rendering issues across all session types.
 
-We’ve upgraded [surf.new](http://surf.new/) with a bunch of new models that you can try out like:
+**_Available on:_** Steel Cloud ☁️ | Steel-browser (OSS) 🔧
 
-* **Deepseek** (`deepseek-chat` and `deepseek-reasoner`)
-* **Gemini** (like `2.0 flash` _fast!_)
-* **Claude 3.7 sonnet** (woah + _fast!_)
+### 🔧 Improvements
 
-Or use local models running on your computer with Ollama support :)
+*   Added .env keys management to playground for easier usage
+*   Updated logging mechanisms for better test execution visibility and debugging
+*   Improved extension loading with corrected path resolution and naming conventions
 
-### 🔧 Bugfixes/Improvements
+### 🐛 Bug Fixes
 
-* Patched issues with fetching and re-using contexts between Sessions (docs coming soon)
-* DebugURL went through a variety of changes + has had it’s full capabilities rolled out to the steel-browser repo
-* Added event counts to Steel Cloud’s Sessions page to make it easier to sift through sessions lists
-* _Steel-browser:_ Improved logging across the board + other upgrades (checkout the latest release here: : [**v0.1.3-beta**](https://github.com/steel-dev/steel-browser/releases/tag/v0.1.3-beta))
-* Improved session viewer reliability across the board when viewing live sessions (even more coming!)
-
-### 🏡 Housekeeping
-
-* This week, we welcomed [Mislav](https://x.com/mislavjc) to the Steel team! He’ll be working on making building agents on Steel even easier and more capable. You can bug him in the Steel discord server @mislavjc.
-
-### 💖 First-time contributors
-
-Special thanks [**@hakzarov**](https://github.com/hakzarov) for adding better logging for both the API and the Chrome process on the steel-browser repo!
+*   Fixed Puppeteer context evaluation errors with \_\_name polyfill
+*   Resolved device inconsistencies and enabled web security by default
+*   Fixed deployment configuration for improved connectivity
+*   25+ additional bug fixes across Steel Cloud and steel-browser
 
 As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.

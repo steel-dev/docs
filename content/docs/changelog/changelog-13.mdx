@@ -1,55 +1,25 @@
 ---
-title: "Files API for Sessions"
-sidebarTitle: "Files API for Sessions"
+title: "Changelog 13"
+sidebarTitle: "Changelog 13"
 llm: false
 ---
 
-Hey y’all! This week's update brings an exciting new Files API for Sessions, along with several improvements to the Steel browser experience and important bugfixes to enhance stability.
+![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/xabZ_F1PSsw-1OaFnvEuE.png)
 
+Hey everyone! This week we pushed a handful of improvements and fixes across Steel Cloud and Steel Browser. Nothing too crazy, but some solid quality of life updates.
 
 ### ⭐ New
 
-#### Files API for Sessions 📂
+#### _OpenTelemetry Support 🔧_
 
-The new Files API enables seamless file management within active browser sessions. You can now upload files from your local machine, use them in your automation workflows, and download files back when needed - perfect for testing file uploads or working with documents in your browser automation.
-
-```js
-// Upload a file to your session
-const file = new File(["Hello World!"], "hello.txt", { type: "text/plain" });
-const uploadedFile = await client.sessions.files.upload(session.id, { file });
-
-// Create a CDP session to pass in some custom controls
-const cdpSession = await currentContext.newCDPSession(page);
-const document = await cdpSession.send("DOM.getDocument");
-
-// We need to find the input element using the selector
-const inputNode = await cdpSession.send("DOM.querySelector", {
-  nodeId: document.root.nodeId,
-  selector: "#load-file",
-});
-
-// Set the CSV file as input on the page.
-await cdpSession.send("DOM.setFileInputFiles", {
-  files: [uploadedFile.path],
-  nodeId: inputNode.nodeId,
-});
-
-// Download a file from your session
-const response = await client.sessions.files.download(session.id, file.id);
-const downloadedFile = await response.blob();
-```
-
-[Documentation Link](https://docs.steel.dev/overview/guides/working-with-files-in-sessions) | [Steel Cookbook](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-files-api-starter)
+Steel-browser now has OpenTelemetry support. You can hook logs and events to your own providers. Metrics are automatically configured. Connect your favorite providers like Sentry or Axiom and get trace visibility easier than ever.
 
 ### 🔧 Bugfixes/Improvements
 
-*   Improved rendering of the session viewer for a slight speed bump in UI updates
-*   Enhanced logging system for better coverage and debugging capabilities
-*   Upgraded the session viewer UI on steel-browser for improved usability
-*   Fixed proxy usage metrics that were incorrectly over-reporting usage
-*   Improved the UI docker image to accept dynamic API URLs, enabling more flexible custom deployments
-*   +10 other small bug fixes
+*   Added a feedback button to the dashboard so you can share feedback easier and quicker
+*   Stealth improvements on the canvas fingerprinting side and other browser leaks related to workers
+*   Some session player improvements - fixed issue with long sessions causing pages to crash (more improvements on the way)
+*   Steel Browser: fix platform details not persisting when generated for the browser,
+*   A couple other small UI and API fixes
 
-As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.
-
-Got questions or want to chat? Join us on [Discord](https://discord.gg/steel-dev) or reach out on [Twitter/X](https://twitter.com/steeldotdev).
+As always, thanks for testing out Steel’s Beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.

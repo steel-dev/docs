@@ -1,50 +1,80 @@
 ---
-title: "Stealth, Turnstile, and Take Control"
-sidebarTitle: "Stealth, Turnstile & Take Control"
+title: "Changelog 15"
+sidebarTitle: "Changelog 15"
 llm: false
 ---
 
-![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/AKYFQrDhCB_2-dd2MY_si.png)
+![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/4-p00Zg3pQ_zsmXrbSfZE.png)
 
-Happy Wednesday, chat 🫡 We've been working hard on some key improvements to our bot detection avoidance capabilities, adding new features, and squashing bugs. Here's what's new this week:
+This week brought major improvements to proxy capabilities and stealth features, alongside plugin architecture enhancements and numerous stability fixes across the Steel ecosystem.
 
 ### ⭐ New
 
-#### Enhanced Stealth Improvements 🥷
+#### Geographic Targeting for Proxies 🌍
 
-We've made significant improvements to our stealth features and patched several fingerprinting leaks that were causing browser sessions to be flagged as bots. These updates help ensure your sessions can navigate the web more reliably without triggering anti-bot measures.
+Steel-managed proxies now support targeting specific countries, states (US only), and cities. This gives you precise control over your browser session's apparent location while maintaining the quality and reliability of our residential proxy network.
 
-**Availability: Steel Cloud** ☁️ + **Steel-browser (OSS) 🔧**
+```python
+# Target specific country
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "country": "GB" }
+    }
+)
 
-#### Cloudflare Turnstile Solving ✅
+# Target specific state (US only)
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "country": "US", "state": "NY" }
+    }
+)
 
-We've launched an early version of Cloudflare Turnstile solving, now included in our CAPTCHA solving module within sessions. The solver works well for most common Turnstile implementations, though we're still refining it for some edge cases.
+# Target specific city
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "city": "LOS_ANGELES" }
+    }
+)
+```
 
-**Availability: Steel Cloud** ☁️
+**_Available on:_** Steel Cloud ☁️
 
-#### Take Control Feature in [Surf.new](http://surf.new/) 🎮
+[Documentation Link](https://docs.steel.dev/overview/stealth/proxies)
 
-Inspired by OpenAI's Operator, we've implemented a new "Take Control" feature in [Surf.new](http://surf.new/). This allows you to:
+#### Humanized Mouse Movements 🖱️
 
-*   Pause the AI agent and manually interact with the browser
-*   Complete complex tasks like signing into websites
-*   Hand control back to the AI to continue where you left off
+Steel Browser now implements realistic mouse trajectories by intercepting CDP commands to simulate human-like cursor movement patterns. This enhancement improves stealth capabilities by making automated interactions appear more natural.
 
-This showcase demonstrates the power of our debug URL capabilities, which you can integrate into your own applications.
+```python
+session = client.sessions.create(
+    StealthConfig={
+        humanize_interactions=True
+    }
+)
+```
 
-#### 🔧 Bugfixes/Improvements
+**_Available on:_** Steel Cloud ☁️ | Steel-browser (OSS) 🔧
 
-*   Fixed issues with the one-click deployment to Railway on steel-browser
-*   Better error handling for incorrect inputs
-*   Frontend updates for multi-tab / playback
-*   Various performance optimizations for browser initialization
+### 🐛 Bug Fixes
 
-### 💖 First-time contributors
+*   Fixed ESM import error in steel-browser build process that prevented successful module loading
+*   Corrected proxy traffic byte counting logic in network monitoring for accurate data reporting
+*   Fixed dimensions calculation error in rendering engine that caused incorrect element sizing
+*   Fixed region misconfiguration causing subset of session to start in non-nearest regions
 
-Special thanks to [@shivamkhatri](https://github.com/shivamkhatri) for making some key PRs on Surf and steel-browser! 💖
+### 🔧 Improvements
 
-As always, thanks for testing out Steel! We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.
+*   Enhanced WebSocket handling with registry and custom handler support `steel-browser`
+*   Exposed session service in plugin architecture for better extensibility `steel-browser`
+*   Added onSessionEnd hook to plugin manager for custom session termination handling
+*   Updated proxy handling to return user-selected proxies with improved metering accuracy
+*   Added API flag to skip fingerprinting when custom stealth logic is needed (use `StealthConfig={skip_fingerprint_injection=true}` flag when creating a session)
+*   Introduced environment variable to bypass internal hosts in proxy configuration `steel-browser`
 
-Got questions or want to chat? Join us on [Discord](https://discord.gg/steel-dev) or reach out on [Twitter/X](https://twitter.com/steeldotdev).
+### 🏡 Housekeeping
 
-* * *
+*   Updated steel-cookbook browser-use example to reflect recent API changes
+*   Added recent work by Tongyi Lab, Alibaba Group to awesome-web-agents documentation
+*   Updated baseURL in steel-browser README following steel-sdk upgrade from last week
+
+Till next time 🫡

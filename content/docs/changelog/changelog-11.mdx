@@ -1,34 +1,59 @@
 ---
-title: "Proxy/Browser Improvements & Bug Fixes"
-sidebarTitle: "Proxy/Browser Improvements"
+title: "Changelog 11"
+sidebarTitle: "Changelog 11"
 llm: false
 ---
 
-Hey! This week we focused on implementing some fixes and improvements to help round out Steel’s DevEx while we prepare for [REDACTED]. Let’s get into it!
+Sup chat. Huss here back with your roundup of Steel's first [Launch Week](https://steel.dev/launch-week). We launched new features every day last week (fully recapped below) as well as a new pricing plan.
 
-### 🔧 Bugfixes/Improvements
+Let's take a look! 🤸
 
-1.  _Steel Browser_
+### Day 1 - Credentials Beta
 
-    *   Improved Chrome args structure and manipulation using ENV variables
+![](https://d3b9kr64nievew.cloudfront.net/cmbf5zpf100ey140ilj2haqc9/cmbf8zotk0gk8120j8adtmpfu.png)
 
-    *   Updated Steel browser plugin so you can hook onto custom CDP lifecycle events without editing source code directly
+Your agents can now automatically sign into password-protected websites without ever seeing your credentials. Built with enterprise-grade AES-256-GCM encryption, TOTP/2FA support, and field blurring protection.
 
-    *   Separated Browser and API launch, resulting in faster API boot times
+Just store credentials via API, create sessions with credential injection enabled, and Steel will automatically authenticate to unblock your agents. Read the announcement thread here.
 
-    *   Standardized package names in the repo for a cleaner dependency structure
+[Read Credentials API Docs →](https://docs.steel.dev/overview/credentials-api/overview)
 
-2.  _Steel Cloud_
+### Day 2 - Steel Playground
 
-    *   Fixes to re-render bugs that were causing some state update delays
+![](https://d3b9kr64nievew.cloudfront.net/cmbf5zpf100ey140ilj2haqc9/cmbf8zv4x0g1d2b0j2nrm1cwu.png)
 
-    *   Fixes requests ordering from FE to preload data for a snappier UI
+**Steel Playground** is the first zero-setup tool from Steel that lets you test browser automations faster than ever, directly on the web.
 
-    *   New Signup / Sign-in page dropped :)
+Write Puppeteer, Playwright, or browser-use code and watch it execute live through an integrated session viewer, terminal, and log view. Works with both Python and TypeScript, with 1-click templates from our cookbook! Read the announcement thread here.
 
-    *   Improved browser logs component to make them easier to understand
+### Day 3 - Multi-Region Browser Deployments
 
+![](https://d3b9kr64nievew.cloudfront.net/cmbf5zpf100ey140ilj2haqc9/cmbf902g80gky2f0ib0zfzqiy.png)
 
-Thanks for reading & testing out the Steel beta. We really look forward to more of your feedback and continuing to cook for ya’ll.
+At Steel, we understand that latency kills agent performance, especially with hundreds of requests across continents adding up to sluggish experiences.
 
-![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/lLdC9xMtNw1cihp5shpLU.png)
+We've expanded Steel Cloud to 7 global regions with automatic closest-region selection—from Los Angeles to Hong Kong, your browsers spin up wherever makes the most sense. Read the announcement thread here.
+
+[Read Multi-Region Docs →](https://docs.steel.dev/overview/sessions-api/multi-region)
+
+### Day 4 - Filesystem V2
+
+![](https://d3b9kr64nievew.cloudfront.net/cmbf5zpf100ey140ilj2haqc9/cmbf90lm40gslym0i1arf4ivq.png)
+
+Your agents can now upload, manage, and download files seamlessly within browser sessions, plus get persistent global storage & backups across all automations.
+
+Upload files once and mount them to sessions anywhere, download files from online, or bulk download all artifacts from a session as zip archives. Read the announcement thread here.
+
+### Day 5 - Starter Plan + PAYG
+
+![](https://d3b9kr64nievew.cloudfront.net/cmbf5zpf100ey140ilj2haqc9/cmbf90t3z0h4k4g0hiqrhnqb2.png)
+
+We're (finally) making Steel accessible to every team that wants to test and validate browser automation. There's now a perfect middle ground between tinkering and launching.
+
+**The Starter Plan** gives you $29/month with $29 in credits, plus pay-as-you-go overages so you don't hit limits in prod.
+
+[Go to Pricing →](https://steel.dev/#pricing)
+
+-------------
+
+Thanks for building with Steel! It means the world to us and we’re excited to hear your feedback on the above!
