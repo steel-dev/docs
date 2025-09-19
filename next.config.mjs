@@ -32,12 +32,12 @@ const config = {
         permanent: true,
       },
       {
-        source: "/render",
-        destination: "https://playground.steel.dev/",
+        source: "/self-hosting/render",
+        destination: "https://render.com/deploy?image=steeldev/steel",
         permanent: true,
       },
       {
-        source: "/railway",
+        source: "/self-hosting/railway",
         destination: "https://railway.app/template/FQG9Ca",
         permanent: true,
       },
@@ -54,8 +54,21 @@ const config = {
         permanent: true,
       },
       {
-        source: "/resources/reference/integrations/valtown/quickstart",
-        destination: "https://www.val.town/v/steel/steel_puppeteer_starter",
+        source: "/examples/playwright",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-playwright-starter",
+        permanent: true,
+      },
+      {
+        source: "/examples/puppeteer",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-puppeteer-starter",
+        permanent: true,
+      },
+      {
+        source: "/examples/selenium",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-selenium-starter",
         permanent: true,
       },
     ];

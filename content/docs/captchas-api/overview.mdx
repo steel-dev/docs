@@ -63,12 +63,13 @@ response = client.sessions.captchas.status(
 )
 print(response)
 ```
+</CodeTabs>
 
 #### Response Format
 
 The status endpoint returns an array of current pages and their CAPTCHA states. An example output might look like:
 
-```
+```json JSON
 [
    {
       "pageId":"page_12345",
@@ -88,7 +89,6 @@ The status endpoint returns an array of current pages and their CAPTCHA states. 
    }
 ]
 ```
-</CodeTabs>
 
 #### CAPTCHA Task Status
 

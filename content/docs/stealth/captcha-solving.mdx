@@ -1,12 +1,10 @@
 ---
 title: Captcha Solving
 sidebarTitle: Captcha Solving
-description: Monitor and analyze signer behavior on the Stacks network via REST.
+description: CAPTCHA solving is one of Steel's advanced capabilities that helps AI agents and automation tools navigate the modern web more effectively. This document explains how our CAPTCHA solving system works, what types of CAPTCHAs we support, and best practices for implementation.
+fullL: true
 llm: true
 ---
-
-# Captcha Solving | Overview
-CAPTCHA solving is one of Steel's advanced capabilities that helps AI agents and automation tools navigate the modern web more effectively. This document explains how our CAPTCHA solving system works, what types of CAPTCHAs we support, and best practices for implementation.
 
 ### How Steel Handles CAPTCHAs
 
@@ -85,45 +83,48 @@ When you enable CAPTCHA solving in your Steel session, here's what happens behin
 
 #### 1\. Enable CAPTCHA Solving
 
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -c
+// Typescript
+const session = await client.sessions.create({
+    solveCaptcha: true  // Enable CAPTCHA solving
+});
 ```
+
+```python !! Python -c
 # Python
 session = client.sessions.create(
     solve_captcha=True  # Enable CAPTCHA solving
 )
 ```
-
-
-```
-// Node.js
-const session = await client.sessions.create({
-    solveCaptcha: true  // Enable CAPTCHA solving
-});
-```
+</CodeTabs>
 
 
 #### 2\. Implement Proper Waiting
 
 When navigating to pages that might contain CAPTCHAs, it's important to implement proper waiting strategies:
 
-```
-# Python example using Playwright
-await page.wait_for_load_state('networkidle')  # Wait for network activity to settle
-await page.wait_for_timeout(2000)  # Additional safety buffer
-```
+<CodeTabs storage="languageSwitcher">
 
-
-```
-// Node.js example using Puppeteer
+```typescript !! Typescript -c
+// Typescript example using Puppeteer
 await page.waitForNetworkIdle();  // Wait for network activity to settle
 await page.waitForTimeout(2000);  // Additional safety buffer
 ```
 
+```python !! Python -c
+# Python example using Playwright
+await page.wait_for_load_state('networkidle')  # Wait for network activity to settle
+await page.wait_for_timeout(2000)  # Additional safety buffer
+```
+</CodeTabs>
 
 #### 3\. Detecting CAPTCHA Presence
 
 You can detect CAPTCHA presence using these selectors:
 
-```
+```typescript Typescript -c
 // Common CAPTCHA selectors
 const captchaSelectors = [
     'iframe[src*="recaptcha"]',
@@ -200,6 +201,6 @@ Stay updated with our documentation for the latest information about supported C
 
 :::callout
 type: help
-### Need help building with the Signer Metrics API?
-Reach out to us on the <span className="font-bold">#api</span> channel on [Discord](https://stacks.chat/) under the Hiro Developer Tools section. There's also a [weekly office hours](https://www.addevent.com/event/kI22007085) call every Wednesday at 1pm ET.
+### Need help building with captcha solving?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::

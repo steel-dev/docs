@@ -13,28 +13,13 @@ Steel offers two powerful ways to use proxies: our built-in **Managed Residentia
 
 Use this table to pick the right option for your project.
 
-
-
-*             Feature          :             Best For
-  *             Steel-Managed Proxies          :             Quickly accessing high-quality residential IPs from specific countries without any setup.
-  *             Default Behavior(No proxies)          :             General web access, testing, or sites that don't block datacenter IPs.
-  *             Bring Your Own Proxies(BYOP)          :             Full control over your proxy infrastructure, using specialized providers.
-*             Feature          :             IP Type
-  *             Steel-Managed Proxies          :             High-quality residential IPs
-  *             Default Behavior(No proxies)          :             Datacenter
-  *             Bring Your Own Proxies(BYOP)          :             Any (Datacenter, Residential, Mobile)
-*             Feature          :             Control
-  *             Steel-Managed Proxies          :             Managed by Steel (automatic rotation)
-  *             Default Behavior(No proxies)          :             Static datacenter IP assigned by Steel
-  *             Bring Your Own Proxies(BYOP)          :             Full control over IPs and rotation logic
-*             Feature          :             Cost
-  *             Steel-Managed Proxies          :             Billed per GB of usage by Steel
-  *             Default Behavior(No proxies)          :             Free (included in all plans)
-  *             Bring Your Own Proxies(BYOP)          :             No charge from Steel; you pay your own proxy provider.
-*             Feature          :             Availability
-  *             Steel-Managed Proxies          :             Developer, Pro, & Enterprise plans
-  *             Default Behavior(No proxies)          :             All plans, including Hobby (free)
-  *             Bring Your Own Proxies(BYOP)          :             All plans, including Hobby (free)
+| Feature     | Steel-Managed Proxies                                                                 | Default Behavior (No proxies)                                 | Bring Your Own Proxies (BYOP)                                         |
+|-------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------|------------------------------------------------------------------------|
+| Best For    | Quickly accessing high-quality residential IPs from specific countries without setup. | General web access, testing, or sites that don't block datacenter IPs. | Full control over your proxy infrastructure, using specialized providers. |
+| IP Type     | High-quality residential IPs                                                          | Datacenter                                                    | Any (Datacenter, Residential, Mobile)                                |
+| Control     | Managed by Steel (automatic rotation)                                                 | Static datacenter IP assigned by Steel                        | Full control over IPs and rotation logic                             |
+| Cost        | Billed per GB of usage by Steel                                                       | Free (included in all plans)                                  | No charge from Steel; you pay your own proxy provider                |
+| Availability| Developer, Pro, & Enterprise plans                                                    | All plans, including Hobby (free)                             | All plans, including Hobby (free)                                    |
 
 
 ### Steel-Managed Proxies
@@ -86,23 +71,23 @@ By default, proxies are disabled (`useProxy: false` is the implicit setting). Th
 
 To enable it, simply set `useProxy: true` when creating a session. By default, your traffic will be routed through a new US-based IP address each session:
 
-PythonNode
 
-```
-# Python SDK
-session = client.sessions.create(
-    use_proxy=True
-)
-```
+<CodeTabs storage="languageSwitcher">
 
-
-```
-// Node.js SDK
+```typescript !! Typescript
+// Typescript SDK
 const session = await client.sessions.create({
     useProxy: true
 });
 ```
 
+```python !! Python
+# Python SDK
+session = client.sessions.create(
+    use_proxy=True
+)
+```
+</CodeTabs>
 
 ### Geographic Targeting
 
@@ -112,26 +97,9 @@ You can easily target countries, states (US only), or cities:
 
 The more specific your targeting, the smaller the IP pool. For the best performance and highest quality IPs, use the broadest targeting that meets your needs (e.g., prefer country-level over city-level). Generally, we’ve seen US and GB proxies have the highest quality.
 
-PythonNode
+<CodeTabs storage="languageSwitcher">
 
-```
-# Target specific state
-session = client.sessions.create(
-    use_proxy={
-        "geolocation": { "country": "US", "state": "NY" }
-    }
-)
-
-# Target specific city
-session = client.sessions.create(
-    use_proxy={
-        "geolocation": { "city": "LOS_ANGELES" }
-    }
-)
-```
-
-
-```
+```typescript !! Typescript
 // Target specific state
 const session = await client.sessions.create({
   useProxy: {
@@ -148,6 +116,24 @@ const session = await client.sessions.create({
 ```
 
 
+```python !! Python
+# Target specific state
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "country": "US", "state": "NY" }
+    }
+)
+
+# Target specific city
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "city": "LOS_ANGELES" }
+    }
+)
+```
+
+</CodeTabs>
+
 **Available targeting options:**
 
 *   **Countries**: We support over 200 countries via their two-letter Alpha-2 codes
@@ -161,20 +147,10 @@ const session = await client.sessions.create({
 
 If you already have a proxy provider or need highly specialized configurations, you can route Steel sessions through your own proxy server. This gives you complete control and avoids any additional proxy fees from Steel.
 
-PythonNode
+<CodeTabs storage="languageSwitcher">
 
-```
-# Python SDK
-session = client.sessions.create(
-    use_proxy={
-        "server": "http://username:password@proxy.example.com:8080"
-    }
-)
-```
-
-
-```
-// Node.js SDK
+```typescript !! Typescript
+// Typescript SDK
 const session = await client.sessions.create({
   useProxy: {
     server: "http://username:password@proxy.example.com:8080",
@@ -182,6 +158,15 @@ const session = await client.sessions.create({
 });
 ```
 
+```python !! Python
+# Python SDK
+session = client.sessions.create(
+    use_proxy={
+        "server": "http://username:password@proxy.example.com:8080"
+    }
+)
+```
+</CodeTabs>
 
 **Supported proxy formats:**
 
@@ -261,6 +246,6 @@ Follow these guidelines to get the most out of your proxies and build more resil
 
 :::callout
 type: help
-### Need help building with the Signer Metrics API?
-Reach out to us on the <span className="font-bold">#api</span> channel on [Discord](https://stacks.chat/) under the Hiro Developer Tools section. There's also a [weekly office hours](https://www.addevent.com/event/kI22007085) call every Wednesday at 1pm ET.
+### Need help building with proxies?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::

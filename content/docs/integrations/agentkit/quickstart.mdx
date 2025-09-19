@@ -1,28 +1,28 @@
 ---
 title: Integrations
 sidebarTitle: Integrations
+description: This guide shows how to use AgentKit with Steel to build a small network that browses Hacker News in a live cloud browser via CDP, filters stories by topic, and returns concise picks.
 llm: false
 ---
 import Link from "next/link";
+import { Button } from "components/ui/button.tsx";
 
-# Quickstart | Overview
-This guide shows how to use **AgentKit** with **Steel** to build a small network that browses Hacker News in a live cloud browser via CDP, filters stories by topic, and returns concise picks.
-<Link href="https://playground.steel.dev/?template=steel-agent-kit-starter"><img src="https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/fPY1vc0gHOyKJLz6lRIZ8.png" alt="Try in Playground" />Try in Playground</Link>
+<Link href="https://playground.steel.dev/?template=steel-agent-kit-starter"><Button><img src="https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/fPY1vc0gHOyKJLz6lRIZ8.png" alt="Try in Playground" width="20"/> Try in Playground</Button></Link>
 
 #### Prerequisites
-
+:::prerequisites
 *   Node.js **v20+**
 
 *   Steel API key (get one at [app.steel.dev](http://app.steel.dev/))
 
 *   OpenAI API key (get one at [platform.openai.com](http://platform.openai.com/))
-
+:::
 
 #### Step 1: Project Setup
 
 Create a Typescript project and starter files.
 
-```sh Terminal -w
+```bash Terminal -wc
 mkdir steel-agentkit-hn && \
 cd steel-agentkit-hn && \
 npm init -y && \
@@ -37,7 +37,7 @@ npm install steel-sdk @inngest/agent-kit zod playwright dotenv
 
 Add your API keys to `.env`:
 
-```env ENV
+```env ENV -c
 STEEL_API_KEY=your-steel-api-key-here
 OPENAI_API_KEY=your-openai-api-key-here
 ```
@@ -47,7 +47,7 @@ OPENAI_API_KEY=your-openai-api-key-here
 
 We’ll define a custom **AgentKit tool**
 
-```typescript Typescript
+```typescript Typescript -c
 import dotenv from "dotenv";
 dotenv.config();
 
