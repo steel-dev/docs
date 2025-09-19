@@ -617,9 +617,9 @@ export const source = loader({
           dataToAdd.sidebarTitle = frontmatter.sidebarTitle;
         }
 
-        // if (frontmatter?.root) {
-        //   dataToAdd.root = frontmatter.root;
-        // }
+        if (frontmatter?.root) {
+          dataToAdd.root = frontmatter.root;
+        }
 
         // if it's an API page, extract OpenAPI operations ourselves
         // if (node.url?.includes("/apis/") && fileData?.content) {

@@ -31,7 +31,7 @@ export function HackBadge({ variant }: BadgeProps) {
       className={cn(
         'inline-flex items-center gap-1.5 px-2 py-1 rounded-md border',
         variantStyles[variant],
-        'text-sm font-aeonik-fono',
+        'text-sm font-inter',
       )}
     >
       <Icon className="w-4 h-4" />

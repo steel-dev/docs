@@ -213,12 +213,12 @@ export function Sidebar() {
 }
 
 export const linkVariants = cva(
-  'flex items-center gap-3 w-full py-1.5 px-2 rounded-lg text-muted-foreground !font-sans [&_svg]:size-3 pl-4',
+  'flex items-center gap-3 w-full py-0.5 rounded-lg text-muted-foreground !font-sans [&_svg]:size-3',
   {
     variants: {
       active: {
-        true: 'text-primary bg-neutral-150 dark:bg-neutral-700 font-medium',
-        false: 'hover:text-muted-foreground hover:bg-card',
+        true: 'text-white font-medium',
+        false: '',
       },
     },
   },
@@ -278,16 +278,20 @@ export function SidebarItem({ item, children }: { item: PageTree.Node; children:
     const sidebarTitle = (item as any).data?.sidebarTitle;
     const displayName = sidebarTitle || item.name;
     const isRootPage = (item as any).data?.root === true;
+    const isActive = pathname === item.url;
 
     return (
+      <div className='flex items-center gap-2'>
+        {!isRootPage && <div className={cn('h-[100%] w-[1px] bg-[#202020]', isActive && 'bg-white')} />}
       <Link
         href={item.url}
         className={cn(
           linkVariants({
-            active: pathname === item.url,
+            active: isActive,
           }),
           // Special styling for root pages - applies on top of linkVariants
-          isRootPage && ['font-normal font-sans text-sm'],
+          isRootPage && ['font-normal font-sans text-sm pl-2'],
+          !isRootPage && ['pl-2'],
           // Style the icon when root page is active
           isRootPage &&
             pathname === item.url && [
@@ -301,12 +305,13 @@ export function SidebarItem({ item, children }: { item: PageTree.Node; children:
           <PageBadges item={item} />
         </div>
       </Link>
+      </div>
     );
   }
 
   if (item.type === 'separator') {
     return (
-      <p className="text-primary font-fono text-[16px] font-semibold mt-6 mb-2 first:mt-0 px-2">{item.name}</p>
+      <p className="text-primary font-sans text-[16px] font-semibold mt-6 mb-2 first:mt-0 px-2">{item.name}</p>
     );
   }
 
@@ -371,7 +376,7 @@ export function SidebarItem({ item, children }: { item: PageTree.Node; children:
             </div>
           </AccordionTrigger>
           <AccordionContent className="pb-0 pt-0">
-            <div className="pl-4 border-l flex flex-col">{children}</div>
+            <div className="border-l flex flex-col">{children}</div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>

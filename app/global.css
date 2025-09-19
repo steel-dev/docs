@@ -21,34 +21,34 @@
   --font-mono: var(--font-aeonik-mono);
   --font-fono: var(--font-aeonik-fono);
 
-  --background: var(--color-neutral-50);
-  --foreground: var(--color-neutral-900);
-  --card: var(--color-neutral-100);
+  --background: var(--color-stone-50);
+  --foreground: var(--color-stone-900);
+  --card: var(--color-stone-100);
   --card-foreground: 240 10% 3.9%;
   --popover: 0 0% 100%;
   --popover-foreground: 240 10% 3.9%;
-  --primary: var(--color-neutral-900);
+  --primary: var(--color-stone-900);
   --primary-foreground: 355.7 100% 97.3%;
   --secondary: 40 13% 91%;
   --secondary-foreground: 240 5.9% 10%;
   --muted: 40 14.3% 95.9%;
-  --muted-foreground: var(--color-neutral-400);
+  --muted-foreground: var(--color-stone-400);
   --accent: 40 13% 91%;
   --accent-foreground: 240 5.9% 10%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
-  --border: var(--color-neutral-200);
+  --border: var(--color-stone-200);
   --input: 240 5.9% 90%;
   --ring: 240 5.9% 90%;
   --radius: 0.5rem;
-  --hiro: var(--color-orange-500);
-  --icon: var(--color-neutral-950);
-  --inverted: var(--color-neutral-900);
+  --hiro: var(--color-yellow-500);
+  --icon: var(--color-stone-950);
+  --inverted: var(--color-stone-900);
   --code: var(--color-white);
   --highlight: 40 13% 91%;
   --content: 32.31 11.93% 78.63%;
   --dark: 30 5.7% 7.5%;
-  --gradient: #59564f;
+  --gradient: #383432;
   --contrast: 0 7.7% 5.1%;
   --sidebar-background: 0 0% 98%;
   --sidebar-foreground: 240 5.3% 26.1%;
@@ -273,7 +273,7 @@
   h5 a,
   h6 a,
   option {
-    font-family: var(--font-fono), sans-serif;
+    font-family: var(--font-inter), sans-serif;
     @apply text-primary;
     @apply font-normal;
   }
@@ -283,7 +283,7 @@
   }
 
   pre span {
-    font-family: var(--font-mono), sans-serif;
+    font-family: var(--font-inter), sans-serif;
   }
 
   ::-webkit-scrollbar {

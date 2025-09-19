@@ -1,9 +1,8 @@
 import { ImageZoom } from "fumadocs-ui/components/image-zoom";
-import { Braces, Database, Play } from "lucide-react";
+import { Database, Play } from "lucide-react";
 import { Card, Cards, SmallCard } from "@/components/card";
 import { API, Js, StacksIcon } from "@/components/ui/icon";
 import SteelLogo from "@/public/images/6-qmg3uQon_NBbndvw340.png";
-import heroImage from "@/public/stacks-hero.svg";
 
 export default function HomePage() {
   return (

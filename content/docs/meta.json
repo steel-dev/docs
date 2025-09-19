@@ -2,7 +2,7 @@
   "title": "steel",
   "root": true,
   "pages": [
-    "...getting-started",
+    "intro-to-steel",
     "...sessions-api",
     "...credentials-api",
     "...files-api",

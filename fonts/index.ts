@@ -79,6 +79,6 @@ export const inter = localFont({
       style: 'normal',
     },
   ],
-  display: 'swap',
+  display: 'optional',
   variable: '--font-inter',
 });

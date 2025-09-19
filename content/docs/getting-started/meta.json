@@ -3,9 +3,6 @@
   "root": false,
   "pages": [
     "---Getting Started---",
-    "overview",
-    "your-first-automation",
-    "setting-up-authentication",
-    "understanding-sessions"
+    "intro-to-steel"
   ]
 }

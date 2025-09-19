@@ -9,7 +9,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${aeonik.variable} ${aeonikFono.variable} ${aeonikMono.variable} ${inter.variable}`}
+      className={`${inter.variable}`}
       suppressHydrationWarning
     >
       <body className="flex flex-col min-h-screen">
