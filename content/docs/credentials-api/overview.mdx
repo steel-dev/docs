@@ -4,6 +4,8 @@ sidebarTitle: Overview
 description: Programmatic access to stroing credentials for users or agents.
 llm: true
 ---
+import Image from 'next/image'
+
 # Overview
 
 Securely store and inject login credentials into browser sessions without exposing them to agents or the page.
@@ -180,11 +182,11 @@ Envelope encryption is a secure and scalable pattern where data is encrypted usi
 
 Each credential is protected with its own short‑lived AES‑256‑GCM key. The key is then encrypted with a private KMS key specific to an organization. The encrypted data and the encrypted key travel together.
 
-![EncryptionImage](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/x6qu00vtJfpmIZk6aXJZI.png)
+<Image src="/images/x6qu00vtJfpmIZk6aXJZI.png" width={800} height={500}/>
+
 
 At decryption time, the inverse happens where we then get the encrypted AES key, decrypt it using the specific key pair for the KMS and then use this decrypted AES key to decrypt the credential. The clear-text credentials are placed directly into the in-memory session and sent to the target service over our private WireGuard backbone ensuring end-to-end encryption and safe keeping of your credentials.
-
-![DecryptionImage](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/t61KyxNNN0LQhh_DqvYjp.png)
+<Image src="/images/t61KyxNNN0LQhh_DqvYjp.png" width={800} height={500}/>
 
 #### Additional authenticated data (AAD)
 We bind the cipher-text to its context by including the org ID and credential origin as AAD. A mismatch during decrypt causes the operation to fail which blocks replay attacks across orgs.
