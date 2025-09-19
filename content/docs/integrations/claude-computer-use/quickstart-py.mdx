@@ -1,13 +1,12 @@
 ---
 title: Quickstart (Python)
 sidebarTitle: Quickstart (Python)
-llm: false
+description: How to use Claude Computer Use with Steel
+llm: true
 ---
+import PlaygroundButton from "components/playground-button.tsx";
 
-# Quickstart (Python) | Overview
-How to use Claude Computer Use with Steel
-
- [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/fPY1vc0gHOyKJLz6lRIZ8.png) Try in Playground](https://playground.steel.dev/?template=steel-claude-computer-use-python-starter)
+<PlaygroundButton href="https://playground.steel.dev/?template=steel-claude-computer-use-python-starter" />
 
 This guide shows you how to use Claude models with computer use capabilities and Steel browsers to create AI agents that navigate the web.
 
@@ -26,7 +25,7 @@ We'll build a Claude Computer Use loop that enables autonomous web task executio
 
 First, create a project directory, set up a virtual environment, and install the required packages:
 
-```sh Terminal -w
+```sh Terminal -wc
 # Create a project directory
 mkdir steel-claude-computer-use
 cd steel-claude-computer-use
@@ -42,7 +41,7 @@ pip install steel-sdk anthropic playwright python-dotenv pillow
 
 Create a `.env` file with your API keys:
 
-```env ENV
+```env ENV -c
 STEEL_API_KEY=your_steel_api_key_here
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 TASK=Go to Wikipedia and search for machine learning
@@ -51,7 +50,7 @@ TASK=Go to Wikipedia and search for machine learning
 
 #### Step 2: Create Helper Functions
 
-```python Python
+```python Python -c
 import os
 import time
 import base64
@@ -256,7 +255,7 @@ def check_blocklisted_url(url: str) -> None:
 
 #### Step 3: Create Steel Browser Integration
 
-```python Python
+```python Python -c
 class SteelBrowser:
     def __init__(
         self,
@@ -616,7 +615,7 @@ class SteelBrowser:
 
 #### Step 4: Create the Agent Class
 
-```python Python
+```python Python -c
 class ClaudeAgent:
     def __init__(self, computer = None, model: str = "claude-3-5-sonnet-20241022"):
         self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
@@ -906,7 +905,7 @@ class ClaudeAgent:
 
 #### Step 5: Create the Main Script
 
-```python Python
+```python Python -c
 def main():
     print("🚀 Steel + Claude Computer Use Assistant")
     print("=" * 60)
@@ -975,7 +974,7 @@ You'll see the session URL printed in the console. Open this URL to view the liv
 
 You can modify the task by setting the environment variable:
 
-```sh Terminal -w
+```sh Terminal -wc
 export TASK="Search for the latest developments in artificial intelligence"
 python main.py
 ```
@@ -985,7 +984,7 @@ python main.py
 
 Try modifying the task to make your agent perform different actions:
 
-```env ENV
+```env ENV -c
 # Research specific topics
 TASK = "Go to https://arxiv.org, search for 'computer vision', and summarize the latest papers."
 

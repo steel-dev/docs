@@ -5,7 +5,6 @@
     "---Integrations---",
     "agentkit",
     "agno",
-    "bolt.new",
     "browser-use",
     "claude-computer-use",
     "crewai",
@@ -13,7 +12,7 @@
     "notte",
     "openai-computer-use",
     "replit",
-    "stackblitz",
+    "stackblitz-bolt.new",
     "stagehand",
     "valtown"
   ]

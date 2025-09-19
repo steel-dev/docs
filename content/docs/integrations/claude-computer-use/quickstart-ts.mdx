@@ -1,13 +1,12 @@
 ---
 title: Quickstart (Typescript)
 sidebarTitle: Quickstart (Typescript)
-llm: false
+description: How to use Claude Computer Use with Steel
+llm: true
 ---
+import PlaygroundButton from "components/playground-button.tsx";
 
-# Quickstart (TS/Node) | Overview
-How to use Claude Computer Use with Steel
-
- [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/AhPJW6M5H7BlYpJVxYdOS.png) Try in Playground](https://playground.steel.dev/?template=steel-claude-computer-use-node-starter)
+<PlaygroundButton href="https://playground.steel.dev/?template=steel-claude-computer-use-node-starter" />
 
 This guide shows you how to create AI agents with Claude's computer use capabilities and Steel browsers for autonomous web task execution.
 
@@ -24,7 +23,7 @@ This guide shows you how to create AI agents with Claude's computer use capabili
 
 First, create a project directory and install the required packages:
 
-```sh Terminal -w
+```sh Terminal -wc
 # Create a project directory
 mkdir steel-claude-computer-use
 cd steel-claude-computer-use
@@ -40,7 +39,7 @@ npm install -D @types/node typescript ts-node
 
 Create a `.env` file with your API keys:
 
-```env ENV
+```env ENV -c
 STEEL_API_KEY=your_steel_api_key_here
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 TASK=Go to Wikipedia and search for machine learning
@@ -49,7 +48,7 @@ TASK=Go to Wikipedia and search for machine learning
 
 #### Step 2: Create Helper Functions
 
-```typescript Typescript
+```typescript Typescript -c
 import { chromium } from "playwright";
 import type { Browser, Page } from "playwright";
 import { Steel } from "steel-sdk";
@@ -278,7 +277,7 @@ export function checkBlocklistedUrl(url: string): void {
 
 #### Step 3: Create Steel Browser Integration
 
-```typescript Typescript
+```typescript Typescript -c
 const TYPING_DELAY_MS = 12;
 const TYPING_GROUP_SIZE = 50;
 
@@ -744,7 +743,7 @@ export class SteelBrowser {
 
 #### Step 4: Create the Agent Class
 
-```typescript Typescript
+```typescript Typescript -c
 type ModelName = keyof typeof MODEL_CONFIGS;
 
 interface ModelConfig {
@@ -1154,7 +1153,7 @@ export class ClaudeAgent {
 
 #### Step 5: Create the Main Script
 
-```typescript Typescript
+```typescript Typescript -c
 async function main(): Promise<void> {
   console.log("🚀 Steel + Claude Computer Use Assistant");
   console.log("=".repeat(60));
@@ -1228,9 +1227,9 @@ The agent will execute the task defined in the `TASK` environment variable or th
 
 You can modify the task by setting the environment variable:
 
-```sh Terminal -w
+```sh Terminal -wc
 export TASK="Research the latest developments in artificial intelligence"
-npx ts-node main.tst
+npx ts-node main.ts
 ```
 
 
@@ -1238,18 +1237,15 @@ npx ts-node main.tst
 
 Try modifying the task to make your agent perform different actions:
 
-```typescript Typescript
+```env ENV -c
 // Research specific topics
-const TASK =
-  "Go to https://arxiv.org, search for 'machine learning', and summarize the latest papers.";
+TASK = "Go to https://arxiv.org, search for 'machine learning', and summarize the latest papers.";
 
 // E-commerce tasks
-const TASK =
-  "Go to https://www.amazon.com, search for 'wireless headphones', and compare the top 3 results.";
+TASK = "Go to https://www.amazon.com, search for 'wireless headphones', and compare the top 3 results.";
 
 // Information gathering
-const TASK =
-  "Go to https://docs.anthropic.com, find information about Claude's capabilities, and provide a summary.";
+TASK = "Go to https://docs.anthropic.com, find information about Claude's capabilities, and provide a summary.";
 ```
 
 

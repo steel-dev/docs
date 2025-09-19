@@ -1,13 +1,13 @@
 ---
 title: Quickstart (Python)
 sidebarTitle: Quickstart (Python)
+description: How to use OpenAI Computer Use with Steel
 llm: true
 ---
 
-# Quickstart (Python) | Overview
-How to use OpenAI Computer Use with Steel
+import PlaygroundButton from "components/playground-button.tsx";
 
- [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/Nl99W43hHYGJt3pZtf6Mg.png) Try in Playground](https://playground.steel.dev/?template=steel-oai-computer-use-python-starter)
+<PlaygroundButton href="https://playground.steel.dev/?template=steel-openai-computer-use-python-starter" />
 
 This guide will walk you through how to use OpenAI's `computer-use-preview`model with Steel's managed remote browsers to create AI agents that can navigate the web.
 
@@ -30,7 +30,7 @@ We’ll be implementing a simple CUA loop that functions as described below:
 
 #### Step 1: Setup and Helper Functions
 
-```python Python
+```python Python -c
 import os
 import time
 import base64
@@ -204,7 +204,7 @@ def check_blocklisted_url(url: str) -> None:
 
 #### Step 2: Create Steel Browser Integration
 
-```python Python
+```python Python -c
 class SteelBrowser:
     def __init__(
         self,
@@ -791,7 +791,7 @@ class Agent:
 
 #### Step 4: Create the Main Script
 
-```python Python
+```python Python -c
 def main():
     print("🚀 Steel + OpenAI Computer Use Assistant")
     print("=" * 60)
@@ -862,7 +862,7 @@ You will see the session URL printed in the console. You can view the live brows
 
 The agent will execute the task defined in the `TASK` environment variable or the default task. You can modify the task by setting the environment variable:
 
-```sh Terminal -w
+```sh Terminal -wc
 export TASK="Search for the latest news on artificial intelligence"
 python main.py
 ```

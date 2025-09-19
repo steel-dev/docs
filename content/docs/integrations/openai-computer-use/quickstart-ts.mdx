@@ -1,13 +1,13 @@
 ---
 title: Quickstart (Typescript)
 sidebarTitle: Quickstart (Typescript)
+description: How to use OpenAI Computer Use with Steel
 llm: true
 ---
 
-# Quickstart (TS/Node) | Overview
-How to use OpenAI Computer Use with Steel
+import PlaygroundButton from "components/playground-button.tsx";
 
- [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/YzW_EX-M6X4PrjcJ_nM3t.png) Try in Playground](https://playground.steel.dev/?template=steel-oai-computer-use-node-starter)
+<PlaygroundButton href="https://playground.steel.dev/?template=steel-oai-computer-use-node-starter" />
 
 This guide will walk you through how to use OpenAI's `computer-use-preview`model with Steel's managed remote browsers to create AI agents that can navigate the web.
 
@@ -26,7 +26,7 @@ We’ll be implementing a simple CUA loop that functions as described below:
 
 #### Step 1: Setup and Helper Functions
 
-```typescript Typescript
+```typescript Typescript -c
 import { chromium } from "playwright";
 import type { Browser, Page } from "playwright";
 import { Steel } from "steel-sdk";
@@ -250,7 +250,7 @@ export function checkBlocklistedUrl(url: string): void {
 
 #### Step 2: Create Steel Browser Integration
 
-```typescript Typescript
+```typescript Typescript -c
 export class SteelBrowser {
   private client: Steel;
   private session: any;
@@ -561,7 +561,7 @@ export class SteelBrowser {
 
 #### Step 3: Create the Agent Class
 
-```typescript Typescript
+```typescript Typescript -c
 export class Agent {
   private model: string;
   private computer: SteelBrowser;
@@ -1047,7 +1047,7 @@ export class Agent {
 
 #### Step 4: Create the Main Script
 
-```
+```typescript Typescript -c
 import { SteelBrowser } from "./steelBrowser";
 import { Agent } from "./agent";
 import { STEEL_API_KEY, OPENAI_API_KEY, TASK } from "./helpers";
@@ -1121,7 +1121,7 @@ Execute your script to start an interactive AI browser session:
 
 The agent will execute the task defined in the `TASK` environment variable or the default task. You can modify the task by setting the environment variable:
 
-```sh Terminal -w
+```sh Terminal -wc
 export TASK="Research the top 5 electric vehicles with the longest range"
 npm start
 ```

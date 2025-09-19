@@ -1,13 +1,12 @@
 ---
-title: Integrations
-sidebarTitle: Integrations
-llm: false
+title: Quickstart
+sidebarTitle: Quickstart
+description: This guide walks you through wiring a CrewAI multi-agent workflow to Steel so your agents can research the web and produce a structured report.
+llm: true
 ---
+import PlaygroundButton from "components/playground-button.tsx";
 
-# Quickstart | Overview
-This guide walks you through wiring a **CrewAI** multi-agent workflow to Steel so your agents can research the web and produce a structured report.
-
- [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/fPY1vc0gHOyKJLz6lRIZ8.png) Try in Playground](https://playground.steel.dev/?template=steel-crew-ai-starter)
+<PlaygroundButton href="https://playground.steel.dev/?template=steel-crewai-starter" />
 
 #### Prerequisites
 
@@ -24,7 +23,7 @@ Make sure you have:
 
 Create and activate a virtual environment, then install dependencies:
 
-```sh Terminal -w
+```sh Terminal -wc
 # Create project
 mkdir steel-crewai-starter
 cd steel-crewai-starter
@@ -43,7 +42,7 @@ pip install crewai[tools] steel-sdk python-dotenv pydantic
 
 Create a `.env` file with your keys and a default task:
 
-```python Python
+```env ENV -c
 STEEL_API_KEY=your-steel-api-key-here
 OPENAI_API_KEY=your-openai-api-key-here
 TASK=Research AI LLMs and summarize key developments
@@ -54,7 +53,7 @@ TASK=Research AI LLMs and summarize key developments
 
 Create a minimal CrewAI `BaseTool` that calls Steel’s scraping API. This tool will let agents fetch page content (e.g., as Markdown) during a task
 
-```python Python
+```python Python -c
 # main.py (top of file)
 import os
 from typing import List, Optional, Type
@@ -108,7 +107,7 @@ class SteelScrapeWebsiteTool(BaseTool):
 
 Wire the tool into a **researcher** and a **reporting\_analyst** agent, then compose two tasks into a sequential process.
 
-```python Python
+```python Python -c
 # main.py (below the tool)
 import warnings
 from datetime import datetime
@@ -201,7 +200,7 @@ class Crew():
 
 Add a simple `main()` to validate API keys, pass inputs, and execute.
 
-```python Python
+```python Python -c
 # main.py (bottom of file)
 def main():
     print("🚀 Steel + CrewAI Starter")
@@ -238,7 +237,7 @@ The **researcher** will use the Steel tool to fetch web content; the **reporting
 
 Complete `main.py` you can paste and run:
 
-```python Python
+```python Python -c
 import os
 import warnings
 from datetime import datetime
@@ -393,13 +392,12 @@ if __name__ == "__main__":
 
 Try changing the `TASK` to drive different behaviors:
 
-```env ENV
+```env ENV -c
 TASK = "Visit https://docs.steel.dev and summarize the Sessions API lifecycle with citations."
 # or
 TASK = "Find the latest research trends in open-weights LLMs and produce a bullet summary with 5 sources."
 # or
 TASK = "Compare two AI agent frameworks and write a short pros/cons table with links."
-
 ```
 
 

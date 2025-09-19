@@ -1,13 +1,12 @@
 ---
-title: Integrations
-sidebarTitle: Integrations
-llm: false
+title: Quickstart
+sidebarTitle: Quickstart
+description: This guide walks you through connecting Agno with Steel by adding a Playwright-powered Steel toolkit and running an agent that browses and extracts content from live websites.
+llm: true
 ---
+import PlaygroundButton from "components/playground-button.tsx";
 
-# Quickstart | Overview
-This guide walks you through connecting **Agno** with **Steel** by adding a Playwright-powered Steel toolkit and running an agent that browses and extracts content from live websites.
-
- [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/fPY1vc0gHOyKJLz6lRIZ8.png) Try in Playground](https://playground.steel.dev/?template=steel-agno-starter)
+<PlaygroundButton href="https://playground.steel.dev/?template=steel-agno-starter" />
 
 #### Prerequisites
 
@@ -24,7 +23,7 @@ Make sure you have:
 
 Create and activate a virtual environment, then install dependencies:
 
-``` python Python
+```bash Terminal -wc
 # Create project
 mkdir steel-agno-starter
 cd steel-agno-starter
@@ -43,7 +42,7 @@ pip install agno steel-sdk python-dotenv playwright
 
 Create a `.env` file with your keys and a default task:
 
-``` env ENV
+```env ENV -c
 STEEL_API_KEY=your_steel_api_key_here
 OPENAI_API_KEY=your_openai_api_key_here  # optional, if your Agno model needs it
 TASK=Go to https://quotes.toscrape.com and: 1. Get the first 3 quotes with authors 2. Navigate to page 2 3. Get 2 more quotes from page 2
@@ -54,7 +53,7 @@ TASK=Go to https://quotes.toscrape.com and: 1. Get the first 3 quotes with autho
 
 First, define a toolkit that wraps Steel’s browser sessions and Playwright.
 
-``` python Python
+```python Python -c
 import os
 import json
 from typing import Any, Dict, List, Optional
@@ -238,7 +237,7 @@ class SteelTools(Toolkit):
 
 Create an **Agent** that uses your toolkit to perform multi-step tasks.
 
-``` python Python
+```python Python -c
 # main.py
 import os
 from dotenv import load_dotenv
@@ -284,7 +283,7 @@ You’ll see the agent connect to a live Steel browser via CDP, navigate to the 
 
 Paste the full script below into `main.py` and run:
 
-``` python Python
+```python Python -c
 import json
 import os
 from typing import Any, Dict, List, Optional
@@ -513,7 +512,7 @@ if __name__ == "__main__":
 Try modifying the `TASK` in your `.env`:
 
 
-``` env ENV
+```env ENV -c
 # Crawl a product page and extract specs
 TASK=Go to https://example.com/product/123 and extract the product name, price, and 5 key specs.
 
