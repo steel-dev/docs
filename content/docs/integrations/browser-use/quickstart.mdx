@@ -25,7 +25,7 @@ Ensure you have the following:
 
 First, create a project directory, set up a virtual environment, and install the required packages:
 
-```
+```sh Terminal -w
 # Create a project directory
 mkdir steel-browser-use-agent
 cd steel-browser-use-agent
@@ -41,7 +41,7 @@ pip install steel-sdk browser-use python-dotenv
 
 Create a `.env` file with your API keys:
 
-```
+```env ENV
 STEEL_API_KEY=your_steel_api_key_here
 OPENAI_API_KEY=your_openai_api_key_here
 TASK=Go to Wikipedia and search for machine learning
@@ -52,7 +52,7 @@ TASK=Go to Wikipedia and search for machine learning
 
 Use the Steel SDK to start a new browser session for your agent:
 
-```
+``` python Python
 import os
 from steel import Steel
 from dotenv import load_dotenv
@@ -82,7 +82,7 @@ This creates a new browser session in Steel's cloud. The session\_viewer\_url al
 
 Connect the browser-use BrowserSession class to your Steel session using the CDP URL:
 
-```
+``` python Python
 from browser_use import Agent, BrowserSession
 
 # Connect browser-use to the Steel session
@@ -95,7 +95,7 @@ browser_session = BrowserSession(cdp_url=cdp_url)
 
 Here we bring it all together by defining our agent with what browser, browser context, task, and LLM to use.
 
-```
+``` python Python
 # After setting up the browser session
 from browser_use import Agent
 from browser_use.llm import ChatOpenAI
@@ -133,7 +133,7 @@ This example uses **GPT-4o**, but you can use any browser-use compatible models 
 
 #### Step 5: Run your Agent
 
-```
+``` python Python
 import time
 
 # Define the main function with the agent execution
@@ -180,7 +180,7 @@ The agent will spin up a steel browser session and interact with it to complete 
 
 Here's the complete script that puts all steps together:
 
-```
+``` python Python
 """
 AI-powered browser automation using browser-use library with Steel browsers.
 https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-browser-use-starter
@@ -281,7 +281,7 @@ Save this as main.py and run it with:
 
 Try modifying the task to make your agent perform different actions:
 
-```
+``` python Python
 # Search for weather information
 TASK = "Go to https://weather.com, search for 'San Francisco', and tell me today's forecast."
 

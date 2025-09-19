@@ -1,6 +1,6 @@
-# Hiro Docs
+# Steel Docs
 
-Documentation for Hiro Systems PBC. Built with [Fumadocs](https://fumadocs.vercel.app/) and enhanced with custom components.
+Documentation for Steel.dev. Built with [Fumadocs](https://fumadocs.vercel.app/) and enhanced with custom components.
 
 ## Contributing
 

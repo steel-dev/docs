@@ -26,7 +26,7 @@ We'll build a Claude Computer Use loop that enables autonomous web task executio
 
 First, create a project directory, set up a virtual environment, and install the required packages:
 
-```
+```sh Terminal -w
 # Create a project directory
 mkdir steel-claude-computer-use
 cd steel-claude-computer-use
@@ -42,7 +42,7 @@ pip install steel-sdk anthropic playwright python-dotenv pillow
 
 Create a `.env` file with your API keys:
 
-```
+```env ENV
 STEEL_API_KEY=your_steel_api_key_here
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 TASK=Go to Wikipedia and search for machine learning
@@ -51,7 +51,7 @@ TASK=Go to Wikipedia and search for machine learning
 
 #### Step 2: Create Helper Functions
 
-```
+```python Python
 import os
 import time
 import base64
@@ -256,7 +256,7 @@ def check_blocklisted_url(url: str) -> None:
 
 #### Step 3: Create Steel Browser Integration
 
-```
+```python Python
 class SteelBrowser:
     def __init__(
         self,
@@ -616,7 +616,7 @@ class SteelBrowser:
 
 #### Step 4: Create the Agent Class
 
-```
+```python Python
 class ClaudeAgent:
     def __init__(self, computer = None, model: str = "claude-3-5-sonnet-20241022"):
         self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
@@ -906,7 +906,7 @@ class ClaudeAgent:
 
 #### Step 5: Create the Main Script
 
-```
+```python Python
 def main():
     print("🚀 Steel + Claude Computer Use Assistant")
     print("=" * 60)
@@ -975,7 +975,7 @@ You'll see the session URL printed in the console. Open this URL to view the liv
 
 You can modify the task by setting the environment variable:
 
-```
+```sh Terminal -w
 export TASK="Search for the latest developments in artificial intelligence"
 python main.py
 ```
@@ -985,7 +985,7 @@ python main.py
 
 Try modifying the task to make your agent perform different actions:
 
-```
+```env ENV
 # Research specific topics
 TASK = "Go to https://arxiv.org, search for 'computer vision', and summarize the latest papers."
 
@@ -993,7 +993,7 @@ TASK = "Go to https://arxiv.org, search for 'computer vision', and summarize the
 TASK = "Go to https://www.amazon.com, search for 'mechanical keyboards', and compare the top 3 results."
 
 # Information gathering
-TASK = "Go to https://docs.anthropic.com, find information about Claude's capabilities, and provide a summary."b
+TASK = "Go to https://docs.anthropic.com, find information about Claude's capabilities, and provide a summary."
 ```
 
 

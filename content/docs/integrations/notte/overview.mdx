@@ -1,30 +1,28 @@
 ---
 title: Overview
 sidebarTitle: Overview
+description: This guide shows how to use Notte with Steel to run a simple task in a live cloud browser, then shut everything down safely.
 llm: false
 ---
+import Link from "next/link"
 
-# Notte | Overview
 [Notte](https://notte.cc/) provides all the essential tools for building and deploying AI agents that interact seamlessly with the web. This integration connects Notte with Steel's infrastructure, allowing for seamless automation of web tasks and workflows in the cloud.
-
- [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/L7ajXLJJYZreq0ngKP_xh.png) Try in Playground](https://playground.steel.dev/?template=steel-notte-starter)
-
-This guide shows how to use **Notte** with **Steel** to run a simple task in a live cloud browser, then shut everything down safely.
+<Link href="https://playground.steel.dev/?template=steel-notte-starter"> <img src="https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/L7ajXLJJYZreq0ngKP_xh.png" alt="Notte Logo" width="100" height="100"/> </Link>
 
 ### Requirements
-
+:::prerequisites
 *   **Steel API key**
 
 *   **Gemini API key**
 
 *   **Python 3.11+**
-
+:::
 
 ### Step 1: Project Setup
 
 Create a virtual environment and a minimal project:
 
-```
+```python Python
 python3 -m venv .venv && \
 source .venv/bin/activate && \
 mkdir notte-steel && cd notte-steel && \
@@ -34,7 +32,7 @@ touch main.py .env
 
 ### Step 2: Install Dependencies
 
-```
+```python Python
 pip install steel-sdk notte python-dotenv
 ```
 
@@ -43,7 +41,7 @@ pip install steel-sdk notte python-dotenv
 
 Create a `.env` file with your API keys and a default task:
 
-```
+```python Python
 STEEL_API_KEY=your-steel-api-key-here
 GEMINI_API_KEY=your-gemini-api-key-here
 TASK="Go to Wikipedia and search for machine learning"
@@ -54,7 +52,7 @@ TASK="Go to Wikipedia and search for machine learning"
 
 Set up Steel, load env vars, and prepare to start the Notte agent.
 
-```
+```python Python
 # main.py
 import os
 import time
@@ -78,7 +76,7 @@ TASK = os.getenv("TASK") or "Go to Wikipedia and search for machine learning"
 
 Create a Steel session, connect Notte via **CDP**, run your task, and print the result.
 
-```
+```python Python
 async def main():
     print("🚀 Steel + Notte Assistant")
     print("=" * 60)
@@ -161,7 +159,7 @@ You’ll see a **session viewer URL** in your console, open it to watch the auto
 
 Complete `main.py` you can paste and run:
 
-```
+```python Python
 """
 AI-powered browser automation using notte-sdk with Steel browsers.
 https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-notte-starter
@@ -259,13 +257,14 @@ if __name__ == "__main__":
 
 
 ### Next Steps
+:::next-steps
+- [Session Lifecycles](/sessions-api/session-lifecycle): Sessions Lifecycle
 
-*   **Session Lifecycles**: [https://docs.steel.dev/overview/sessions-api/session-lifecycle](https://docs.steel.dev/overview/sessions-api/session-lifecycle)
+- [Steel Sessions API](/sessions-api/overview): Sessions API Overview
 
-*   **Steel Sessions API**: [https://docs.steel.dev/overview/sessions-api/overview](https://docs.steel.dev/overview/sessions-api/overview)
+:::
+- **Steel Python SDK**: [https://github.com/steel-dev/steel-python](https://github.com/steel-dev/steel-python)
 
-*   **Steel Python SDK**: [https://github.com/steel-dev/steel-python](https://github.com/steel-dev/steel-python)
+- **Cookbook example**: [https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-notte-starter](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-notte-starter)
 
-*   **Cookbook example**: [https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-notte-starter](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-notte-starter)
-
-*   **Notte Documentation:** [https://docs.notte.cc/intro/what-is-notte](https://docs.notte.cc/intro/what-is-notte)
+- **Notte Documentation:** [https://docs.notte.cc/intro/what-is-notte](https://docs.notte.cc/intro/what-is-notte)

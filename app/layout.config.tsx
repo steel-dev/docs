@@ -17,9 +17,41 @@ export const baseOptions: BaseLayoutProps = {
       active: "nested-url",
     },
     {
+<<<<<<< Updated upstream
       text: "Integrations",
       url: "/integrations",
       active: "nested-url",
+=======
+      type: "menu",
+      text: "APIs",
+      items: [
+        {
+          text: "Sessions API",
+          description: "API for managing user sessions.",
+          url: "/sessions-api/overview",
+        },
+        {
+          text: "Credentials API",
+          description: "API for managing user credentials.",
+          url: "/credentials-api/overview",
+        },
+        {
+          text: "Files API",
+          description: "API for managing user files.",
+          url: "/files-api/overview",
+        },
+        {
+          text: "Extensions API",
+          description: "API for managing user extensions.",
+          url: "/extensions-api/overview",
+        },
+        {
+          text: "Captchas API",
+          description: "API for managing user sessions.",
+          url: "/captchas-api/overview",
+        },
+      ],
+>>>>>>> Stashed changes
     },
     {
       text: "Cookbook",
@@ -27,9 +59,26 @@ export const baseOptions: BaseLayoutProps = {
       active: "nested-url",
     },
     {
+<<<<<<< Updated upstream
       text: "Changelog",
       url: "/changelog",
       active: "nested-url",
+=======
+      type: "menu",
+      text: "Resources",
+      items: [
+        {
+          text: "API Reference",
+          description: "View the API reference for Steel.",
+          url: "/api-reference",
+        },
+        {
+          text: "Playground",
+          description: "Explore Steel's features and capabilities.",
+          url: "/playground",
+        },
+      ],
+>>>>>>> Stashed changes
     },
     {
       text: "Playground",

@@ -3,11 +3,11 @@ title: Integrations
 sidebarTitle: Integrations
 llm: false
 ---
+import Link from "next/link";
 
 # Quickstart | Overview
 This guide shows how to use **AgentKit** with **Steel** to build a small network that browses Hacker News in a live cloud browser via CDP, filters stories by topic, and returns concise picks.
-
- [![link icon](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/fPY1vc0gHOyKJLz6lRIZ8.png) Try in Playground](https://playground.steel.dev/?template=steel-agent-kit-starter)
+<Link href="https://playground.steel.dev/?template=steel-agent-kit-starter"><img src="https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/fPY1vc0gHOyKJLz6lRIZ8.png" alt="Try in Playground" />Try in Playground</Link>
 
 #### Prerequisites
 
@@ -22,7 +22,7 @@ This guide shows how to use **AgentKit** with **Steel** to build a small network
 
 Create a Typescript project and starter files.
 
-```
+```sh Terminal -w
 mkdir steel-agentkit-hn && \
 cd steel-agentkit-hn && \
 npm init -y && \
@@ -37,7 +37,7 @@ npm install steel-sdk @inngest/agent-kit zod playwright dotenv
 
 Add your API keys to `.env`:
 
-```
+```env ENV
 STEEL_API_KEY=your-steel-api-key-here
 OPENAI_API_KEY=your-openai-api-key-here
 ```
@@ -47,7 +47,7 @@ OPENAI_API_KEY=your-openai-api-key-here
 
 We’ll define a custom **AgentKit tool**
 
-```
+```typescript Typescript
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -182,7 +182,7 @@ const browseHackerNews = createTool({
 
 Wire the tool into an agent and run it inside a small network with your default model.
 
-```
+```typescript Typescript
 const hnAgent = createAgent({
   name: "hn_curator",
   description: "Curates interesting Hacker News stories by topic",
@@ -207,7 +207,7 @@ const hnNetwork = createNetwork({
 
 Add a small `main()` that checks env vars, runs the network, and prints results.
 
-```
+```typescript Typescript
 async function main() {
   console.log("🚀 Steel + Agent Kit Starter");
   console.log("=".repeat(60));
@@ -249,7 +249,7 @@ Open your console output to see your curated results. You can also watch the liv
 
 Paste the full **index.ts** below and run `npm run start`:
 
-```
+```typescript Typescript
 import dotenv from "dotenv";
 dotenv.config();
 import { z } from "zod";
@@ -442,7 +442,7 @@ main();
 
 Try adjusting the network input:
 
-```
+```typescript Typescript
 await hnNetwork.run(
   "Curate 8 stories about WebAssembly, Edge runtimes, and performance. Use 'new' if there are fresh posts. Return title, url, site, points, comments."
 );

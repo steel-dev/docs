@@ -2,10 +2,9 @@
 title: Overview
 sidebarTitle: Overview
 description: Automatically detect and solve CAPTCHAs in browser sessions using Steel's integrated captcha solvers and the CAPTCHAs API.
-llm: false
+full: true
+llm: true
 ---
-
-# Overview
 
 Steel's CAPTCHA system is designed to work seamlessly with browser automation workflows, automatically detecting and solving CAPTCHAs without interrupting your automation flow.
 
@@ -37,15 +36,15 @@ Steel's CAPTCHAs API operates through a bridge architecture that connects your b
 
 You can check the current CAPTCHA status for any session to understand what CAPTCHAs are active and their current solving progress.
 
-cURLJavascript/TypescriptPython
 
-```
+<CodeTabs storage="languageSwitcher">
+
+```bash !! curl
 curl -X GET https://api.steel.dev/v1/sessions/{sessionId}/captchas/status \
 -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-
-```
+```typescript !! TypeScript
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -55,8 +54,7 @@ const response = await client.sessions.captchas.status('sessionId');
 console.log(response);
 ```
 
-
-```
+```python !! Python
 from steel import Steel
 
 client = Steel()
@@ -65,7 +63,6 @@ response = client.sessions.captchas.status(
 )
 print(response)
 ```
-
 
 #### Response Format
 
@@ -91,7 +88,7 @@ The status endpoint returns an array of current pages and their CAPTCHA states. 
    }
 ]
 ```
-
+</CodeTabs>
 
 #### CAPTCHA Task Status
 
@@ -116,9 +113,9 @@ For image-based CAPTCHAs, you can provide XPath selectors to help the system loc
 
 The `url` parameter is optional and defaults to the current page.
 
-cURLJavascript/TypesriptPython
+<CodeTabs storage="languageSwitcher">
 
-```
+```bash !! curl
 curl -X POST https://api.steel.dev/v1/sessions/{sessionId}/captchas/solve-image \
    -H "Content-Type: application/json" \
    -H "steel-api-key: YOUR_API_KEY_HERE" \
@@ -126,7 +123,7 @@ curl -X POST https://api.steel.dev/v1/sessions/{sessionId}/captchas/solve-image 
 ```
 
 
-```
+```typescript !! Typescript
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -140,7 +137,7 @@ console.log(response.success);
 ```
 
 
-```
+```python !! Python
 from steel import Steel
 
 client = Steel()
@@ -151,7 +148,7 @@ response = client.sessions.captchas.solve_image(
 )
 print(response.success)
 ```
-
+</CodeTabs>
 
 #### Parameters
 
@@ -164,7 +161,7 @@ print(response.success)
 
 #### Response
 
-```
+```json JSON
 {
 	"success": true,
 	"message": "Image captcha solve request sent"
@@ -219,7 +216,7 @@ Steel's CAPTCHA system is designed to work seamlessly with your existing automat
 
 #### Monitoring CAPTCHA Progress
 
-```
+```typescript Typescript
 async function waitForCaptchaSolution(sessionId, timeout = 30000) {
   const startTime = Date.now();
 
@@ -248,7 +245,7 @@ async function waitForCaptchaSolution(sessionId, timeout = 30000) {
 
 #### Basic Integration Pattern
 
-```
+```typescript Typescript
 // Navigate to a page that might have CAPTCHAs
 await page.goto('https://example.com/protected-page');
 
@@ -297,8 +294,9 @@ The captcha types for each task are mapped to the CAPTCHA types we support like 
 
 The CAPTCHA system is designed to be as transparent as possible to your automation workflows, handling the complexity of CAPTCHA detection and solving while providing you with the control and visibility you need.
 
+
 :::callout
 type: help
-### Need help building with the Ordinals API?
-Reach out to us on the <span className="font-bold">#ordinals</span> channel on [Discord](https://stacks.chat/) under the Hiro Developer Tools section. There's also a [weekly office hours](https://www.addevent.com/event/kI22007085) call every Wednesday at 1pm ET.
+### Need help building with the Captchas API?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::

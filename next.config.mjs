@@ -1,4 +1,4 @@
-import { createMDX } from 'fumadocs-mdx/next';
+import { createMDX } from "fumadocs-mdx/next";
 
 const withMDX = createMDX();
 
@@ -12,50 +12,62 @@ const config = {
   redirects: async () => {
     return [
       {
-        source: '/start',
-        destination: '/',
+        source: "/start",
+        destination: "/",
         permanent: false,
       },
       {
-        source: '/.well-known/llms.txt',
-        destination: '/llms.txt',
+        source: "/.well-known/llms.txt",
+        destination: "/llms.txt",
         permanent: true, // 301 redirect - tells crawlers this is the canonical location
       },
       {
-        source: '/api-reference',
-        destination: 'https://docs.steel.dev/api-reference',
+        source: "/api-reference",
+        destination: "https://docs.steel.dev/api-reference",
         permanent: true,
       },
       {
-        source: '/playground',
-        destination: 'https://playground.steel.dev/',
+        source: "/playground",
+        destination: "https://playground.steel.dev/",
         permanent: true,
       },
       {
-        source: '/render',
-        destination: 'https://playground.steel.dev/',
+        source: "/render",
+        destination: "https://playground.steel.dev/",
         permanent: true,
       },
       {
-        source: '/railway',
-        destination: 'https://railway.app/template/FQG9Ca',
+        source: "/railway",
+        destination: "https://railway.app/template/FQG9Ca",
         permanent: true,
       },
       {
-        source: '/resources/reference/integrations/valtown/quickstart',
-        destination: 'https://www.val.town/v/steel/steel_puppeteer_starter',
+        source: "/examples/stagehand-py",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-stagehand-python-starter",
         permanent: true,
-      }
+      },
+      {
+        source: "/examples/stagehand-ts",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-stagehand-node-starter",
+        permanent: true,
+      },
+      {
+        source: "/resources/reference/integrations/valtown/quickstart",
+        destination: "https://www.val.town/v/steel/steel_puppeteer_starter",
+        permanent: true,
+      },
     ];
   },
   images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'api.scalar.com',
-        },
-      ],
-    },
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "api.scalar.com",
+      },
+    ],
+  },
 };
 
 export default withMDX(config);
