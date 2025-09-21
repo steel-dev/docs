@@ -162,7 +162,7 @@ function PageTOC() {
     <div className="sticky top-[var(--fd-nav-height)] w-[275px] shrink-0 h-[calc(100dvh-var(--fd-nav-height))] px-4 py-3 max-xl:hidden overflow-auto">
       <div className="flex items-center mb-4">
         <AlignLeft className="w-4 h-4 mr-2 text-muted-foreground" />
-        <p className="text-sm font-fono text-muted-foreground">Contents</p>
+        <p className="text-sm font-mono text-muted-foreground">Contents</p>
       </div>
       <div className="relative">
         <TocThumb

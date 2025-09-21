@@ -112,12 +112,12 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
     });
 
     return (
-      <Breadcrumb className="text-lg font-fono">
+      <Breadcrumb className="text-lg font-mono">
         <BreadcrumbList className="gap-1">
           <BreadcrumbItem>
             <BreadcrumbLink
               asChild
-              className="text-muted-foreground hover:text-primary !font-fono !text-base"
+              className="text-muted-foreground hover:text-primary !font-mono !text-base"
             >
               <button
                 type="button"
@@ -146,13 +146,13 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
                 <BreadcrumbSeparator className="text-muted-foreground">/</BreadcrumbSeparator>
                 <BreadcrumbItem>
                   {isLast ? (
-                    <BreadcrumbPage className="text-primary !font-fono !text-base">
+                    <BreadcrumbPage className="text-primary !font-mono !text-base">
                       {displayName}
                     </BreadcrumbPage>
                   ) : (
                     <BreadcrumbLink
                       asChild
-                      className="text-muted-foreground hover:text-primary !font-fono !text-base cursor-pointer"
+                      className="text-muted-foreground hover:text-primary !font-mono !text-base cursor-pointer"
                     >
                       <button
                         type="button"
@@ -198,7 +198,7 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
                   <BreadcrumbItem>
                     <BreadcrumbLink
                       asChild
-                      className="text-muted-foreground hover:text-primary cursor-pointer !font-fono !text-base"
+                      className="text-muted-foreground hover:text-primary cursor-pointer !font-mono !text-base"
                     >
                       <button
                         type="button"
@@ -213,7 +213,7 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
                   </BreadcrumbItem>
                   <BreadcrumbSeparator className="text-muted-foreground">/</BreadcrumbSeparator>
                   <BreadcrumbItem>
-                    <BreadcrumbPage className="text-primary !font-fono !text-base">
+                    <BreadcrumbPage className="text-primary !font-mono !text-base">
                       {activeSubmenu}
                     </BreadcrumbPage>
                   </BreadcrumbItem>
@@ -250,7 +250,7 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
                       subItem.isNew && 'gap-3 justify-start',
                     )}
                   >
-                    <span className="font-fono text-muted-foreground">{subItem.text}</span>
+                    <span className="font-mono text-muted-foreground">{subItem.text}</span>
                     {subItem.isNew && (
                       <span className="font-regular text-[10px] px-1 py-0.5 rounded uppercase bg-orange-500 dark:bg-brand-orange text-neutral-950 border-none">
                         New
@@ -273,7 +273,7 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
                 {/* <Link
                   href="/start"
                   onClick={handleClose}
-                  className="font-fono text-muted-foreground flex items-center justify-between px-4 py-3 text-base hover:bg-accent transition-colors"
+                  className="font-mono text-muted-foreground flex items-center justify-between px-4 py-3 text-base hover:bg-accent transition-colors"
                 >
                   Get Started
                 </Link> */}
@@ -289,7 +289,7 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
                           setShowMainMenu(false);
                         }}
                       >
-                        <span className="font-fono text-muted-foreground">{item.text}</span>
+                        <span className="font-mono text-muted-foreground">{item.text}</span>
                         <ChevronRight className="h-4 w-4 text-muted-foreground" />
                       </button>
                     ) : (
@@ -297,7 +297,7 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
                         <Link
                           href={item.url as string}
                           onClick={handleClose}
-                          className="font-fono flex items-center justify-between px-4 py-3 text-lg hover:bg-accent transition-colors"
+                          className="font-mono flex items-center justify-between px-4 py-3 text-lg hover:bg-accent transition-colors"
                         >
                           {item.text}
                         </Link>

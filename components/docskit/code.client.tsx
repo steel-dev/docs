@@ -23,14 +23,14 @@ export function MultiCode({ group, className }: { group: CodeGroup; className?: 
       className={cn(CODEBLOCK, className)}
       style={style}
     >
-      <TabsList className={cn(TITLEBAR, 'rounded-none p-0 m-0 justify-start items-stretch !pt-0')}>
+      <TabsList className={cn(TITLEBAR, 'rounded-none p-0 pl-2 m-0 justify-start items-stretch !pt-0')}>
         {group.tabs.map(({ icon, title }) => (
           <TabsTrigger
             key={title}
             value={title}
             className={cn(
               'rounded-none relative transition-colors duration-200 gap-2 px-3 font-mono',
-              'text-ch-tab-inactive-foreground data-[state=active]:text-muted-foreground hover:text-muted-foreground', // text
+              'text-ch-tab-inactive-foreground data-[state=active]:text-foreground hover:text-muted-foreground cursor-pointer', // text
             )}
           >
             {icon}
@@ -38,11 +38,11 @@ export function MultiCode({ group, className }: { group: CodeGroup; className?: 
             <div className="absolute h-[1px] top-full left-0 right-0 transition-colors duration-200" />
           </TabsTrigger>
         ))}
-        {group.options.copyButton && (
+        {/* {group.options.copyButton && ( */}
           <div className={cn('ml-auto mr-3 items-center flex')}>
             <CopyButton text={code} />
           </div>
-        )}
+        {/* )} */}
       </TabsList>
       <TabsContent
         // key={meta}

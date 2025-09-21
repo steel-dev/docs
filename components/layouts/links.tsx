@@ -202,8 +202,8 @@ export function renderNavItem(item: LinkItemType): ReactNode {
             <Link
               href={item.url}
               className={cn(
-                'font-fono text-sm px-4 py-2 rounded-md hover:bg-fd-accent/50 transition-colors',
-                isActive && 'underline underline-offset-4 text-primary',
+                'font-sans text-sm px-4 py-2 rounded-md hover:bg-fd-accent/50 transition-colors',
+                isActive && 'text-primary',
               )}
             >
               {item.text}
@@ -222,7 +222,7 @@ export function renderNavItem(item: LinkItemType): ReactNode {
             <NavigationMenuTrigger asChild>
               <div
                 className={cn(
-                  'font-fono text-sm px-4 py-2 rounded-md group flex items-center gap-1 cursor-pointer',
+                  'font-sans text-sm px-4 py-2 rounded-md group flex items-center gap-1 cursor-pointer',
                 )}
               >
                 <Link href={item.url} className="flex items-center gap-1">
@@ -234,7 +234,7 @@ export function renderNavItem(item: LinkItemType): ReactNode {
           ) : (
             // When no URL, use default button behavior
             <NavigationMenuTrigger
-              className={cn('font-fono text-sm px-4 py-2 rounded-md group flex items-center gap-1')}
+              className={cn('font-sans text-sm px-4 py-2 rounded-md group flex items-center gap-1')}
             >
               {item.text}
               <ChevronDown className="relative h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
@@ -305,7 +305,7 @@ export function renderNavItem(item: LinkItemType): ReactNode {
                       <Link
                         href={menuItem.url}
                         className={cn(
-                          'block py-2 text-sm font-fono text-muted-foreground hover:text-primary transition-colors',
+                          'block py-2 text-sm font-mono text-muted-foreground hover:text-primary transition-colors',
                           isMenuItemActive && 'underline underline-offset-4 text-primary',
                         )}
                       >
@@ -357,7 +357,7 @@ function DropdownNavItem({ item }: { item: DropdownItemType }) {
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="font-fono text-sm px-4 py-2 rounded-md hover:bg-accent data-[state=open]:bg-accent transition-colors flex items-center gap-1"
+            className="font-mono text-sm px-4 py-2 rounded-md hover:bg-accent data-[state=open]:bg-accent transition-colors flex items-center gap-1"
           >
             {item.text}
             <ChevronDown className="relative h-4 w-4 transition-transform duration-200 data-[state=open]:rotate-180" />

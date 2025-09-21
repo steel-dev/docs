@@ -105,16 +105,16 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
 
               <div className="flex flex-1 items-center justify-end space-x-2 lg:space-x-3">
                 <SearchToggle />
-                <ThemeToggle />
                 <Button
                   asChild
-                  className="bg-yellow-300 font-fono text-neutral-900 flex items-baseline gap-0.5 px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden lg:flex"
+                  className="bg-yellow-300 font-mono text-neutral-900 flex items-baseline gap-0.5 px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden lg:flex"
                 >
                   <Link href="https://app.steel.dev" target="_blank">
                     Sign in
                     <ArrowUpRight className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200" />
                   </Link>
                 </Button>
+                <ThemeToggle />
               </div>
             </div>
           </nav>
@@ -185,9 +185,10 @@ export function Sidebar() {
 
     function renderItems(items: PageTree.Node[]) {
       const filteredItems = items.filter((item) => !shouldFilterItem(item));
+      const numItems = filteredItems.length;
 
       return filteredItems.sort().map((item) => (
-        <SidebarItem key={item.$id} item={item}>
+        <SidebarItem key={item.$id} item={item} numItems={numItems}>
           {item.type === 'folder' ? renderItems(item.children) : null}
         </SidebarItem>
       ));
@@ -200,7 +201,7 @@ export function Sidebar() {
     <aside
       data-collapsed={collapsed}
       className={cn(
-        'fixed flex flex-col shrink-0 pt-4 px-2 pb-10 top-16 z-20 text-base md:text-sm overflow-auto md:sticky md:h-[calc(100dvh-64px)]',
+        'fixed flex flex-col shrink-0 pt-4 px-2 pb-10 top-16 z-20 text-base md:text-sm overflow-auto md:sticky md:h-[calc(100dvh-64px)] border-r border-border',
         'max-md:inset-x-0 max-md:bottom-0',
         !open && 'max-md:invisible',
         'md:w-[250px] md:transition-all md:duration-100 ease-linear',
@@ -213,7 +214,7 @@ export function Sidebar() {
 }
 
 export const linkVariants = cva(
-  'flex items-center gap-3 w-full py-0.5 rounded-lg text-muted-foreground !font-sans [&_svg]:size-3',
+  'flex items-center gap-3 w-full rounded-lg text-muted-foreground !font-sans [&_svg]:size-3',
   {
     variants: {
       active: {
@@ -247,7 +248,7 @@ export function NavbarSidebarTrigger(props: ButtonHTMLAttributes<HTMLButtonEleme
   );
 }
 
-export function SidebarItem({ item, children }: { item: PageTree.Node; children: ReactNode }) {
+export function SidebarItem({ item, children, numItems }: { item: PageTree.Node; children: ReactNode, numItems: number   }) {
   const pathname = usePathname();
 
   const isPathInFolder = (folderItem: PageTree.Node, currentPath: string): boolean => {
@@ -281,8 +282,8 @@ export function SidebarItem({ item, children }: { item: PageTree.Node; children:
     const isActive = pathname === item.url;
 
     return (
-      <div className='flex items-center gap-2'>
-        {!isRootPage && <div className={cn('h-[100%] w-[1px] bg-[#202020]', isActive && 'bg-white')} />}
+      <div className='flex items-center gap-1 div:pt-0.5 first:(div:pt-0)'>
+        {!isRootPage && numItems > 1 && <div className={cn('h-[100%] w-[1px] bg-[#202020] ml-2', isActive && 'bg-white')} />}
       <Link
         href={item.url}
         className={cn(
@@ -299,7 +300,7 @@ export function SidebarItem({ item, children }: { item: PageTree.Node; children:
             ],
         )}
       >
-        <div className="!font-normal flex items-center gap-2 flex-1">
+        <div className="!font-normal text-[0.875rem] flex items-center gap-2 flex-1">
           {item.icon}
           {displayName}
           <PageBadges item={item} />
@@ -311,7 +312,7 @@ export function SidebarItem({ item, children }: { item: PageTree.Node; children:
 
   if (item.type === 'separator') {
     return (
-      <p className="text-primary font-sans text-[16px] font-semibold mt-6 mb-2 first:mt-0 px-2">{item.name}</p>
+      <p className="text-primary uppercase text-[0.75rem] leading-none tracking-wide font-mono font-bold mt-6 mb-2 first:mt-0 px-2">{item.name}</p>
     );
   }
 
@@ -324,7 +325,7 @@ export function SidebarItem({ item, children }: { item: PageTree.Node; children:
   const accordionValue = getStringValue(item.$id) || getStringValue(item.name) || 'folder';
 
   return (
-    <div>
+    <div className='pl-4'>
       <Accordion
         type="single"
         collapsible
@@ -395,7 +396,7 @@ export function PageBadges({ item }: { item: PageTree.Node }) {
     badges.push(
       <span
         key="new"
-        className="font-regular text-[10px] px-1 py-0.5 rounded uppercase bg-orange-500 dark:bg-brand-orange text-neutral-950 border-none"
+        className="font-regular text-[10px] px-1 rounded uppercase bg-orange-500 dark:bg-brand-orange text-neutral-950 border-none"
       >
         New
       </span>,

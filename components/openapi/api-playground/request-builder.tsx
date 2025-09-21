@@ -208,7 +208,7 @@ export const RequestBuilder = forwardRef<HTMLFormElement, RequestBuilderProps>(
       return (
         <div key={param.name} className="space-y-2">
           <div className="flex items-center gap-2">
-            <Label htmlFor={param.name} className="font-fono">
+            <Label htmlFor={param.name} className="font-mono">
               {param.name}
               {param.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
@@ -239,7 +239,7 @@ export const RequestBuilder = forwardRef<HTMLFormElement, RequestBuilderProps>(
             className={cn(
               'bg-white dark:bg-neutral-950 border-border/50',
               hasError && 'border-red-500',
-              'font-fono',
+              'font-mono',
             )}
             disabled={false}
             type="text"
@@ -429,7 +429,7 @@ export const RequestBuilder = forwardRef<HTMLFormElement, RequestBuilderProps>(
             return (
               <div key={propName} className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor={fieldName} className="font-fono">
+                  <Label htmlFor={fieldName} className="font-mono">
                     {propName}
                     {isRequired && <span className="text-red-500 ml-1">*</span>}
                   </Label>
@@ -477,7 +477,7 @@ export const RequestBuilder = forwardRef<HTMLFormElement, RequestBuilderProps>(
                     placeholder={propSchema.example?.toString() || propSchema.description}
                     required={isRequired}
                     className={cn(
-                      'bg-white dark:bg-neutral-950 border-border font-fono',
+                      'bg-white dark:bg-neutral-950 border-border font-mono',
                       hasError && 'border-red-500',
                     )}
                   />

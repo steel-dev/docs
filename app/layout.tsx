@@ -1,7 +1,7 @@
 import './global.css';
 import { RootProvider } from 'fumadocs-ui/provider';
 import type { ReactNode } from 'react';
-import { aeonik, aeonikFono, aeonikMono, inter } from '@/fonts';
+import { jetBrainsMono, inter } from '@/fonts';
 import { KeyboardShortcutsProvider } from '@/hooks/use-keyboard-shortcuts';
 import { QueryProvider } from '@/providers/query-provider';
 
@@ -9,7 +9,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${inter.variable}`}
+      className={`${inter.variable} ${jetBrainsMono.variable}`}
       suppressHydrationWarning
     >
       <body className="flex flex-col min-h-screen">

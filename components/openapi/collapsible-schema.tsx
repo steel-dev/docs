@@ -11,7 +11,7 @@ export function CollapsibleSchema({ schema }: CollapsibleSchemaProps) {
   return (
     <div className="rounded-lg border border-border p-4">
       <Collapsible>
-        <CollapsibleTrigger className="flex items-center gap-2 font-fono text-md font-medium hover:text-foreground transition-colors">
+        <CollapsibleTrigger className="flex items-center gap-2 font-mono text-md font-medium hover:text-foreground transition-colors">
           <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
           Schema
         </CollapsibleTrigger>

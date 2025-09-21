@@ -82,14 +82,12 @@ client.credentials.create(
 ```
 </CodeTabs>
 
-::::
-
 These credentials are encrypted and stored securely within Steel’s credential management service. The `namespace` field helps separate use cases for the same origin and must match the namespace used when creating the session. For more information on how namespaces work [visit the namespace section](#namespaces). You can optionally include a `totpSecret` field if your login flow uses one-time passwords (see [TOTP Support](#totp-support)).
 
 ## Injecting Credentials into a Session
 When starting a session via `POST /sessions`, you can request credential injection using the optional `credentials` field:
 
-<CodeTabs storage="languageSwitcher">
+<CodeTabs storage="injecting-credentials-into-a-session">
 
 ```bash !! curl
 curl -X POST https://api.steel.dev/v1/sessions \
@@ -115,8 +113,6 @@ client.sessions.create(
 )
 ```
 </CodeTabs>
-
-::::
 
 If the `credentials` object is omitted, no credentials will be injected. If included as an empty object (`credentials: {}`), the default options apply:
 

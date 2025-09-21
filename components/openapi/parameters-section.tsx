@@ -66,7 +66,7 @@ function ParameterItem({ parameter }: { parameter: OpenAPIParameter }) {
           {parameter.name}
         </span>
         {parameter.required && (
-          <Badge className="font-fono text-xs px-2 py-0.5 bg-[#F7E7E7] text-[#714B4B] border-[#EBC2C2] dark:bg-background dark:text-[#EBC2C2] dark:border-[#EBC2C2]">
+          <Badge className="font-mono text-xs px-2 py-0.5 bg-[#F7E7E7] text-[#714B4B] border-[#EBC2C2] dark:bg-background dark:text-[#EBC2C2] dark:border-[#EBC2C2]">
             REQUIRED
           </Badge>
         )}
@@ -92,7 +92,7 @@ function RequestBodySection({ requestBody }: { requestBody: OpenAPIRequestBody }
     <div className="space-y-3">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-normal text-neutral-800 dark:text-neutral-200 !m-0">Body</h3>
-        <span className="text-sm text-muted-foreground font-fono">{contentType}</span>
+        <span className="text-sm text-muted-foreground font-mono">{contentType}</span>
       </div>
       <div className="space-y-3">
         {schema.type === 'object' && schema.properties ? (
@@ -114,7 +114,7 @@ function RequestBodySection({ requestBody }: { requestBody: OpenAPIRequestBody }
                       {name}
                     </span>
                     {schema.required?.includes(name) && (
-                      <Badge className="font-fono text-xs px-2 py-0.5 bg-[#F7E7E7] text-[#714B4B] border-[#EBC2C2] dark:bg-background dark:text-[#EBC2C2] dark:border-[#EBC2C2]">
+                      <Badge className="font-mono text-xs px-2 py-0.5 bg-[#F7E7E7] text-[#714B4B] border-[#EBC2C2] dark:bg-background dark:text-[#EBC2C2] dark:border-[#EBC2C2]">
                         REQUIRED
                       </Badge>
                     )}

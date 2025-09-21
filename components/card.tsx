@@ -20,6 +20,7 @@ export type CardProps = {
   description: string;
   innerClassName?: string;
   variant?: 'default' | 'secondary';
+  tags?: string[];
 } & Omit<LinkProps, 'title'>;
 
 export function Card({
@@ -27,6 +28,7 @@ export function Card({
   title,
   description,
   variant = 'default',
+  tags,
   ...props
 }: CardProps): React.ReactElement {
   return (
@@ -48,18 +50,26 @@ export function Card({
     >
       <div
         className={cn(
-          'space-y-3 group relative z-10 bg-card p-5 rounded-[calc(0.5rem-1.5px)] h-full transition-all duration-500 ease-linear',
+          'space-y-3 group relative z-10 bg-card hover:bg-card/90 p-5 rounded-[calc(0.5rem-1.5px)] h-full transition-all duration-400 ease-linear',
           props.innerClassName,
         )}
       >
         {icon ? (
-          <div className="w-fit rounded-md border group-hover:bg-border p-2 text-muted-foreground transition-all duration-100 ease-linear [&_svg]:size-4">
+          <div className="w-fit rounded-md border group-hover:bg-border px-2 pt-2 pb-1 text-muted-foreground transition-all duration-100 ease-linear [&_svg]:size-4">
             {icon}
           </div>
         ) : null}
         <div className="space-y-1">
           <h3 className="text-lg">{title}</h3>
-          <p className="text-muted-foreground">{description}</p>
+          <p className="text-muted-foreground text-sm text-stone-500">{description}</p>
+          
+        </div>
+        <div className="flex flex-wrap gap-2 mt-4">
+          {tags?.map((tag) => (
+            <div key={tag} className="px-2.5 dark:bg-yellow-50/5 bg-yellow-50 rounded-full inline-flex justify-start items-center uppercase text-stone-400 text-xs font-mono transition-colors !py-0 h-fit">
+              {tag}
+            </div>
+          ))}
         </div>
       </div>
     </Link>
@@ -224,11 +234,13 @@ export function IndexCard({
 
 export type SmallCardProps = {
   icon: ReactNode;
+  variant?: 'default' | 'outline' | 'ghost';
   title: string;
   description: string;
+  tags?: string[];
 } & Omit<LinkProps, 'title'>;
 
-export function SmallCard({ icon, title, description, ...props }: CardProps): React.ReactElement {
+export function SmallCard({ icon, title, description, variant = 'default', tags, ...props }: SmallCardProps): React.ReactElement {
   return (
     <Link
       {...props}
@@ -239,7 +251,7 @@ export function SmallCard({ icon, title, description, ...props }: CardProps): Re
     >
       <div className="group flex space-x-4 px-3 py-4 rounded-lg hover:bg-card transition-all duration-100 ease-linear">
         {icon && (
-          <div className="h-fit w-fit rounded-md border bg-card group-hover:bg-background group-hover:text-primary transition-all duration-100 ease-linear p-2 text-muted-foreground [&_svg]:size-4">
+          <div className={cn(variant === 'ghost' && 'border-none', "h-fit w-fit rounded-md border bg-card group-hover:bg-background group-hover:text-primary transition-all duration-100 ease-linear p-2 text-muted-foreground [&_svg]:size-4")}>
             {icon}
           </div>
         )}
@@ -248,6 +260,13 @@ export function SmallCard({ icon, title, description, ...props }: CardProps): Re
             {title}
           </h3>
           <p className="text-sm text-muted-foreground">{description}</p>
+          <div className="flex flex-wrap gap-2 mt-4">
+          {tags?.map((tag) => (
+            <div key={tag} className="px-2.5 bg-yellow-50/5 rounded-full inline-flex justify-start items-center uppercase text-stone-400 text-xs font-mono transition-colors !py-0 h-fit">
+              {tag}
+            </div>
+          ))}
+        </div>
         </div>
       </div>
     </Link>

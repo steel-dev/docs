@@ -139,7 +139,7 @@ $ command         # Renders with prompt
 ```
 
 ```package-install
-@stacks/connect  # Auto-generates npm/yarn/pnpm commands
+@steel-dev/cli  # Auto-generates npm/yarn/pnpm commands
 ```
 
 ````

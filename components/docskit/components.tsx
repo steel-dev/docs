@@ -10,6 +10,7 @@ import ScrollyCoding from "./scrollycoding";
 import Slideshow from "./slideshow";
 import Spotlight from "./spotlight";
 import { Terminal } from "./terminal";
+import { SimpleCode } from "./code-simple";
 
 // Export RawCode type for external use
 export type { RawCode };
@@ -31,6 +32,7 @@ export const docskit = {
   ScrollyCoding,
   Spotlight,
   Slideshow,
+  SimpleCode,
 };
 
 function DocsKitCode(props: { codeblock: RawCode }) {

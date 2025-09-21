@@ -18,7 +18,7 @@ export function ResponseTabs({ responses }: ResponseTabsProps) {
 
   return (
     <Tabs defaultValue={responseCodes[0]} className="w-full">
-      <TabsList className="font-fono h-auto p-0 bg-transparent border-b text-md rounded-none w-full justify-start">
+      <TabsList className="font-mono h-auto p-0 bg-transparent border-b text-md rounded-none w-full justify-start">
         {responseCodes.map((code) => (
           <TabsTrigger
             key={code}

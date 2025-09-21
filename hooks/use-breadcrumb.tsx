@@ -14,6 +14,12 @@ function formatBreadcrumbName(name: string): string {
       .map((word) => formatBreadcrumbName(word))
       .join(' ');
   }
+
+  const isApi = name.includes('api');
+  if (isApi) {
+    return name.toUpperCase();
+  }
+
   // Default: capitalize first letter
   return name.charAt(0).toUpperCase() + name.slice(1);
 }

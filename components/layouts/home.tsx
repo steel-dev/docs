@@ -13,7 +13,7 @@ import { Button } from '../ui/button';
 import { DocsLogo } from '../ui/icon';
 import { NavigationMenu, NavigationMenuList } from '../ui/navigation-menu';
 import { renderNavItem } from './links';
-import { type BaseLayoutProps, getLinks, type NavOptions, slot } from './shared';
+import { type BaseLayoutProps, type NavOptions, slot } from './shared';
 
 export interface HomeLayoutProps extends BaseLayoutProps {
   nav?: Partial<
@@ -95,7 +95,7 @@ export function Header({ nav = {}, links, githubUrl, themeSwitch, searchToggle }
             <ThemeToggle />
             <Button
               asChild
-              className="bg-yellow-300 font-fono text-neutral-900 flex items-baseline gap-0.5 px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden lg:flex"
+              className="bg-yellow-300 font-mono text-neutral-900 flex items-baseline gap-0.5 px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden lg:flex"
             >
               <Link href="https://app.steel.dev" target="_blank">
                 Sign in

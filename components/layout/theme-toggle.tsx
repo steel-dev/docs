@@ -1,21 +1,10 @@
 'use client';
 
 import { cva } from 'class-variance-authority';
-import { Airplay, Moon, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { type HTMLAttributes, useLayoutEffect, useState } from 'react';
 import { cn } from '../../lib/utils';
-
-const itemVariants = cva('rounded p-1.5 text-fd-muted-foreground', {
-  variants: {
-    active: {
-      true: 'bg-white dark:bg-neutral-900 text-primary',
-      false: 'text-muted-foreground dark:text-neutral-300 cursor-pointer',
-    },
-  },
-});
-
-const full = [['light', Sun] as const, ['dark', Moon] as const];
 
 export function ThemeToggle({
   className,
@@ -31,26 +20,23 @@ export function ThemeToggle({
     setMounted(true);
   }, []);
 
-  const container = cn(
-    'bg-neutral-150 dark:bg-neutral-700 inline-flex items-center rounded p-1',
-    className,
-  );
-
   const value = mounted ? resolvedTheme : null;
 
+  if (!value) return null;
+
+  const nextTheme = value === 'light' ? 'dark' : 'light';
+  const Icon = value === 'light' ? Sun : Moon;
+
   return (
-    <div className={container} data-theme-toggle="" {...props}>
-      {full.map(([key, Icon]) => (
-        <button
-          type="button"
-          key={key}
-          aria-label={key}
-          className={cn(itemVariants({ active: value === key }))}
-          onClick={() => setTheme(key)}
-        >
-          <Icon className="size-4" fill="transparent" />
-        </button>
-      ))}
-    </div>
+    <button
+      type="button"
+      aria-label={`Switch to ${nextTheme} mode`}
+      className={cn('inline-flex items-center cursor-pointer bg-transparent text-primary hover:text-muted-foreground', className)}
+      data-theme-toggle=""
+      onClick={() => setTheme(nextTheme)}
+      {...props}
+    >
+      <Icon className="size-4" fill="transparent" />
+    </button>
   );
 }

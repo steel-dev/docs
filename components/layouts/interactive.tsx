@@ -88,7 +88,7 @@ function InteractiveLinks({ className }: InteractiveLinksProps) {
             className="text-accent hover:text-accent hover:decoration-solid underline decoration-dotted decoration-accent decoration-1 underline-offset-4 flex items-center gap-1 relative"
           >
             {link.icon && <span className="mr-1">{link.icon}</span>}
-            <span className="font-fono">{link.title}</span>
+            <span className="font-mono">{link.title}</span>
             <span className="ml-1">→</span>
           </Link>
         </li>

@@ -113,7 +113,7 @@ export function FeedbackWrapper({ pageTitle, pagePath, className }: FeedbackWrap
               )}
             >
               <ThumbsUp className="w-4 h-4" />
-              <span className="font-fono">Good</span>
+              <span className="font-mono">Good</span>
             </button>
 
             <button
@@ -130,7 +130,7 @@ export function FeedbackWrapper({ pageTitle, pagePath, className }: FeedbackWrap
               )}
             >
               <ThumbsDown className="w-4 h-4" />
-              <span className="font-fono">Bad</span>
+              <span className="font-mono">Bad</span>
             </button>
           </div>
         ) : !feedback ? (
@@ -146,7 +146,7 @@ export function FeedbackWrapper({ pageTitle, pagePath, className }: FeedbackWrap
               )}
             >
               <ThumbsUp className="w-4 h-4" />
-              <span className="font-fono">Good</span>
+              <span className="font-mono">Good</span>
             </button>
 
             <button
@@ -160,7 +160,7 @@ export function FeedbackWrapper({ pageTitle, pagePath, className }: FeedbackWrap
               )}
             >
               <ThumbsDown className="w-4 h-4" />
-              <span className="font-fono">Bad</span>
+              <span className="font-mono">Bad</span>
             </button>
           </div>
         ) : null}
@@ -191,11 +191,11 @@ export function FeedbackWrapper({ pageTitle, pagePath, className }: FeedbackWrap
             onChange={(e) => setAdditionalFeedback(e.target.value)}
             placeholder="Leave your feedback..."
             className={cn(
-              'font-fono',
+              'font-mono',
               'w-full min-h-[80px] p-3 rounded-md resize-none text-sm',
               'border-1',
               'focus:outline-none focus:ring-1 focus:ring-border',
-              'placeholder:font-fono placeholder:text-neutral-500 dark:placeholder:text-neutral-400',
+              'placeholder:font-mono placeholder:text-neutral-500 dark:placeholder:text-neutral-400',
             )}
           />
 

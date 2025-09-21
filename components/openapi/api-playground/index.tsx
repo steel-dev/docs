@@ -336,7 +336,7 @@ export function APIPlayground({
               <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 transition-colors last:rounded-b">
                 <div className="flex items-center gap-2">
                   <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
-                  <span className="font-fono text-sm font-medium">Path Parameters</span>
+                  <span className="font-mono text-sm font-medium">Path Parameters</span>
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent className="px-4 py-4">
@@ -366,7 +366,7 @@ export function APIPlayground({
               <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 transition-colors last:rounded-b">
                 <div className="flex items-center gap-2">
                   <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
-                  <span className="font-fono text-sm font-medium">Query Parameters</span>
+                  <span className="font-mono text-sm font-medium">Query Parameters</span>
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent className="px-4 pb-4 pt-0">
@@ -396,7 +396,7 @@ export function APIPlayground({
               <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 transition-colors last:rounded-b">
                 <div className="flex items-center gap-2">
                   <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
-                  <span className="font-fono text-sm font-medium">Headers</span>
+                  <span className="font-mono text-sm font-medium">Headers</span>
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent className="px-4 pb-4 pt-0">
@@ -426,7 +426,7 @@ export function APIPlayground({
               <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 transition-colors last:rounded-b">
                 <div className="flex items-center gap-2">
                   <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
-                  <span className="font-fono text-sm font-medium">Request Body</span>
+                  <span className="font-mono text-sm font-medium">Request Body</span>
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent className="px-4 pb-4 pt-0">
@@ -449,7 +449,7 @@ export function APIPlayground({
               {response.status && (
                 <Badge
                   className={cn(
-                    'inline-flex items-center rounded border transition-colors font-fono text-xs px-1.5 py-0 h-5',
+                    'inline-flex items-center rounded border transition-colors font-mono text-xs px-1.5 py-0 h-5',
                     response.status >= 200 && response.status < 300
                       ? 'bg-[#e7f7e7] text-[#4B714D] border-[#c2ebc4] dark:bg-background dark:text-[#c2ebc4] dark:border-[#c2ebc4]'
                       : 'bg-[#ffe7e7] text-[#8A4B4B] border-[#ffc2c2] dark:bg-background dark:text-[#ffc2c2] dark:border-[#ffc2c2]',

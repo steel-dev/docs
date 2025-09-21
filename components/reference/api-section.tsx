@@ -25,7 +25,7 @@ export async function APISection({ apiExport, hasSource = true }: APISectionProp
                 {param.name}
               </code>
               {!param.optional && (
-                <Badge className="font-fono text-sm px-2 py-0.5 bg-[#F7E7E7] text-[#714B4B] border-[#EBC2C2] dark:bg-background dark:text-[#EBC2C2] dark:border-[#EBC2C2]">
+                <Badge className="font-mono text-sm px-2 py-0.5 bg-[#F7E7E7] text-[#714B4B] border-[#EBC2C2] dark:bg-background dark:text-[#EBC2C2] dark:border-[#EBC2C2]">
                   REQUIRED
                 </Badge>
               )}
@@ -81,7 +81,7 @@ export async function APISection({ apiExport, hasSource = true }: APISectionProp
       <div className="sticky top-[var(--header-height,4rem)] z-10 flex items-center justify-between py-4 bg-gradient-to-b from-background from-85% to-transparent to-100%">
         <div className="flex items-center gap-4">
           <Badge className="px-1.5 py-0.5 bg-neutral-100 border-border dark:bg-neutral-800 font-medium">
-            <h2 className="text-lg font-normal text-foreground font-fono !m-0">{apiExport.name}</h2>
+            <h2 className="text-lg font-normal text-foreground font-mono !m-0">{apiExport.name}</h2>
           </Badge>
           <span className="text-sm text-muted-foreground font-mono">{apiExport.kind}</span>
         </div>
@@ -147,7 +147,7 @@ export async function APISection({ apiExport, hasSource = true }: APISectionProp
                     <TabsTrigger
                       key={index}
                       value={index.toString()}
-                      className="font-fono px-2.5 py-1 rounded-full border-0 bg-inverted hover:bg-muted/80 text-sm text-muted-foreground data-[state=active]:bg-inverted data-[state=active]:text-background transition"
+                      className="font-mono px-2.5 py-1 rounded-full border-0 bg-inverted hover:bg-muted/80 text-sm text-muted-foreground data-[state=active]:bg-inverted data-[state=active]:text-background transition"
                     >
                       {index === 0
                         ? 'Basic usage'
