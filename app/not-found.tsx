@@ -14,7 +14,7 @@ export default function NotFound() {
           The page you are looking for doesn&apos;t exist or has been moved.
         </p>
         <Link
-          href="/"
+          href="/overview"
           className="inline-flex h-9 items-center rounded-md bg-brand-orange px-4 text-sm font-medium text-neutral-900 transition-colors hover:bg-brand-orange/90"
         >
           Back to homepage

@@ -4,7 +4,7 @@
  */
 export function processMarkdownLinks(
   content: string,
-  baseUrl: string = 'https://docs.hiro.so',
+  baseUrl: string = 'https://docs.steel.dev',
 ): string {
   // Process standard markdown links: [text](/path)
   content = content.replace(/\[([^\]]+)\]\(\/([^)]+)\)/g, (match, text, path) => {

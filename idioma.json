@@ -7,5 +7,5 @@
   "files": {
     "include": ["content/docs/[locale]/**/*.{md,mdx}"]
   },
-  "preserve": ["Clarinet", "Stacks", "Clarity", "/^type:\\s*\\w+$/"]
+  "preserve": ["/^type:\\s*\\w+$/"]
 }

@@ -187,8 +187,8 @@ export function formatDiscussionBody(
   pageUrl: string,
 ): string {
   const productionUrl = pageUrl.replace(
-    "http://localhost:3000",
-    "https://docs.hiro.so",
+    "http://localhost:3030",
+    "https://docs.steel.dev",
   );
 
   return `## Documentation Feedback

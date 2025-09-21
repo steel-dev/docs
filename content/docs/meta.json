@@ -2,19 +2,8 @@
   "title": "steel",
   "root": true,
   "pages": [
-    "intro-to-steel",
-    "...sessions-api",
-    "...credentials-api",
-    "...files-api",
-    "...extensions-api",
-    "...captchas-api",
-    "...self-hosting",
-    "...stealth",
-    "...examples",
+    "...overview",
     "...integrations",
-    "...resources",
-    "...api-reference",
-    "...playground",
     "...changelog"
   ]
 }

@@ -7,7 +7,7 @@ const defaultMetadata: Metadata = {
     title: 'Hiro Docs',
     description:
       'All the developer docs, guides and resources you need to build on Bitcoin layers.',
-    url: 'https://docs.hiro.so',
+    url: 'https://docs.steel.dev',
     siteName: 'Hiro Docs',
     images: [
       {
@@ -304,7 +304,7 @@ export function createMetadata(override: Partial<Metadata>): Metadata {
 
 export const baseUrl =
   process.env.NODE_ENV === 'development'
-    ? new URL('http://localhost:3000')
+    ? new URL('http://localhost:3030')
     : new URL(`https://${process.env.NEXT_PUBLIC_VERCEL_URL!}`);
 
 export function getRouteMetadata(path: string): Partial<Metadata> {

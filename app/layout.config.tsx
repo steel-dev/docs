@@ -33,7 +33,6 @@ export const baseOptions: BaseLayoutProps = {
     },
     {
       text: "Playground",
-      description: "Explore Steel's features and capabilities.",
       url: "/playground",
     },
     // {

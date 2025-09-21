@@ -26,7 +26,7 @@ export function FeedbackWrapper({ pageTitle, pagePath, className }: FeedbackWrap
 
       try {
         const pageUrl =
-          typeof window !== 'undefined' ? window.location.href : `https://docs.hiro.so${pagePath}`;
+          typeof window !== 'undefined' ? window.location.href : `https://docs.steel.dev${pagePath}`;
 
         const response = await fetch('/api/feedback', {
           method: 'POST',

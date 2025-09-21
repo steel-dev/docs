@@ -1,6 +1,6 @@
 {
   "title": "Integrations",
-  "root": false,
+  "root": true,
   "pages": [
     "---Integrations---",
     "agentkit",

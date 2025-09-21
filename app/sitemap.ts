@@ -5,7 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const pages = source.getPages();
 
   return pages.map((page) => ({
-    url: `https://docs.hiro.so${page.url.replace(/^\/en(\/|$)/, '/').replace(/\/$/, '/')}`,
+    url: `https://docs.steel.dev${page.url.replace(/^\/en(\/|$)/, '/').replace(/\/$/, '/')}`,
     lastModified: new Date(),
     changeFreq: 'weekly',
     priority: page.url === '/' ? 1 : 0.8,

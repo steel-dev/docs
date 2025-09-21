@@ -29,7 +29,7 @@ jobs:
       - name: Generate llms.txt files
         run: bun run generate-llms
         env:
-          LLMS_BASE_URL: https://docs.hiro.so
+          LLMS_BASE_URL: https://docs.steel.dev
 
       - name: Run link validation
         run: bun run validate-links

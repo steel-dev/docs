@@ -11,9 +11,9 @@ interface GenerationConfig {
 }
 
 // Environment variables (optional):
-// LLMS_BASE_URL - URL for llms.txt (default: "https://docs.hiro.so")
+// LLMS_BASE_URL - URL for llms.txt (default: "https://docs.steel.dev")
 const config: GenerationConfig = {
-  productionUrl: process.env.LLMS_BASE_URL || "https://docs.hiro.so",
+  productionUrl: process.env.LLMS_BASE_URL || "https://docs.steel.dev",
 };
 
 interface PageMetadata {

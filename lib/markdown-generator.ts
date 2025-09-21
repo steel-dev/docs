@@ -177,7 +177,7 @@ export class ReferenceMarkdownGenerator {
   }
 
   generateInstallationSection(): string {
-    const packageName = this.typeDocData.name || '@stacks/transactions';
+    const packageName = this.typeDocData.name || '@steel-dev/cli';
 
     return `## Installation
 

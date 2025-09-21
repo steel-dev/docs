@@ -23,7 +23,6 @@ import { LLMShare } from '@/components/llm-share';
 import { getMDXComponents } from '@/components/mdx';
 import { Mermaid } from '@/components/mdx/mermaid';
 import { APIPage } from '@/components/openapi/api-page';
-import { API } from '@/components/reference/api-page';
 import { Badge } from '@/components/ui/badge';
 import * as customIcons from '@/components/ui/icon';
 import { TagFilterSystem } from '@/components/ui/tag-filter-system';
@@ -134,15 +133,6 @@ export default async function Page(props: {
                 <MDX
                   components={getMDXComponents({
                     // Custom overrides that need special handling
-                    API: (props) => <API {...props} />,
-                    APIPage: (props) => (
-                      <APIPage
-                        baseUrl="https://api.hiro.so"
-                        enablePlayground={true}
-                        clarityConversion={true}
-                        {...props}
-                      />
-                    ),
                     h1: ({ children, ...props }: HeadingProps) => {
                       const H1 = defaultMdxComponents.h1 as React.ComponentType<HeadingProps>;
                       const id = typeof children === 'string' ? children : undefined;
@@ -234,15 +224,6 @@ export default async function Page(props: {
                 <MDX
                   components={getMDXComponents({
                     // Custom overrides that need special handling
-                    API: (props) => <API {...props} />,
-                    APIPage: (props) => (
-                      <APIPage
-                        baseUrl="https://api.hiro.so"
-                        enablePlayground={true}
-                        clarityConversion={true}
-                        {...props}
-                      />
-                    ),
                     h1: ({ children, ...props }: HeadingProps) => {
                       const H1 = defaultMdxComponents.h1 as React.ComponentType<HeadingProps>;
                       const id = typeof children === 'string' ? children : undefined;

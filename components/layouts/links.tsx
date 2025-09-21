@@ -166,22 +166,6 @@ function isNavItemActive(item: LinkItemType, pathname: string): boolean {
     'active' in item ? (item.active ?? 'url') : item.type === 'menu' ? 'nested-url' : 'url';
   if (activeType === 'none') return false;
 
-  // Special handling for "Get started" link
-  if (item.url === '/start') {
-    // Define the main sections that should override "Get started"
-    const mainSections = ['/tools', '/apis', '/reference', '/resources'];
-
-    // Check if current path is in any main section
-    const isInMainSection = mainSections.some(
-      (section) => pathname === section || pathname.startsWith(`${section}/`),
-    );
-
-    // "Get started" is active if:
-    // 1. We're exactly on the start page, OR
-    // 2. We're on any path that's not root ("/") AND not in the main sections
-    return pathname === '/start' || (pathname !== '/' && !isInMainSection);
-  }
-
   // For other items, use the standard isActive logic
   return isActive(item.url, pathname, activeType === 'nested-url');
 }
@@ -202,9 +186,10 @@ export function renderNavItem(item: LinkItemType): ReactNode {
             <Link
               href={item.url}
               className={cn(
-                'font-sans text-sm px-4 py-2 rounded-md hover:bg-fd-accent/50 transition-colors',
-                isActive && 'text-primary',
+                'font-sans text-sm px-4 py-2 rounded-md hover:text-primary transition-colors',
+                isActive && 'text-white',
               )}
+              data-nav-active={isActive ? 'true' : undefined}
             >
               {item.text}
             </Link>
@@ -224,6 +209,7 @@ export function renderNavItem(item: LinkItemType): ReactNode {
                 className={cn(
                   'font-sans text-sm px-4 py-2 rounded-md group flex items-center gap-1 cursor-pointer',
                 )}
+                data-nav-active={isNavItemActive(item, pathname) ? 'true' : undefined}
               >
                 <Link href={item.url} className="flex items-center gap-1">
                   {item.text}
@@ -235,6 +221,7 @@ export function renderNavItem(item: LinkItemType): ReactNode {
             // When no URL, use default button behavior
             <NavigationMenuTrigger
               className={cn('font-sans text-sm px-4 py-2 rounded-md group flex items-center gap-1')}
+              data-nav-active={isNavItemActive(item, pathname) ? 'true' : undefined}
             >
               {item.text}
               <ChevronDown className="relative h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />

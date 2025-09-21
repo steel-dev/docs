@@ -1132,7 +1132,7 @@ async function fetchAllSpecs(): Promise<void> {
 
 // Run the script if this file is executed directly
 if (require.main === module) {
-  fetchAllSpecs().catch(console.error);
+  // fetchAllSpecs().catch(console.error);
 }
 
 export { fetchAllSpecs, fetchApiSpec, fetchGitHubApiSpec, generatePlatformApiSpec };

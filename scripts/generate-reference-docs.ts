@@ -54,11 +54,11 @@ async function generateReferenceDocs() {
 // Main execution
 if (require.main === module) {
   // Check if --sample flag is passed
-  if (process.argv.includes("--sample")) {
-    generateWithSampleData().catch(console.error);
-  } else {
-    generateReferenceDocs().catch(console.error);
-  }
+  // if (process.argv.includes("--sample")) {
+  //   generateWithSampleData().catch(console.error);
+  // } else {
+  //   generateReferenceDocs().catch(console.error);
+  // }
 }
 
 export { generateReferenceDocs, generateWithSampleData };

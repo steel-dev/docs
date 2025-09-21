@@ -28,9 +28,17 @@ export interface DocsLayoutProps {
 
 export function DocsLayout({ tree, children }: DocsLayoutProps) {
   const [isScrolled, setIsScrolled] = React.useState(false);
-  const { registerShortcut } = useKeyboardShortcuts();
+  // const { registerShortcut } = useKeyboardShortcuts();
   const { collapsed } = useSidebar();
   const localizedLinks = useLocalizedNavigation();
+  const pathname = usePathname();
+
+  const menuWrapperRef = React.useRef<HTMLDivElement | null>(null);
+  const [underline, setUnderline] = React.useState<{ left: number; width: number; visible: boolean }>({
+    left: 0,
+    width: 0,
+    visible: false,
+  });
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -43,37 +51,63 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // React.useEffect(() => {
+  //   // register 'p' shortcut for platform navigation
+  //   const platformShortcut = registerShortcut({
+  //     key: 'p',
+  //     callback: () => {
+  //       window.open('https://platform.hiro.so', '_blank', 'noopener,noreferrer');
+  //     },
+  //     preventDefault: true,
+  //   });
+
+  //   // register 't' shortcut for calendar scheduling
+  //   const calendarShortcut = registerShortcut({
+  //     key: 't',
+  //     callback: () => {
+  //       window.open('https://cal.com/waits/15min', '_blank', 'noopener,noreferrer');
+  //     },
+  //     preventDefault: true,
+  //   });
+
+  //   return () => {
+  //     platformShortcut();
+  //     calendarShortcut();
+  //   };
+  // }, [registerShortcut]);
+
   React.useEffect(() => {
-    // register 'p' shortcut for platform navigation
-    const platformShortcut = registerShortcut({
-      key: 'p',
-      callback: () => {
-        window.open('https://platform.hiro.so', '_blank', 'noopener,noreferrer');
-      },
-      preventDefault: true,
-    });
+    const updateUnderline = () => {
+      const wrapper = menuWrapperRef.current;
+      if (!wrapper) return;
+      const activeEl = wrapper.querySelector<HTMLElement>('[data-nav-active="true"]');
+      if (!activeEl) {
+        setUnderline((prev) => ({ ...prev, visible: false }));
+        return;
+      }
+      const activeRect = activeEl.getBoundingClientRect();
+      const wrapperRect = wrapper.getBoundingClientRect();
+      const left = Math.max(0, activeRect.left - wrapperRect.left);
+      const width = Math.max(0, activeRect.width);
 
-    // register 't' shortcut for calendar scheduling
-    const calendarShortcut = registerShortcut({
-      key: 't',
-      callback: () => {
-        window.open('https://cal.com/waits/15min', '_blank', 'noopener,noreferrer');
-      },
-      preventDefault: true,
-    });
-
-    return () => {
-      platformShortcut();
-      calendarShortcut();
+      setUnderline({ left, width, visible: width > 0 });
     };
-  }, [registerShortcut]);
+
+    updateUnderline();
+    window.addEventListener('resize', updateUnderline);
+    const id = window.setTimeout(updateUnderline, 0);
+    return () => {
+      window.removeEventListener('resize', updateUnderline);
+      window.clearTimeout(id);
+    };
+  }, [pathname, localizedLinks]);
 
   return (
     <MobileMenuProvider>
       <TreeContextProvider tree={tree}>
         <header
           className={cn(
-            'sticky top-0 z-50 h-16 transition-all duration-200',
+            'sticky top-0 z-50 h-12 transition-all duration-200',
             'bg-background backdrop-blur-md',
             'border-b border-border/50',
           )}
@@ -89,7 +123,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
             </div>
 
             {/* Desktop layout */}
-            <div className="hidden md:flex flex-row items-center gap-4 w-full">
+            <div className="hidden md:flex flex-row items-center gap-4 w-full h-full">
               <div className="flex flex-row items-center gap-4">
                 {/* <NavbarSidebarTrigger /> */}
                 <Link href="/" className="mr-6 flex items-center space-x-2">
@@ -97,11 +131,20 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                 </Link>
               </div>
 
-              <NavigationMenu>
-                <NavigationMenuList className="flex flex-row items-center">
-                  {localizedLinks?.map((link) => renderNavItem(link))}
-                </NavigationMenuList>
-              </NavigationMenu>
+              <div ref={menuWrapperRef} className="relative h-full">
+                <NavigationMenu className="flex items-center h-full">
+                  <NavigationMenuList className="flex flex-row items-center h-full">
+                    {localizedLinks?.map((link) => renderNavItem(link))}
+                  </NavigationMenuList>
+                </NavigationMenu>
+                <div
+                  aria-hidden
+                  className={cn(
+                    'pointer-events-none absolute bottom-0 h-0 border-b-2 border-white',
+                  )}
+                  style={{ left: underline.left, width: underline.width, opacity: underline.visible ? 1 : 0 }}
+                />
+              </div>
 
               <div className="flex flex-1 items-center justify-end space-x-2 lg:space-x-3">
                 <SearchToggle />
@@ -140,9 +183,10 @@ export function Sidebar() {
   const pathname = usePathname();
 
   const children = useMemo(() => {
-    const filterCriteria = ['tools', 'apis', 'reference', 'resources'];
+    const filterCriteria = ['overview', 'integrations', 'cookbook', 'changelog'];
 
     const shouldFilterItem = (item: PageTree.Node): boolean => {
+
       const isCurrentSection = filterCriteria.some(
         (criteria) => pathname?.includes(`/${criteria}/`) || pathname === `/${criteria}`,
       );
@@ -164,6 +208,7 @@ export function Sidebar() {
           const itemPath = item.$id || '';
           return (
             itemPath === criteria ||
+            itemPath.startsWith(`${criteria}`) ||
             itemPath.startsWith(`${criteria}/`) ||
             itemPath.includes(`/${criteria}/`) ||
             itemPath.endsWith(`/${criteria}`)
@@ -201,7 +246,7 @@ export function Sidebar() {
     <aside
       data-collapsed={collapsed}
       className={cn(
-        'fixed flex flex-col shrink-0 pt-4 px-2 pb-10 top-16 z-20 text-base md:text-sm overflow-auto md:sticky md:h-[calc(100dvh-64px)] border-r border-border',
+        'fixed flex flex-col shrink-0 pt-4 px-2 pb-10 top-12 z-20 text-base md:text-sm overflow-auto md:sticky md:h-[calc(100dvh-50px)] border-r border-border',
         'max-md:inset-x-0 max-md:bottom-0',
         !open && 'max-md:invisible',
         'md:w-[250px] md:transition-all md:duration-100 ease-linear',
