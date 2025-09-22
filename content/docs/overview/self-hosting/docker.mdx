@@ -21,16 +21,16 @@ This guide provides step-by-step instructions to set up your own Steel Browser i
 
 1.  Create a new directory for your Steel Browser instance:
 
-```sh Terminal -w
+```bash Terminal -wc
 mkdir steel-browser && cd steel-browser
 ```
 
 
 2.  Create the following file:
 
-    #### docker-compose.yml
+    #### docker-compose.yaml
 
-```yaml
+```yaml docker-compose.yaml -c
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:latest
@@ -60,7 +60,7 @@ networks:
 
 3.  Launch the containers:
 
-```sh Terminal -w
+```bash Terminal -wc
 docker compose up -d
 ```
 
@@ -75,7 +75,7 @@ If you prefer to build the containers yourself:
 
 1.  Clone the repository:
 
-```sh Terminal -w
+```bash Terminal -wc
 git clone https://github.com/steel-dev/steel-browser.git
 cd steel-browser
 ```
@@ -85,7 +85,7 @@ cd steel-browser
 
 3.  Build and start using the development compose file:
 
-```sh Terminal -w
+```bash Terminal -wc
 docker compose -f docker-compose.dev.yml up -d --build
 ```
 
@@ -108,7 +108,7 @@ docker compose -f docker-compose.dev.yml up -d --build
 
 The `.cache` directory stores Chrome data and extensions. Mount it as a volume for persistence:
 
-```yaml
+```yaml docker-compose.yaml -c
 volumes:
   - ./.cache:/app/.cache
 ```
@@ -134,7 +134,7 @@ The API container uses Chrome 128.0.6613.119 by default. To use a different vers
 2.  Modify the Chrome installation section:
 
 
-```dockerfile
+```dockerfile Dockerfile -c
 ARG CHROME_VERSION="128.0.6613.119"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -152,7 +152,7 @@ RUN apt-get update && \
 
 Both containers use Node 22.13.0 by default. To use a different version, modify the build arguments:
 
-```yaml
+```yaml docker-compose.yaml -c
 services:
   api:
     build:
@@ -169,7 +169,7 @@ services:
 
 Ensure your host has enough resources and check the API container logs:
 
-```sh Terminal -w
+```bash Terminal -wc
 docker logs steel-browser_api_1
 ```
 
@@ -193,14 +193,14 @@ If the UI can't connect to the API:
 
 2.  Check if the API is accessible:
 
-```sh Terminal -w
+```bash Terminal -wc
 curl http://localhost:3000/api/health
 ```
 
 
 3.  Ensure the containers can communicate over the network:
 
-```sh Terminal -w
+```bash Terminal -wc
 docker exec steel-browser_ui_1 curl http://api:3000/api/health
 ```
 
@@ -219,7 +219,7 @@ For production environments:
 
 Example production compose file:
 
-```yaml
+```yaml docker-compose.yaml -c
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:sha256:...
@@ -265,7 +265,7 @@ networks:
 
 To update to the latest version:
 
-```sh Terminal -w
+```bash Terminal -wc
 docker compose pull
 docker compose up -d
 ```
@@ -273,7 +273,7 @@ docker compose up -d
 
 For custom builds:
 
-```sh Terminal -w
+```bash Terminal -wc
 git pull
 docker compose -f docker-compose.dev.yml up -d --build
 ```

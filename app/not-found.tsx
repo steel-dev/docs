@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
 
 // Force dynamic rendering to prevent SSR issues
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function NotFound() {
   return (
@@ -15,7 +15,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/overview"
-          className="inline-flex h-9 items-center rounded-md bg-brand-orange px-4 text-sm font-medium text-neutral-900 transition-colors hover:bg-brand-orange/90"
+          className="inline-flex h-9 items-center rounded-md bg-yellow-300 px-4 text-sm font-medium text-neutral-900 transition-colors hover:bg-yellow-400"
         >
           Back to homepage
         </Link>

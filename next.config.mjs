@@ -70,6 +70,12 @@ const config = {
         permanent: true,
       },
       {
+        source: "/cookbook/playwright-python",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-playwright-python-starter",
+        permanent: true,
+      },
+      {
         source: "/cookbook/puppeteer",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-puppeteer-starter",
