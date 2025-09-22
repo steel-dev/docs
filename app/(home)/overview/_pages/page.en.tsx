@@ -32,7 +32,7 @@ export default function HomePage() {
             <Cards className="!grid-cols-1">
               <Card
                 className="group space-y-1"
-                href="/sessions-api"
+                href="/overview/sessions-api/overview"
                 variant="default"
                 title="Sessions API"
                 description="Explore API endpoints for managing Steel Sessions."
@@ -42,7 +42,7 @@ export default function HomePage() {
             <Cards className="xl:!grid-cols-4">
               <Card
                 className="group space-y-1"
-                href="/captchas-api"
+                href="/overview/captchas-api/overview"
                 variant="default"
                 title="Captchas API"
                 description="Explore API endpoints for managing Steel Captchas."
@@ -50,7 +50,7 @@ export default function HomePage() {
               />
               <Card
                 className="group space-y-1"
-                href="/extensions-api"
+                href="/overview/extensions-api/overview"
                 variant="default"
                 title="Extensions API"
                 description="Explore API endpoints for building on Steel."
@@ -58,14 +58,14 @@ export default function HomePage() {
               />
               <Card
                 className="group space-y-1"
-                href="/credentials-api"
+                href="/overview/credentials-api/overview"
                 title="Credentials API"
                 description="Explore API endpoints for managing Steel Credentials."
                 tags={["API", "Credentials"]}
               />
               <Card
                 className="group space-y-1"
-                href="/resources/guides"
+                href="/overview/files-api/overview"
                 title="Files API"
                 description="Explore API Endpoints for managing Files on Steel."
                 tags={["API", "Files"]}
@@ -87,44 +87,34 @@ export default function HomePage() {
             <hr className="border-t border-border my-2" />
             <Cards className="xl:!grid-cols-3">
               <SmallCard
-                icon={<StacksIcon />}
-                href="/apis/sessions-api"
-                variant="ghost"
-                title="Browser-use"
-                tags={["AI agents", "Python"]}
-                description="Browser-use is an open-source library that enables AI agents to control and interact with browsers programmatically."
+                href="/integrations/browser-use/overview"
+                title="Browser-Use Starter"
+                icon={<Database />}
+                description="Use Browser-use to interact with the Steel API."
               />
               <SmallCard
+                href="/cookbook/credentials-starter"
+                title="Credentials API Starter"
                 icon={<StacksIcon />}
-                href="/apis/sessions-api"
-                variant="ghost"
-                title="Browser-use"
-                tags={["AI agents", "Python"]}
-                description="Browser-use is an open-source library that enables AI agents to control and interact with browsers programmatically."
+                description="Use the Steel Credentials API to securely store and manage user credentials."
               />
               <SmallCard
+                href="/cookbook/auth-context-starter"
+                title="Auth Context Starter"
                 icon={<StacksIcon />}
-                href="/apis/sessions-api"
-                variant="ghost"
-                title="Browser-use"
-                tags={["AI agents", "Python"]}
-                description="Browser-use is an open-source library that enables AI agents to control and interact with browsers programmatically."
+                description="Learn how to store and reuse managed context."
               />
               <SmallCard
+                href="/cookbook/extensions-starter"
+                title="Extensions API Starter"
                 icon={<StacksIcon />}
-                href="/apis/sessions-api"
-                variant="ghost"
-                title="Browser-use"
-                tags={["AI agents", "Python"]}
-                description="Browser-use is an open-source library that enables AI agents to control and interact with browsers programmatically."
+                description="Use the Steel Extensions API to add custom extensions for your application."
               />
               <SmallCard
-                icon={<StacksIcon />}
-                href="/apis/sessions-api"
-                variant="ghost"
-                title="Browser-use"
-                tags={["AI agents", "Python"]}
-                description="Browser-use is an open-source library that enables AI agents to control and interact with browsers programmatically."
+                href="/cookbook/files-starter"
+                title="Files API Starter"
+                icon={<Database />}
+                description="Use the Steel Files API to manage files and directories."
               />
             </Cards>
           </div>
@@ -144,13 +134,13 @@ export default function HomePage() {
             <Cards>
               <SmallCard
                 icon={<Js />}
-                href="/reference/javascript-sdk"
+                href="/steel-js-sdk"
                 title="Steel JavaScript SDK"
                 description="JavaScript SDK for building applications on Steel."
               />
               <SmallCard
                 icon={<Js />}
-                href="/reference/python-sdk"
+                href="/steel-python-sdk"
                 title="Steel Python SDK"
                 description="Python SDK for building applications on Steel."
               />
@@ -172,13 +162,13 @@ export default function HomePage() {
             <Cards>
               <SmallCard
                 icon={<API />}
-                href="/resources/api-reference"
+                href="/api-reference"
                 title="API Reference"
                 description="View the Steel API reference."
               />
               <SmallCard
                 icon={<Database />}
-                href="/resources/playground"
+                href="/playground"
                 title="Playground"
                 description="Explore the examples and quick-start guides in Steel playground."
               />

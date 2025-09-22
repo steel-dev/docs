@@ -1,59 +1,57 @@
 import { Cards, IndexCard } from "@/components/card";
 import { API, Hiro, Ordinals, Runes, StacksIcon } from "@/components/ui/icon";
 
-export default function APIsPage() {
+export default function IntegrationsPage() {
   return (
     <main className="my-6 space-y-10">
       <div className="px-4 md:px-[var(--nav-offset)]">
         <div className="space-y-10">
           <div className="space-y-1">
-            <h3 className="text-3xl">APIs</h3>
+            <h3 className="text-3xl">Integrations 🔌</h3>
             <hr className="border-t border-border mt-8" />
           </div>
           <Cards>
             <IndexCard
               icon={<StacksIcon />}
-              href="/apis/stacks-blockchain-api"
-              title="Stacks Blockchain API"
-              description="Comprehensive REST API for interacting with the Stacks blockchain and network data."
+              href="/integrations/browser-use/overview"
+              title="Browser-Use Integration"
+              tag="Browser Agent"
+              description="Use Browser-Use to interact with a Steel browser."
             />
             <IndexCard
               icon={<StacksIcon />}
-              href="/apis/stacks-node-rpc-api"
-              title="Stacks Node RPC API"
-              description="Raw blockchain node methods: submit txs, call read-only contracts, query mempool/state."
+              href="/integrations/claude-computer-use/overview"
+              title="Claude Computer Use"
+              tag="Browser Agent"
+              description="Use Claude Computer Use with Steel Browser."
             />
             <IndexCard
               icon={<API />}
-              href="/apis/token-metadata-api"
-              title="Token Metadata API"
-              description="Fast, reliable metadata for fungible and non-fungible tokens on Stacks."
+              href="/integrations/openai-computer-use/overview"
+              title="OpenAI Computer Use"
+              tag="Browser Agent"
+              description="Use OpenAI Computer Use with Steel Browser."
             />
             <IndexCard
-              icon={<Hiro />}
-              href="/apis/platform-api"
-              title="Platform API"
-              description="Programmatically manage devnets and chainhooks via REST interface."
+              icon={<API />}
+              href="/integrations/crewai/overview"
+              title="CrewAI"
+              tag="Multi-Agent"
+              description="Learn how to use CrewAI with Steel Browser."
             />
             <IndexCard
               icon={<Ordinals />}
-              href="/apis/ordinals-api"
-              title="Ordinals API"
-              tag="Bitcoin L1"
-              description="Complete Bitcoin ordinals and BRC-20 token data with caching optimization."
+              href="/integrations/magnitude/overview"
+              title="Magnitude"
+              tag="Browser Agent"
+              description="Use Magnitude with Steel Browser."
             />
             <IndexCard
               icon={<Runes />}
-              href="/apis/runes-api"
-              title="Runes API"
-              tag="Bitcoin L1"
-              description="Fast, reliable data for Bitcoin Runes via an easy-to-use REST interface."
-            />
-            <IndexCard
-              icon={<API />}
-              href="/apis/signer-metrics-api"
-              title="Signer Metrics API 2"
-              description="Monitor and analyze signer behavior and performance on the Stacks network."
+              href="/integrations/notte/overview"
+              title="Notte"
+              tag="Browser Agent"
+              description="Use Notte with Steel Browser."
             />
           </Cards>
         </div>

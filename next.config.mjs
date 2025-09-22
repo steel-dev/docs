@@ -22,6 +22,16 @@ const config = {
         permanent: true, // 301 redirect - tells crawlers this is the canonical location
       },
       {
+        source: "/steel-js-sdk",
+        destination: "https://www.npmjs.com/package/steel-sdk",
+        permanent: true,
+      },
+      {
+        source: "/steel-python-sdk",
+        destination: "https://pypi.org/project/steel-sdk/",
+        permanent: true,
+      },
+      {
         source: "/api-reference",
         destination: "https://docs.steel.dev/api-reference",
         permanent: true,
@@ -42,61 +52,61 @@ const config = {
         permanent: true,
       },
       {
-        source: "/examples/stagehand-py",
+        source: "/cookbook/stagehand-py",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-stagehand-python-starter",
         permanent: true,
       },
       {
-        source: "/examples/stagehand-ts",
+        source: "/cookbook/stagehand-ts",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-stagehand-node-starter",
         permanent: true,
       },
       {
-        source: "/examples/playwright",
+        source: "/cookbook/playwright",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-playwright-starter",
         permanent: true,
       },
       {
-        source: "/examples/puppeteer",
+        source: "/cookbook/puppeteer",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-puppeteer-starter",
         permanent: true,
       },
       {
-        source: "/examples/selenium",
+        source: "/cookbook/selenium",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-selenium-starter",
         permanent: true,
       },
       {
-        source: "/examples/steel-browser-use-starter",
+        source: "/cookbook/steel-browser-use-starter",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-browser-use-starter",
         permanent: true,
       },
       {
-        source: "/examples/steel-credentials-starter",
+        source: "/cookbook/credentials-starter",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-credentials-starter",
         permanent: true,
       },
       {
-        source: "/examples/steel-auth-context-starter",
+        source: "/cookbook/auth-context-starter",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-auth-context-starter",
         permanent: true,
       },
       {
-        source: "/examples/steel-extensions-starter",
+        source: "/cookbook/extensions-starter",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-extensions-starter",
         permanent: true,
       },
       {
-        source: "/examples/steel-files-api-starter",
+        source: "/cookbook/files-starter",
         destination:
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-files-api-starter",
         permanent: true,

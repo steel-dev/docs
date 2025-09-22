@@ -1,0 +1,16 @@
+{
+  "title": "Cookbook",
+  "root": true,
+  "pages": [
+    "---Cookbook---",
+    "credentials-starter",
+    "auth-context-starter",
+    "extensions-starter",
+    "files-starter",
+    "playwright",
+    "puppeteer",
+    "selenium",
+    "stagehand-ts",
+    "stagehand-py"
+  ]
+}
