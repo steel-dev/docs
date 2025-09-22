@@ -39,12 +39,12 @@ You can check the current CAPTCHA status for any session to understand what CAPT
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X GET https://api.steel.dev/v1/sessions/{sessionId}/captchas/status \
 -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! TypeScript
+```typescript !! TypeScript -wc
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -54,7 +54,7 @@ const response = await client.sessions.captchas.status('sessionId');
 console.log(response);
 ```
 
-```python !! Python
+```python !! Python -wc
 from steel import Steel
 
 client = Steel()
@@ -115,7 +115,7 @@ The `url` parameter is optional and defaults to the current page.
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X POST https://api.steel.dev/v1/sessions/{sessionId}/captchas/solve-image \
    -H "Content-Type: application/json" \
    -H "steel-api-key: YOUR_API_KEY_HERE" \
@@ -123,7 +123,7 @@ curl -X POST https://api.steel.dev/v1/sessions/{sessionId}/captchas/solve-image 
 ```
 
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -137,7 +137,7 @@ console.log(response.success);
 ```
 
 
-```python !! Python
+```python !! Python -wc
 from steel import Steel
 
 client = Steel()
@@ -216,7 +216,7 @@ Steel's CAPTCHA system is designed to work seamlessly with your existing automat
 
 #### Monitoring CAPTCHA Progress
 
-```typescript Typescript
+```typescript Typescript -wc
 async function waitForCaptchaSolution(sessionId, timeout = 30000) {
   const startTime = Date.now();
 
@@ -245,7 +245,7 @@ async function waitForCaptchaSolution(sessionId, timeout = 30000) {
 
 #### Basic Integration Pattern
 
-```typescript Typescript
+```typescript Typescript  -wc
 // Navigate to a page that might have CAPTCHAs
 await page.goto('https://example.com/protected-page');
 

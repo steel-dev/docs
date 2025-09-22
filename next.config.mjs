@@ -42,12 +42,12 @@ const config = {
         permanent: true,
       },
       {
-        source: "/self-hosting/render",
+        source: "/overview/self-hosting/render",
         destination: "https://render.com/deploy?image=steeldev/steel",
         permanent: true,
       },
       {
-        source: "/self-hosting/railway",
+        source: "/overview/self-hosting/railway",
         destination: "https://railway.app/template/FQG9Ca",
         permanent: true,
       },

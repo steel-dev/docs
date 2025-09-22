@@ -48,7 +48,7 @@ To upload credentials:
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X POST https://api.steel.dev/v1/credentials \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
@@ -61,7 +61,7 @@ curl -X POST https://api.steel.dev/v1/credentials \
   }'
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 await client.credentials.create({
   origin: "https://app.example.com",
   value: {
@@ -71,7 +71,7 @@ await client.credentials.create({
 });
 ```
 
-```python !! Python
+```python !! Python -wc
 client.credentials.create(
     origin="https://app.example.com",
     value={
@@ -89,7 +89,7 @@ When starting a session via `POST /sessions`, you can request credential injecti
 
 <CodeTabs storage="injecting-credentials-into-a-session">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X POST https://api.steel.dev/v1/sessions \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
@@ -99,14 +99,14 @@ curl -X POST https://api.steel.dev/v1/sessions \
   }'
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 const session = await client.sessions.create({
   namespace: "default",
   credentials: {}
 });
 ```
 
-```python !! Python
+```python !! Python -wc
 client.sessions.create(
   namespace="default",
   credentials={}
@@ -262,7 +262,7 @@ If `autoSubmit` is disabled, you must explicitly trigger the login action (e.g.,
 
 #### Example Flow
 
-```typescript
+```typescript Typescript -wc
 await page.goto("https://app.example.com/login");
 
 // Optional: ensure login form is present
