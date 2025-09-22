@@ -1,6 +1,6 @@
-import { Brackets, Database } from 'lucide-react';
-import { Cards, IndexCard } from '@/components/card';
-import { Chainhook, Clarinet } from '@/components/ui/icon';
+import { Brackets, Database } from "lucide-react";
+import { Cards, IndexCard } from "@/components/card";
+import { Chainhook, Clarinet } from "@/components/ui/icon";
 
 export default function ToolsPage() {
   return (
@@ -13,29 +13,34 @@ export default function ToolsPage() {
           </div>
           <Cards>
             <IndexCard
-              href="/tools/clarinet"
-              title="Clarinet"
-              icon={<Clarinet />}
-              description="A comprehensive development environment for building and testing Clarity smart contracts."
-            />
-            <IndexCard
-              href="/tools/chainhook"
-              title="Chainhook"
-              icon={<Chainhook />}
-              description="Create custom event streams and triggers for real-time blockchain data processing."
-            />
-            <IndexCard
-              href="/tools/contract-monitoring"
-              title="Contract Monitoring"
-              icon={<Brackets />}
-              description="Monitor and track smart contract activity and performance metrics."
-            />
-            <IndexCard
-              href="/tools/bitcoin-indexer"
-              title="Bitcoin Indexer"
+              href="/examples/steel-browser-use-starter"
+              title="Browser-use Starter"
               icon={<Database />}
-              tag="Bitcoin L1"
-              description="Index and query Bitcoin blockchain data with high-performance indexing."
+              description="Use Browser-use to interact with the Steel API."
+            />
+            <IndexCard
+              href="/examples/steel-credentials-starter"
+              title="Credentials Starter"
+              icon={<Clarinet />}
+              description="Use the Steel Credentials API to securely store and manage user credentials."
+            />
+            <IndexCard
+              href="/examples/steel-auth-context-starter"
+              title="Auth Context Starter"
+              icon={<Chainhook />}
+              description="Learn how to store and reuse managed context."
+            />
+            <IndexCard
+              href="/examples/steel-extensions-starter"
+              title="Extensions Starter"
+              icon={<Brackets />}
+              description="Use the Steel Extensions API to add custom extensions for your application."
+            />
+            <IndexCard
+              href="/examples/steel-files-api-starter"
+              title="Files API Starter"
+              icon={<Database />}
+              description="Use the Steel Files API to manage files and directories."
             />
           </Cards>
         </div>

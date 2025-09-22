@@ -1,5 +1,5 @@
-import { Cards, IndexCard } from '@/components/card';
-import { API, Hiro, Ordinals, Runes, StacksIcon } from '@/components/ui/icon';
+import { Cards, IndexCard } from "@/components/card";
+import { API, Hiro, Ordinals, Runes, StacksIcon } from "@/components/ui/icon";
 
 export default function APIsPage() {
   return (
@@ -52,7 +52,7 @@ export default function APIsPage() {
             <IndexCard
               icon={<API />}
               href="/apis/signer-metrics-api"
-              title="Signer Metrics API"
+              title="Signer Metrics API 2"
               description="Monitor and analyze signer behavior and performance on the Stacks network."
             />
           </Cards>

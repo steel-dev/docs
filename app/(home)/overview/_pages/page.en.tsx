@@ -29,44 +29,48 @@ export default function HomePage() {
             </div>
           </div>
           <div className="space-y-5">
-          <Cards className="!grid-cols-1">
-            <Card
-              className="group space-y-1"
-              href="/apis/sessions-api"
-              variant="default"
-              title="Sessions API"
-              description="Explore API endpoints for managing Steel Sessions."
-              tags={["API", "Sessions"]}
-            />
-          </Cards>
-          <Cards className="xl:!grid-cols-4">
-            <Card
-              className="group space-y-1"
-              href="/apis/sessions-api"
-              variant="default"
-              title="Sessions API"
-              description="Explore API endpoints for managing Steel Sessions."
-              tags={["API", "Sessions"]}
-            />
-            <Card
-              className="group space-y-1"
-              href="/resources/guides"
-              title="Guides"
-              description="Explore guides for building on Steel."
-            />
-            <Card
-              className="group space-y-1"
-              href="/resources/guides"
-              title="Guides"
-              description="Explore guides for building on Steel."
-            />
-            <Card
-              className="group space-y-1"
-              href="/resources/guides"
-              title="Guides"
-              description="Explore guides for building on Steel."
-            />
-          </Cards>
+            <Cards className="!grid-cols-1">
+              <Card
+                className="group space-y-1"
+                href="/sessions-api"
+                variant="default"
+                title="Sessions API"
+                description="Explore API endpoints for managing Steel Sessions."
+                tags={["API", "Sessions"]}
+              />
+            </Cards>
+            <Cards className="xl:!grid-cols-4">
+              <Card
+                className="group space-y-1"
+                href="/captchas-api"
+                variant="default"
+                title="Captchas API"
+                description="Explore API endpoints for managing Steel Captchas."
+                tags={["API", "Captchas"]}
+              />
+              <Card
+                className="group space-y-1"
+                href="/extensions-api"
+                variant="default"
+                title="Extensions API"
+                description="Explore API endpoints for building on Steel."
+                tags={["API", "Extensions"]}
+              />
+              <Card
+                className="group space-y-1"
+                href="/credentials-api"
+                title="Credentials API"
+                description="Explore API endpoints for managing Steel Credentials."
+                tags={["API", "Credentials"]}
+              />
+              <Card
+                className="group space-y-1"
+                href="/resources/guides"
+                title="Files API"
+                description="Explore API Endpoints for managing Files on Steel."
+                tags={["API", "Files"]}
+              />
+            </Cards>
           </div>
           <div className="flex flex-col">
             <h4
@@ -77,7 +81,7 @@ export default function HomePage() {
                 href="#explore-by-category"
                 className="not-prose group text-sm uppercase"
               >
-                APIs
+                Starters
               </a>
             </h4>
             <hr className="border-t border-border my-2" />
@@ -165,7 +169,7 @@ export default function HomePage() {
               </a>
             </h4>
             <hr className="border-t border-border my-2" />
-            {/* <Cards>
+            <Cards>
               <SmallCard
                 icon={<API />}
                 href="/resources/api-reference"
@@ -178,8 +182,7 @@ export default function HomePage() {
                 title="Playground"
                 description="Explore the examples and quick-start guides in Steel playground."
               />
-            </Cards> */}
-            
+            </Cards>
           </div>
         </div>
       </div>

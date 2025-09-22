@@ -71,6 +71,36 @@ const config = {
           "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-selenium-starter",
         permanent: true,
       },
+      {
+        source: "/examples/steel-browser-use-starter",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-browser-use-starter",
+        permanent: true,
+      },
+      {
+        source: "/examples/steel-credentials-starter",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-credentials-starter",
+        permanent: true,
+      },
+      {
+        source: "/examples/steel-auth-context-starter",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-auth-context-starter",
+        permanent: true,
+      },
+      {
+        source: "/examples/steel-extensions-starter",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-extensions-starter",
+        permanent: true,
+      },
+      {
+        source: "/examples/steel-files-api-starter",
+        destination:
+          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-files-api-starter",
+        permanent: true,
+      },
     ];
   },
   images: {
