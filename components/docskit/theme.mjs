@@ -11,6 +11,7 @@ export default {
       ],
       settings: {
         foreground: "var(--ch-1)",
+        fontStyle: "",
       },
     },
     {
@@ -151,19 +152,19 @@ export default {
         "punctuation.decorator",
       ],
       settings: {
-        foreground: "var(--ch-6)",
+        foreground: "var(--ch-5)",
       },
     },
     {
       scope: ["variable.parameter", "meta.function.parameters"],
       settings: {
-        foreground: "var(--ch-11)",
+        foreground: "var(--ch-1)",
       },
     },
     {
       scope: ["constant.language", "support.function.builtin"],
       settings: {
-        foreground: "var(--ch-12)",
+        foreground: "var(--ch-6)",
       },
     },
     {
@@ -175,13 +176,13 @@ export default {
     {
       scope: ["keyword.control.directive", "punctuation.definition.directive"],
       settings: {
-        foreground: "var(--ch-10)",
+        foreground: "var(--ch-7)",
       },
     },
     {
       scope: "punctuation.definition.typeparameters",
       settings: {
-        foreground: "var(--ch-13)",
+        foreground: "var(--ch-8)",
       },
     },
     {
@@ -453,13 +454,13 @@ export default {
     {
       scope: "comment meta.annotation.parameters.go",
       settings: {
-        foreground: "var(--ch-6)",
+        foreground: "var(--ch-13)",
       },
     },
     {
       scope: "constant.language.go",
       settings: {
-        foreground: "var(--ch-6)",
+        foreground: "var(--ch-13)",
       },
     },
     {
@@ -496,6 +497,7 @@ export default {
       ],
       settings: {
         foreground: "var(--ch-7)",
+        fontStyle: "italic",
       },
     },
     {
@@ -539,7 +541,7 @@ export default {
     {
       scope: ["punctuation.definition.annotation", "storage.type.annotation"],
       settings: {
-        foreground: "var(--ch-6)",
+        foreground: "var(--ch-5)",
       },
     },
     {
@@ -599,12 +601,13 @@ export default {
       scope: ["support.constant.node", "support.type.object.module.js"],
       settings: {
         foreground: "var(--ch-7)",
+        fontStyle: "italic",
       },
     },
     {
       scope: "storage.modifier.implements",
       settings: {
-        foreground: "var(--ch-7)",
+        foreground: "var(--ch-6)",
       },
     },
     {
@@ -684,7 +687,7 @@ export default {
     {
       scope: "text.tex support.function.be",
       settings: {
-        foreground: "var(--ch-13)",
+        foreground: "var(--ch-5)",
       },
     },
     {
@@ -961,7 +964,7 @@ export default {
     {
       scope: ["support.function.magic.python"],
       settings: {
-        foreground: "var(--ch-13)",
+        foreground: "var(--ch-9)",
       },
     },
     {
@@ -970,7 +973,8 @@ export default {
         "variable.language.special.self.python",
       ],
       settings: {
-        foreground: "var(--ch-12)",
+        foreground: "var(--ch-6)",
+        fontStyle: "italic",
       },
     },
     {
@@ -983,6 +987,7 @@ export default {
       scope: "storage.type.function.python",
       settings: {
         foreground: "var(--ch-7)",
+        fontStyle: "italic",
       },
     },
     {
@@ -991,7 +996,8 @@ export default {
         "meta.function.decorator.identifier.python",
       ],
       settings: {
-        foreground: "var(--ch-13)",
+        foreground: "var(--ch-5)",
+        fontStyle: "italic",
       },
     },
     {
@@ -1006,13 +1012,14 @@ export default {
         "punctuation.definition.decorator.python",
       ],
       settings: {
-        foreground: "var(--ch-6)",
+        foreground: "var(--ch-5)",
+        fontStyle: "italic",
       },
     },
     {
       scope: "constant.character.format.placeholder.other.python",
       settings: {
-        foreground: "var(--ch-5)",
+        foreground: "var(--ch-13)",
       },
     },
     {
@@ -1021,19 +1028,20 @@ export default {
         "support.function.builtin.python",
       ],
       settings: {
-        foreground: "var(--ch-6)",
+        foreground: "var(--ch-13)",
       },
     },
     {
       scope: ["support.type.python"],
       settings: {
-        foreground: "var(--ch-6)",
+        foreground: "var(--ch-10)",
       },
     },
     {
       scope: "constant.language.python",
       settings: {
-        foreground: "var(--ch-7)",
+        foreground: "var(--ch-6)",
+        fontStyle: "italic",
       },
     },
     {

@@ -67,39 +67,39 @@
 
   /* CodeHike Styling */
   --ch-0: var(--color-white);
-  --ch-1: #7a756b;
+  --ch-1: #e4e1dc; /* Base text color */
   --ch-2: #7c7f93; /* Not used */
-  --ch-3: #b5aca1;
-  --ch-4: #48944c;
-  --ch-5: #ea76cb;
-  --ch-6: #ff5500;
-  --ch-7: #bc812e;
-  --ch-8: #179299;
-  --ch-9: #3676b7;
-  --ch-10: #bc812e;
-  --ch-11: #7a756b;
-  --ch-12: #bc812e;
-  --ch-13: #04a5e5;
-  --ch-14: #dd7878;
-  --ch-15: #6c6f85;
-  --ch-16: #3676b7; /* highlight */
-  --ch-17: #dc8a78;
-  --ch-18: #eff1f5;
-  --ch-19: #4c4f6912;
-  --ch-20: #04a5e540;
-  --ch-21: #1a85ff;
-  --ch-22: #7c7f934d;
-  --ch-23: #e6e9ef;
-  --ch-24: #acb0be;
-  --ch-25: #dce0e8;
-  --ch-26: #8c8fa1;
-  --ch-27: #ccd0da;
-  --ch-28: #ccd0da80;
-  --ch-29: #eff1f5e6;
-  --ch-30: #bcc0cc;
-  --ch-31: #6c6f85;
-  --ch-32: #5c5f77;
-  --ch-33: #acb0be;
+  --ch-3: #595650; /* Comments */
+  --ch-4: #7cbe83; /* Strings */
+  --ch-5: #f5c2e7; /* Decorators/special */
+  --ch-6: #ff9e64; /* Constants/numbers */
+  --ch-7: #ff9ecf; /* Keywords */
+  --ch-8: #94e2d5; /* Operators */
+  --ch-9: #69a3e8; /* Functions */
+  --ch-10: #ff9ecf; /* Classes/types */
+  --ch-11: #e4e1dc; /* Parameters */
+  --ch-12: #ff9e64; /* this/self */
+  --ch-13: #89dceb; /* Built-ins/methods */
+  --ch-14: #dd7878; /* Other attributes */
+  --ch-15: #6c6f85; /* Strike-through */
+  --ch-16: #69a3e8; /* Links/highlights */
+  --ch-17: #dc8a78; /* Regex */
+  --ch-18: #1e1e2e; /* Background */
+  --ch-19: #4c4f6912; /* Line highlight */
+  --ch-20: #04a5e540; /* Range highlight */
+  --ch-21: #1a85ff; /* Info */
+  --ch-22: #7c7f934d; /* Selection */
+  --ch-23: #181825; /* Tab inactive */
+  --ch-24: #44475a; /* Group border */
+  --ch-25: #11111b; /* Header bg */
+  --ch-26: #7f849c; /* Line numbers */
+  --ch-27: #313244; /* Input bg */
+  --ch-28: #31324480; /* Hover bg */
+  --ch-29: #1e1e2ee6; /* Inline bg */
+  --ch-30: #a6adc8; /* Terminal black */
+  --ch-31: #585b70; /* Terminal bright black */
+  --ch-32: #45475a; /* Terminal bright white */
+  --ch-33: #bac2de; /* Terminal white */
 }
 
 .dark {
@@ -138,39 +138,39 @@
   /* CodeHike Styling */
 
   --ch-0: var(--color-black);
-  --ch-1: #8c877d;
+  --ch-1: #e4e1dc; /* Base text color */
   --ch-2: #9399b2; /* Not used */
-  --ch-3: #595650;
-  --ch-4: #c2ebc4;
-  --ch-5: #f5c2e7;
-  --ch-6: #ff5500;
-  --ch-7: #ff9ecf;
-  --ch-8: #94e2d5;
-  --ch-9: #b3d9ff;
-  --ch-10: #ff9ecf;
-  --ch-11: #8c877d;
-  --ch-12: #ff9ecf;
-  --ch-13: #89dceb;
-  --ch-14: #f2cdcd;
-  --ch-15: #a6adc8;
-  --ch-16: #8c877d; /* highlight */
-  --ch-17: #f5e0dc;
-  --ch-18: #1e1e2e;
-  --ch-19: #cdd6f412;
-  --ch-20: #89dceb40;
-  --ch-21: #3794ff;
-  --ch-22: #9399b240;
-  --ch-23: #181825;
-  --ch-24: #585b70;
-  --ch-25: #11111b;
-  --ch-26: #7f849c;
-  --ch-27: #313244;
-  --ch-28: #31324480;
-  --ch-29: #1e1e2ee6;
-  --ch-30: #a6adc8;
-  --ch-31: #585b70;
-  --ch-32: #45475a;
-  --ch-33: #bac2de;
+  --ch-3: #595650; /* Comments */
+  --ch-4: #7cbe83; /* Strings */
+  --ch-5: #f5c2e7; /* Decorators/special */
+  --ch-6: #ff9e64; /* Constants/numbers */
+  --ch-7: #ff9ecf; /* Keywords */
+  --ch-8: #94e2d5; /* Operators */
+  --ch-9: #69a3e8; /* Functions */
+  --ch-10: #ff9ecf; /* Classes/types */
+  --ch-11: #e4e1dc; /* Parameters */
+  --ch-12: #ff9e64; /* this/self */
+  --ch-13: #89dceb; /* Built-ins/methods */
+  --ch-14: #f2cdcd; /* Other attributes */
+  --ch-15: #a6adc8; /* Strike-through */
+  --ch-16: #69a3e8; /* Highlights */
+  --ch-17: #f5e0dc; /* Regex */
+  --ch-18: #1e1e2e; /* Background */
+  --ch-19: #cdd6f412; /* Line highlight */
+  --ch-20: #89dceb40; /* Range highlight */
+  --ch-21: #3794ff; /* Info */
+  --ch-22: #9399b240; /* Selection */
+  --ch-23: #181825; /* Tab inactive */
+  --ch-24: #585b70; /* Group border */
+  --ch-25: #11111b; /* Header bg */
+  --ch-26: #7f849c; /* Line numbers */
+  --ch-27: #313244; /* Input bg */
+  --ch-28: #31324480; /* Hover bg */
+  --ch-29: #1e1e2ee6; /* Inline bg */
+  --ch-30: #a6adc8; /* Terminal black */
+  --ch-31: #585b70; /* Terminal bright black */
+  --ch-32: #45475a; /* Terminal bright white */
+  --ch-33: #bac2de; /* Terminal white */
 }
 
 @theme inline {
@@ -234,7 +234,8 @@
   }
 
   pre {
-    @apply text-sm;
+    @apply text-sm bg-[#1e1e2e];
+    border-radius: 8px;
   }
 
   h1,
@@ -252,8 +253,8 @@
   h6 a,
   option {
     font-family: var(--font-inter), sans-serif;
-    @apply text-primary;
     @apply font-normal;
+    color: #ffffff;
   }
 
   span {
@@ -262,6 +263,7 @@
 
   pre span {
     font-family: var(--font-mono), sans-serif !important;
+    color: var(--ch-1);
   }
 
   ::-webkit-scrollbar {

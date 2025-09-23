@@ -235,6 +235,14 @@
   --color-brand-sky: #b3d9ff;
   --color-brand-pink: #ff9ecf;
   --color-brand-gold: #bc812e;
+  --color-brand-steel-bg: #1e1e2e;
+  --color-brand-steel-text: #e4e1dc;
+  --color-brand-steel-comment: #595650;
+  --color-brand-steel-keyword: #ff9ecf;
+  --color-brand-steel-function: #69a3e8;
+  --color-brand-steel-string: #7cbe83;
+  --color-brand-steel-number: #ff9e64;
+  --color-brand-steel-decorator: #f5c2e7;
   --color-mint-100: #f3fbf3;
   --color-mint-300: #e7f7e7;
   --color-mint-500: #daf3dc;
@@ -364,6 +372,10 @@
   --animate-ping: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
   --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-bounce: bounce 1s infinite;
+
+  /* Custom Steel theme for code blocks */
+  --ch-code-background: var(--color-brand-steel-bg);
+  --ch-code-text: var(--color-brand-steel-text);
   @keyframes spin {
     to {
       transform: rotate(360deg);
