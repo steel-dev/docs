@@ -38,7 +38,6 @@ export function flagsToOptions(flags: string = "") {
     n: "lineNumbers",
     w: "wordWrap",
     a: "animate",
-    f: "filename",
   } as const;
   flags.split("").forEach((flag) => {
     if (flag in map) {

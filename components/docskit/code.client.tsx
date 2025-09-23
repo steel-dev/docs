@@ -21,7 +21,7 @@ export function MultiCode({
   const current =
     group.tabs.find((tab) => tab.title === currentTitle) || group.tabs[0];
 
-  const { style, code, filename } = current;
+  const { style, code, filename, options } = current;
 
   return (
     <Tabs
@@ -58,6 +58,11 @@ export function MultiCode({
             />
           </TabsTrigger>
         ))}
+        {options.copyButton && filename === "" && (
+          <div className={cn("ml-auto mr-3 items-center flex")}>
+            <CopyButton text={code} />
+          </div>
+        )}
       </TabsList>
       {filename && (
         <div
@@ -76,7 +81,6 @@ export function MultiCode({
           </span>
         </div>
       )}
-
       <TabsContent
         // key={meta}
         value={current.title}

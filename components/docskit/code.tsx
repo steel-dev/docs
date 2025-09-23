@@ -114,7 +114,7 @@ function SingleCode({
         >
           <span className="pl-2 pr-1">{icon}</span>
           {title}
-          {options.copyButton && !filename && (
+          {options.copyButton && filename === "" && (
             <div className={cn("ml-auto mr-1 items-center")}>
               <CopyButton
                 text={code}
@@ -171,7 +171,7 @@ export async function toCodeGroup(props: {
       return {
         options,
         title,
-        filename, // <-- add this
+        filename,
         style: highlighted.style,
         code: highlighted.code,
         icon: <CodeIcon title={title} lang={tab.lang} />,

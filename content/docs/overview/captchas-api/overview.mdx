@@ -44,7 +44,7 @@ curl -X GET https://api.steel.dev/v1/sessions/{sessionId}/captchas/status \
 -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript -wc -f main.ts
+```typescript !! Typescript -wc
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -54,7 +54,7 @@ const response = await client.sessions.captchas.status('sessionId');
 console.log(response);
 ```
 
-```python !! Python -wc -f main.py
+```python !! Python -wc
 from steel import Steel
 
 client = Steel()
@@ -123,7 +123,7 @@ curl -X POST https://api.steel.dev/v1/sessions/{sessionId}/captchas/solve-image 
 ```
 
 
-```typescript !! Typescript -wc -f main.ts
+```typescript !! Typescript -wc
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -137,7 +137,7 @@ console.log(response.success);
 ```
 
 
-```python !! Python -wc -f main.py
+```python !! Python -wc
 from steel import Steel
 
 client = Steel()
@@ -216,7 +216,7 @@ Steel's CAPTCHA system is designed to work seamlessly with your existing automat
 
 #### Monitoring CAPTCHA Progress
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wc
 async function waitForCaptchaSolution(sessionId, timeout = 30000) {
   const startTime = Date.now();
 
@@ -245,7 +245,7 @@ async function waitForCaptchaSolution(sessionId, timeout = 30000) {
 
 #### Basic Integration Pattern
 
-```typescript Typescript  -wc
+```typescript Typescript -wc
 // Navigate to a page that might have CAPTCHAs
 await page.goto('https://example.com/protected-page');
 
