@@ -23,8 +23,6 @@ Currently, Steel's auto-solver supports these CAPTCHA services:
 
 *   ReCAPTCHA v2 / v3
 
-*   HCaptcha
-
 *   Cloudflare Turnstile
 
 *   ImageToText CAPTCHAs
@@ -128,8 +126,6 @@ You can detect CAPTCHA presence using these selectors:
 // Common CAPTCHA selectors
 const captchaSelectors = [
     'iframe[src*="recaptcha"]',
-    'iframe[src*="hcaptcha"]',
-    '.h-captcha',
     '#captcha-box',
     '[class*="captcha"]'
 ];
