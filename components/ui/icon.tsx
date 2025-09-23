@@ -1,14 +1,11 @@
 import type { LucideIcon } from "lucide-react";
-import { TerminalIcon } from "lucide-react";
-import Image from "next/image";
 import type React from "react";
 import type { JSX, SVGProps } from "react";
-import SteelLogo from "../../public/images/6-qmg3uQon_NBbndvw340.png";
 
 export function create({ icon: Icon }: { icon?: LucideIcon }) {
   return (
     <div className="icons rounded-md border border-border p-1 shadow-sm">
-      {Icon ? <Icon /> : <TerminalIcon />}
+      {Icon ? <Icon /> : <BashIcon />}
     </div>
   );
 }
@@ -19,6 +16,42 @@ type IconProps = {
   className?: string;
   style?: React.CSSProperties;
 };
+
+export function BashIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="3"
+        y="5"
+        width="17"
+        height="14"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <path
+        d="M7 10L9 12L7 14"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 14H16"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 export function MagicIcon({
   size = 24,
@@ -131,71 +164,6 @@ export function StacksIcon({
           }}
         />
       </svg>
-    </svg>
-  );
-}
-
-export function Ordinals(): JSX.Element {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 15 15"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="7.58228" cy="7.05255" r="6.36257" stroke="currentColor" />
-      <circle cx="7.53107" cy="7.04505" r="3.76642" fill="currentColor" />
-    </svg>
-  );
-}
-
-export function Bitcoin(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="12"
-      height="15"
-      viewBox="0 0 12 15"
-      fill="none"
-    >
-      <path
-        d="M1.19348 3.46362L8.58334 3.46362C9.10426 3.46362 9.60385 3.67056 9.97219 4.0389C10.3405 4.40725 10.5475 4.90684 10.5475 5.42776V5.53032C10.5475 6.05124 10.3405 6.55083 9.97219 6.91917C9.60385 7.28752 9.10426 7.49446 8.58334 7.49446L1.19348 7.49446L1.19348 3.46362Z"
-        stroke="currentColor"
-        style={{ stroke: "currentColor", strokeOpacity: 1 }}
-        strokeMiterlimit="10"
-      />
-      <path
-        d="M1.19287 7.49463L9.02376 7.49463C9.28843 7.49463 9.55051 7.54676 9.79503 7.64804C10.0396 7.74933 10.2617 7.89778 10.4489 8.08493C10.636 8.27208 10.7845 8.49426 10.8858 8.73878C10.987 8.9833 11.0392 9.24538 11.0392 9.51004V9.51004C11.0392 10.0446 10.8268 10.5572 10.4489 10.9352C10.0709 11.3131 9.55828 11.5255 9.02376 11.5255H1.19287L1.19287 7.49463Z"
-        stroke="currentColor"
-        style={{ stroke: "currentColor", strokeOpacity: 1 }}
-        strokeMiterlimit="10"
-      />
-      <path
-        d="M3.92407 0.489502V3.13593"
-        stroke="currentColor"
-        style={{ stroke: "currentColor", strokeOpacity: 1 }}
-        strokeMiterlimit="10"
-      />
-      <path
-        d="M7.10791 0.489502V3.13593"
-        stroke="currentColor"
-        style={{ stroke: "currentColor", strokeOpacity: 1 }}
-        strokeMiterlimit="10"
-      />
-      <path
-        d="M3.92407 11.8186V14.487"
-        stroke="currentColor"
-        style={{ stroke: "currentColor", strokeOpacity: 1 }}
-        strokeMiterlimit="10"
-      />
-      <path
-        d="M7.10864 11.8186V14.487"
-        stroke="currentColor"
-        style={{ stroke: "currentColor", strokeOpacity: 1 }}
-        strokeMiterlimit="10"
-      />
     </svg>
   );
 }
@@ -502,114 +470,6 @@ export function Backend(props: SVGProps<SVGSVGElement>): JSX.Element {
   );
 }
 
-export function Chainhook(props: SVGProps<SVGSVGElement>): JSX.Element {
-  return (
-    <svg
-      width="15"
-      height="21"
-      viewBox="0 0 15 21"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path
-        d="M2.64267 13.9633C2.64267 17.054 5.14825 19.5596 8.23903 19.5596C11.3298 19.5596 13.8354 17.054 13.8354 13.9633C13.8354 10.8725 11.3298 8.36689 8.23903 8.36689V1.50073"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinecap="square"
-        strokeLinejoin="bevel"
-      />
-      <circle cx="2.64254" cy="13.9629" r="2.10061" fill="currentColor" />
-    </svg>
-  );
-}
-
-export function Clarinet(props: SVGProps<SVGSVGElement>): JSX.Element {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path
-        d="M13.5314 0.699463V0.699463C11.5848 0.699463 10.0068 2.27749 10.0068 4.22408V13.7909C10.0068 15.7375 11.5848 17.3155 13.5314 17.3155V17.3155"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <path
-        d="M9.14333 0.699463V0.699463C7.19674 0.699463 5.61871 2.27749 5.61871 4.22408V13.7909C5.61871 15.7375 7.19674 17.3155 9.14333 17.3155V17.3155"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <path
-        d="M4.75546 0.699463V0.699463C2.80886 0.699463 1.23083 2.27749 1.23083 4.22408V13.7909C1.23083 15.7375 2.80886 17.3155 4.75546 17.3155V17.3155"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <circle
-        cx="14.8269"
-        cy="9.11588"
-        r="1.94229"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-    </svg>
-  );
-}
-
-export function Hiro(props: SVGProps<SVGSVGElement>): JSX.Element {
-  return (
-    <svg
-      width="15"
-      height="12"
-      viewBox="0 0 15 12"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path
-        d="M9.51367 11.865L13.2384 0.835693H14.657L10.9323 11.865H9.51367Z"
-        fill="currentColor"
-      />
-      <path
-        d="M0.257812 11.8648L3.98254 0.835449H5.40038L1.6764 11.8648H0.257812Z"
-        fill="currentColor"
-      />
-      <path
-        d="M9.56251 5.76172H5.7494L5.35205 6.93744H9.16516L9.56251 5.76172Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-export function Blockchain(props: SVGProps<SVGSVGElement>): JSX.Element {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path
-        d="M1.02271 4.62691V11.4456L7.69635 15L14.515 11.4456V8.39941M1.02271 4.62691L7.69635 7.81865L14.515 4.62691L7.69635 1L1.02271 4.62691Z"
-        stroke="currentColor"
-        strokeLinejoin="bevel"
-      />
-      <path
-        d="M7.69629 7.67358V14.7099"
-        stroke="currentColor"
-        strokeLinejoin="bevel"
-      />
-    </svg>
-  );
-}
-
 export function Container(props: SVGProps<SVGSVGElement>): JSX.Element {
   return (
     <svg
@@ -688,38 +548,6 @@ export function Container(props: SVGProps<SVGSVGElement>): JSX.Element {
   );
 }
 
-export function Runes(props: SVGProps<SVGSVGElement>): JSX.Element {
-  return (
-    <svg
-      width="12"
-      height="18"
-      viewBox="0 0 12 18"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path
-        d="M1.12305 17.4532V0.545898"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinejoin="bevel"
-      />
-      <path
-        d="M3.49548 0.545898L10.5198 5.66523L3.49548 10.6656"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinejoin="bevel"
-      />
-      <path
-        d="M5.40039 11.9766L10.8769 17.4532"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinejoin="bevel"
-      />
-    </svg>
-  );
-}
-
 export function Shapes(props: SVGProps<SVGSVGElement>): JSX.Element {
   return (
     <svg
@@ -768,32 +596,6 @@ export function Plant(props: SVGProps<SVGSVGElement>): JSX.Element {
     >
       <path
         d="M21.8776 3.86924C21.8701 3.74339 21.8167 3.62466 21.7275 3.53551C21.6384 3.44636 21.5196 3.39296 21.3938 3.38541C17.011 3.1276 13.4979 4.45275 11.9965 6.93119C10.9971 8.58205 11.0186 10.599 12.0421 12.5171C11.3858 13.2684 10.9284 14.1722 10.7118 15.146L9.0102 13.4435C9.71059 12.0599 9.7063 10.6119 8.9827 9.41737C7.88184 7.59979 5.32348 6.62525 2.1352 6.81432C2.00921 6.82189 1.89037 6.87541 1.8012 6.96474C1.71203 7.05407 1.65872 7.173 1.65138 7.29901C1.46403 10.4864 2.43684 13.0448 4.25442 14.1456C4.84638 14.5074 5.52691 14.6984 6.22067 14.6974C6.93915 14.69 7.64578 14.5134 8.28317 14.1817L10.5657 16.4574V18.9942C10.5657 19.131 10.62 19.2621 10.7167 19.3588C10.8134 19.4555 10.9445 19.5099 11.0813 19.5099C11.2181 19.5099 11.3492 19.4555 11.4459 19.3588C11.5426 19.2621 11.5969 19.131 11.5969 18.9942V16.4599C11.5935 15.2787 12.0129 14.1352 12.7794 13.2364C13.7428 13.746 14.7319 14.0021 15.6858 14.0021C16.6189 14.0052 17.5346 13.7503 18.3318 13.2656C20.8103 11.766 22.1354 8.25205 21.8776 3.86924ZM4.78895 13.2631C3.38731 12.4149 2.607 10.4005 2.65942 7.82236C5.23755 7.76651 7.24934 8.54768 8.09755 9.94932C8.58567 10.7546 8.62692 11.7007 8.22989 12.6641L5.94567 10.379C5.84892 10.2823 5.7177 10.2279 5.58087 10.2279C5.44404 10.2279 5.31282 10.2823 5.21606 10.379C5.11931 10.4758 5.06496 10.607 5.06496 10.7438C5.06496 10.8806 5.11931 11.0119 5.21606 11.1086L7.50372 13.3954C6.54036 13.7924 5.59419 13.7521 4.78895 13.2631ZM17.7982 12.3848C16.5315 13.1514 15.0361 13.1737 13.5297 12.4621L18.3215 7.67111C18.3694 7.62321 18.4074 7.56633 18.4334 7.50374C18.4593 7.44115 18.4726 7.37406 18.4726 7.30631C18.4726 7.23856 18.4593 7.17147 18.4334 7.10888C18.4074 7.04629 18.3694 6.98941 18.3215 6.94151C18.2736 6.8936 18.2168 6.8556 18.1542 6.82967C18.0916 6.80374 18.0245 6.7904 17.9567 6.7904C17.889 6.7904 17.8219 6.80374 17.7593 6.82967C17.6967 6.8556 17.6398 6.8936 17.5919 6.94151L12.8 11.7334C12.0885 10.2269 12.1125 8.73158 12.8774 7.46572C14.1252 5.40322 17.0935 4.27057 20.8696 4.39346C20.9925 8.16611 19.859 11.1361 17.7982 12.3848Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-export function HiroSVG(props: SVGProps<SVGSVGElement>): JSX.Element {
-  return (
-    <svg
-      width="15"
-      height="12"
-      viewBox="0 0 15 12"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path
-        d="M9.51367 11.865L13.2384 0.835693H14.657L10.9323 11.865H9.51367Z"
-        fill="currentColor"
-      />
-      <path
-        d="M0.257812 11.8648L3.98254 0.835449H5.40038L1.6764 11.8648H0.257812Z"
-        fill="currentColor"
-      />
-      <path
-        d="M9.56251 5.76172H5.7494L5.35205 6.93744H9.16516L9.56251 5.76172Z"
         fill="currentColor"
       />
     </svg>
@@ -3871,6 +3673,46 @@ export function TSIcon(props: SVGProps<SVGSVGElement>) {
           d="m233 284h64v-41H118v41h64v183h51zm84 173c8.1 4.2 18 7.3 29 9.4s23 3.1 35 3.1c12 0 23-1.1 34-3.4c11-2.3 20-6.1 28-11c8.1-5.3 15-12 19-21s7.1-19 7.1-32c0-9.1-1.4-17-4.1-24s-6.6-13-12-18c-5.1-5.3-11-10-18-14s-15-8.2-24-12c-6.6-2.7-12-5.3-18-7.9c-5.2-2.6-9.7-5.2-13-7.8c-3.7-2.7-6.5-5.5-8.5-8.4c-2-3-3-6.3-3-10c0-3.4.89-6.5 2.7-9.3s4.3-5.1 7.5-7.1c3.2-2 7.2-3.5 12-4.6c4.7-1.1 9.9-1.6 16-1.6c4.2 0 8.6.31 13 .94c4.6.63 9.3 1.6 14 2.9c4.7 1.3 9.3 2.9 14 4.9c4.4 2 8.5 4.3 12 6.9v-47c-7.6-2.9-16-5.1-25-6.5s-19-2.1-31-2.1c-12 0-23 1.3-34 3.8s-20 6.5-28 12c-8.1 5.4-14 12-19 21c-4.7 8.4-7 18-7 30c0 15 4.3 28 13 38c8.6 11 22 19 39 27c6.9 2.8 13 5.6 19 8.3s11 5.5 15 8.4c4.3 2.9 7.7 6.1 10 9.5c2.5 3.4 3.8 7.4 3.8 12c0 3.2-.78 6.2-2.3 9s-3.9 5.2-7.1 7.2s-7.1 3.6-12 4.8c-4.7 1.1-10 1.7-17 1.7c-11 0-22-1.9-32-5.7c-11-3.8-21-9.5-28.1-15.44z"
         ></path>
       </g>
+    </svg>
+  );
+}
+
+export function FileIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M10.8307 2.91667V5.83333C10.8307 6.75381 11.5769 7.5 12.4974 7.5H15.4141M5.83073 2.5H10.1404C10.5824 2.5 11.0063 2.67559 11.3189 2.98816L15.3426 7.01184C15.6551 7.3244 15.8307 7.74833 15.8307 8.19036V15.8333C15.8307 16.7538 15.0845 17.5 14.1641 17.5H5.83073C4.91025 17.5 4.16406 16.7538 4.16406 15.8333V4.16667C4.16406 3.24619 4.91025 2.5 5.83073 2.5Z"
+        stroke="currentColor"
+        strokeWidth="1.67"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function KeyIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
     </svg>
   );
 }

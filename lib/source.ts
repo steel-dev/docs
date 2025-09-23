@@ -6,25 +6,12 @@ import { attachFile, createOpenAPI } from "fumadocs-openapi/server";
 import { icons as lucideIcons } from "lucide-react";
 import type { ThemeRegistrationResolved } from "shiki";
 import { docs } from "@/.source";
-import {
-  API,
-  Bitcoin,
-  Chainhook,
-  Clarinet,
-  create,
-  Hiro,
-  Js,
-  StacksIcon,
-} from "@/components/ui/icon";
+import { API, create, Js, StacksIcon } from "@/components/ui/icon";
 import { extractTagsAndLabels } from "./utils/frontmatter-parser";
 import type { FilterablePage } from "./utils/tag-filtering";
 
 const customIcons = {
   API,
-  Bitcoin,
-  Chainhook,
-  Clarinet,
-  Hiro,
   Js,
   StacksIcon,
 };

@@ -1,6 +1,13 @@
-import { Database } from "lucide-react";
+import { Database, Brackets } from "lucide-react";
 import { Card, Cards, SmallCard } from "@/components/card";
-import { API, Js, StacksIcon } from "@/components/ui/icon";
+import {
+  API,
+  TSIcon,
+  PythonIcon,
+  BrowserUseIcon,
+  FileIcon,
+  KeyIcon,
+} from "@/components/ui/icon";
 import SteelLogo from "@/public/images/logo.png";
 import Image from "next/image";
 
@@ -89,31 +96,31 @@ export default function HomePage() {
               <SmallCard
                 href="/integrations/browser-use/overview"
                 title="Browser-Use Starter"
-                icon={<Database />}
+                icon={<BrowserUseIcon />}
                 description="Use Browser-use to interact with the Steel API."
               />
               <SmallCard
                 href="/cookbook/credentials-starter"
                 title="Credentials API Starter"
-                icon={<StacksIcon />}
+                icon={<KeyIcon />}
                 description="Use the Steel Credentials API to securely store and manage user credentials."
               />
               <SmallCard
                 href="/cookbook/auth-context-starter"
                 title="Auth Context Starter"
-                icon={<StacksIcon />}
+                icon={<Database />}
                 description="Learn how to store and reuse managed context."
               />
               <SmallCard
                 href="/cookbook/extensions-starter"
                 title="Extensions API Starter"
-                icon={<StacksIcon />}
+                icon={<Brackets />}
                 description="Use the Steel Extensions API to add custom extensions for your application."
               />
               <SmallCard
                 href="/cookbook/files-starter"
                 title="Files API Starter"
-                icon={<Database />}
+                icon={<FileIcon />}
                 description="Use the Steel Files API to manage files and directories."
               />
             </Cards>
@@ -133,13 +140,13 @@ export default function HomePage() {
             <hr className="border-t border-border my-2" />
             <Cards>
               <SmallCard
-                icon={<Js />}
+                icon={<TSIcon />}
                 href="/steel-js-sdk"
-                title="Steel JavaScript SDK"
-                description="JavaScript SDK for building applications on Steel."
+                title="Steel Typescript SDK"
+                description="Typescript SDK for building applications on Steel."
               />
               <SmallCard
-                icon={<Js />}
+                icon={<PythonIcon />}
                 href="/steel-python-sdk"
                 title="Steel Python SDK"
                 description="Python SDK for building applications on Steel."

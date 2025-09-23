@@ -1,5 +1,10 @@
 import { Cards, IndexCard } from "@/components/card";
-import { API, Hiro, Ordinals, Runes, StacksIcon } from "@/components/ui/icon";
+import {
+  API,
+  BrowserUseIcon,
+  ClaudeIcon,
+  OpenAIIcon,
+} from "@/components/ui/icon";
 
 export default function IntegrationsPage() {
   return (
@@ -12,21 +17,21 @@ export default function IntegrationsPage() {
           </div>
           <Cards>
             <IndexCard
-              icon={<StacksIcon />}
+              icon={<BrowserUseIcon />}
               href="/integrations/browser-use/overview"
               title="Browser-Use Integration"
               tag="Browser Agent"
               description="Use Browser-Use to interact with a Steel browser."
             />
             <IndexCard
-              icon={<StacksIcon />}
+              icon={<ClaudeIcon />}
               href="/integrations/claude-computer-use/overview"
               title="Claude Computer Use"
               tag="Browser Agent"
               description="Use Claude Computer Use with Steel Browser."
             />
             <IndexCard
-              icon={<API />}
+              icon={<OpenAIIcon />}
               href="/integrations/openai-computer-use/overview"
               title="OpenAI Computer Use"
               tag="Browser Agent"
@@ -40,14 +45,14 @@ export default function IntegrationsPage() {
               description="Learn how to use CrewAI with Steel Browser."
             />
             <IndexCard
-              icon={<Ordinals />}
+              icon={<API />}
               href="/integrations/magnitude/overview"
               title="Magnitude"
               tag="Browser Agent"
               description="Use Magnitude with Steel Browser."
             />
             <IndexCard
-              icon={<Runes />}
+              icon={<API />}
               href="/integrations/notte/overview"
               title="Notte"
               tag="Browser Agent"

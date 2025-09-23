@@ -1,6 +1,6 @@
 import { Brackets, Database } from "lucide-react";
 import { Cards, IndexCard } from "@/components/card";
-import { Chainhook, Clarinet } from "@/components/ui/icon";
+import { KeyIcon, FileIcon } from "@/components/ui/icon";
 
 export default function ToolsPage() {
   return (
@@ -15,13 +15,13 @@ export default function ToolsPage() {
             <IndexCard
               href="/cookbook/credentials-starter"
               title="Credentials API Starter"
-              icon={<Clarinet />}
+              icon={<KeyIcon />}
               description="Use the Steel Credentials API to securely store and manage user credentials."
             />
             <IndexCard
               href="/cookbook/auth-context-starter"
               title="Auth Context Starter"
-              icon={<Chainhook />}
+              icon={<Database />}
               description="Learn how to store and reuse managed context."
             />
             <IndexCard
@@ -33,7 +33,7 @@ export default function ToolsPage() {
             <IndexCard
               href="/cookbook/files-starter"
               title="Files API Starter"
-              icon={<Database />}
+              icon={<FileIcon />}
               description="Use the Steel Files API to manage files and directories."
             />
           </Cards>
