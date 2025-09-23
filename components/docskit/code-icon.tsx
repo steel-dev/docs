@@ -1,6 +1,6 @@
-import { Braces, Terminal } from "lucide-react";
+import { Braces } from "lucide-react";
 import { themeIcons } from "seti-icons";
-import { PythonIcon, TSIcon } from "../ui/icon";
+import { PythonIcon, TSIcon, BashIcon } from "../ui/icon";
 
 export function CodeIcon({
   title,
@@ -14,11 +14,7 @@ export function CodeIcon({
   if (lang === "bash") {
     return (
       <span className={className}>
-        <Terminal
-          height="18"
-          style={{ margin: "-8px" }}
-          color="var(--muted-foreground)"
-        />
+        <BashIcon height="18" color="var(--muted-foreground)" />
       </span>
     );
   }
@@ -36,23 +32,11 @@ export function CodeIcon({
   }
 
   if (lang === "typescript") {
-    return (
-      <TSIcon
-        height="18"
-        style={{ margin: "-8px" }}
-        color="var(--muted-foreground)"
-      />
-    );
+    return <TSIcon height="18" color="var(--muted-foreground)" />;
   }
 
   if (lang === "python") {
-    return (
-      <PythonIcon
-        height="18"
-        style={{ margin: "-8px" }}
-        color="var(--muted-foreground)"
-      />
-    );
+    return <PythonIcon height="18" color="var(--muted-foreground)" />;
   }
 
   let filename = title || "x";

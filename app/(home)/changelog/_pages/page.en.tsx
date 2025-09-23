@@ -25,7 +25,7 @@ function getChangelogEntries() {
     .filter(Boolean);
 
   // Sort descending by number
-  entries.sort((a, b) => b.number - a.number);
+  entries.sort((a, b) => b!.number - a!.number);
   return entries;
 }
 

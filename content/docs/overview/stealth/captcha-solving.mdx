@@ -85,14 +85,14 @@ When you enable CAPTCHA solving in your Steel session, here's what happens behin
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -c
+```typescript !! Typescript -wc
 // Typescript
 const session = await client.sessions.create({
     solveCaptcha: true  // Enable CAPTCHA solving
 });
 ```
 
-```python !! Python -c
+```python !! Python -wc
 # Python
 session = client.sessions.create(
     solve_captcha=True  # Enable CAPTCHA solving
@@ -107,13 +107,13 @@ When navigating to pages that might contain CAPTCHAs, it's important to implemen
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -c
+```typescript !! Typescript -wc
 // Typescript example using Puppeteer
 await page.waitForNetworkIdle();  // Wait for network activity to settle
 await page.waitForTimeout(2000);  // Additional safety buffer
 ```
 
-```python !! Python -c
+```python !! Python -wc
 # Python example using Playwright
 await page.wait_for_load_state('networkidle')  # Wait for network activity to settle
 await page.wait_for_timeout(2000)  # Additional safety buffer
@@ -124,7 +124,7 @@ await page.wait_for_timeout(2000)  # Additional safety buffer
 
 You can detect CAPTCHA presence using these selectors:
 
-```typescript Typescript -c
+```typescript Typescript -wc
 // Common CAPTCHA selectors
 const captchaSelectors = [
     'iframe[src*="recaptcha"]',

@@ -23,23 +23,23 @@ Understanding how sessions live and die helps you manage resources effectively a
 
 ### Session Lifetime and Timeout
 
-When you start a session, it stays alive for 5 minutes by default but you can change it by passing the `timeout` parameter. After the time passes, the session will be automatically released.
+When you start a session, it stays alive for 5 minutes by default but you can change it by passing the `apiTimeout`/`api_timeout` parameter. After the time passes, the session will be automatically released.
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 import Steel from 'steel-sdk';
 
 const client = new Steel();
 
 // Create session and keep it running for 10 minutes.
 const session = await client.sessions.create({
-  timeout: 600000 // 10 minutes (NOTE: Units are in milliseconds)
+  apiTimeout: 600000 // 10 minutes (NOTE: Units are in milliseconds)
 });
 ```
 
 
-```python !! Python
+```python !! Python -wc
 import os
 from steel import Steel
 
@@ -47,7 +47,7 @@ client = Steel()
 
 # Create session and keep it running for 10 minutes.
 session = client.sessions.create(
-    timeout=600000 # 10 minutes (NOTE: Units are in milliseconds)
+    api_timeout=600000 # 10 minutes (NOTE: Units are in milliseconds)
 )
 ```
 </CodeTabs>
@@ -61,13 +61,13 @@ When you're done with a session, it's best practice to release it explicitly rat
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 // Release a single session
 const response = await client.sessions.release(session.id);
 ```
 
 
-```python !! Python
+```python !! Python -wc
 # Release a single session
 response = client.sessions.release(session.id)
 ```
@@ -79,14 +79,14 @@ Sometimes you need to clean up all active sessions at once. Steel provides a con
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 // Release all active sessions
 const response = await client.sessions.releaseAll();
 console.log(response.message); // "All sessions released successfully"
 ```
 
 
-```python !! Python
+```python !! Python -wc
 # Release all active sessions
 response = client.sessions.release_all()
 print(response.message) # "All sessions released successfully"

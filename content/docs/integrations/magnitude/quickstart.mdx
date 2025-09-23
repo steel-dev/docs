@@ -23,7 +23,7 @@ Scroll to the bottom to see a full example!
 
 Create a new TypeScript project and basic script:
 
-```
+```bash Terminal -wc
 mkdir steel-magnitude && \
 cd steel-magnitude && \
 npm init -y && \
@@ -36,8 +36,8 @@ touch index.ts .env
 
 ### Step 2: Install Dependencies
 
-```
-npm install steel-sdk magnitude-core zod dotenv
+```package-install
+steel-sdk magnitude-core zod dotenv
 ```
 
 
@@ -45,7 +45,7 @@ npm install steel-sdk magnitude-core zod dotenv
 
 Create a `.env` file with your API keys:
 
-```
+```env ENV -wc
 STEEL_API_KEY=your-steel-api-key-here
 ANTHROPIC_API_KEY=your-anthropic-api-key-here
 ```
@@ -55,7 +55,7 @@ ANTHROPIC_API_KEY=your-anthropic-api-key-here
 
 Set up Steel, load env vars, and prepare to start the Magnitude agent.
 
-```
+```typescript Typescript -wc
 // index.ts
 import * as dotenv from "dotenv";
 import { Steel } from "steel-sdk";
@@ -76,7 +76,7 @@ const client = new Steel({ steelAPIKey: STEEL_API_KEY });
 
 Create a Steel session, then connect Magnitude via **CDP**. Turn on `narrate` for easy debugging.
 
-```
+```typescript Typescript -wc
 async function main() {
   console.log("🚀 Steel + Magnitude Node Starter");
   console.log("=".repeat(60));
@@ -131,7 +131,7 @@ async function main() {
 
 Use Magnitude’s `agent.extract` to pull structured data (user behind commit + commit itself) using a Zod schema.
 
-```
+```typescript Typescript -wc
     console.log("Looking for commits");
 
     const mostRecentCommitter = await agent.extract(
@@ -152,7 +152,7 @@ Use Magnitude’s `agent.extract` to pull structured data (user behind commit + 
 
 Use `agent.act` to summarize the pull request (if there’s a pull request behind the commit).
 
-```
+```typescript Typescript -wc
     console.log("\nLooking for pull request behind the most recent commit\x1b[0m");
 
     try {
@@ -183,7 +183,7 @@ Use `agent.act` to summarize the pull request (if there’s a pull request behin
 
 Stop the agent and release the Steel session.
 
-```
+```typescript Typescript -wc
   } catch (error) {
     console.error("Error during automation:", error);
   } finally {
@@ -223,7 +223,7 @@ You’ll see a **session viewer URL** in your console, open it to watch the auto
 
 Complete `index.ts` you can paste and run:
 
-```
+```typescript Typescript -wc
 /*
  * AI-powered browser automation using Magnitude with Steel browsers.
  * https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-magnitude-starter
@@ -364,9 +364,9 @@ main().catch((error) => {
 
 *   **Magnitude Documentation**: [https://docs.magnitude.run/getting-started/introduction](https://docs.magnitude.run/getting-started/introduction)
 
-*   **Session Lifecycles**: [https://docs.steel.dev/overview/sessions-api/session-lifecycle](https://docs.steel.dev/overview/sessions-api/session-lifecycle)
+*   **Session Lifecycles**: [https://docs.steel.dev/overview/sessions-api/session-lifecycle](/overview/sessions-api/session-lifecycle)
 
-*   **Steel Sessions API**: [https://docs.steel.dev/overview/sessions-api/overview](https://docs.steel.dev/overview/sessions-api/overview)
+*   **Steel Sessions API**: [https://docs.steel.dev/overview/sessions-api/overview](/overview/sessions-api/overview)
 
 *   **Steel Node SDK**: [https://github.com/steel-dev/steel-node](https://github.com/steel-dev/steel-node)
 
