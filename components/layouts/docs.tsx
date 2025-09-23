@@ -1,25 +1,38 @@
-'use client';
+"use client";
 
-import { cva } from 'class-variance-authority';
-import { usePathname } from 'fumadocs-core/framework';
-import Link from 'fumadocs-core/link';
-import type { PageTree } from 'fumadocs-core/server';
-import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
-import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree';
-import { ArrowUpRight, ChevronDown, ChevronRight, SidebarIcon } from 'lucide-react';
-import React, { type ButtonHTMLAttributes, type ReactNode, useMemo } from 'react';
-import { MobileMenuProvider } from '@/contexts/mobile-menu';
-import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
-import { useLocalizedNavigation } from '@/hooks/use-localized-navigation';
-import { cn } from '@/lib/utils';
-import { MobileMenuButton } from '../layout/mobile-menu-button';
-import { SearchToggle } from '../layout/search-toggle';
-import { ThemeToggle } from '../layout/theme-toggle';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
-import { Button } from '../ui/button';
-import { DocsLogo } from '../ui/icon';
-import { NavigationMenu, NavigationMenuList } from '../ui/navigation-menu';
-import { renderNavItem } from './links';
+import { cva } from "class-variance-authority";
+import { usePathname } from "fumadocs-core/framework";
+import Link from "fumadocs-core/link";
+import type { PageTree } from "fumadocs-core/server";
+import { useSidebar } from "fumadocs-ui/contexts/sidebar";
+import { TreeContextProvider, useTreeContext } from "fumadocs-ui/contexts/tree";
+import {
+  ArrowUpRight,
+  ChevronDown,
+  ChevronRight,
+  SidebarIcon,
+} from "lucide-react";
+import React, {
+  type ButtonHTMLAttributes,
+  type ReactNode,
+  useMemo,
+} from "react";
+import { MobileMenuProvider } from "@/contexts/mobile-menu";
+import { useLocalizedNavigation } from "@/hooks/use-localized-navigation";
+import { cn } from "@/lib/utils";
+import { MobileMenuButton } from "../layout/mobile-menu-button";
+import { SearchToggle } from "../layout/search-toggle";
+import { ThemeToggle } from "../layout/theme-toggle";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
+import { Button } from "../ui/button";
+import { DocsLogo } from "../ui/icon";
+import { NavigationMenu, NavigationMenuList } from "../ui/navigation-menu";
+import { renderNavItem } from "./links";
 
 export interface DocsLayoutProps {
   tree: PageTree.Root;
@@ -34,7 +47,11 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
   const pathname = usePathname();
 
   const menuWrapperRef = React.useRef<HTMLDivElement | null>(null);
-  const [underline, setUnderline] = React.useState<{ left: number; width: number; visible: boolean }>({
+  const [underline, setUnderline] = React.useState<{
+    left: number;
+    width: number;
+    visible: boolean;
+  }>({
     left: 0,
     width: 0,
     visible: false,
@@ -45,42 +62,19 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
       setIsScrolled(window.scrollY > 45);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     handleScroll();
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // React.useEffect(() => {
-  //   // register 'p' shortcut for platform navigation
-  //   const platformShortcut = registerShortcut({
-  //     key: 'p',
-  //     callback: () => {
-  //       window.open('https://platform.hiro.so', '_blank', 'noopener,noreferrer');
-  //     },
-  //     preventDefault: true,
-  //   });
-
-  //   // register 't' shortcut for calendar scheduling
-  //   const calendarShortcut = registerShortcut({
-  //     key: 't',
-  //     callback: () => {
-  //       window.open('https://cal.com/waits/15min', '_blank', 'noopener,noreferrer');
-  //     },
-  //     preventDefault: true,
-  //   });
-
-  //   return () => {
-  //     platformShortcut();
-  //     calendarShortcut();
-  //   };
-  // }, [registerShortcut]);
 
   React.useEffect(() => {
     const updateUnderline = () => {
       const wrapper = menuWrapperRef.current;
       if (!wrapper) return;
-      const activeEl = wrapper.querySelector<HTMLElement>('[data-nav-active="true"]');
+      const activeEl = wrapper.querySelector<HTMLElement>(
+        '[data-nav-active="true"]',
+      );
       if (!activeEl) {
         setUnderline((prev) => ({ ...prev, visible: false }));
         return;
@@ -94,10 +88,10 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
     };
 
     updateUnderline();
-    window.addEventListener('resize', updateUnderline);
+    window.addEventListener("resize", updateUnderline);
     const id = window.setTimeout(updateUnderline, 0);
     return () => {
-      window.removeEventListener('resize', updateUnderline);
+      window.removeEventListener("resize", updateUnderline);
       window.clearTimeout(id);
     };
   }, [pathname, localizedLinks]);
@@ -107,16 +101,19 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
       <TreeContextProvider tree={tree}>
         <header
           className={cn(
-            'sticky top-0 z-50 h-12 transition-all duration-200',
-            'bg-background backdrop-blur-md',
-            'border-b border-border/50',
+            "sticky top-0 z-50 h-12 transition-all duration-200",
+            "bg-background backdrop-blur-md",
+            "border-b border-border/50",
           )}
         >
           <nav className="flex flex-row items-center gap-4 size-full px-2 md:px-4">
             {/* Mobile layout */}
             <div className="flex md:hidden items-center justify-between w-full">
               <MobileMenuButton tree={tree} />
-              <Link href="/" className="absolute left-1/2 transform -translate-x-1/2">
+              <Link
+                href="/"
+                className="absolute left-1/2 transform -translate-x-1/2"
+              >
                 <DocsLogo />
               </Link>
               <SearchToggle />
@@ -140,9 +137,13 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                 <div
                   aria-hidden
                   className={cn(
-                    'pointer-events-none absolute bottom-0 h-0 border-b-2 border-white',
+                    "pointer-events-none absolute bottom-0 h-0 border-b-2 border-white",
                   )}
-                  style={{ left: underline.left, width: underline.width, opacity: underline.visible ? 1 : 0 }}
+                  style={{
+                    left: underline.left,
+                    width: underline.width,
+                    opacity: underline.visible ? 1 : 0,
+                  }}
                 />
               </div>
 
@@ -165,8 +166,8 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
         <main
           id="nd-docs-layout"
           className={cn(
-            'flex flex-1 flex-row transition-all duration-100',
-            collapsed && 'md:pl-[calc(var(--nav-offset)-115px)]',
+            "flex flex-1 flex-row transition-all duration-100",
+            collapsed && "md:pl-[calc(var(--nav-offset)-115px)]",
           )}
         >
           <Sidebar />
@@ -183,17 +184,23 @@ export function Sidebar() {
   const pathname = usePathname();
 
   const children = useMemo(() => {
-    const filterCriteria = ['overview', 'integrations', 'cookbook', 'changelog'];
+    const filterCriteria = [
+      "overview",
+      "integrations",
+      "cookbook",
+      "changelog",
+    ];
 
     const shouldFilterItem = (item: PageTree.Node): boolean => {
-
       const isCurrentSection = filterCriteria.some(
-        (criteria) => pathname?.includes(`/${criteria}/`) || pathname === `/${criteria}`,
+        (criteria) =>
+          pathname?.includes(`/${criteria}/`) || pathname === `/${criteria}`,
       );
 
       if (isCurrentSection) {
         const matchingCriteria = filterCriteria.filter(
-          (criteria) => pathname?.includes(`/${criteria}/`) || pathname === `/${criteria}`,
+          (criteria) =>
+            pathname?.includes(`/${criteria}/`) || pathname === `/${criteria}`,
         );
 
         const belongsToCurrentSection = matchingCriteria.some((criteria) =>
@@ -205,7 +212,7 @@ export function Sidebar() {
         }
 
         return filterCriteria.some((criteria) => {
-          const itemPath = item.$id || '';
+          const itemPath = item.$id || "";
           return (
             itemPath === criteria ||
             itemPath.startsWith(`${criteria}`) ||
@@ -218,7 +225,7 @@ export function Sidebar() {
 
       return filterCriteria.some((criteria) => {
         // Check if item.$id matches the exact criteria as a path segment
-        const itemPath = item.$id || '';
+        const itemPath = item.$id || "";
         return (
           itemPath === criteria ||
           itemPath.startsWith(`${criteria}/`) ||
@@ -234,7 +241,7 @@ export function Sidebar() {
 
       return filteredItems.sort().map((item) => (
         <SidebarItem key={item.$id} item={item} numItems={numItems}>
-          {item.type === 'folder' ? renderItems(item.children) : null}
+          {item.type === "folder" ? renderItems(item.children) : null}
         </SidebarItem>
       ));
     }
@@ -246,11 +253,11 @@ export function Sidebar() {
     <aside
       data-collapsed={collapsed}
       className={cn(
-        'fixed flex flex-col shrink-0 pt-4 px-2 pb-10 top-12 z-20 text-base md:text-sm overflow-auto md:sticky md:h-[calc(100dvh-50px)] border-r border-border',
-        'max-md:inset-x-0 max-md:bottom-0',
-        !open && 'max-md:invisible',
-        'md:w-[250px] md:transition-all md:duration-100 ease-linear',
-        collapsed && 'md:w-0 md:p-0 md:overflow-hidden md:invisible',
+        "fixed flex flex-col shrink-0 pt-4 px-2 pb-10 top-12 z-20 text-base md:text-sm overflow-auto md:sticky md:h-[calc(100dvh-50px)] border-r border-border",
+        "max-md:inset-x-0 max-md:bottom-0",
+        !open && "max-md:invisible",
+        "md:w-[250px] md:transition-all md:duration-100 ease-linear",
+        collapsed && "md:w-0 md:p-0 md:overflow-hidden md:invisible",
       )}
     >
       {children}
@@ -259,18 +266,20 @@ export function Sidebar() {
 }
 
 export const linkVariants = cva(
-  'flex items-center gap-3 w-full rounded-lg text-muted-foreground !font-sans [&_svg]:size-3',
+  "flex items-center gap-3 w-full rounded-lg text-muted-foreground !font-sans [&_svg]:size-3",
   {
     variants: {
       active: {
-        true: 'text-white font-medium',
-        false: '',
+        true: "text-white font-medium",
+        false: "",
       },
     },
   },
 );
 
-export function NavbarSidebarTrigger(props: ButtonHTMLAttributes<HTMLButtonElement>) {
+export function NavbarSidebarTrigger(
+  props: ButtonHTMLAttributes<HTMLButtonElement>,
+) {
   const { collapsed, setCollapsed } = useSidebar();
 
   return (
@@ -280,8 +289,8 @@ export function NavbarSidebarTrigger(props: ButtonHTMLAttributes<HTMLButtonEleme
       data-collapsed={collapsed}
       {...props}
       className={cn(
-        'flex items-center justify-center w-8 h-8 rounded-md border border-border hover:bg-neutral-200 dark:bg-neutral-700 transition-colors cursor-pointer',
-        'hidden md:flex',
+        "flex items-center justify-center w-8 h-8 rounded-md border border-border hover:bg-neutral-200 dark:bg-neutral-700 transition-colors cursor-pointer",
+        "hidden md:flex",
         props.className,
       )}
       onClick={() => {
@@ -293,17 +302,28 @@ export function NavbarSidebarTrigger(props: ButtonHTMLAttributes<HTMLButtonEleme
   );
 }
 
-export function SidebarItem({ item, children, numItems }: { item: PageTree.Node; children: ReactNode, numItems: number   }) {
+export function SidebarItem({
+  item,
+  children,
+  numItems,
+}: {
+  item: PageTree.Node;
+  children: ReactNode;
+  numItems: number;
+}) {
   const pathname = usePathname();
 
-  const isPathInFolder = (folderItem: PageTree.Node, currentPath: string): boolean => {
-    if (folderItem.type !== 'folder') return false;
+  const isPathInFolder = (
+    folderItem: PageTree.Node,
+    currentPath: string,
+  ): boolean => {
+    if (folderItem.type !== "folder") return false;
 
     if (folderItem.index?.url === currentPath) return true;
     const checkChildren = (children: PageTree.Node[]): boolean => {
       return children.some((child) => {
-        if (child.type === 'page' && child.url === currentPath) return true;
-        if (child.type === 'folder') {
+        if (child.type === "page" && child.url === currentPath) return true;
+        if (child.type === "folder") {
           if (child.index?.url === currentPath) return true;
           return checkChildren(child.children);
         }
@@ -315,62 +335,72 @@ export function SidebarItem({ item, children, numItems }: { item: PageTree.Node;
   };
 
   const shouldExpand =
-    item.type === 'folder' &&
+    item.type === "folder" &&
     (isPathInFolder(item, pathname) || (item as any).defaultOpen === true);
 
   const [isOpen, setIsOpen] = React.useState(shouldExpand);
 
-  if (item.type === 'page') {
+  if (item.type === "page") {
     const sidebarTitle = (item as any).data?.sidebarTitle;
     const displayName = sidebarTitle || item.name;
     const isRootPage = (item as any).data?.root === true;
     const isActive = pathname === item.url;
 
     return (
-      <div className='flex items-center gap-1 div:pt-0.5 first:(div:pt-0)'>
-        {!isRootPage && numItems > 1 && <div className={cn('h-[100%] w-[1px] bg-[#202020] ml-2', isActive && 'bg-white')} />}
-      <Link
-        href={item.url}
-        className={cn(
-          linkVariants({
-            active: isActive,
-          }),
-          // Special styling for root pages - applies on top of linkVariants
-          isRootPage && ['font-normal font-sans text-sm pl-2'],
-          !isRootPage && ['pl-2'],
-          // Style the icon when root page is active
-          isRootPage &&
-            pathname === item.url && [
-              '[&_.icons]:bg-primary [&_.icons]:border-primary [&_.icons]:text-white dark:[&_.icons]:text-neutral-950',
-            ],
+      <div className="flex items-center gap-1 div:pt-0.5 first:(div:pt-0)">
+        {!isRootPage && numItems > 1 && (
+          <div
+            className={cn(
+              "h-[100%] w-[1px] bg-[#202020] ml-2",
+              isActive && "bg-white",
+            )}
+          />
         )}
-      >
-        <div className="!font-normal text-[0.875rem] flex items-center gap-2 flex-1">
-          {item.icon}
-          {displayName}
-          <PageBadges item={item} />
-        </div>
-      </Link>
+        <Link
+          href={item.url}
+          className={cn(
+            linkVariants({
+              active: isActive,
+            }),
+            // Special styling for root pages - applies on top of linkVariants
+            isRootPage && ["font-normal font-sans text-sm pl-2"],
+            !isRootPage && ["pl-2"],
+            // Style the icon when root page is active
+            isRootPage &&
+              pathname === item.url && [
+                "[&_.icons]:bg-primary [&_.icons]:border-primary [&_.icons]:text-white dark:[&_.icons]:text-neutral-950",
+              ],
+          )}
+        >
+          <div className="!font-normal text-[0.875rem] flex items-center gap-2 flex-1">
+            {item.icon}
+            {displayName}
+            <PageBadges item={item} />
+          </div>
+        </Link>
       </div>
     );
   }
 
-  if (item.type === 'separator') {
+  if (item.type === "separator") {
     return (
-      <p className="text-primary uppercase text-[0.75rem] leading-none tracking-wide font-mono font-bold mt-6 mb-2 first:mt-0 px-2">{item.name}</p>
+      <p className="text-primary uppercase text-[0.75rem] leading-none tracking-wide font-mono font-bold mt-6 mb-2 first:mt-0 px-2">
+        {item.name}
+      </p>
     );
   }
 
   const getStringValue = (value: any): string => {
-    if (typeof value === 'string') return value;
-    if (typeof value === 'number') return value.toString();
-    return 'folder';
+    if (typeof value === "string") return value;
+    if (typeof value === "number") return value.toString();
+    return "folder";
   };
 
-  const accordionValue = getStringValue(item.$id) || getStringValue(item.name) || 'folder';
+  const accordionValue =
+    getStringValue(item.$id) || getStringValue(item.name) || "folder";
 
   return (
-    <div className='pl-4'>
+    <div className="pl-4">
       <Accordion
         type="single"
         collapsible
@@ -385,8 +415,8 @@ export function SidebarItem({ item, children, numItems }: { item: PageTree.Node;
                 linkVariants({
                   active: item.index ? pathname === item.index.url : false,
                 }),
-                'justify-between w-full',
-                '!font-normal',
+                "justify-between w-full",
+                "!font-normal",
               )}
             >
               <div className="!font-normal flex items-center gap-2 flex-1">
@@ -395,10 +425,10 @@ export function SidebarItem({ item, children, numItems }: { item: PageTree.Node;
                     href={item.index.url}
                     onClick={(e) => e.stopPropagation()}
                     className={cn(
-                      'flex items-center gap-2 font-sans hover:no-underline',
+                      "flex items-center gap-2 font-sans hover:no-underline",
                       pathname === item.index.url
-                        ? 'font-normal text-primary'
-                        : 'font-normal text-muted-foreground',
+                        ? "font-normal text-primary"
+                        : "font-normal text-muted-foreground",
                     )}
                   >
                     {item.index.icon}
@@ -431,7 +461,7 @@ export function SidebarItem({ item, children, numItems }: { item: PageTree.Node;
 }
 
 export function PageBadges({ item }: { item: PageTree.Node }) {
-  if (item.type !== 'page') return null;
+  if (item.type !== "page") return null;
 
   const badges: React.ReactNode[] = [];
 
@@ -455,19 +485,19 @@ export function PageBadges({ item }: { item: PageTree.Node }) {
 
   for (const method of methods) {
     const colors = {
-      GET: 'bg-[#e7f7e7] text-[#4B714D] border-[#c2ebc4] dark:bg-background dark:text-[#c2ebc4] dark:border-[#c2ebc4]',
-      POST: 'bg-[#e7f0ff] text-[#4B5F8A] border-[#c2d9ff] dark:bg-background dark:text-[#c2d9ff] dark:border-[#c2d9ff]',
-      PUT: 'bg-[#fff4e7] text-[#8A6B4B] border-[#ffd9c2] dark:bg-background dark:text-[#ffd9c2] dark:border-[#ffd9c2]',
+      GET: "bg-[#e7f7e7] text-[#4B714D] border-[#c2ebc4] dark:bg-background dark:text-[#c2ebc4] dark:border-[#c2ebc4]",
+      POST: "bg-[#e7f0ff] text-[#4B5F8A] border-[#c2d9ff] dark:bg-background dark:text-[#c2d9ff] dark:border-[#c2d9ff]",
+      PUT: "bg-[#fff4e7] text-[#8A6B4B] border-[#ffd9c2] dark:bg-background dark:text-[#ffd9c2] dark:border-[#ffd9c2]",
       PATCH:
-        'bg-[#fffce7] text-[#8A864B] border-[#fff9c2] dark:bg-background dark:text-[#fff9c2] dark:border-[#fff9c2]',
+        "bg-[#fffce7] text-[#8A864B] border-[#fff9c2] dark:bg-background dark:text-[#fff9c2] dark:border-[#fff9c2]",
       DELETE:
-        'bg-[#ffe7e7] text-[#8A4B4B] border-[#ffc2c2] dark:bg-background dark:text-[#ffc2c2] dark:border-[#ffc2c2]',
+        "bg-[#ffe7e7] text-[#8A4B4B] border-[#ffc2c2] dark:bg-background dark:text-[#ffc2c2] dark:border-[#ffc2c2]",
     };
 
     badges.push(
       <span
         key={String(method)}
-        className={`font-mono font-medium text-[10px] py-0.25 px-0.75 rounded border ${colors[String(method) as keyof typeof colors] || 'bg-[#f5f5f5] text-[#666666] border-[#d4d4d4] dark:bg-background dark:text-[#d4d4d4] dark:border-[#d4d4d4]'}`}
+        className={`font-mono font-medium text-[10px] py-0.25 px-0.75 rounded border ${colors[String(method) as keyof typeof colors] || "bg-[#f5f5f5] text-[#666666] border-[#d4d4d4] dark:bg-background dark:text-[#d4d4d4] dark:border-[#d4d4d4]"}`}
       >
         {String(method)}
       </span>,

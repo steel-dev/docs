@@ -55,7 +55,7 @@ Learn more about using annotations from Code Hike docs:
 
 You can use it for one line (`!mark`), a range of lines (`!mark(1:3)`), a range of columns (`!mark[5:10]`), or a regex pattern (`!mark[/pattern/]`).
 
-You can provide any valid CSS color, for example: `!mark(1:3) red` or `!mark(1:3) hsl(var(--hiro))`.
+You can provide any valid CSS color, for example: `!mark(1:3) red` or `!mark(1:3) hsl(var(--steel))`.
 
 ```clarity
 ;; !mark[/counters/mg]
@@ -66,7 +66,7 @@ You can provide any valid CSS color, for example: `!mark(1:3) red` or `!mark(1:3
   (ok (map-set counters tx-sender (+ (get-count tx-sender) u1)))
 )
 
-;; !mark hsl(var(--hiro))
+;; !mark hsl(var(--steel))
 (define-read-only (get-count (who principal))
   (default-to u0 (map-get? counters who))
 )
@@ -172,32 +172,38 @@ Example:
 
 <CodeTabs flags="ac">
 
-```clarity !! one.clar
-;; !mark[/increment/mg]
-(define-data-var count uint u0)
+    ```bash !! curl -wc
+    curl -X POST https://api.steel.dev/v1/credentials \
+      -H "Content-Type: application/json" \
+      -H "steel-api-key: YOUR_API_KEY_HERE" \
+      -d '{
+        "origin": "https://app.example.com",
+        "value": {
+          "username": "test@example.com",
+          "password": "password123"
+        }
+      }'
+    ```
 
-(define-public (increment)
-  (begin
-    (var-set count (+ (var-get count) u1))
-    (ok (var-get count)) ;; !mark
-  )
-)
-```
+    ```typescript !! Typescript -wc
+    await client.credentials.create({
+      origin: "https://app.example.com",
+      value: {
+        username: "test@example.com",
+        password: "password123"
+      }
+    });
+    ```
 
-```solidity !! two.sol
-// !mark[/add/mg]
-uint256 constant TOO_BIG = 10;
-uint256 count = 0;
-
-function add(uint256 amount) public returns (uint256) {
-    uint256 newCount = count + amount;
-    if (newCount <= TOO_BIG) {
-        count = newCount;
-        return count;
-    }
-    revert("Amount too large"); // !mark
-}
-```
+    ```python !! Python -wc
+    client.credentials.create(
+        origin="https://app.example.com",
+        value={
+            "username": "test@example.com",
+            "password": "password123"
+        }
+    )
+    ```
 
 </CodeTabs>
 
@@ -207,25 +213,38 @@ To switch between languages, use the _`<CodeTabs />`_ component with the `storag
 
 <CodeTabs flags="ac" storage="ts">
 
-```ts !! TypeScript
-(async () => {
-  const apiConfig: Configuration = new Configuration({
-    fetchApi: fetch,
-    // for mainnet, replace `testnet` with `mainnet`
-    basePath: "https://api.testnet.hiro.so",
-  });
-})().catch(console.error);
-```
+    ```bash !! curl -wc
+    curl -X POST https://api.steel.dev/v1/credentials \
+      -H "Content-Type: application/json" \
+      -H "steel-api-key: YOUR_API_KEY_HERE" \
+      -d '{
+        "origin": "https://app.example.com",
+        "value": {
+          "username": "test@example.com",
+          "password": "password123"
+        }
+      }'
+    ```
 
-```js !! JavaScript
-(async () => {
-  const apiConfig = new Configuration({
-    fetchApi: fetch,
-    // for mainnet, replace `testnet` with `mainnet`
-    basePath: "https://api.testnet.hiro.so",
-  });
-})().catch(console.error);
-```
+    ```typescript !! Typescript -wc
+    await client.credentials.create({
+      origin: "https://app.example.com",
+      value: {
+        username: "test@example.com",
+        password: "password123"
+      }
+    });
+    ```
+
+    ```python !! Python -wc
+    client.credentials.create(
+        origin="https://app.example.com",
+        value={
+            "username": "test@example.com",
+            "password": "password123"
+        }
+    )
+    ```
 
 </CodeTabs>
 
@@ -359,5 +378,5 @@ To use features from the normal codeblock component, you can still use languages
 
 ```sh Terminal -w
 # !tooltip[/v0.27.0/] You can change the v0.27.0 version that is available on the releases page.
-$ wget -nv download/v0.27.0/clarinet-linux-x64-glibc.tar.gz -O clarinet-linux-x64.tar.gz
+$ wget -nv download/v0.27.0/linux-x64-glibc.tar.gz -O linux-x64.tar.gz
 ```

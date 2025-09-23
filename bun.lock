@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "hiro-docs",
+      "name": "steel-docs",
       "dependencies": {
         "@apidevtools/swagger-parser": "^10.1.1",
         "@fumadocs/cli": "^0.0.8",

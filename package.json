@@ -1,5 +1,5 @@
 {
-  "name": "hiro-docs",
+  "name": "steel-docs",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 3030",

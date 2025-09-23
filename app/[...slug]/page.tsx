@@ -170,7 +170,7 @@ export default async function Page(props: {
                             <div
                               className={`w-4 h-4 border-2 rounded-sm flex items-center justify-center ${
                                 props.checked
-                                  ? "bg-brand-orange border-brand-orange text-white"
+                                  ? "bg-yellow-300 border-yellow-300 text-white"
                                   : "border-border bg-background"
                               }`}
                             >
@@ -206,7 +206,7 @@ export default async function Page(props: {
                   {page.data.isRpc && (
                     <Badge
                       variant="outline"
-                      className="cursor-pointer font-normal text-[10px] px-1 py-0.5 uppercase bg-orange-500 text-neutral-950 dark:bg-brand-orange border-none"
+                      className="cursor-pointer font-normal text-[10px] px-1 py-0.5 uppercase bg-yellow-500 text-neutral-950 dark:bg-yellow-300 border-none"
                     >
                       RPC node
                     </Badge>
@@ -215,16 +215,6 @@ export default async function Page(props: {
                 {page.data.llm !== false && <LLMShare content={LLMContent} />}
               </div>
               <DocsPageDescription />
-
-              {/* RPC endpoint callout */}
-              {page.data.isRpc && (
-                <Callout type="info" title="About RPC endpoints">
-                  These are served by Stacks nodes, not directly operated by
-                  Hiro. Availability and performance may vary depending on
-                  upstream node health. For guaranteed performance, run your own
-                  node or talk to us about dedicated options.
-                </Callout>
-              )}
 
               {/* Render TagFilterSystem if tags are present in frontmatter */}
               {page.data.tags && page.data.tags.length > 0 && (
@@ -274,7 +264,7 @@ export default async function Page(props: {
                             <div
                               className={`w-4 h-4 border-2 rounded-sm flex items-center justify-center ${
                                 props.checked
-                                  ? "bg-brand-orange border-brand-orange text-white"
+                                  ? "bg-yellow-300 border-yellow-300 text-white"
                                   : "border-border bg-background"
                               }`}
                             >

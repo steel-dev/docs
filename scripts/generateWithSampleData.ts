@@ -17,7 +17,7 @@ export async function generateWithSampleData() {
         source: {
           fileName: "packages/transactions/src/namespaces/address.ts",
           line: 1,
-          url: "https://github.com/hirosystems/stacks.js/blob/c8267f2/packages/transactions/src/namespaces/address.ts#L1",
+          url: "https://github.com/steelsystems/stacks.js/blob/c8267f2/packages/transactions/src/namespaces/address.ts#L1",
         },
       },
       {
@@ -27,7 +27,7 @@ export async function generateWithSampleData() {
         source: {
           fileName: "packages/transactions/src/namespaces/address.ts",
           line: 8,
-          url: "https://github.com/hirosystems/stacks.js/blob/c8267f2/packages/transactions/src/namespaces/address.ts#L8",
+          url: "https://github.com/steelsystems/stacks.js/blob/c8267f2/packages/transactions/src/namespaces/address.ts#L8",
         },
       },
       {
@@ -36,7 +36,7 @@ export async function generateWithSampleData() {
         source: {
           fileName: "packages/transactions/src/namespaces/address.ts",
           line: 90,
-          url: "https://github.com/hirosystems/stacks.js/blob/c8267f2/packages/transactions/src/namespaces/address.ts#L90",
+          url: "https://github.com/steelsystems/stacks.js/blob/c8267f2/packages/transactions/src/namespaces/address.ts#L90",
         },
         signatures: [
           {

@@ -240,9 +240,9 @@ function extractOperationsFromContent(
   return operations;
 }
 
-export const hiroThemeDark: ThemeRegistrationResolved = {
-  name: "hiro-dark",
-  displayName: "Hiro Dark",
+export const steelThemeDark: ThemeRegistrationResolved = {
+  name: "steel-dark",
+  displayName: "steel Dark",
   type: "dark",
   fg: "#8c877d", // --ch-1
   bg: "#1e1e2e", // --ch-18
@@ -401,9 +401,9 @@ export const hiroThemeDark: ThemeRegistrationResolved = {
   },
 };
 
-export const hiroThemeLight: ThemeRegistrationResolved = {
-  name: "hiro-light",
-  displayName: "Hiro Light",
+export const steelThemeLight: ThemeRegistrationResolved = {
+  name: "steel-light",
+  displayName: "steel Light",
   type: "light",
   fg: "#7a756b", // --ch-1
   bg: "#eff1f5", // --ch-18
@@ -666,11 +666,11 @@ export const source = loader({
 });
 
 export const openapi = createOpenAPI({
-  // proxyUrl: "https://api.hiro.so",
+  // proxyUrl: "https://api.steel.so",
   shikiOptions: {
     themes: {
-      dark: hiroThemeDark,
-      light: hiroThemeLight,
+      dark: steelThemeDark,
+      light: steelThemeLight,
     },
   },
 });

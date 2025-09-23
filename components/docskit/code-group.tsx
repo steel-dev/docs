@@ -1,12 +1,13 @@
-export const TITLEBAR = 'px-2 py-1 w-full h-10 font-inter';
+export const TITLEBAR = "px-2 py-1 w-full h-12 font-inter";
 export const CODEBLOCK =
-  'border rounded selection:bg-ch-selection border-ch-border overflow-x-auto my-4 relative grid';
+  "border rounded-lg selection:bg-ch-selection border-ch-border overflow-x-auto my-4 relative grid px-0 mx-0";
 
 type CodeOptions = {
   copyButton?: boolean;
   lineNumbers?: boolean;
   wordWrap?: boolean;
   animate?: boolean;
+  filename?: string;
 };
 
 export type CodeGroup = {
@@ -19,6 +20,7 @@ export type CodeGroup = {
     code: string;
     pre: React.ReactNode;
     icon: React.ReactNode;
+    filename?: string;
   }[];
 };
 
@@ -29,15 +31,16 @@ export type CodeGroup = {
  * flagsToOptions("na") // { lineNumbers: true, animate: true }
  * flagsToOptions("c") // { copyButton: true }
  */
-export function flagsToOptions(flags: string = '') {
+export function flagsToOptions(flags: string = "") {
   const options: CodeOptions = {};
   const map = {
-    c: 'copyButton',
-    n: 'lineNumbers',
-    w: 'wordWrap',
-    a: 'animate',
+    c: "copyButton",
+    n: "lineNumbers",
+    w: "wordWrap",
+    a: "animate",
+    f: "filename",
   } as const;
-  flags.split('').forEach((flag) => {
+  flags.split("").forEach((flag) => {
     if (flag in map) {
       const key = map[flag as keyof typeof map];
       options[key] = true;

@@ -57,7 +57,7 @@ export function SimpleCode({
       )}
       <div className="relative">
         <pre
-          data-theme="hiro"
+          // data-theme="steel"
           data-lang={lang}
           data-ch="true"
           className={cn(
