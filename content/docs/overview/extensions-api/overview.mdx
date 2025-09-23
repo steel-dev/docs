@@ -26,21 +26,21 @@ The extensions uploaded have a couple of requirements. They need a preliminary m
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X POST https://api.steel.dev/v1/extensions \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
   -F "file=@extensions/recorder/recorder.zip"
 ```
 
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 await client.extensions.upload({
     file: fs.readFileSync('extensions/recorder/recorder.zip')
   });
 ```
 
 
-```python !! Python
+```python !! Python -wc
 with open("extensions/recorder/recorder.zip", "rb") as file:
     client.extensions.upload(
         file=file
@@ -55,21 +55,21 @@ Go to the Chrome Web Store and click on the extension you want to upload. Copy t
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X POST https://api.steel.dev/v1/extensions \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
   -F "url=https://chromewebstore.google.com/detail/.../..."
 ```
 
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 await client.extensions.upload({
    url: "https://chromewebstore.google.com/detail/.../..."
 });
 ```
 
 
-```python !! Python
+```python !! Python -wc
 client.extensions.upload(
     url="https://chromewebstore.google.com/detail/.../..."
 )
@@ -87,7 +87,7 @@ You can inject specific extensions into your sessions based on the `extensionId`
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X POST https://api.steel.dev/v1/sessions \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
@@ -100,14 +100,14 @@ curl -X POST https://api.steel.dev/v1/sessions \
 ```
 
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 const session = await client.sessions.create({
   extensionIds: ['all_ext'] // extensionIds=['extensionId_1', 'extensionId_2']
 });
 ```
 
 
-```python !! Python
+```python !! Python -wc
 client.sessions.create(
     extension_ids=['all_ext'] # extension_ids=['extensionId_1', 'extensionId_2']
 )
@@ -126,7 +126,7 @@ After using your extensions, you can update them by uploading a new version of t
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X PUT https://api.steel.dev/v1/extensions/{extensionId} \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
@@ -134,14 +134,14 @@ curl -X PUT https://api.steel.dev/v1/extensions/{extensionId} \
 ```
 
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 await client.extensions.update("{extensionId}",{
     file: fs.readFileSync("extensions/recorder2/recorder2.zip")
   });
 ```
 
 
-```python !! Python
+```python !! Python -wc
 with open("extensions/recorder2/recorder2.zip", "rb") as file:
     client.extensions.update("{extensionId}",
         file=file
@@ -156,21 +156,21 @@ You will need to specify the `extensionId` of the extension you want to update
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X PUT https://api.steel.dev/v1/extensions/{extensionId} \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
   -F "url=https://chromewebstore.google.com/detail/.../..."
 ```
 
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 await client.extensions.update("{extensionId}",{
     url: "https://chromewebstore.google.com/detail/.../..."
 });
 ```
 
 
-```python !! Python
+```python !! Python -wc
 client.extensions.update("{extensionId}",
     url="https://chromewebstore.google.com/detail/.../..."
 )
@@ -185,17 +185,17 @@ To see your organization's installed extensions, you can use the `GET /v1/extens
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X GET https://api.steel.dev/v1/extensions \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 const extensions = await client.extensions.list();
 ```
 
-```python !! Python
+```python !! Python -wc
 extensions = client.extensions.list()
 ```
 
@@ -208,17 +208,17 @@ To delete one of your organization's installed extensions, you can use the `DELE
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X DELETE https://api.steel.dev/v1/extensions/{extensionId} \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 await client.extensions.delete("{extensonId}")
 ```
 
-```python !! Python
+```python !! Python -wc
 client.extensions.delete("{extensionId}")
 ```
 
@@ -231,17 +231,17 @@ To delete all of your organization's installed extensions, you can use the `DELE
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X DELETE https://api.steel.dev/v1/extensions \
   -H "Content-Type: application/json" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 await client.extensions.deleteAll()
 ```
 
-```python !! Python
+```python !! Python -wc
 client.extensions.deleteAll()
 ```
  </CodeTabs>

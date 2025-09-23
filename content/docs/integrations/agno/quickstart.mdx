@@ -42,7 +42,7 @@ pip install agno steel-sdk python-dotenv playwright
 
 Create a `.env` file with your keys and a default task:
 
-```env ENV -c
+```env ENV -wc -f .env
 STEEL_API_KEY=your_steel_api_key_here
 OPENAI_API_KEY=your_openai_api_key_here  # optional, if your Agno model needs it
 TASK=Go to https://quotes.toscrape.com and: 1. Get the first 3 quotes with authors 2. Navigate to page 2 3. Get 2 more quotes from page 2
@@ -238,7 +238,6 @@ class SteelTools(Toolkit):
 Create an **Agent** that uses your toolkit to perform multi-step tasks.
 
 ```python Python -wc -f main.py
-# main.py
 import os
 from dotenv import load_dotenv
 from agno.agent import Agent
@@ -506,13 +505,11 @@ if __name__ == "__main__":
 
 ```
 
-
 #### Customizing your agent’s task
 
 Try modifying the `TASK` in your `.env`:
 
-
-```env ENV -c
+```env ENV -wc -f .env
 # Crawl a product page and extract specs
 TASK=Go to https://example.com/product/123 and extract the product name, price, and 5 key specs.
 

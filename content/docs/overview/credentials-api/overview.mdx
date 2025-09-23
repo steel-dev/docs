@@ -87,7 +87,7 @@ These credentials are encrypted and stored securely within Steel’s credential 
 ## Injecting Credentials into a Session
 When starting a session via `POST /sessions`, you can request credential injection using the optional `credentials` field:
 
-<CodeTabs storage="injecting-credentials-into-a-session">
+<CodeTabs storage="languageSwitcher">
 
 ```bash !! curl -wc
 curl -X POST https://api.steel.dev/v1/sessions \
@@ -116,7 +116,7 @@ client.sessions.create(
 
 If the `credentials` object is omitted, no credentials will be injected. If included as an empty object (`credentials: {}`), the default options apply:
 
-```json
+```json JSON
 {
   "autoSubmit": true,
   "blurFields": true,
@@ -137,7 +137,7 @@ Once the session is active and on the login page, credentials are typically inje
 ## TOTP Support
 Steel supports auto-filling TOTP (Time-based One-Time Passwords). To use this feature, include a `totpSecret` in the `value` object when uploading credentials:
 
-```json
+```json JSON
 {
   "username": "test@example.com",
   "password": "password123",
@@ -197,7 +197,7 @@ If you have multiple credentials for the same website, namespaces help you contr
 
 For example, say you have two users who log in to the same domain:
 
-```json
+```json JSON
 // Credential A
 {
   "namespace": "example:fred",
@@ -221,7 +221,7 @@ For example, say you have two users who log in to the same domain:
 
 To use **Fred’s** credentials in a session:
 
-```json
+```json JSON
 POST /sessions
 {
   "namespace": "example:fred",
@@ -262,7 +262,7 @@ If `autoSubmit` is disabled, you must explicitly trigger the login action (e.g.,
 
 #### Example Flow
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 await page.goto("https://app.example.com/login");
 
 // Optional: ensure login form is present

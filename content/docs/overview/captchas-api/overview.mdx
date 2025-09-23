@@ -216,7 +216,7 @@ Steel's CAPTCHA system is designed to work seamlessly with your existing automat
 
 #### Monitoring CAPTCHA Progress
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f captcha.ts
 async function waitForCaptchaSolution(sessionId, timeout = 30000) {
   const startTime = Date.now();
 
@@ -245,7 +245,7 @@ async function waitForCaptchaSolution(sessionId, timeout = 30000) {
 
 #### Basic Integration Pattern
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 // Navigate to a page that might have CAPTCHAs
 await page.goto('https://example.com/protected-page');
 

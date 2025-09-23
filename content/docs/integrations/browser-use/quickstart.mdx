@@ -41,7 +41,7 @@ pip install steel-sdk browser-use python-dotenv
 
 Create a `.env` file with your API keys:
 
-```env ENV -c -f .env
+```env ENV -wc -f .env
 STEEL_API_KEY=your_steel_api_key_here
 OPENAI_API_KEY=your_openai_api_key_here
 TASK=Go to Wikipedia and search for machine learning
@@ -281,7 +281,7 @@ Save this as main.py and run it with:
 
 Try modifying the task to make your agent perform different actions:
 
-```python Python -wc -f main.py
+```env ENV -wc -f .env
 # Search for weather information
 TASK = "Go to https://weather.com, search for 'San Francisco', and tell me today's forecast."
 

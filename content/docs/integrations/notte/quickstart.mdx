@@ -41,7 +41,7 @@ pip install steel-sdk notte python-dotenv
 
 Create a `.env` file with your API keys and a default task:
 
-```python Python -wc -f main.py
+```env ENV -wc -f .env
 STEEL_API_KEY=your-steel-api-key-here
 GEMINI_API_KEY=your-gemini-api-key-here
 TASK="Go to Wikipedia and search for machine learning"
@@ -53,7 +53,6 @@ TASK="Go to Wikipedia and search for machine learning"
 Set up Steel, load env vars, and prepare to start the Notte agent.
 
 ```python Python -wc -f main.py
-# main.py
 import os
 import time
 import asyncio

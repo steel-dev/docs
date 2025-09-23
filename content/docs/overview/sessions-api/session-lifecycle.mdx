@@ -27,7 +27,7 @@ When you start a session, it stays alive for 5 minutes by default but you can ch
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -wc -f main.ts
+```typescript !! Typescript -wc
 import Steel from 'steel-sdk';
 
 const client = new Steel();
@@ -39,7 +39,7 @@ const session = await client.sessions.create({
 ```
 
 
-```python !! Python -wc -f main.py
+```python !! Python -wc
 import os
 from steel import Steel
 
@@ -61,13 +61,13 @@ When you're done with a session, it's best practice to release it explicitly rat
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -wc -f main.ts
+```typescript !! Typescript -wc
 // Release a single session
 const response = await client.sessions.release(session.id);
 ```
 
 
-```python !! Python -wc -f main.py
+```python !! Python -wc
 # Release a single session
 response = client.sessions.release(session.id)
 ```
@@ -79,14 +79,14 @@ Sometimes you need to clean up all active sessions at once. Steel provides a con
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -wc -f main.ts
+```typescript !! Typescript -wc
 // Release all active sessions
 const response = await client.sessions.releaseAll();
 console.log(response.message); // "All sessions released successfully"
 ```
 
 
-```python !! Python -wc -f main.py
+```python !! Python -wc
 # Release all active sessions
 response = client.sessions.release_all()
 print(response.message) # "All sessions released successfully"

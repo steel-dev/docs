@@ -29,7 +29,7 @@ We’ll be implementing a simple CUA loop that functions as described below:
 
 #### Step 1: Setup and Helper Functions
 
-```python Python -wc -f main.py -f main.py
+```python Python -wc -f utils.py
 import os
 import time
 import base64
@@ -203,7 +203,7 @@ def check_blocklisted_url(url: str) -> None:
 
 #### Step 2: Create Steel Browser Integration
 
-```python Python -wc -f main.py
+```python Python -wc -f steel_browser.py
 class SteelBrowser:
     def __init__(
         self,
@@ -417,7 +417,7 @@ class SteelBrowser:
 
 #### Step 3: Create the Agent Class
 
-```python Python -wc -f main.py
+```python Python -wc -f agent.py
 class Agent:
     def __init__(
         self,

@@ -73,14 +73,14 @@ To enable it, simply set `useProxy: true` when creating a session. By default, y
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -wc -f main.ts
+```typescript !! Typescript -wc
 // Typescript SDK
 const session = await client.sessions.create({
     useProxy: true
 });
 ```
 
-```python !! Python -wc -f main.py
+```python !! Python -wc
 # Python SDK
 session = client.sessions.create(
     use_proxy=True
@@ -98,7 +98,7 @@ The more specific your targeting, the smaller the IP pool. For the best performa
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -wc -f main.ts
+```typescript !! Typescript -wc
 // Target specific state
 const session = await client.sessions.create({
   useProxy: {
@@ -115,7 +115,7 @@ const session = await client.sessions.create({
 ```
 
 
-```python !! Python -wc -f main.py
+```python !! Python -wc
 # Target specific state
 session = client.sessions.create(
     use_proxy={
@@ -148,7 +148,7 @@ If you already have a proxy provider or need highly specialized configurations, 
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -wc -f main.ts
+```typescript !! Typescript -wc
 // Typescript SDK
 const session = await client.sessions.create({
   useProxy: {
@@ -157,7 +157,7 @@ const session = await client.sessions.create({
 });
 ```
 
-```python !! Python -wc -f main.py
+```python !! Python -wc
 # Python SDK
 session = client.sessions.create(
     use_proxy={

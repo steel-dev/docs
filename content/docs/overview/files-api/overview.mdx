@@ -44,13 +44,13 @@ This section outlines how to interact with the filesystem inside of the VM that 
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X POST "https://api.steel.dev/v1/sessions/{sessionId}/files/upload" \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
   -F "file=@./steel.png"
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 // Upload file to session environment
 const file = fs.createReadStream("./steel.png");
 const session = await client.sessions.create();
@@ -59,7 +59,7 @@ const uploadedFile = await client.sessions.files.upload(session.id, {
 });
 ```
 
-```python !! Python
+```python !! Python -wc
 import requests
 
 session_id = "YOUR_SESSION_ID"
@@ -81,19 +81,19 @@ print(response.json())
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X GET "https://api.steel.dev/v1/sessions/{sessionId}/files" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 const files = await client.session.files.list(sessionId);
 files.forEach(file => {
   console.log(`${file.path} | Size: ${file.size} | Last Modified: ${file.lastModified}`);
 });
 ```
 
-```python !! Python
+```python !! Python -wc
 import requests
 
 session_id = "YOUR_SESSION_ID"
@@ -113,7 +113,7 @@ for file in response.json():
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 # Download a specific file
 curl -X GET "https://api.steel.dev/v1/sessions/{sessionId}/files/path/to/file" \
   -H "steel-api-key: YOUR_API_KEY_HERE" -o downloaded_file
@@ -123,7 +123,7 @@ curl -X GET "https://api.steel.dev/v1/sessions/{sessionId}/files/archive" \
   -H "steel-api-key: YOUR_API_KEY_HERE" -o session_files.zip
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 // Download a specific file from a session
 const response = await client.sessions.files.download(sessionId, "path/to/file");
 const fileBlob = await response.blob();
@@ -132,7 +132,7 @@ const fileBlob = await response.blob();
 const archiveResponse = await client.sessions.files.downloadArchive(sessionId);
 ```
 
-```python !! Python
+```python !! Python -wc
 import requests
 
 session_id = "YOUR_SESSION_ID"
@@ -161,7 +161,7 @@ with open("session_files.zip", "wb") as f:
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 # Delete a specific file
 curl -X DELETE "https://api.steel.dev/v1/sessions/{sessionId}/files/path/to/file" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
@@ -171,7 +171,7 @@ curl -X DELETE "https://api.steel.dev/v1/sessions/{sessionId}/files" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 // Delete a specific file from a session
 const response = await client.sessions.files.delete(sessionId, "path/to/file");
 
@@ -179,7 +179,7 @@ const response = await client.sessions.files.delete(sessionId, "path/to/file");
 const archiveResponse = await client.sessions.files.deleteAll(session.id);
 ```
 
-```python !! Python
+```python !! Python -wc
 import requests
 
 session_id = "YOUR_SESSION_ID"
@@ -208,13 +208,13 @@ print(del_all_resp.status_code)
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X POST "https://api.steel.dev/v1/files/upload" \
   -H "steel-api-key: YOUR_API_KEY_HERE" \
   -F "file=@./dataset.csv"
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wc
 const file = fs.createReadStream("./dataset.csv");
 const globalFile = await client.files.upload({
     file,
@@ -229,7 +229,7 @@ const uploadedFile = await client.sessions.files.upload(session.id, {
 });
 ```
 
-```python !! Python
+```python !! Python -wc
 import requests
 
 api_key = "YOUR_API_KEY_HERE"
@@ -250,7 +250,7 @@ print(response.json())
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X GET "https://api.steel.dev/v1/files" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
@@ -281,7 +281,7 @@ for file in response.json():
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X GET "https://api.steel.dev/v1/files/dataset.csv" \
   -H "steel-api-key: YOUR_API_KEY_HERE" -o dataset.csv
 ```
@@ -291,7 +291,7 @@ const response = await client.files.download(file.path); // dataset.csv
 const fileBlob = await response.blob();
 ```
 
-```python !! Python
+```python !! Python -wc
 import requests
 
 api_key = "YOUR_API_KEY_HERE"
@@ -311,7 +311,7 @@ with open(file_path, "wb") as f:
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl
+```bash !! curl -wc
 curl -X DELETE "https://api.steel.dev/v1/files/dataset.csv" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
@@ -320,7 +320,7 @@ curl -X DELETE "https://api.steel.dev/v1/files/dataset.csv" \
 await client.files.delete(file.path);
 ```
 
-```python !! Python
+```python !! Python -wc
 import requests
 
 api_key = "YOUR_API_KEY_HERE"

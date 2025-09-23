@@ -23,7 +23,7 @@ This guide shows you how to create AI agents with Claude's computer use capabili
 
 First, create a project directory and install the required packages:
 
-```sh Terminal -wc
+```bash Terminal -wc
 # Create a project directory
 mkdir steel-claude-computer-use
 cd steel-claude-computer-use
@@ -39,7 +39,7 @@ npm install -D @types/node typescript ts-node
 
 Create a `.env` file with your API keys:
 
-```env ENV -c
+```env ENV -wc -f .env
 STEEL_API_KEY=your_steel_api_key_here
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 TASK=Go to Wikipedia and search for machine learning
@@ -48,7 +48,7 @@ TASK=Go to Wikipedia and search for machine learning
 
 #### Step 2: Create Helper Functions
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wc -f utils.ts
 import { chromium } from "playwright";
 import type { Browser, Page } from "playwright";
 import { Steel } from "steel-sdk";
@@ -277,7 +277,7 @@ export function checkBlocklistedUrl(url: string): void {
 
 #### Step 3: Create Steel Browser Integration
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wc -f steelBrowser.ts
 const TYPING_DELAY_MS = 12;
 const TYPING_GROUP_SIZE = 50;
 
@@ -743,7 +743,7 @@ export class SteelBrowser {
 
 #### Step 4: Create the Agent Class
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wc -f claudeAgent.ts
 type ModelName = keyof typeof MODEL_CONFIGS;
 
 interface ModelConfig {
@@ -1227,7 +1227,7 @@ The agent will execute the task defined in the `TASK` environment variable or th
 
 You can modify the task by setting the environment variable:
 
-```sh Terminal -wc
+```bash Terminal -wc
 export TASK="Research the latest developments in artificial intelligence"
 npx ts-node main.ts
 ```
@@ -1237,7 +1237,7 @@ npx ts-node main.ts
 
 Try modifying the task to make your agent perform different actions:
 
-```env ENV -c
+```env ENV -wc -f .env
 // Research specific topics
 TASK = "Go to https://arxiv.org, search for 'machine learning', and summarize the latest papers.";
 
