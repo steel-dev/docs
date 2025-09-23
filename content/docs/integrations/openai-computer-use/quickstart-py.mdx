@@ -29,7 +29,7 @@ We’ll be implementing a simple CUA loop that functions as described below:
 
 #### Step 1: Setup and Helper Functions
 
-```python Python -c -f main.py
+```python Python -wc -f main.py -f main.py
 import os
 import time
 import base64
@@ -203,7 +203,7 @@ def check_blocklisted_url(url: str) -> None:
 
 #### Step 2: Create Steel Browser Integration
 
-```python Python -c
+```python Python -wc -f main.py
 class SteelBrowser:
     def __init__(
         self,
@@ -417,7 +417,7 @@ class SteelBrowser:
 
 #### Step 3: Create the Agent Class
 
-```python Python -wc
+```python Python -wc -f main.py
 class Agent:
     def __init__(
         self,
@@ -790,7 +790,7 @@ class Agent:
 
 #### Step 4: Create the Main Script
 
-```python Python -c
+```python Python -wc -f main.py
 def main():
     print("🚀 Steel + OpenAI Computer Use Assistant")
     print("=" * 60)

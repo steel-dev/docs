@@ -41,26 +41,42 @@ export function MultiCode({
             key={title}
             value={title}
             className={cn(
-              "rounded-none relative transition-colors duration-200 gap-2 px-3 font-mono",
-              "text-ch-tab-inactive-foreground data-[state=active]:text-foreground hover:text-muted-foreground cursor-pointer", // text
+              "rounded-none relative transition-colors duration-200 gap-2 px-3 font-mono flex items-center",
+              "text-ch-tab-inactive-foreground data-[state=active]:text-foreground hover:text-muted-foreground cursor-pointer",
             )}
           >
             {icon}
             {title}
-            <div className="absolute h-[1px] top-full left-0 right-0 transition-colors duration-200" />
+            {/* Light bar for active tab */}
+            <div
+              className="absolute left-0 right-0 bottom-0 h-0.5"
+              style={{
+                background: "#e0e7ff", // or use a custom color variable
+                opacity: 0,
+              }}
+              data-active-bar
+            />
           </TabsTrigger>
         ))}
-        {/* {group.options.copyButton && ( */}
-        <div className={cn("ml-auto mr-3 items-center flex")}>
-          <CopyButton text={code} />
-        </div>
-        {/* )} */}
       </TabsList>
       {filename && (
-        <div className="w-full text-left text-s font-mono text-muted-foreground py-1 border-b border-ch-border bg-ch-code rounded-t-none">
-          {filename}
+        <div
+          className="flex items-center w-full text-sm font-mono border-b border-ch-border rounded-t-none"
+          style={{ minHeight: 32 }}
+        >
+          <span className="pl-3 pr-2 flex-1 font-mono text-foreground">
+            {filename}
+          </span>
+          <span className="h-4 border-l border-ch-border mx-2" />
+          <span className="ml-auto pr-3">
+            <CopyButton
+              text={code}
+              className="text-ch-tab-inactive-foreground"
+            />
+          </span>
         </div>
       )}
+
       <TabsContent
         // key={meta}
         value={current.title}

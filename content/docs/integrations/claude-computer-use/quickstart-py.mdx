@@ -50,7 +50,7 @@ TASK=Go to Wikipedia and search for machine learning
 
 #### Step 2: Create Helper Functions
 
-```python Python -c
+```python Python -wc -f main.py
 import os
 import time
 import base64
@@ -255,7 +255,7 @@ def check_blocklisted_url(url: str) -> None:
 
 #### Step 3: Create Steel Browser Integration
 
-```python Python -c
+```python Python -wc -f main.py
 class SteelBrowser:
     def __init__(
         self,
@@ -615,7 +615,7 @@ class SteelBrowser:
 
 #### Step 4: Create the Agent Class
 
-```python Python -c
+```python Python -wc -f main.py
 class ClaudeAgent:
     def __init__(self, computer = None, model: str = "claude-3-5-sonnet-20241022"):
         self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
@@ -905,7 +905,7 @@ class ClaudeAgent:
 
 #### Step 5: Create the Main Script
 
-```python Python -c
+```python Python -wc -f main.py
 def main():
     print("🚀 Steel + Claude Computer Use Assistant")
     print("=" * 60)

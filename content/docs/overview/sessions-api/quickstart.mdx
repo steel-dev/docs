@@ -48,7 +48,7 @@ steel-sdk playwright
 
 Let's create a simple script that launches and then releases a Steel session:
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 import Steel from 'steel-sdk';
 import { chromium } from 'playwright';
 import dotenv from 'dotenv';
@@ -79,7 +79,7 @@ main().catch(console.error);
 Now that you have a session, you can connect to it using your preferred automation tool.
 
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 import puppeteer from 'puppeteer';
 
 const browser = await puppeteer.connect({
@@ -95,7 +95,7 @@ await page.goto('https://example.com');
 
 Want to do more with your session? Here are some common options you can add when creating:
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 const session = await client.sessions.create({
     useProxy: true,           // Use Steel's residential proxy network
     solveCaptcha: true,       // Enable automatic CAPTCHA solving

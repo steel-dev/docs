@@ -15,7 +15,7 @@ Hey y’all! This week's update brings an exciting new Files API for Sessions, a
 
 The new Files API enables seamless file management within active browser sessions. You can now upload files from your local machine, use them in your automation workflows, and download files back when needed - perfect for testing file uploads or working with documents in your browser automation.
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 // Upload a file to your session
 const file = new File(["Hello World!"], "hello.txt", { type: "text/plain" });
 const uploadedFile = await client.sessions.files.upload(session.id, { file });

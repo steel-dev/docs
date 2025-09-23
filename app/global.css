@@ -283,3 +283,13 @@
     border-left: none !important;
   }
 }
+
+[data-state="active"] [data-active-bar] {
+  opacity: 1 !important;
+  background: var(--accent, #e0e7ff); /* fallback to a light color */
+  transition: opacity 0.2s;
+}
+[data-active-bar] {
+  opacity: 0;
+  transition: opacity 0.2s;
+}

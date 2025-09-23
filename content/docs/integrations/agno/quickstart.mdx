@@ -53,7 +53,7 @@ TASK=Go to https://quotes.toscrape.com and: 1. Get the first 3 quotes with autho
 
 First, define a toolkit that wraps Steel’s browser sessions and Playwright.
 
-```python Python -c
+```python Python -wc -f main.py
 import os
 import json
 from typing import Any, Dict, List, Optional
@@ -237,7 +237,7 @@ class SteelTools(Toolkit):
 
 Create an **Agent** that uses your toolkit to perform multi-step tasks.
 
-```python Python -c
+```python Python -wc -f main.py
 # main.py
 import os
 from dotenv import load_dotenv
@@ -283,7 +283,7 @@ You’ll see the agent connect to a live Steel browser via CDP, navigate to the 
 
 Paste the full script below into `main.py` and run:
 
-```python Python -c
+```python Python -wc -f main.py
 import json
 import os
 from typing import Any, Dict, List, Optional

@@ -54,7 +54,7 @@ OPENAI_API_KEY=your_openai_api_key_here
 
 ### Step 2: Create your data schemas
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
 import { Stagehand } from "@browserbasehq/stagehand";
 import Steel from "steel-sdk";
 import { z } from "zod";
@@ -83,7 +83,7 @@ These schemas will help Stagehand extract structured data from web pages using Z
 
 ### Step 3: Create a Steel browser session
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
 async function main() {
   console.log("🚀 Steel + Stagehand Automation");
   console.log("=".repeat(50));
@@ -107,7 +107,7 @@ When you run this, you'll see a URL where you can watch your browser session liv
 
 ### Step 4: Configure and connect Stagehand
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
   // Configure Stagehand to use Steel session
   const stagehand = new Stagehand({
     env: "LOCAL",
@@ -135,7 +135,7 @@ This connects Stagehand to your Steel browser session via Chrome DevTools Protoc
 
 Add the automation logic to navigate to a website and extract information:
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
   try {
     // Navigate to Hacker News
     console.log("📰 Navigating to Hacker News...");
@@ -169,7 +169,7 @@ You'll see the extracted story titles and rankings printed to your console.
 
 Always clean up your resources when finished:
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
   finally {
     // Close Stagehand
     if (stagehand) {
@@ -225,7 +225,7 @@ Connected to Steel browser via Stagehand
 
 Here's the complete script that puts all steps together:
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
 /*
  * AI-powered browser automation using Stagehand with Steel browsers.
  */
@@ -331,7 +331,7 @@ main().catch((error) => {
 
 #### Custom Data Extraction Schema
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
 const ProductSchema = z.object({
   products: z.array(
     z.object({
@@ -353,7 +353,7 @@ const productData = await stagehand.page.extract({
 
 #### Complex Actions with Natural Language
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
 // Fill out a form using natural language
 await stagehand.page.act(
   "fill out the contact form with name 'John Doe', email 'john@example.com', and message 'Hello!'"

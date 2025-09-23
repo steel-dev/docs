@@ -61,7 +61,7 @@ curl -X POST https://api.steel.dev/v1/credentials \
   }'
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wc -f main.ts
 await client.credentials.create({
   origin: "https://app.example.com",
   value: {
@@ -71,7 +71,7 @@ await client.credentials.create({
 });
 ```
 
-```python !! Python -wc
+```python !! Python -wc -f main.py
 client.credentials.create(
     origin="https://app.example.com",
     value={
@@ -99,14 +99,14 @@ curl -X POST https://api.steel.dev/v1/sessions \
   }'
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wc -f main.ts
 const session = await client.sessions.create({
   namespace: "default",
   credentials: {}
 });
 ```
 
-```python !! Python -wc
+```python !! Python -wc -f main.py
 client.sessions.create(
   namespace="default",
   credentials={}
@@ -262,7 +262,7 @@ If `autoSubmit` is disabled, you must explicitly trigger the login action (e.g.,
 
 #### Example Flow
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 await page.goto("https://app.example.com/login");
 
 // Optional: ensure login form is present

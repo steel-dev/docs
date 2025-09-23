@@ -341,7 +341,7 @@ print(response.status_code)
 
 Reference uploaded files in file input elements using CDP (Chrome DevTools Protocol).
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
 // Create CDP session for advanced controls
 const cdpSession = await currentContext.newCDPSession(page);
 const document = await cdpSession.send("DOM.getDocument");
@@ -363,7 +363,7 @@ await cdpSession.send("DOM.setFileInputFiles", {
 
 #### Standard Playwright/Puppeteer Upload
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
 // For simple/smaller file uploads,
 // using standard automation library methods will look at local files
 await page.setInputFiles("#file-input", [uploadedSessionFile.path]);
@@ -374,7 +374,7 @@ await page.setInputFiles("#file-input", [uploadedSessionFile.path]);
 
 End-to-end workflow demonstrating global file management and session file operations.
 
-```typescript Typescript -c
+```typescript Typescript -wc -f main.ts
 import dotenv from "dotenv";
 import fs from "fs";
 import { chromium } from "playwright";

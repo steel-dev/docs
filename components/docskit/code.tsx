@@ -114,7 +114,7 @@ function SingleCode({
         >
           <span className="pl-2 pr-1">{icon}</span>
           {title}
-          {options.copyButton && (
+          {options.copyButton && !filename && (
             <div className={cn("ml-auto mr-1 items-center")}>
               <CopyButton
                 text={code}
@@ -125,10 +125,23 @@ function SingleCode({
         </div>
       )}
       {filename && (
-        <div className="w-full text-left text-sm font-mono text-muted-foreground py-1 border-b- border-ch-border rounded-t-none">
-          <span className="pl-2">{filename}</span>
+        <div
+          className="flex items-center w-full text-sm font-mono border-b border-ch-border rounded-t-none"
+          style={{ minHeight: 32 }}
+        >
+          <span className="pl-3 pr-2 flex-1 font-mono text-foreground">
+            {filename}
+          </span>
+          <span className="h-4 border-l border-ch-border mx-2" />
+          <span className="ml-auto pr-3">
+            <CopyButton
+              text={code}
+              className="text-ch-tab-inactive-foreground"
+            />
+          </span>
         </div>
       )}
+
       {options.copyButton && !hasTitle && (
         <CopyButton
           text={code}

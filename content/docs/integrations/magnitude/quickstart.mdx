@@ -55,7 +55,7 @@ ANTHROPIC_API_KEY=your-anthropic-api-key-here
 
 Set up Steel, load env vars, and prepare to start the Magnitude agent.
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 // index.ts
 import * as dotenv from "dotenv";
 import { Steel } from "steel-sdk";
@@ -76,7 +76,7 @@ const client = new Steel({ steelAPIKey: STEEL_API_KEY });
 
 Create a Steel session, then connect Magnitude via **CDP**. Turn on `narrate` for easy debugging.
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 async function main() {
   console.log("🚀 Steel + Magnitude Node Starter");
   console.log("=".repeat(60));
@@ -131,7 +131,7 @@ async function main() {
 
 Use Magnitude’s `agent.extract` to pull structured data (user behind commit + commit itself) using a Zod schema.
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
     console.log("Looking for commits");
 
     const mostRecentCommitter = await agent.extract(
@@ -152,7 +152,7 @@ Use Magnitude’s `agent.extract` to pull structured data (user behind commit + 
 
 Use `agent.act` to summarize the pull request (if there’s a pull request behind the commit).
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
     console.log("\nLooking for pull request behind the most recent commit\x1b[0m");
 
     try {
@@ -183,7 +183,7 @@ Use `agent.act` to summarize the pull request (if there’s a pull request behin
 
 Stop the agent and release the Steel session.
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
   } catch (error) {
     console.error("Error during automation:", error);
   } finally {
@@ -223,7 +223,7 @@ You’ll see a **session viewer URL** in your console, open it to watch the auto
 
 Complete `index.ts` you can paste and run:
 
-```typescript Typescript -wc
+```typescript Typescript -wc -f main.ts
 /*
  * AI-powered browser automation using Magnitude with Steel browsers.
  * https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-magnitude-starter
