@@ -22,7 +22,7 @@ import PlaygroundButton from "components/playground-button.tsx";
 
 Create a virtual environment and a minimal project:
 
-```python Python
+```bash Terminal -wc
 python3 -m venv .venv && \
 source .venv/bin/activate && \
 mkdir notte-steel && cd notte-steel && \
@@ -32,7 +32,7 @@ touch main.py .env
 
 ### Step 2: Install Dependencies
 
-```python Python
+```bash Terminal -wc
 pip install steel-sdk notte python-dotenv
 ```
 
@@ -41,7 +41,7 @@ pip install steel-sdk notte python-dotenv
 
 Create a `.env` file with your API keys and a default task:
 
-```python Python
+```python Python -wc
 STEEL_API_KEY=your-steel-api-key-here
 GEMINI_API_KEY=your-gemini-api-key-here
 TASK="Go to Wikipedia and search for machine learning"
@@ -52,7 +52,7 @@ TASK="Go to Wikipedia and search for machine learning"
 
 Set up Steel, load env vars, and prepare to start the Notte agent.
 
-```python Python
+```python Python -wc
 # main.py
 import os
 import time
@@ -76,7 +76,7 @@ TASK = os.getenv("TASK") or "Go to Wikipedia and search for machine learning"
 
 Create a Steel session, connect Notte via **CDP**, run your task, and print the result.
 
-```python Python
+```python Python -wc
 async def main():
     print("🚀 Steel + Notte Assistant")
     print("=" * 60)
@@ -159,7 +159,7 @@ You’ll see a **session viewer URL** in your console, open it to watch the auto
 
 Complete `main.py` you can paste and run:
 
-```python Python
+```python Python -wc
 """
 AI-powered browser automation using notte-sdk with Steel browsers.
 https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-notte-starter

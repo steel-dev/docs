@@ -119,6 +119,9 @@ const config = {
       },
     ];
   },
+  images: {
+    domains: ["cdn.openai.com"],
+  },
 };
 
 export default withMDX(config);

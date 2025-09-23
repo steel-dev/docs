@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 export default function PlaygroundButton({ href }: { href: string }) {
   return (
     <Link href={href}>
-      <Button>
+      <Button size="icon-sm">
         <div className="flex items-center gap-x-2 my-0">
           <Image
             className="not-prose w-auto h-auto shrink-0"
@@ -14,7 +14,7 @@ export default function PlaygroundButton({ href }: { href: string }) {
             width={20}
             height={10}
           />
-          <p className="my-0"> Try in Playground</p>
+          <p className="mt-2 mb-2"> Try in Playground</p>
         </div>
       </Button>
     </Link>

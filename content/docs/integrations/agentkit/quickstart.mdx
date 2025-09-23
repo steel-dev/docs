@@ -46,7 +46,7 @@ OPENAI_API_KEY=your-openai-api-key-here
 
 We’ll define a custom **AgentKit tool**
 
-```typescript Typescript -c
+```typescript Typescript -wc
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -84,10 +84,8 @@ const browseHackerNews = createTool({
         `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`
       );
       try {
-        const context = browser.contexts()
-[0];
-        const page = context.pages()
-[0];
+        const context = browser.contexts()[0];
+        const page = context.pages()[0];
         const base = "https://news.ycombinator.com";
         const url =
           section === "best"
@@ -133,8 +131,7 @@ const browseHackerNews = createTool({
               : 0;
             const commentsText = commentsLink?.textContent || "";
             const commentsNum = /\d+/.test(commentsText)
-              ? parseInt((commentsText.match(/\d+/) || ["0"])
-[0], 10)
+              ? parseInt((commentsText.match(/\d+/) || ["0"])[0], 10)
               : 0;
             const itemId = row.getAttribute("id") || "";
             out.push({ rank, title, url, site, points, comments: commentsNum, itemId });
@@ -181,7 +178,7 @@ const browseHackerNews = createTool({
 
 Wire the tool into an agent and run it inside a small network with your default model.
 
-```typescript Typescript
+```typescript Typescript -wc
 const hnAgent = createAgent({
   name: "hn_curator",
   description: "Curates interesting Hacker News stories by topic",
@@ -206,7 +203,7 @@ const hnNetwork = createNetwork({
 
 Add a small `main()` that checks env vars, runs the network, and prints results.
 
-```typescript Typescript
+```typescript Typescript -wc
 async function main() {
   console.log("🚀 Steel + Agent Kit Starter");
   console.log("=".repeat(60));
@@ -248,7 +245,7 @@ Open your console output to see your curated results. You can also watch the liv
 
 Paste the full **index.ts** below and run `npm run start`:
 
-```typescript Typescript
+```typescript Typescript -wc
 import dotenv from "dotenv";
 dotenv.config();
 import { z } from "zod";
@@ -286,10 +283,8 @@ const browseHackerNews = createTool({
         `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`
       );
       try {
-        const context = browser.contexts()
-[0];
-        const page = context.pages()
-[0];
+        const context = browser.contexts()[0];
+        const page = context.pages()[0];
         const base = "https://news.ycombinator.com";
         const url =
           section === "best"
@@ -331,8 +326,7 @@ const browseHackerNews = createTool({
               : 0;
             const commentsText = commentsLink?.textContent || "";
             const commentsNum = /\d+/.test(commentsText)
-              ? parseInt((commentsText.match(/\d+/) || ["0"])
-[0], 10)
+              ? parseInt((commentsText.match(/\d+/) || ["0"])[0], 10)
               : 0;
             const itemId = row.getAttribute("id") || "";
             out.push({
@@ -441,7 +435,7 @@ main();
 
 Try adjusting the network input:
 
-```typescript Typescript
+```typescript Typescript -wc
 await hnNetwork.run(
   "Curate 8 stories about WebAssembly, Edge runtimes, and performance. Use 'new' if there are fresh posts. Return title, url, site, points, comments."
 );
@@ -454,8 +448,8 @@ await hnNetwork.run(
 
 *   Examples Gallery: [https://agentkit.inngest.com/examples/overview](https://agentkit.inngest.com/examples/overview)
 
-*   Steel Sessions API: [https://docs.steel.dev/overview/sessions-api/overview](https://docs.steel.dev/overview/sessions-api/overview)
+*   Steel Sessions API: [/overview/sessions-api/overview](/overview/sessions-api/overview)
 
-*   Session Lifecycle: [https://docs.steel.dev/overview/sessions-api/session-lifecycle](https://docs.steel.dev/overview/sessions-api/session-lifecycle)
+*   Session Lifecycle: [https://docs.steel.dev/overview/sessions-api/session-lifecycle](/overview/sessions-api/session-lifecycle)
 
 *   Steel Node SDK: [https://github.com/steel-dev/steel-node](https://github.com/steel-dev/steel-node)
