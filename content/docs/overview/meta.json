@@ -3,6 +3,9 @@
   "root": false,
   "pages": [
     "intro-to-steel",
+    "need-help",
+    "pricing",
+    "legal",
     "...sessions-api",
     "...credentials-api",
     "...files-api",

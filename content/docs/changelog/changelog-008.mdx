@@ -1,54 +1,79 @@
 ---
-title: "Changelog 8"
-sidebarTitle: "Changelog 8"
+title: "Changelog #008"
+sidebarTitle: "Changelog #008"
 llm: false
 ---
 
-Hey y’all! This week's update brings an exciting new Files API for Sessions, along with several improvements to the Steel browser experience and important bugfixes to enhance stability.
+import Image from 'next/image';
 
+<Image src="/images/oWlREKD5nejyDprfYbiGM.png" alt="Changelog 8" width={800} height={400} />
+
+Howdy y’all! These last few weeks brought significant improvements to session state management and browser control capabilities, along with several important bugfixes to enhance the Steel experience.
 
 ### ⭐ New
 
-#### Files API for Sessions 📂
+#### Enhanced Session Context Support 🔄
 
-The new Files API enables seamless file management within active browser sessions. You can now upload files from your local machine, use them in your automation workflows, and download files back when needed - perfect for testing file uploads or working with documents in your browser automation.
+Session contexts have been extended to cover indexedDB and sessionStorage, providing more robust state persistence and authentication handling. This improvement allows for more reliable user sessions, especially for sites that rely heavily on client-side storage for auth tokens and application state.
 
-```js
-// Upload a file to your session
-const file = new File(["Hello World!"], "hello.txt", { type: "text/plain" });
-const uploadedFile = await client.sessions.files.upload(session.id, { file });
+```typescript Typescript -wc
+// Example: Working with the enhanced session context
+const session = await client.sessions.create();
+let browser = await chromium.connectOverCDP(
+  `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`
+);
+const page = await browser.contexts()
+[0].pages()
+[0];
 
-// Create a CDP session to pass in some custom controls
-const cdpSession = await currentContext.newCDPSession(page);
-const document = await cdpSession.send("DOM.getDocument");
+// Session now maintains indexedDB and sessionStorage state
+// Perfect for sites using modern auth patterns
+await page.goto('https://app.example.com/login');
+await page.fill('#email', 'user@example.com');
+await page.fill('#password', 'password123');
+await page.click('#login-button');
 
-// We need to find the input element using the selector
-const inputNode = await cdpSession.send("DOM.querySelector", {
-  nodeId: document.root.nodeId,
-  selector: "#load-file",
-});
+const sessionContext = await client.sessions.context(session.id);
 
-// Set the CSV file as input on the page.
-await cdpSession.send("DOM.setFileInputFiles", {
-  files: [uploadedFile.path],
-  nodeId: inputNode.nodeId,
-});
+const session = await client.sessions.create({ sessionContext });
+browser = await chromium.connectOverCDP(
+    `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`
+);
 
-// Download a file from your session
-const response = await client.sessions.files.download(session.id, file.id);
-const downloadedFile = await response.blob();
+const page = await browser.contexts()[0].pages()[0];
+
+// State persists across navigation
+await page.goto('https://app.example.com/dashboard');
+// User remains logged in!
 ```
 
-[Documentation Link](https://docs.steel.dev/overview/guides/working-with-files-in-sessions) | [Steel Cookbook](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-files-api-starter)
+[Documentation Link](https://docs.steel.dev/overview/guides/reusing-contexts-auth) | [Auth Examples](https://github.com/steel-dev/steel-cookbook/tree/main/examples/reuse_auth_context_example)
+
+**Steel Browser Now Uses Chromium By Default 🌐**
+
+We've upgraded Steel Browser to use Chromium as our default browser, replacing our previous Chrome implementation. While Chrome served us well for bypassing basic anti-bot measures and stealth detection, it presented compatibility challenges for M-chip Mac users.
+
+The key issue was that Mac users running Steel Browser through Docker couldn't operate properly, as Chrome lacked distribution support for ARM Linux machines (which our Docker image utilized for Mac compatibility).
+
+Now that we use Chromium by default (which DOES have an ARM Linux compatible distribution); all the issues that Mac users were facing should now be gone.
 
 ### 🔧 Bugfixes/Improvements
 
-*   Improved rendering of the session viewer for a slight speed bump in UI updates
-*   Enhanced logging system for better coverage and debugging capabilities
-*   Upgraded the session viewer UI on steel-browser for improved usability
-*   Fixed proxy usage metrics that were incorrectly over-reporting usage
-*   Improved the UI docker image to accept dynamic API URLs, enabling more flexible custom deployments
-*   +10 other small bug fixes
+*   Steel Browser is now plugin-based, allowing
+*   Fixed multiple UI bugs for a smoother user experience
+*   Resolved an issue with browser updates happening in the background causing interruptions
+*   Added support for custom Chrome arguments via environment variables
+*   Improved session stability when working with sites that use indexedDB heavily
+*   Fixed state synchronization issues between browser restarts
+*   Repaired the live viewer for Railway deployments in Steel Browser
+*   You can now call browser actions with existing sessions
+*   Improved URL and environment variable management in the open-source repository
+*   Custom domain support throughout steel browser
+*   +10 other small bugfixes all around
+
+### 💖 First-time contributors
+
+Special thanks to [@aspectrr](https://github.com/aspectrr) for their help on enabling custom Chrome args for Steel Browser; as well as the ability to run browser actions on current pages within a session.
 
 As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.
 

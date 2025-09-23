@@ -1,10 +1,16 @@
 ---
-title: "Changelog 18"
-sidebarTitle: "Changelog 18"
+title: "Changelog #018"
+sidebarTitle: "Changelog #018"
 llm: false
 ---
+import Image from 'next/image';
 
-![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/FLSc3KPyPAskPqpEp6oio.png)
+<Image
+    src="/images/FLSc3KPyPAskPqpEp6oio.png"
+    alt="Changelog #018"
+    width={800}
+    height={500}
+/>
 
 Chrome extension support, enhanced scraping capabilities, and improved reliability across the platform with 25+ bug fixes.
 
@@ -14,7 +20,7 @@ Chrome extension support, enhanced scraping capabilities, and improved reliabili
 
 Steel now supports the ability to customize your browser sessions with Chrome Extensions. You can upload and use extensions from files or directly from the Chrome Web Store. Extensions are stored globally per organization and can be injected into any session using extension IDs or the `all_ext` parameter.
 
-```python
+```typescript Typescript -wc
 # Upload extension from Chrome Web Store
 response = client.extensions.upload_from_store(
     url="https://chromewebstore.google.com/detail/..."
@@ -25,6 +31,7 @@ session = client.sessions.create(
     extension_ids=['all_ext']  # or specific extension IDs
 )
 ```
+
 
 Extensions integrate with Steel's browser sessions through the Chrome DevTools Protocol and are initialized when sessions start.
 
@@ -41,14 +48,21 @@ Improved scraping algorithms on the `/scrape` endpoint now include HTML sanitiza
 ### 🔧 Improvements
 
 *   Added .env keys management to playground for easier usage
+
 *   Updated logging mechanisms for better test execution visibility and debugging
+
 *   Improved extension loading with corrected path resolution and naming conventions
+
 
 ### 🐛 Bug Fixes
 
 *   Fixed Puppeteer context evaluation errors with \_\_name polyfill
+
 *   Resolved device inconsistencies and enabled web security by default
+
 *   Fixed deployment configuration for improved connectivity
+
 *   25+ additional bug fixes across Steel Cloud and steel-browser
+
 
 As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.

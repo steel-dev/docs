@@ -1,182 +1,77 @@
 ---
 title: Intro to Steel
-description: Start building browser automations with Steel and browser-use.
+description: Humans use Chrome, Agents use Steel.
 sidebarTitle: Intro to Steel
 root: true
 full: true
 llm: false
 ---
+import Image from 'next/image'
 
-import { Card as MainCard, SecondaryCard, SmallCard } from '@/components/card';
-import { ImageZoom } from 'fumadocs-ui/components/image-zoom';
-import { PageFooter } from '@/components/footer';
-import { MessageCircle, Braces, Brackets, ChevronRight, Code, Database, Play, Rocket, Star, Terminal, Wallet, NotebookIcon, TestTube, Layers, Calculator, Activity, Filter, Server, Package, Shield, Zap, Hammer } from 'lucide-react';
-import { API, Backend, BugIcon, Clarinet, Clarity, Cloud, Chainhook, Frontend, Hiro, Js, Newspaper, Pulse, QuestionIcon } from '@/components/ui/icon';
+<Image src="/images/D-Yt182xdIQAAQph6XjuT.png" alt="Steel Header" width={800} height={400}/>
 
-<div className='flex flex-col space-y-10 pt-0'>
+### **Getting LLMs to use the web is _hard_**
 
-<Cards>
-  <SecondaryCard
-    href="/integrations/browser-use"
-    title="Intro to Steel & browser-use"
-    icon={<Server />}
-    tag="Steel"
-    description="Learn more about building browser automations with Steel and browser-use."
-  />
-  <SecondaryCard
-    href="/recommended-resources"
-    title="Recommended resources"
-    icon={<NotebookIcon />}
-    tag="Resources"
-    description="Get started with a collection of curated resources for browser automation and Steel."
-  />
-</Cards>
+We want AI products that can book us a flight, find us a sublet, buy us a prom suit, and get us an interview.
 
-<div className="flex flex-col">
-  <h4 id="explore-by-goal" className="scroll-m-20">
-    <a
-      href="#explore-by-goal"
-      className="not-prose group text-sm text-muted-foreground uppercase"
-    >
-      Quickstarts
-    </a>
-  </h4>
-  <hr className="border-t border-border my-2" />
-  <Cards>
-    <SmallCard
-      icon={<Rocket />}
-      href="/integrations/browser-use/quickstart"
-      title="I want to automate browsers"
-      description="Start with project setup and local automation basics using Steel and browser-use."
-    />
-    <SmallCard
-      icon={<Shield />}
-      href="/unit-testing"
-      title="I want to test my contracts"
-      description="Learn testing best practices and debugging techniques."
-    />
-    <SmallCard
-      icon={<Zap />}
-      href="/integrations/browser-use/quickstart"
-      title="I want to automate web tasks"
-      description="Set up real-time browser automation and data extraction."
-    />
-    <SmallCard
-      icon={<Hammer />}
-      href="/building-transactions"
-      title="I want to interact with contracts"
-      description="Learn how to build and submit transactions programmatically."
-    />
-  </Cards>
-</div>
+But if you’ve ever tried to build an AI app that can interact with the web today, you know the headaches:
 
-<div className="flex flex-col">
-  <h4 id="explore-by-workflow" className="scroll-m-20">
-    <a
-      href="#explore-by-workflow"
-      className="not-prose group text-sm text-muted-foreground uppercase"
-    >
-      Development Workflow
-    </a>
-  </h4>
-  <hr className="border-t border-border my-2" />
-  <Cards>
-    <SmallCard
-      icon={<Code />}
-      href="/integrations/browser-use/quickstart"
-      title="Create Your First Automation"
-      description="Set up a new browser-use project and start building automations with Steel."
-    />
-    <SmallCard
-      icon={<Terminal />}
-      href="/configuring-clarity-vscode-extension"
-      title="Configure Your IDE"
-      description="Set up VS Code with the Clarity extension for enhanced development experience."
-    />
-    <SmallCard
-      icon={<Wallet />}
-      href="/using-local-accounts"
-      title="Manage Local Accounts"
-      description="Work with test accounts and wallets in your local development environment."
-    />
-    <SmallCard
-      icon={<Database />}
-      href="/integrations/browser-use/quickstart"
-      title="Cloud Browser Setup"
-      description="Run and configure a Steel cloud browser for automation."
-    />
-  </Cards>
-</div>
+*   **Dynamic Content:** Modern sites heavily rely on client-side rendering and lazy loading, requiring scrapers to wait for page hydration and execute JS to access the full content.
 
-<div className="flex flex-col">
-  <h4 id="explore-by-testing" className="scroll-m-20">
-    <a
-      href="#explore-by-testing"
-      className="not-prose group text-sm text-muted-foreground uppercase"
-    >
-      Testing & Quality
-    </a>
-  </h4>
-  <hr className="border-t border-border my-2" />
-  <Cards>
-    <SmallCard
-      icon={<TestTube />}
-      href="/unit-testing"
-      title="Unit Testing"
-      description="Write comprehensive unit tests to ensure your contract logic is correct."
-    />
-    <SmallCard
-      icon={<Layers />}
-      href="/integration-testing"
-      title="Integration Testing"
-      description="Test contract interactions and complex scenarios with integration tests."
-    />
-    <SmallCard
-      icon={<Calculator />}
-      href="/cost-analysis-and-debugging"
-      title="Cost Analysis"
-      description="Analyze transaction costs and debug contract performance issues."
-    />
-  </Cards>
-</div>
+*   **Complex Navigation:** Reaching desired data often involves multi-step flows, simulating user actions like clicks, typing, and handling CAPTCHAs.
 
-<div className="flex flex-col">
-  <h4 id="explore-by-events" className="scroll-m-20">
-    <a
-      href="#explore-by-events"
-      className="not-prose group text-sm text-muted-foreground uppercase"
-    >
-      Real-time Data & Events
-    </a>
-  </h4>
-  <hr className="border-t border-border my-2" />
-  <Cards>
-    <SmallCard
-      icon={<Activity />}
-      href="/contract-monitoring"
-      title="Monitor Contracts"
-      description="Track smart contract activity and events in real-time."
-    />
-    <SmallCard
-      icon={<Filter />}
-      href="/integrations/browser-use/quickstart"
-      title="Create Automation Filters"
-      description="Build custom filters to extract and process web data."
-    />
-    <SmallCard
-      icon={<Server />}
-      href="/integrations/browser-use/quickstart"
-      title="Build a Web Data Indexer"
-      description="Create your own web data indexer for custom browser automation."
-    />
-    <SmallCard
-      icon={<Package />}
-      href="/working-with-events-and-transaction-payloads"
-      title="Event Payloads"
-      description="Parse and work with transaction data and event payloads."
-    />
-  </Cards>
-</div>
-</div>
+*   **Authentication:** High-value data and functionality frequently sits behind auth walls, necessitating robust identity management and auto-login capabilities.
 
-<PageFooter />
+*   **Infrastructure Overhead:** Efficiently scaling and managing headless browser fleets is complex, with issues like cold starts, resource contention, and reliability eating up valuable dev cycles.
+
+*   **Lack of Web APIs:** Many critical sites still lack API access, forcing teams to build and maintain brittle custom scrapers for each target.
+
+
+This is by design. Most of the web is designed to be anti-bot and human friendly.
+
+But what if we flipped that?
+
+### [**​**](https://steel.dev/introduction#a-better-way-to-take-your-llms-online)**A better way to take your LLMs online**
+
+Steel is a headless browser API that lets AI engineers:
+
+*   Control fleets of browser sessions in the cloud via API or Python/Node SDKs
+
+*   Easily extract page data as cleaned HTML, markdown, PDFs, or screenshots
+
+*   Access data behind logins with persistent cookies and automatic sign-in
+
+*   Render complex client-side content with JavaScript execution
+
+*   Bypass anti-bot measures with rotating proxies, stealth configs, and CAPTCHA solving
+
+*   Reduce token usage and costs by up to 80% with optimized page formats
+
+*   Reuse session and cookie data across multiple runs
+
+*   Debug with ease using live session viewers, replays, and embeddings
+
+
+All fully managed, and ready to scale, so you can focus on building shipping product, not babysitting browsers.
+
+Under the hood, Steel’s cloud-native platform handles all the headaches of browser infrastructure:
+
+*   Executing JavaScript to load and hydrate pages
+
+*   Managing credentials, sign-in flows, proxies, CAPTCHAs, and cookies
+
+*   Horizontal browser scaling and recovering from failures
+
+*   Optimizing data formats to reduce LLM token usage
+
+
+### Get started with Sessions API
+
+- [Overview](/overview/intro-to-steel)
+[Quickstart](https://docs.steel.dev/overview/intro-to-steel)[Connect with Puppeteer Drive a Steel session with Puppeteer via WebSocket connection](https://docs.steel.dev/overview/intro-to-steel)[Connect with Playwright Drive a Steel session with Playwright via WebSocket connection](https://docs.steel.dev/overview/intro-to-steel)[Connect with Selenium How to drive and connect to Steel browser sessions with Selenium](https://docs.steel.dev/overview/intro-to-steel)
+
+### Reference
+
+[API Reference](https://docs.steel.dev/api-reference)
+
+[Python SDK Reference](https://docs.steel.dev/overview/intro-to-steel)[Node SDK Reference](https://docs.steel.dev/overview/intro-to-steel)

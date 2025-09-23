@@ -119,14 +119,6 @@ const config = {
       },
     ];
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "api.scalar.com",
-      },
-    ],
-  },
 };
 
 export default withMDX(config);

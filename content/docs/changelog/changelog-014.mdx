@@ -1,10 +1,11 @@
 ---
-title: "Changelog 14"
-sidebarTitle: "Changelog 14"
+title: "Changelog #014"
+sidebarTitle: "Changelog #014"
 llm: false
 ---
+import Image from 'next/image'
 
-![](https://api.scalar.com/cdn/images/jBw8j7D0nDuWr2AD2vuO5/rkcB3za0kbZkorDRjHbnV.png)
+<Image src="/images/rkcB3za0kbZkorDRjHbnV.png" alt="Changelog #014" width={800} height={500} />
 
 Hey everyone! This week we've been focused on quality-of-life improvements and expanding our CAPTCHA solving capabilities. We've also squashed a bunch of bugs to make your Steel experience smoother than ever. Let's dive in!
 
@@ -25,24 +26,38 @@ Our CAPTCHA solver just leveled up with hCaptcha support. This expands our solvi
 ### 🔧 Bugfixes/Improvements
 
 *   **Added custom WebSocket proxy handlers** for CDP service, enabling advanced traffic routing configurations _(Steel-browser)_
+
 *   **Fixed WSL2 compatibility** - resolved 0.0.0.0 host binding issues for Windows Subsystem for Linux users _(Steel-browser)_
+
 *   **Optimized session recording** **extension**, increasing coverage of events and proper length tracking
+
 *   **Fixed multi-region support** issues that were causing connectivity problems for some users
+
 *   **Resolved circular reference errors** that occasionally caused stack trace failures
+
 *   **Improved address bar behavior** in live sessions - now uses Google search for non-HTTP queries
+
 *   **Fixed race conditions** during deployment that could cause session initialization delays
+
 *   **Made API key optional** in SDK for easier local development workflows
+
 *   **Re-enabled exhaustive stealth tests** to ensure our anti-bot measures stay effective
+
 *   **Updated user agent metadata** to maintain compatibility with latest browser standards
+
 
 ### 🏡 Housekeeping
 
 We've been investing heavily in our testing and monitoring infrastructure. While these changes happen behind the scenes, they help us:
 
 *   Catch and fix issues before they impact your automations
+
 *   Monitor success rates across different sites and scenarios
+
 *   Continuously improve our anti-bot detection avoidance
+
 *   Ensure Steel stays fast and reliable at scale
+
 
 This foundational work might not be flashy, but it's crucial for delivering the rock-solid browser automation platform you deserve.
 

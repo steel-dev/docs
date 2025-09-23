@@ -3,3 +3,45 @@ title: "Changelog #021"
 sidebarTitle: "Changelog #021"
 llm: false
 ---
+import Image from 'next/image';
+
+<Image src="/images/z5OTGZtJklIIs1XG3vPVB.png" alt="Changelog #021" width={800} height={400} />
+
+Hey everyone! This week we focused on streamlining deployments and fixing a bunch of extension API issues that were causing headaches. Plus some solid infrastructure improvements across the board.
+
+### ⭐ New
+
+#### Unified UI/API in Steel Browser
+
+Steel-browser now combines the UI and API deployment into a single application setup with a centralized Dockerfile. This makes it much easier to deploy and run Steel across different cloud environments without managing separate services.
+
+**_Available on:_** Steel-browser (OSS) 🔧
+
+### 🐛 Bug Fixes
+
+*   Fixed extension existence checks in steel-browser API to improve compatibility with existing extensions
+
+*   Resolved extension management conflicts during session initialization
+
+*   Corrected extension removal process to ensure clean installations in steel-browser API
+
+*   Fixed null videocard handling in fingerprint generation that caused browser session initialization errors
+
+*   Resolved extension client testing framework issues for better error reporting
+
+
+### 🔧 Improvements
+
+*   Centralized error handling and standardized linting rules across the Steel API
+
+*   Updated dependency versions for improved stability across steel-browser
+
+*   Enhanced retry logic in network request handling for better reliability
+
+*   Improved element locators for more accurate browser interactions
+
+*   Streamlined build process by removing lockfile check logic
+
+*   Added environment variable for configuring userDataDir path
+
+*   Enabled organization editing functionality in Steel Cloud dashboard
