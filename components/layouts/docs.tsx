@@ -6,6 +6,7 @@ import Link from "fumadocs-core/link";
 import type { PageTree } from "fumadocs-core/server";
 import { useSidebar } from "fumadocs-ui/contexts/sidebar";
 import { TreeContextProvider, useTreeContext } from "fumadocs-ui/contexts/tree";
+import { CopyLLMSButton } from "components/llmsbutton";
 import {
   ArrowUpRight,
   ChevronDown,
@@ -148,6 +149,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
               </div>
 
               <div className="flex flex-1 items-center justify-end space-x-2 lg:space-x-3">
+                <CopyLLMSButton />
                 <SearchToggle />
                 <Button
                   asChild
