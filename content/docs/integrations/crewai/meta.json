@@ -1,5 +1,5 @@
 {
   "title": "CrewAI",
   "root": false,
-  "pages": ["---CrewAI---", "overview", "quickstart"]
+  "pages": ["---CrewAI---", "integrations-overview", "quickstart"]
 }

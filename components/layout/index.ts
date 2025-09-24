@@ -4,4 +4,3 @@ export type {
   SectionProps,
 } from "./section";
 export { Section, SectionContent, SectionHeader } from "./section";
-export { ExternalNavLink } from "./external-nav-link";

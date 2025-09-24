@@ -1,5 +1,5 @@
 {
   "title": "Browser-use",
   "root": false,
-  "pages": ["---Browser-use---", "overview", "quickstart"]
+  "pages": ["---Browser-use---", "integrations-overview", "quickstart"]
 }

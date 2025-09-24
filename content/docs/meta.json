@@ -1,5 +1,5 @@
 {
   "title": "steel",
   "root": true,
-  "pages": ["...overview", "...integrations", "...changelog", "...cookbook"]
+  "pages": ["...overview", "...changelog", "...cookbook", "...integrations"]
 }

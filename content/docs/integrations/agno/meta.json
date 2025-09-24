@@ -1,5 +1,5 @@
 {
   "title": "Agno",
   "root": false,
-  "pages": ["---Agno---", "overview", "quickstart"]
+  "pages": ["---Agno---", "agno-overview", "quickstart"]
 }

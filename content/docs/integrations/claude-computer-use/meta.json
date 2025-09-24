@@ -3,7 +3,7 @@
   "root": false,
   "pages": [
     "---Claude Computer Use---",
-    "overview",
+    "integrations-overview",
     "quickstart-py",
     "quickstart-ts"
   ]

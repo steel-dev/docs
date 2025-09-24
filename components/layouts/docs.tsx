@@ -340,6 +340,15 @@ export function SidebarItem({
 
   const [isOpen, setIsOpen] = React.useState(shouldExpand);
 
+  if (
+    item.type === "page" &&
+    item.name === "Overview" &&
+    item.url.includes("/integrations") &&
+    !pathname.includes("/integrations")
+  ) {
+    return null;
+  }
+
   if (item.type === "page") {
     const sidebarTitle = (item as any).data?.sidebarTitle;
     const displayName = sidebarTitle || item.name;
@@ -480,7 +489,10 @@ export function PageBadges({ item }: { item: PageTree.Node }) {
   }
   if (isLink) {
     badges.push(
-      <ArrowUpRight className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200 bg-gray-600" />,
+      <ArrowUpRight
+        key="link"
+        className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200 bg-gray-600"
+      />,
     );
   }
 
