@@ -35,6 +35,10 @@ export const baseOptions: BaseLayoutProps = {
       text: "Playground",
       url: "/playground",
     },
+    {
+      text: "API Reference",
+      url: "/api-reference",
+    },
     // {
     //   type: "menu",
     //   text: "Libraries & SDKs",

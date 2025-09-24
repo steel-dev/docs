@@ -1,5 +1,5 @@
 {
   "title": "Stackblitz",
   "root": false,
-  "pages": ["quickstart"]
+  "pages": ["---Stackblitz---", "quickstart"]
 }

@@ -630,6 +630,10 @@ export const source = loader({
           dataToAdd.root = frontmatter.root;
         }
 
+        if (frontmatter?.isLink) {
+          dataToAdd.isLink = frontmatter.isLink;
+        }
+
         // if it's an API page, extract OpenAPI operations ourselves
         // if (node.url?.includes("/apis/") && fileData?.content) {
         //   const content = fileData.content;

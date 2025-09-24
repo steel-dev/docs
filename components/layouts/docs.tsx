@@ -466,15 +466,21 @@ export function PageBadges({ item }: { item: PageTree.Node }) {
   const badges: React.ReactNode[] = [];
 
   const isNew = (item as any).data?.isNew;
+  const isLink = (item as any).data?.isLink;
 
   if (isNew) {
     badges.push(
       <span
         key="new"
-        className="font-regular text-[10px] px-1 rounded uppercase bg-orange-500 dark:bg-brand-orange text-neutral-950 border-none"
+        className="font-regular text-[10px] px-1 rounded uppercase bg-yellow-500 dark:bg-yellow-300 text-neutral-950 border-none"
       >
         New
       </span>,
+    );
+  }
+  if (isLink) {
+    badges.push(
+      <ArrowUpRight className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200 bg-gray-600" />,
     );
   }
 

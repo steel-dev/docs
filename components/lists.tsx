@@ -9,7 +9,7 @@ function OrderedList({ children, items }: ListProps) {
   // If items prop is provided, use it directly
   if (items) {
     return (
-      <ol className="list-none p-0 space-y-4">
+      <ol className="list-none p-0 space-y-4 [&_li>span>p]:mt-1 [&_li>span>p]:mb-1">
         {items.map((item, index) => (
           <li key={index} className="flex items-baseline gap-4 pl-0">
             <span className="flex-shrink-0 w-7 h-7 bg-neutral-150 dark:bg-neutral-700 border rounded flex items-center justify-center text-primary font-mono">
@@ -31,7 +31,7 @@ function OrderedList({ children, items }: ListProps) {
   );
 
   return (
-    <ol className="list-none p-0 space-y-4">
+    <ol className="list-none p-0 space-y-4 [&_li>span>p]:mt-1 [&_li>span>p]:mb-1">
       {validChildren.map((child, index) => {
         if (!React.isValidElement(child)) return null;
 

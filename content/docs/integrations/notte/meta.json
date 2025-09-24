@@ -1,5 +1,5 @@
 {
   "title": "Notte",
   "root": false,
-  "pages": ["quickstart"]
+  "pages": ["---Notte---", "quickstart"]
 }

@@ -46,14 +46,14 @@ export default function IntegrationsPage() {
             />
             <IndexCard
               icon={<API />}
-              href="/integrations/magnitude/overview"
+              href="/integrations/magnitude/quickstart"
               title="Magnitude"
               tag="Browser Agent"
               description="Use Magnitude with Steel Browser."
             />
             <IndexCard
               icon={<API />}
-              href="/integrations/notte/overview"
+              href="/integrations/notte/quickstart"
               title="Notte"
               tag="Browser Agent"
               description="Use Notte with Steel Browser."

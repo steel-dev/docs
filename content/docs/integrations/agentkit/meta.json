@@ -1,5 +1,5 @@
 {
   "title": "Agentkit",
   "root": false,
-  "pages": ["overview", "quickstart"]
+  "pages": ["---Agentkit---", "overview", "quickstart"]
 }

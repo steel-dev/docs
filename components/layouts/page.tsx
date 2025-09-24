@@ -89,8 +89,13 @@ function ContentWrapper({ children, className }: ContentWrapperProps) {
   const shouldShowTOC = toc.length > 0 && !full;
 
   return shouldShowTOC ? (
-    <div className={cn("sm:flex w-full min-w-0", className)}>
-      {children}
+    <div
+      className={cn(
+        "flex flex-row w-full max-w-[1024px] mx-auto min-w-0",
+        className,
+      )}
+    >
+      <div className="flex-1 min-w-0">{children}</div>
       <PageTOC />
     </div>
   ) : (
@@ -126,7 +131,7 @@ interface PageContentProps extends ComponentProps<"div"> {
 }
 
 function PageContent({ children, className, ...props }: PageContentProps) {
-  const { full, interactive } = usePageData();
+  const { full, interactive, toc } = usePageData();
 
   return (
     <main className="flex flex-1 flex-col pb-16">
@@ -134,7 +139,8 @@ function PageContent({ children, className, ...props }: PageContentProps) {
         className={cn(
           "flex flex-1 flex-col w-full gap-6 px-4 md:px-10 mx-auto",
           interactive ? "pt-8" : "py-4",
-          full ? "md:max-w-[1120px]" : "md:max-w-[860px]",
+          toc?.length === 0 ? "md:max-w-[1024px]" : "md:max-w-[768px]",
+          // full ? "md:max-w-[1024px]" : "md:max-w-[860px]",
         )}
         {...props}
       >
@@ -167,7 +173,7 @@ function PageTOC() {
   if (toc.length === 0 || full) return null;
 
   return (
-    <div className="sticky top-[var(--fd-nav-height)] w-[275px] shrink-0 h-[calc(100dvh-var(--fd-nav-height))] px-4 py-3 max-xl:hidden overflow-auto">
+    <div className="sticky top-[var(--fd-nav-height)] w-[256px] shrink-0 h-[calc(100dvh-var(--fd-nav-height))] px-4 py-3 max-xl:hidden overflow-auto">
       <div className="flex items-center mb-4">
         <AlignLeft className="w-4 h-4 mr-2 text-muted-foreground" />
         <p className="text-sm font-mono text-muted-foreground">Contents</p>

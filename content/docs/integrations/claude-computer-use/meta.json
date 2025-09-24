@@ -1,5 +1,10 @@
 {
   "title": "Claude Computer Use",
   "root": false,
-  "pages": ["overview", "quickstart-py", "quickstart-ts"]
+  "pages": [
+    "---Claude Computer Use---",
+    "overview",
+    "quickstart-py",
+    "quickstart-ts"
+  ]
 }

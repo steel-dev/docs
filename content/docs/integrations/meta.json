@@ -2,18 +2,17 @@
   "title": "Integrations",
   "root": true,
   "pages": [
-    "---Integrations---",
-    "agentkit",
-    "agno",
-    "browser-use",
-    "claude-computer-use",
-    "crewai",
-    "magnitude",
-    "notte",
-    "openai-computer-use",
-    "replit",
-    "stackblitz-bolt.new",
-    "stagehand",
-    "valtown"
+    "...agentkit",
+    "...agno",
+    "...browser-use",
+    "...claude-computer-use",
+    "...crewai",
+    "...magnitude",
+    "...notte",
+    "...openai-computer-use",
+    "...replit",
+    "...stackblitz-bolt.new",
+    "...stagehand",
+    "...valtown"
   ]
 }

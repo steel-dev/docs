@@ -13,7 +13,7 @@ import Image from "next/image";
 
 export default function HomePage() {
   return (
-    <main className="space-y-10">
+    <main className="space-y-10 max-w-[1024px] w-full mx-auto ">
       <div className="px-4 md:px-[var(--nav-offset)] py-[56px]">
         <div className="space-y-10">
           <div className="space-y-1">

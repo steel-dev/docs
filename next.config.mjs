@@ -42,6 +42,11 @@ const config = {
         permanent: true,
       },
       {
+        source: "/overview/steel-cli",
+        destination: "https://github.com/steel-dev/cli",
+        permanent: true,
+      },
+      {
         source: "/overview/self-hosting/render",
         destination: "https://render.com/deploy?image=steeldev/steel",
         permanent: true,
@@ -49,6 +54,11 @@ const config = {
       {
         source: "/overview/self-hosting/railway",
         destination: "https://railway.app/template/FQG9Ca",
+        permanent: true,
+      },
+      {
+        source: "/integrations/valtown/quickstart",
+        destination: "https://www.val.town/v/steel/steel_puppeteer_starter",
         permanent: true,
       },
       {
