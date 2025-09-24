@@ -5,8 +5,8 @@ import {
   TSIcon,
   PythonIcon,
   BrowserUseIcon,
-  FileIcon,
-  KeyIcon,
+  ClaudeIcon,
+  OpenAIIcon,
 } from "@/components/ui/icon";
 import SteelLogo from "@/public/images/logo.png";
 import Image from "next/image";
@@ -88,40 +88,46 @@ export default function HomePage() {
                 href="#explore-by-category"
                 className="not-prose group text-sm uppercase"
               >
-                Starters
+                Integrations
               </a>
             </h4>
             <hr className="border-t border-border my-2" />
             <Cards className="xl:!grid-cols-3">
               <SmallCard
-                href="/integrations/browser-use/overview"
-                title="Browser-Use Starter"
                 icon={<BrowserUseIcon />}
-                description="Use Browser-use to interact with the Steel API."
+                href="/integrations/browser-use/overview"
+                title="Browser-Use Integration"
+                description="Use Browser-Use to interact with a Steel browser."
               />
               <SmallCard
-                href="/cookbook/credentials-starter"
-                title="Credentials API Starter"
-                icon={<KeyIcon />}
-                description="Use the Steel Credentials API to securely store and manage user credentials."
+                icon={<ClaudeIcon />}
+                href="/integrations/claude-computer-use/overview"
+                title="Claude Computer Use"
+                description="Use Claude Computer Use with Steel Browser."
               />
               <SmallCard
-                href="/cookbook/auth-context-starter"
-                title="Auth Context Starter"
-                icon={<Database />}
-                description="Learn how to store and reuse managed context."
+                icon={<OpenAIIcon />}
+                href="/integrations/openai-computer-use/overview"
+                title="OpenAI Computer Use"
+                description="Use OpenAI Computer Use with Steel Browser."
               />
               <SmallCard
-                href="/cookbook/extensions-starter"
-                title="Extensions API Starter"
-                icon={<Brackets />}
-                description="Use the Steel Extensions API to add custom extensions for your application."
+                icon={<API />}
+                href="/integrations/crewai/overview"
+                title="CrewAI"
+                description="Learn how to use CrewAI with Steel Browser."
               />
               <SmallCard
-                href="/cookbook/files-starter"
-                title="Files API Starter"
-                icon={<FileIcon />}
-                description="Use the Steel Files API to manage files and directories."
+                icon={<API />}
+                href="/integrations/magnitude/quickstart"
+                title="Magnitude"
+                description="Use Magnitude with Steel Browser."
+              />
+              <SmallCard
+                icon={<API />}
+                href="/integrations/notte/quickstart"
+                title="Notte"
+                description="Use Notte with Steel Browser."
               />
             </Cards>
           </div>
