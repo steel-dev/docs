@@ -30,7 +30,7 @@ mkdir steel-browser && cd steel-browser
 
     #### docker-compose.yaml
 
-```yaml docker-compose.yaml -c
+```yaml YAML -wc -f docker-compose.yaml
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:latest
@@ -108,7 +108,7 @@ docker compose -f docker-compose.dev.yml up -d --build
 
 The `.cache` directory stores Chrome data and extensions. Mount it as a volume for persistence:
 
-```yaml docker-compose.yaml -c
+```yaml YAML -wc -f docker-compose.yaml
 volumes:
   - ./.cache:/app/.cache
 ```
@@ -134,7 +134,7 @@ The API container uses Chrome 128.0.6613.119 by default. To use a different vers
 2.  Modify the Chrome installation section:
 
 
-```dockerfile Dockerfile -c
+```dockerfile Dockerfile -w -f Dockerfile
 ARG CHROME_VERSION="128.0.6613.119"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -152,7 +152,7 @@ RUN apt-get update && \
 
 Both containers use Node 22.13.0 by default. To use a different version, modify the build arguments:
 
-```yaml docker-compose.yaml -c
+```yaml YAML -wc -f docker-compose.yaml
 services:
   api:
     build:
@@ -219,7 +219,7 @@ For production environments:
 
 Example production compose file:
 
-```yaml docker-compose.yaml -c
+```yaml YAML -wc -f docker-compose.yaml
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:sha256:...
