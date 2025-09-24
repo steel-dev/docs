@@ -10,8 +10,5 @@
         }
       ]
     }
-  ],
-  "redirects": [
-    { "source": "/cookbook/:path*", "destination": "/resources/snippets", "permanent": true }
   ]
 }
