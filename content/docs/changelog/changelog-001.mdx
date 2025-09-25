@@ -34,7 +34,7 @@ Available on Steel Cloud and available soon on the steel-browser repo.
 
 We now support the ability to set screen + viewport dimensions when creating a session (`POST/v1/sessions`).
 
-```python Python -wc -f main.py
+```python Python -wcn -f main.py
 from steel import Steel
 
 client = Steel()
@@ -57,7 +57,7 @@ You can now block ads from rendering in your sessions. This is useful for saving
 
 It's defaulted to `true` when starting a session but you can explicitly turn it on/off by passing a bool into the `blockAds` param in the create session endpoint (`POST/v1/sessions`) or via the SDK like so:
 
-```python Python -wc -f main.py
+```python Python -wcn -f main.py
 from steel import Steel
 
 client = Steel()

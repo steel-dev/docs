@@ -39,7 +39,7 @@ npm install -D @types/node typescript ts-node
 
 Create a `.env` file with your API keys:
 
-```env ENV -wc -f .env
+```env ENV -wcn -f .env
 STEEL_API_KEY=your_steel_api_key_here
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 TASK=Go to Wikipedia and search for machine learning
@@ -1237,7 +1237,7 @@ npx ts-node main.ts
 
 Try modifying the task to make your agent perform different actions:
 
-```env ENV -wc -f .env
+```env ENV -wcn -f .env
 // Research specific topics
 TASK = "Go to https://arxiv.org, search for 'machine learning', and summarize the latest papers.";
 

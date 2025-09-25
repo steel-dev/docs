@@ -40,7 +40,7 @@ await client.extensions.upload({
 ```
 
 
-```python !! Python -wc
+```python !! Python -wcn
 with open("extensions/recorder/recorder.zip", "rb") as file:
     client.extensions.upload(
         file=file
@@ -69,7 +69,7 @@ await client.extensions.upload({
 ```
 
 
-```python !! Python -wc
+```python !! Python -wcn
 client.extensions.upload(
     url="https://chromewebstore.google.com/detail/.../..."
 )
@@ -107,7 +107,7 @@ const session = await client.sessions.create({
 ```
 
 
-```python !! Python -wc
+```python !! Python -wcn
 client.sessions.create(
     extension_ids=['all_ext'] # extension_ids=['extensionId_1', 'extensionId_2']
 )
@@ -141,7 +141,7 @@ await client.extensions.update("{extensionId}",{
 ```
 
 
-```python !! Python -wc
+```python !! Python -wcn
 with open("extensions/recorder2/recorder2.zip", "rb") as file:
     client.extensions.update("{extensionId}",
         file=file
@@ -170,7 +170,7 @@ await client.extensions.update("{extensionId}",{
 ```
 
 
-```python !! Python -wc
+```python !! Python -wcn
 client.extensions.update("{extensionId}",
     url="https://chromewebstore.google.com/detail/.../..."
 )
@@ -195,7 +195,7 @@ curl -X GET https://api.steel.dev/v1/extensions \
 const extensions = await client.extensions.list();
 ```
 
-```python !! Python -wc
+```python !! Python -wcn
 extensions = client.extensions.list()
 ```
 
@@ -218,7 +218,7 @@ curl -X DELETE https://api.steel.dev/v1/extensions/{extensionId} \
 await client.extensions.delete("{extensonId}")
 ```
 
-```python !! Python -wc
+```python !! Python -wcn
 client.extensions.delete("{extensionId}")
 ```
 
@@ -241,7 +241,7 @@ curl -X DELETE https://api.steel.dev/v1/extensions \
 await client.extensions.deleteAll()
 ```
 
-```python !! Python -wc
+```python !! Python -wcn
 client.extensions.deleteAll()
 ```
  </CodeTabs>
