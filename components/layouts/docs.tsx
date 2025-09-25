@@ -31,7 +31,7 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { Button } from "../ui/button";
-import { DocsLogo } from "../ui/icon";
+import { DocsLogo, Github, Discord } from "../ui/icon";
 import { NavigationMenu, NavigationMenuList } from "../ui/navigation-menu";
 import { renderNavItem } from "./links";
 
@@ -149,6 +149,8 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
               </div>
 
               <div className="flex flex-1 items-center justify-end space-x-2 lg:space-x-3">
+                <Discord />
+                <Github />
                 <CopyLLMSButton />
                 <SearchToggle />
                 <Button

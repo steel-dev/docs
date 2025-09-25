@@ -25,7 +25,7 @@ We’ll be implementing a simple CUA loop that functions as described below:
 
 #### Step 1: Setup and Helper Functions
 
-```typescript Typescript -wc -f helpers.ts
+```typescript Typescript -wcn -f helpers.ts
 import { chromium } from "playwright";
 import type { Browser, Page } from "playwright";
 import { Steel } from "steel-sdk";
@@ -249,7 +249,7 @@ export function checkBlocklistedUrl(url: string): void {
 
 #### Step 2: Create Steel Browser Integration
 
-```typescript Typescript -wc -f steelBrowser.ts
+```typescript Typescript -wcn -f steelBrowser.ts
 export class SteelBrowser {
   private client: Steel;
   private session: any;
@@ -559,7 +559,7 @@ export class SteelBrowser {
 
 #### Step 3: Create the Agent Class
 
-```typescript Typescript -wc -f agent.ts
+```typescript Typescript -wcn -f agent.ts
 export class Agent {
   private model: string;
   private computer: SteelBrowser;
@@ -1045,7 +1045,7 @@ export class Agent {
 
 #### Step 4: Create the Main Script
 
-```typescript Typescript -wc -f index.ts
+```typescript Typescript -wcn -f index.ts
 import { SteelBrowser } from "./steelBrowser";
 import { Agent } from "./agent";
 import { STEEL_API_KEY, OPENAI_API_KEY, TASK } from "./helpers";

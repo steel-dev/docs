@@ -48,7 +48,7 @@ TASK=Go to Wikipedia and search for machine learning
 
 #### Step 2: Create Helper Functions
 
-```typescript Typescript -wc -f utils.ts
+```typescript Typescript -wcn -f utils.ts
 import { chromium } from "playwright";
 import type { Browser, Page } from "playwright";
 import { Steel } from "steel-sdk";
@@ -277,7 +277,7 @@ export function checkBlocklistedUrl(url: string): void {
 
 #### Step 3: Create Steel Browser Integration
 
-```typescript Typescript -wc -f steelBrowser.ts
+```typescript Typescript -wcn -f steelBrowser.ts
 const TYPING_DELAY_MS = 12;
 const TYPING_GROUP_SIZE = 50;
 
@@ -743,7 +743,7 @@ export class SteelBrowser {
 
 #### Step 4: Create the Agent Class
 
-```typescript Typescript -wc -f claudeAgent.ts
+```typescript Typescript -wcn -f claudeAgent.ts
 type ModelName = keyof typeof MODEL_CONFIGS;
 
 interface ModelConfig {
@@ -1153,7 +1153,7 @@ export class ClaudeAgent {
 
 #### Step 5: Create the Main Script
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 async function main(): Promise<void> {
   console.log("🚀 Steel + Claude Computer Use Assistant");
   console.log("=".repeat(60));

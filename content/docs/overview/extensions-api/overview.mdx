@@ -33,7 +33,7 @@ curl -X POST https://api.steel.dev/v1/extensions \
 ```
 
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 await client.extensions.upload({
     file: fs.readFileSync('extensions/recorder/recorder.zip')
   });
@@ -62,7 +62,7 @@ curl -X POST https://api.steel.dev/v1/extensions \
 ```
 
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 await client.extensions.upload({
    url: "https://chromewebstore.google.com/detail/.../..."
 });
@@ -100,7 +100,7 @@ curl -X POST https://api.steel.dev/v1/sessions \
 ```
 
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 const session = await client.sessions.create({
   extensionIds: ['all_ext'] // extensionIds=['extensionId_1', 'extensionId_2']
 });
@@ -134,7 +134,7 @@ curl -X PUT https://api.steel.dev/v1/extensions/{extensionId} \
 ```
 
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 await client.extensions.update("{extensionId}",{
     file: fs.readFileSync("extensions/recorder2/recorder2.zip")
   });
@@ -163,7 +163,7 @@ curl -X PUT https://api.steel.dev/v1/extensions/{extensionId} \
 ```
 
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 await client.extensions.update("{extensionId}",{
     url: "https://chromewebstore.google.com/detail/.../..."
 });
@@ -191,7 +191,7 @@ curl -X GET https://api.steel.dev/v1/extensions \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 const extensions = await client.extensions.list();
 ```
 
@@ -214,7 +214,7 @@ curl -X DELETE https://api.steel.dev/v1/extensions/{extensionId} \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 await client.extensions.delete("{extensonId}")
 ```
 
@@ -237,7 +237,7 @@ curl -X DELETE https://api.steel.dev/v1/extensions \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 await client.extensions.deleteAll()
 ```
 

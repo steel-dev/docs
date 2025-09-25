@@ -14,7 +14,7 @@ export function CopyLLMSButton() {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-2 px-3 py-2 rounded-md bg-muted hover:bg-accent transition-colors text-sm font-mono"
+      className="flex items-center gap-2 px-3 py-2 rounded-md bg-muted hover:bg-accent transition-colors text-xs hidden lg:flex font-mono"
       title="Copy llms-full.txt URL"
       type="button"
     >

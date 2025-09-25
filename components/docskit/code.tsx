@@ -180,7 +180,7 @@ export async function toCodeGroup(props: {
             code={highlighted}
             className={cn(
               !title && "!m-0",
-              "overflow-x-auto px-0 py-2 m-3 rounded-lg !bg-ch-code max-w-full", // rounded-lg
+              "overflow-x-auto px-0 py-2 rounded-lg !bg-ch-code max-w-full", // rounded-lg
               props.preClassName,
             )}
             style={highlighted.style}

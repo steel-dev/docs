@@ -20,7 +20,7 @@ Chrome extension support, enhanced scraping capabilities, and improved reliabili
 
 Steel now supports the ability to customize your browser sessions with Chrome Extensions. You can upload and use extensions from files or directly from the Chrome Web Store. Extensions are stored globally per organization and can be injected into any session using extension IDs or the `all_ext` parameter.
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 # Upload extension from Chrome Web Store
 response = client.extensions.upload_from_store(
     url="https://chromewebstore.google.com/detail/..."

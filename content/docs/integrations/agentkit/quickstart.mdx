@@ -36,7 +36,7 @@ npm install steel-sdk @inngest/agent-kit zod playwright dotenv
 
 Add your API keys to `.env`:
 
-```env ENV -wc -f .env
+```env ENV -wcn -f .env
 STEEL_API_KEY=your-steel-api-key-here
 OPENAI_API_KEY=your-openai-api-key-here
 ```
@@ -46,7 +46,7 @@ OPENAI_API_KEY=your-openai-api-key-here
 
 We’ll define a custom **AgentKit tool**
 
-```typescript Typescript -wc -f index.ts
+```typescript Typescript -wcn -f index.ts
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -178,7 +178,7 @@ const browseHackerNews = createTool({
 
 Wire the tool into an agent and run it inside a small network with your default model.
 
-```typescript Typescript -wc -f index.ts
+```typescript Typescript -wcn -f index.ts
 const hnAgent = createAgent({
   name: "hn_curator",
   description: "Curates interesting Hacker News stories by topic",
@@ -203,7 +203,7 @@ const hnNetwork = createNetwork({
 
 Add a small `main()` that checks env vars, runs the network, and prints results.
 
-```typescript Typescript -wc -f index.ts
+```typescript Typescript -wcn -f index.ts
 async function main() {
   console.log("🚀 Steel + Agent Kit Starter");
   console.log("=".repeat(60));
@@ -245,7 +245,7 @@ Open your console output to see your curated results. You can also watch the liv
 
 Paste the full **index.ts** below and run `npm run start`:
 
-```typescript Typescript -wc -f index.ts
+```typescript Typescript -wcn -f index.ts
 import dotenv from "dotenv";
 dotenv.config();
 import { z } from "zod";
@@ -435,7 +435,7 @@ main();
 
 Try adjusting the network input:
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 await hnNetwork.run(
   "Curate 8 stories about WebAssembly, Edge runtimes, and performance. Use 'new' if there are fresh posts. Return title, url, site, points, comments."
 );

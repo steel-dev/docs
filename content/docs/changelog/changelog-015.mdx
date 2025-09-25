@@ -15,7 +15,7 @@ This week brought major improvements to proxy capabilities and stealth features,
 
 Steel-managed proxies now support targeting specific countries, states (US only), and cities. This gives you precise control over your browser session's apparent location while maintaining the quality and reliability of our residential proxy network.
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 # Target specific country
 session = client.sessions.create(
     use_proxy={
@@ -47,7 +47,7 @@ session = client.sessions.create(
 
 Steel Browser now implements realistic mouse trajectories by intercepting CDP commands to simulate human-like cursor movement patterns. This enhancement improves stealth capabilities by making automated interactions appear more natural.
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 session = client.sessions.create(
     StealthConfig={
         humanize_interactions=True

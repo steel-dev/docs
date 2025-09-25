@@ -20,7 +20,7 @@ This week brought some open-source improvements and enhanced developer experienc
 
 Launched a complete CAPTCHAs API with real-time visibility and control over CAPTCHA detection, solving progress, and completion status. The API provides two powerful capabilities: status monitoring for tracking all CAPTCHAs across pages in real-time, and direct solving of image CAPTCHAs using XPath selectors for precise control over the solving process. No more waiting blindly or checking the DOM repeatedly - you get instant visibility into what CAPTCHAs are active, which are being solved, and exactly how long each task is taking.
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 # Solving an image captcha, common on legacy sites like govt portals
 const response = await client.sessions.captchas.solveImage('sessionId', {
   imageXPath: '//img[@id="captcha-image"]',

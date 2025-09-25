@@ -70,12 +70,12 @@
   --ch-1: #e4e1dc; /* Base text color */
   --ch-2: #7c7f93; /* Not used */
   --ch-3: #595650; /* Comments */
-  --ch-4: #7cbe83; /* Strings */
+  --ch-4: #30a46c; /* Strings */
   --ch-5: #f5c2e7; /* Decorators/special */
   --ch-6: #ff9e64; /* Constants/numbers */
-  --ch-7: #ff9ecf; /* Keywords */
-  --ch-8: #94e2d5; /* Operators */
-  --ch-9: #69a3e8; /* Functions */
+  --ch-7: #68ddfd; /* Keywords */
+  --ch-8: #ab4aba; /* Operators */
+  --ch-9: #0091ff; /* Functions */
   --ch-10: #ff9ecf; /* Classes/types */
   --ch-11: #e4e1dc; /* Parameters */
   --ch-12: #ff9e64; /* this/self */
@@ -137,16 +137,16 @@
   --sidebar-ring: oklch(0.439 0 0);
   /* CodeHike Styling */
 
-  --ch-0: var(--color-black);
+  --ch-0: #1c1c1c;
   --ch-1: #e4e1dc; /* Base text color */
   --ch-2: #9399b2; /* Not used */
   --ch-3: #595650; /* Comments */
-  --ch-4: #7cbe83; /* Strings */
+  --ch-4: #30a46c; /* Strings */
   --ch-5: #f5c2e7; /* Decorators/special */
-  --ch-6: #ff9e64; /* Constants/numbers */
-  --ch-7: #ff9ecf; /* Keywords */
-  --ch-8: #94e2d5; /* Operators */
-  --ch-9: #69a3e8; /* Functions */
+  --ch-6: #e54d2e; /* Constants/numbers */
+  --ch-7: #68ddfd; /* Keywords */
+  --ch-8: #ab4aba; /* Operators */
+  --ch-9: #0091ff; /* Functions */
   --ch-10: #ff9ecf; /* Classes/types */
   --ch-11: #e4e1dc; /* Parameters */
   --ch-12: #ff9e64; /* this/self */
@@ -155,7 +155,7 @@
   --ch-15: #a6adc8; /* Strike-through */
   --ch-16: #69a3e8; /* Highlights */
   --ch-17: #f5e0dc; /* Regex */
-  --ch-18: #1e1e2e; /* Background */
+  --ch-18: #1c1c1c; /* Background */
   --ch-19: #cdd6f412; /* Line highlight */
   --ch-20: #89dceb40; /* Range highlight */
   --ch-21: #3794ff; /* Info */

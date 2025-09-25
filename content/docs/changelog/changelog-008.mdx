@@ -16,7 +16,7 @@ Howdy y’all! These last few weeks brought significant improvements to session 
 
 Session contexts have been extended to cover indexedDB and sessionStorage, providing more robust state persistence and authentication handling. This improvement allows for more reliable user sessions, especially for sites that rely heavily on client-side storage for auth tokens and application state.
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 // Example: Working with the enhanced session context
 const session = await client.sessions.create();
 let browser = await chromium.connectOverCDP(

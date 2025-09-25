@@ -105,13 +105,13 @@ When navigating to pages that might contain CAPTCHAs, it's important to implemen
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 // Typescript example using Puppeteer
 await page.waitForNetworkIdle();  // Wait for network activity to settle
 await page.waitForTimeout(2000);  // Additional safety buffer
 ```
 
-```python !! Python -wc
+```python !! Python -wcn
 # Python example using Playwright
 await page.wait_for_load_state('networkidle')  # Wait for network activity to settle
 await page.wait_for_timeout(2000)  # Additional safety buffer
@@ -122,7 +122,7 @@ await page.wait_for_timeout(2000)  # Additional safety buffer
 
 You can detect CAPTCHA presence using these selectors:
 
-```typescript Typescript -wc
+```typescript Typescript -wcn
 // Common CAPTCHA selectors
 const captchaSelectors = [
     'iframe[src*="recaptcha"]',

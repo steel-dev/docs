@@ -50,7 +50,7 @@ curl -X POST "https://api.steel.dev/v1/sessions/{sessionId}/files/upload" \
   -F "file=@./steel.png"
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 // Upload file to session environment
 const file = fs.createReadStream("./steel.png");
 const session = await client.sessions.create();
@@ -86,7 +86,7 @@ curl -X GET "https://api.steel.dev/v1/sessions/{sessionId}/files" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 const files = await client.session.files.list(sessionId);
 files.forEach(file => {
   console.log(`${file.path} | Size: ${file.size} | Last Modified: ${file.lastModified}`);
@@ -123,7 +123,7 @@ curl -X GET "https://api.steel.dev/v1/sessions/{sessionId}/files/archive" \
   -H "steel-api-key: YOUR_API_KEY_HERE" -o session_files.zip
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 // Download a specific file from a session
 const response = await client.sessions.files.download(sessionId, "path/to/file");
 const fileBlob = await response.blob();
@@ -171,7 +171,7 @@ curl -X DELETE "https://api.steel.dev/v1/sessions/{sessionId}/files" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 // Delete a specific file from a session
 const response = await client.sessions.files.delete(sessionId, "path/to/file");
 
@@ -214,7 +214,7 @@ curl -X POST "https://api.steel.dev/v1/files/upload" \
   -F "file=@./dataset.csv"
 ```
 
-```typescript !! Typescript -wc
+```typescript !! Typescript -wcn
 const file = fs.createReadStream("./dataset.csv");
 const globalFile = await client.files.upload({
     file,
@@ -255,7 +255,7 @@ curl -X GET "https://api.steel.dev/v1/files" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wcn
 const files = await client.files.list();
 files.forEach(file => {
   console.log(`${file.path} | Size: ${file.size} | Last Modified: ${file.lastModified}`);
@@ -286,7 +286,7 @@ curl -X GET "https://api.steel.dev/v1/files/dataset.csv" \
   -H "steel-api-key: YOUR_API_KEY_HERE" -o dataset.csv
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wcn
 const response = await client.files.download(file.path); // dataset.csv
 const fileBlob = await response.blob();
 ```
@@ -316,7 +316,7 @@ curl -X DELETE "https://api.steel.dev/v1/files/dataset.csv" \
   -H "steel-api-key: YOUR_API_KEY_HERE"
 ```
 
-```typescript !! Typescript
+```typescript !! Typescript -wcn
 await client.files.delete(file.path);
 ```
 
@@ -341,7 +341,7 @@ print(response.status_code)
 
 Reference uploaded files in file input elements using CDP (Chrome DevTools Protocol).
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 // Create CDP session for advanced controls
 const cdpSession = await currentContext.newCDPSession(page);
 const document = await cdpSession.send("DOM.getDocument");
@@ -363,7 +363,7 @@ await cdpSession.send("DOM.setFileInputFiles", {
 
 #### Standard Playwright/Puppeteer Upload
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 // For simple/smaller file uploads,
 // using standard automation library methods will look at local files
 await page.setInputFiles("#file-input", [uploadedSessionFile.path]);
@@ -374,7 +374,7 @@ await page.setInputFiles("#file-input", [uploadedSessionFile.path]);
 
 End-to-end workflow demonstrating global file management and session file operations.
 
-```typescript Typescript -wc -f main.ts
+```typescript Typescript -wcn -f main.ts
 import dotenv from "dotenv";
 import fs from "fs";
 import { chromium } from "playwright";
