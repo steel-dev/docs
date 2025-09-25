@@ -190,8 +190,6 @@ function extractSectionFromUrl(url: string): string {
   // Remove leading slash and split by slash
   const pathParts = url.replace(/^\//, "").split("/");
 
-  // For URLs like "/stacks/clarinet/guides/..." return "clarinet"
-  // For URLs like "/tools/clarinet" return "clarinet"
   if (pathParts.length >= 2) {
     return pathParts[1];
   }

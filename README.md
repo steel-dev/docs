@@ -13,8 +13,8 @@ Example structure:
 ```
 /tools/clarinet/
 ├── Overview/                 # Introduction and setup
-├── Clarinet CLI/             # Command-line features
-├── Clarinet JS SDK/          # Testing and programmatic usage
+├── Steel CLI/             # Command-line features
+├── Steel JS SDK/          # Testing and programmatic usage
 └── Integrations/             # External connections
 ```
 

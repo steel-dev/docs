@@ -73,7 +73,6 @@ function generateLLMsContent(
       // Group by the next level after current section
       sectionKey = page.section[groupDepth];
     } else if (page.section.length === groupDepth && groupDepth > 0) {
-      // This is a page at the current level (like tools/clarinet.md)
       sectionKey = "_overview";
     }
 

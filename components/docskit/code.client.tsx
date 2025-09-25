@@ -72,11 +72,10 @@ export function MultiCode({
           <span className="pl-3 pr-2 flex-1 font-mono text-foreground">
             {filename}
           </span>
-          <span className="h-4 border-l border-ch-border mx-2" />
           <span className="ml-auto pr-3">
             <CopyButton
               text={code}
-              className="text-ch-tab-inactive-foreground"
+              className="text-ch-tab-inactive-foreground text-muted-foreground"
             />
           </span>
         </div>

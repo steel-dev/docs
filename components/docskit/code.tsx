@@ -4,6 +4,7 @@ import {
   Pre,
   type RawCode,
 } from "codehike/code";
+import { CollapsiblePre } from "./collapsible-pre";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { callout } from "./annotations/callout";
@@ -132,11 +133,10 @@ function SingleCode({
           <span className="pl-3 pr-2 flex-1 font-mono text-foreground">
             {filename}
           </span>
-          <span className="h-4 border-l border-ch-border mx-2" />
           <span className="ml-auto pr-3">
             <CopyButton
               text={code}
-              className="text-ch-tab-inactive-foreground"
+              className="text-ch-tab-inactive-foreground text-muted-foreground"
             />
           </span>
         </div>
@@ -175,6 +175,19 @@ export async function toCodeGroup(props: {
         style: highlighted.style,
         code: highlighted.code,
         icon: <CodeIcon title={title} lang={tab.lang} />,
+        // pre: (
+        //   <CollapsiblePre
+        //     code={highlighted}
+        //     className={cn(
+        //       !title && "!m-0",
+        //       "overflow-x-auto px-0 py-2 rounded-lg !bg-ch-code max-w-full", // rounded-lg
+        //       props.preClassName,
+        //     )}
+        //     style={highlighted.style}
+        //     // handlers={handlers}
+        //   />
+        // ),
+
         pre: (
           <Pre
             code={highlighted}
