@@ -149,9 +149,18 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
               </div>
 
               <div className="flex flex-1 items-center justify-end space-x-2 lg:space-x-3">
-                <Discord />
-                <Github />
-                <CopyLLMSButton />
+                <Link href="https://discord.gg/steel-dev">
+                  <Discord fill="#A1A09A" width="16" />
+                </Link>
+                <Link
+                  href="https://github.com/steel-dev/steel-browser"
+                  className="text-xs font-mono flex items-center gap-2 transition-colors"
+                  color="#A1A0A7"
+                >
+                  <Github fill="#A1A0A7" width="16" /> 5.2k
+                </Link>
+                <div className="w-px h-6 bg-zinc-700"></div>
+                {/*<CopyLLMSButton />*/}
                 <SearchToggle />
                 <Button
                   asChild
