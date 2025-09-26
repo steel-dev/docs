@@ -9,6 +9,14 @@ const config = {
   turbopack: {
     // Add any Turbopack-specific options here (currently optional)
   },
+  async rewrites() {
+    return [
+      {
+        source: "/:path*.mdx",
+        destination: "/llms.mdx/:path*",
+      },
+    ];
+  },
   redirects: async () => {
     return [
       {
