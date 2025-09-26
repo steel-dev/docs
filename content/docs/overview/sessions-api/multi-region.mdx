@@ -1,0 +1,114 @@
+---
+title: Multi-region
+sidebarTitle: Multi-region
+description: Control where your Steel browser sessions are hosted for optimal performance and latency.
+llm: false
+---
+### Overview
+
+By default, Steel automatically selects the data center closest to the client’s request location when creating a new browser session. This ensures optimal performance and minimal latency for your browser automation tasks. However, you can also manually specify which region you want your browser session to run in using the `region` parameter.
+
+This region selection determines the physical location of the browser instance itself, which can help reduce latency for applications targeting specific geographic areas or comply with data residency requirements.
+
+### Automatic Region Selection
+
+When you create a session without specifying a region, Steel automatically determines the closest data center based on your request location:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+// Automatically uses the closest region
+const session = await client.sessions.create();
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+client = Steel()
+
+# Automatically uses the closest region
+session = client.sessions.create()
+```
+</CodeTabs>
+
+### Manual Region Selection
+
+To specify a particular region for your browser session, use the `region` parameter when creating a session:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+// Create session in Los Angeles data center
+const session = await client.sessions.create({
+    region: "LAX"
+});
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+client = Steel()
+
+# Create session in Los Angeles data center
+session = client.sessions.create(
+    region="LAX"
+)
+```
+</CodeTabs>
+
+
+### Available Regions
+
+Steel is available in the following regions:
+
+| Region         | Code | Data Center Location      |
+|----------------|------|---------------------------|
+| Los Angeles    | LAX  | Los Angeles, USA          |
+| Chicago        | ORD  | Chicago, USA              |
+| Washington DC  | IAD  | Washington DC, USA        |
+| Mumbai         | BOM  | Mumbai, India             |
+| Santiago       | SCL  | Santiago, Chile           |
+| Frankfurt      | FRA  | Frankfurt, Germany        |
+| Hong Kong      | HKG  | Hong Kong                 |
+
+### Region vs Proxy Selection
+
+Region selection determines where your browser session runs, which is different from proxy selection. The region parameter controls the physical location of the browser instance, while the useProxy and proxyUrl parameters control the network routing and IP address used by the browser for web requests.
+
+You can combine region selection with proxy settings:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+// Browser runs in Hong Kong, but uses a US proxy for requests
+const session = await client.sessions.create({
+    region: "HKG",
+    useProxy: true
+});
+
+```
+
+```python !! Python -wcn
+# Browser runs in Hong Kong, but uses a US proxy for requests
+session = client.sessions.create(
+    region="HKG",
+    use_proxy=True
+)
+```
+</CodeTabs>
+
+We’ll be launching new features soon to allow you to control regions for proxies as well. Right now, all are US based.
+
+:::callout
+type: help
+### Need help building with multi-region?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::

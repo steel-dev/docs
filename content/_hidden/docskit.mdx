@@ -1,0 +1,338 @@
+---
+title: DocsKit
+description: DocsKit usage
+---
+
+## Features
+
+DocsKit features:
+
+- adds [flags](#flags) and [annotations](#annotations) to codeblocks
+- includes a special syntax for [inline code](#inline-code)
+- adds three components that can be used in MDX: [_`<CodeTabs />`_](#codetabs), [_`<WithNotes />`_](#withnotes), and [_`<TerminalPicker />`_](#terminal-picker)
+- adds a [language switcher](#language-switcher) (which is another usage of _`<CodeTabs />`_)
+- codeblocks with language [`terminal`](#terminal) or [`package-install`](#package-install) are rendered with a different component
+
+## Flags
+
+````txt flags-example.md
+# !mark[/-wn/]
+```js index.js -wn
+```
+````
+
+- `-n` add line numbers
+- `-c` add copy button
+- `-w` word wrap
+- `-a` animate (for tabs)
+
+## Annotations
+
+````txt annotations-example.md
+```js
+const x = 1;
+# !mark[/!mark/]
+// !mark(1:2)
+const y = 2;
+const z = 3;
+```
+````
+
+- `!mark` - highlight a line, a range of lines, or a regex
+- `!diff` - highlight added or removed lines
+- `!collapse` - collapse a range of lines
+- `!fold` - fold a regex pattern inline
+- `!link` - add a link
+- `!tooltip` - add a tooltip
+- `!callout` - add a callout
+
+Learn more about using annotations from Code Hike docs:
+
+- [Annotation comments](https://codehike.org/docs/concepts/annotations#annotation-comments)
+- [Using regular expressions](https://codehike.org/docs/concepts/annotations#using-regular-expressions-instead-of-ranges)
+
+## Mark
+
+You can use it for one line (`!mark`), a range of lines (`!mark(1:3)`), a range of columns (`!mark[5:10]`), or a regex pattern (`!mark[/pattern/]`).
+
+You can provide any valid CSS color, for example: `!mark(1:3) red` or `!mark(1:3) hsl(var(--steel))`.
+
+```python
+priunt("Hello World")
+```
+
+## Diff
+
+```js
+function lorem(ipsum, dolor = 1) {
+  const sit = 10;
+  // !diff -
+  dolor = ipsum - sit;
+  // !diff +
+  dolor = sit - amet(dolor);
+  return sit ? consectetur(ipsum) : [];
+}
+```
+
+## Collapse
+
+```jsonc sample-session-release.json -cwn
+{
+  message: "Session Released",
+}
+```
+
+## Fold
+
+```jsx
+// !fold[/className="(.*?)"/gm]
+function Foo() {
+  return (
+    <div className="bg-red-200 opacity-50">
+      <span className="block">hey</span>
+    </div>
+  );
+}
+```
+
+## Link
+
+```js
+// !link[/foo/mg] https://example.com
+// !link[/bar/mg] https://example.com
+import { foo, bar } from "baz";
+
+const x = foo(10);
+const y = bar(x);
+```
+
+## CodeTabs
+
+````txt tabs-example.md
+# !mark[/!!/mg]
+<CodeTabs flags="ac">
+
+```ts !! index.ts
+
+```
+
+```css !! styles.css
+
+```
+</CodeTabs>
+````
+
+Note: the codeblocks inside the _`<CodeTabs />`_ component should have the `!!` decoration and a title.
+
+You can pass flags to the _`<CodeTabs />`_ component to apply them to all codeblocks inside it. The `a` flag will animate the transition between tabs.
+
+Example:
+
+<CodeTabs flags="ac">
+
+    ```bash !! curl -wc
+    curl -X POST https://api.steel.dev/v1/credentials \
+      -H "Content-Type: application/json" \
+      -H "steel-api-key: YOUR_API_KEY_HERE" \
+      -d '{
+        "origin": "https://app.example.com",
+        "value": {
+          "username": "test@example.com",
+          "password": "password123"
+        }
+      }'
+    ```
+
+    ```typescript !! Typescript -wc -f main.ts
+    await client.credentials.create({
+      origin: "https://app.example.com",
+      value: {
+        username: "test@example.com",
+        password: "password123"
+      }
+    });
+    ```
+
+    ```python !! Python -wcn -f main.py
+    client.credentials.create(
+        origin="https://app.example.com",
+        value={
+            "username": "test@example.com",
+            "password": "password123"
+        }
+    )
+    ```
+
+</CodeTabs>
+
+### Language switcher
+
+To switch between languages, use the _`<CodeTabs />`_ component with the `storage` prop. The `storage` prop is used to store the selected language in the local storage and sync all the _`<CodeTabs storage="some-id" />`_ using the same `storage` key.
+
+<CodeTabs flags="ac" storage="ts">
+
+    ```bash !! curl -wc
+    curl -X POST https://api.steel.dev/v1/credentials \
+      -H "Content-Type: application/json" \
+      -H "steel-api-key: YOUR_API_KEY_HERE" \
+      -d '{
+        "origin": "https://app.example.com",
+        "value": {
+          "username": "test@example.com",
+          "password": "password123"
+        }
+      }'
+    ```
+
+    ```typescript !! Typescript -wc -f main.ts
+    await client.credentials.create({
+      origin: "https://app.example.com",
+      value: {
+        username: "test@example.com",
+        password: "password123"
+      }
+    });
+    ```
+
+    ```python !! Python -wcn -f main.py
+    client.credentials.create(
+        origin="https://app.example.com",
+        value={
+            "username": "test@example.com",
+            "password": "password123"
+        }
+    )
+    ```
+
+</CodeTabs>
+
+## WithNotes
+
+For `!callout` and `!tooltip` annotations, you can use the _`<WithNotes />`_ to define the content you want to show.
+
+### Callouts
+
+<WithNotes>
+
+```js index.js
+// !callout[/ipsum/] description
+import lorem from "ipsum";
+
+// !callout[/sit/] inspect
+const sit = lorem({ a: 1, b: 2 });
+```
+
+```js !inspect
+sit = [
+  { name: "a", value: 1 },
+  { name: "b", value: 2 },
+];
+```
+
+## !description
+
+The default export of the `ipsum` package is a function that **returns an array**.
+
+Kind of like _`Object.entries(x)`_ but different.
+
+</WithNotes>
+
+### Tooltips
+
+<WithNotes>
+
+```js demo.js
+// !tooltip[/lorem/] install
+import { read, write } from "lorem";
+
+// !tooltip[/data.json/] data
+var data = read("data.json");
+
+// !tooltip[/test-123/] apikey
+write({ x: 1 }, { apiKey: "test-123" });
+```
+
+We can also use tooltips [here](tooltip "install") in [prose](tooltip "data") text.
+
+```json !data data.json
+{
+  "lorem": "ipsum dolor sit amet",
+  "foo": [4, 8, 15, 16]
+}
+```
+
+## !install
+
+This is a **fake library**. You can install it with:
+
+```terminal
+$ npm install lorem
+```
+
+It lets you read and write data.
+
+## !apikey
+
+This is a public sample test mode [API key](https://example.com). Don’t submit any personally information using this key.
+
+Replace this with your secret key found on the [API Keys page](https://example.com) in the dashboard.
+
+</WithNotes>
+
+## Inline code
+
+To use inline codeyou need to use a special syntax: ``_`code`_``.
+
+This syntax also allows you to specify the language for inline code ```_json`_`` .return()``_
+
+## Terminal
+
+To use the terminal component, set the language of a codeblock to `terminal`, and start each command with `$`.
+
+```terminal
+
+```
+
+The lines that don't start with `$` are rendered as collapsed output. The output can use ANSI colors and styles.
+
+```terminal
+$ npx create-next-app@latest
+create-next-app@14.2.13
+[32m✔[0m [1mWhat is your project?[0m [90m…[0m my-app
+$ npm run dev
+```
+
+### Terminal Picker
+
+<TerminalPicker>
+
+```terminal !! macOS
+brew install steel
+```
+
+```terminal !! Windows
+winget install steel
+```
+
+```terminal !! Cargo
+$ sudo apt install build-essential pkg-config libssl-dev
+```
+
+</TerminalPicker>
+
+### Package Install
+
+You can use `package-install` as a language to get a picker for JS package managers.
+
+```package-install
+@steel-dev/cli
+```
+
+### Opting out of the terminal component
+
+To use features from the normal codeblock component, you can still use languages like `sh` or `bash` or even `txt`.
+
+```sh Terminal -w
+# !tooltip[/v0.27.0/] You can change the v0.27.0 version that is available on the releases page.
+$ wget -nv download/v0.27.0/linux-x64-glibc.tar.gz -O linux-x64.tar.gz
+```

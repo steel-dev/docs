@@ -1,0 +1,52 @@
+---
+title: "Changelog #005"
+sidebarTitle: "Changelog #005"
+llm: false
+---
+
+import Image from 'next/image';
+
+<Image src="/images/AKYFQrDhCB_2-dd2MY_si.png" width={800} height={500}/>
+
+Happy Wednesday, chat 🫡 We've been working hard on some key improvements to our bot detection avoidance capabilities, adding new features, and squashing bugs. Here's what's new this week:
+
+### ⭐ New
+
+#### Enhanced Stealth Improvements 🥷
+
+We've made significant improvements to our stealth features and patched several fingerprinting leaks that were causing browser sessions to be flagged as bots. These updates help ensure your sessions can navigate the web more reliably without triggering anti-bot measures.
+
+**Availability: Steel Cloud** ☁️ + **Steel-browser (OSS) 🔧**
+
+#### Cloudflare Turnstile Solving ✅
+
+We've launched an early version of Cloudflare Turnstile solving, now included in our CAPTCHA solving module within sessions. The solver works well for most common Turnstile implementations, though we're still refining it for some edge cases.
+
+**Availability: Steel Cloud** ☁️
+
+#### Take Control Feature in [Surf.new](http://surf.new/) 🎮
+
+Inspired by OpenAI's Operator, we've implemented a new "Take Control" feature in [Surf.new](http://surf.new/). This allows you to:
+
+*   Pause the AI agent and manually interact with the browser
+*   Complete complex tasks like signing into websites
+*   Hand control back to the AI to continue where you left off
+
+This showcase demonstrates the power of our debug URL capabilities, which you can integrate into your own applications.
+
+#### 🔧 Bugfixes/Improvements
+
+*   Fixed issues with the one-click deployment to Railway on steel-browser
+*   Better error handling for incorrect inputs
+*   Frontend updates for multi-tab / playback
+*   Various performance optimizations for browser initialization
+
+### 💖 First-time contributors
+
+Special thanks to [@shivamkhatri](https://github.com/shivamkhatri) for making some key PRs on Surf and steel-browser! 💖
+
+As always, thanks for testing out Steel! We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.
+
+Got questions or want to chat? Join us on [Discord](https://discord.gg/steel-dev) or reach out on [Twitter/X](https://twitter.com/steeldotdev).
+
+* * *

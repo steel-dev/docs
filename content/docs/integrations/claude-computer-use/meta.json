@@ -1,0 +1,10 @@
+{
+  "title": "Claude Computer Use",
+  "root": false,
+  "pages": [
+    "---Claude Computer Use---",
+    "integrations-overview",
+    "quickstart-py",
+    "quickstart-ts"
+  ]
+}

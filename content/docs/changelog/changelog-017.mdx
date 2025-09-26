@@ -1,0 +1,93 @@
+---
+title: "Changelog #017"
+sidebarTitle: "Changelog #017"
+llm: false
+---
+import Image from 'next/image'
+
+This week brought a ton of DevEx upgrades: the Steel CLI, OpenAI Computer-use integration, and a major Steel Browser release with centralized code templates across our entire ecosystem.
+
+### ⭐ New
+
+#### Steel CLI
+
+<Image src="/images/Untitled.png" alt="Steel CLI" width={800} height={500} />
+
+The fastest way to execute browser agents from the command line just dropped. Run any agent from our cookbook with zero setup - no environment files, no forking, no version management required.
+
+```bash Terminal -wc
+# Execute any task with a single command
+steel run browser-use -t "find the latest Python releases" -o
+
+# Build from ready-to-use templates
+steel forge browser-use
+steel forge oai-cua
+steel forge playwright
+
+# Authenticate once, run everywhere
+steel login
+```
+
+
+The CLI handles Steel authentication automatically and works with every agent in our cookbook. You can even skip installation entirely by using `npx @steel-dev/cli` for any command.
+
+[CLI Repository](https://github.com/steel-dev/cli)
+
+#### OpenAI Computer-Use Integration
+
+OpenAI's Computer-use agents can now run directly on Steel infrastructure with ready-to-use starter kits. TypeScript and Python implementations are available across the Cookbook, Steel Playground, and CLI.
+
+```bash Terminal -wc
+# Get started with OAI CUA on Steel in minutes
+steel forge oai-cua
+
+```
+
+
+[Cookbook Example (TS)](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-oai-computer-use-node-starter) | [Cookbook Example (Python)](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-oai-computer-use-python-starter) | [Docs](https://docs.steel.dev/overview/integrations/openai-computer-use/overview)
+
+#### Steel Browser 0.2.0-beta Release
+
+Steel Browser has been upgraded from 0.1.3-beta to 0.2.0-beta with significant architecture improvements, ARM64 Docker support, and enhanced fingerprinting solutions.
+
+[**Release Notes**](https://github.com/steel-dev/steel-browser/releases/tag/v0.2.0-beta)
+
+#### Centralized Code Registry
+
+All code templates and examples are now centralized into a unified registry system. This ensures consistent, up-to-date code across the Cookbook, onboarding flows, documentation, playground, and CLI - no more version drift between different code examples.
+
+### 🔧 Improvements
+
+*   Added ARM64 architecture support in Docker builds while removing problematic UI build changes in steel-browser
+
+*   Added automatic release generation for pull requests in steel-browser repo
+
+*   Updated browser-use version and code to newest version across all assets
+
+*   Standardized styling across all example components for consistent visual presentation
+
+*   Added MDX pipeline support for enhanced docs rendering
+
+*   Updated steel-browser readme with direct links to API docs and OpenAPI specs
+
+*   Enhanced metadata handling across all session types for improved data consistency
+
+*   Updated CDN links for core Steel components to improve loading efficiency
+
+
+### 🐛 Bug Fixes
+
+*   Fixed intermediate fingerprinting issues by adding solver and filtering security components
+
+*   Corrected environment variable usage in Steel API configuration
+
+*   Corrected metadata definitions to ensure accurate API documentation compliance
+
+*   Replaced deletion method with timestamp-based deletion across all session types
+
+
+### 💖 First-time contributors
+
+Special thanks to [@robbwdoering](https://github.com/robbwdoering) for improving our documentation and SDK references!
+
+As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.

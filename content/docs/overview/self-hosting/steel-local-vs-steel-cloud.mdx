@@ -1,0 +1,29 @@
+---
+title: Steel Local vs Steel Cloud
+sidebarTitle: Steel Local vs Steel Cloud
+description: What's the difference between local Steel and Steel Cloud?
+llm: true
+---
+# Overview
+
+| Feature          | Steel Local                               | Steel Cloud                                                  |
+|------------------|-------------------------------------------|--------------------------------------------------------------|
+| Concurrency      | 1                                         | 100+                                                         |
+| Stealth          | Limited                                   | Advanced Stealth (docs)                                      |
+| Captcha Solving  | None                                      | Supported with the Captchas API                              |
+| Proxies          | Bring your own                            | Bring your own + Steel Managed Proxies                       |
+| Multi-Region     | Host it yourself                          | Supported with region flag during session creation           |
+| Credentials      | Not supported                             | Supported with the Credentials API                           |
+| Extensions       | Supported by loading in `api/extensions/` | Supported by using the Extensions API                        |
+| Files            | Not supported                             | Supported by the Files API                                   |
+
+
+The defining factor between running Steel locally and using Steel Cloud is concurrency.
+
+For the Extensions API, if you put the extensions you would like to build/load in the `api/src/extensions/` folder then Steel Local will build these and inject them into the session. Credentials are not supported in Steel Local.
+
+:::callout
+type: help
+### Need help running locally?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::

@@ -1,0 +1,28 @@
+---
+title: "Changelog #016"
+sidebarTitle: "Changelog #016"
+llm: false
+---
+import Image from 'next/image'
+
+<Image src="/images/elSgEf1Rrn7oVtsyq2ZGy.png" alt="Changelog #016" width={800} height={500} />
+
+Short but sweet update this week while new improvements are cooking! We focused on enhancing proxy handling, browser customization, and squashing some key bugs in the steel-browser repo.
+
+### 🔧 Improvements
+
+*   Implemented dynamic proxy factory for more reliable proxy creation and removed proxy reuse for browser actions in Steel-browser
+
+*   Added support for user-defined browser preferences in Steel API (OS & Cloud), allowing customization of browser behavior across all session types
+
+*   Patched an antibot leak by implementing async timezone fetching with parallelized context extraction and extension path validation in steel-browser
+
+*   Patched OpenAI CUA examples in steel-cookbook
+
+
+### 🐛 Bug Fixes
+
+*   Fixed session recording issue in Steel Cloud that caused incomplete recordings for sessions using proxies
+
+
+As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.

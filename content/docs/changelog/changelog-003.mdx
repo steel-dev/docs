@@ -1,0 +1,40 @@
+---
+title: "Changelog #003"
+sidebarTitle: "Changelog #003"
+llm: false
+---
+import Image from 'next/image';
+
+<Image src="/images/ByP4qtaUIR447nJaZqbPS.png" alt="Changelog #003" width={800} height={400} />
+
+Happy Tuesday everyone! This week, the team has been heads down working through customer issues/bugs/complaints (especially the trickier ones) and we have a lot of exciting stuff in the works. But first, some updates!
+
+### ⭐ **New**
+
+**Browser Agent Leaderboard 🏆 |** [**leaderboard.steel.dev**](https://leaderboard.steel.dev/)
+
+We've been seeing some exciting new developments in the web agent space. From OpenAI Operator, to Browser Use, there’s been a ton of announcements in the last two months and the state of the art is constantly being outdone. That’s why we decided to launch a leaderboard, compiling the top ranking web agents based on WebVoyager results.
+
+<Image src="/images/Bn_vj6cr558fhVAl0PJPX.png" alt="Browser Agent Leaderboard" width={800} height={400} />
+
+**Lightning-fast Session Creation Times** ⚡️
+
+Now, when creating a session that uses that use default value (except timeout, you can change that), sessions will be booted up in ~400ms or less. This was possible due to some new scaling logic that we laid out which allows us to keep new clean browser sessions hot and ready to be used.
+
+<Image src="/images/etXHsy_awCwDv2MZrMHbX.png" alt="Session Creation Times" width={800} height={400} />
+
+**Note:** these optimizations will not affect sessions using custom proxies or non-default session creation flags.
+
+### 🔧 **Bugfixes/Improvements**
+
+*   Resizing the live session view iframe that's returned from session.debugUrl no longer produces a black screen
+*   Hiding the session details tab no longer breaks the session viewer on [app.steel.dev](http://app.steel.dev/)
+*   Recorded DOM events are now compressed in transport, allowing for smaller sizes in transport (don't forget to unpack when displaying recorded events)
+
+
+### **💖 First-time contributors**
+
+Special thanks to [**@**](https://github.com/hakzarov)
+[**junhsss**](https://github.com/junhsss) for adding a file management API to Steel Browser. This will allow for very neat applications on both the open source repo and Steel Cloud!
+
+As always, thanks for testing out the Steel beta. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.
