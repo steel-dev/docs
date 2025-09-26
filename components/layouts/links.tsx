@@ -250,53 +250,6 @@ export function renderNavItem(item: LinkItemType): ReactNode {
             </NavigationMenuTrigger>
           )}
           <NavigationMenuContent className="mt-12 bg-background border rounded-lg shadow-lg w-auto left-auto right-auto">
-            {/* DEMO: Grid layout with banner
-            <ul className="grid gap-3 p-4 lg:grid-cols-[.5fr_1fr] w-max">
-              <li className="row-span-4">
-                <NavigationMenuLink asChild>
-                  <Link
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-neutral-100 dark:bg-neutral-950 p-6 no-underline outline-none focus:shadow-md hover:muted-foreground"
-                    href={item.url || "#"}
-                  >
-                    <div className="w-6 h-6 bg-[#ff5500] rounded-sm mb-2" />
-                    <div className="mb-2 mt-4 text-lg font-medium text-primary">
-                      {item.text}
-                    </div>
-                    <p className="text-sm leading-tight text-[#8c877d]">
-                      Explore our {String(item.text).toLowerCase()} for building
-                      on Stacks.
-                    </p>
-                  </Link>
-                </NavigationMenuLink>
-              </li>
-              {item.items.map((menuItem, index) => {
-                if (menuItem.type === "custom") {
-                  return <li key={index}>{menuItem.children}</li>;
-                }
-
-                if (!("url" in menuItem)) return null;
-
-                return (
-                  <li key={menuItem.url}>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href={menuItem.url}
-                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-muted-foreground hover:text-primary focus:bg-[#f6f5f3] focus:text-primary"
-                      >
-                        <div className="text-sm font-medium leading-none text-primary">
-                          {menuItem.text}
-                        </div>
-                        <p className="line-clamp-2 text-sm leading-snug text-[#8c877d]">
-                          {menuItem.description}
-                        </p>
-                      </Link>
-                    </NavigationMenuLink>
-                  </li>
-                );
-              })}
-            </ul>
-            */}
-
             {/* Simple two-column layout */}
             <div className="grid grid-cols-1 gap-x-5 px-2 py-1 w-max">
               {item.items.map((menuItem, index) => {

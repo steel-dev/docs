@@ -81,10 +81,6 @@ export function MobileNavigation({
         return segment;
       }
 
-      if (segment.toLowerCase() === "stacks.js") {
-        return "Stacks.js";
-      }
-
       if (index === 1 && displaySegments[0].toLowerCase() === "apis") {
         const apiMappings: { [key: string]: string } = {
           "sessions-api": "Sessions API",

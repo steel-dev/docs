@@ -6,14 +6,13 @@ import { attachFile, createOpenAPI } from "fumadocs-openapi/server";
 import { icons as lucideIcons } from "lucide-react";
 import type { ThemeRegistrationResolved } from "shiki";
 import { docs } from "@/.source";
-import { API, create, Js, StacksIcon } from "@/components/ui/icon";
+import { API, create, Js } from "@/components/ui/icon";
 import { extractTagsAndLabels } from "./utils/frontmatter-parser";
 import type { FilterablePage } from "./utils/tag-filtering";
 
 const customIcons = {
   API,
   Js,
-  StacksIcon,
 };
 
 const icons = { ...lucideIcons, ...customIcons } as any;
@@ -595,7 +594,6 @@ export const source = loader({
 
         // If this page has labels, add it to the filterable pages collection
         // if (labels.length > 0 && node.url) {
-        //   // Extract section from URL (e.g., "/stacks/steel" -> "steel")
         //   const section = extractSectionFromUrl(node.url);
 
         //   const filterablePage: FilterablePage = {

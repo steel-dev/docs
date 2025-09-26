@@ -25,23 +25,6 @@ interface GitHubApiSpec {
   filePath: string;
 }
 
-// const API_SPECS: ApiSpec[] = [
-//   {
-//     name: "steel-api",
-//     url: "https://app.steel.dev/api-reference",
-//   },
-// ];
-
-// const GITHUB_API_SPECS: GitHubApiSpec[] = [
-//   {
-//     name: "stacks-node-rpc",
-//     type: "github",
-//     repo: "stacks-network/stacks-core",
-//     branch: "develop",
-//     filePath: "docs/rpc/openapi.yaml",
-//   },
-// ];
-
 async function generatePlatformApiSpec(): Promise<void> {
   try {
     const openApiDir = path.join(process.cwd(), "openapi");

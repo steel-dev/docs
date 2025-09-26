@@ -48,8 +48,8 @@ export async function loadRecipes(): Promise<Recipe[]> {
       const files = code
         ? [
             {
-              name: data.files?.[0]?.name || "example.clar",
-              path: data.files?.[0]?.path || "contracts/example.clar",
+              name: data.files?.[0]?.name || "example.ts",
+              path: data.files?.[0]?.path || "scripts/example.ts",
               type: data.files?.[0]?.type || "typescript",
               content: code,
             },
@@ -82,9 +82,9 @@ export async function loadRecipe(id: string): Promise<Recipe | null> {
     const files = code
       ? [
           {
-            name: data.files?.[0]?.name || "example.clar",
-            path: data.files?.[0]?.path || "contracts/example.clar",
-            type: data.files?.[0]?.type || "clarity",
+            name: data.files?.[0]?.name || "example.ts",
+            path: data.files?.[0]?.path || "scripts/example.ts",
+            type: data.files?.[0]?.type || "typescript",
             content: code,
           },
         ]
