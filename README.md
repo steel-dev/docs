@@ -114,7 +114,7 @@ Content here
 
 #### Code Block Features
 
-**Languages**: `terminal`, `clarity`, `typescript`, `javascript`, `json`, `yaml`, `console`, `package-install`
+**Languages**: `terminal`, `typescript`, `javascript`, `json`, `yaml`, `console`, `package-install`
 
 **Flags**: `-n` (line numbers), `-c` (copy button), `-w` (word wrap), `-a` (animate)
 

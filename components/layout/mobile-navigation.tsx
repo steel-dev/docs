@@ -101,8 +101,8 @@ export function MobileNavigation({
 
       if (index === 1 && displaySegments[0] === "Tools") {
         const toolMappings: { [key: string]: string } = {
-          "bitcoin-indexer": "Bitcoin Indexer",
-          "contract-monitoring": "Contract Monitoring",
+          "web-automation": "Web Automation",
+          "ai-agents": "AI Agents",
         };
 
         if (toolMappings[segment.toLowerCase()]) {

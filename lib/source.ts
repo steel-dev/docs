@@ -194,7 +194,7 @@ function extractSectionFromUrl(url: string): string {
     return pathParts[1];
   }
 
-  // For single level paths like "/clarinet", return that
+  // For single level paths like "/steel", return that
   if (pathParts.length === 1 && pathParts[0]) {
     return pathParts[0];
   }
@@ -595,7 +595,7 @@ export const source = loader({
 
         // If this page has labels, add it to the filterable pages collection
         // if (labels.length > 0 && node.url) {
-        //   // Extract section from URL (e.g., "/stacks/clarinet" -> "clarinet")
+        //   // Extract section from URL (e.g., "/stacks/steel" -> "steel")
         //   const section = extractSectionFromUrl(node.url);
 
         //   const filterablePage: FilterablePage = {
