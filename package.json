@@ -12,6 +12,7 @@
     "check": "biome check app/ components/ lib/ scripts/ content/",
     "check:fix": "biome check --write app/ components/ lib/ scripts/ content/",
     "validate-links": "bun run ./lint.ts",
+    "generate-openapi": "bun run ./scripts/fetch-openapi-specs.mts",
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
     "generate": "bun run generate-openapi && bun run generate-llms"
   },
