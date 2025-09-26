@@ -1,0 +1,194 @@
+---
+title: Overview
+sidebarTitle: Overview
+description: Add Chrome extensions to your Steel sessions.
+full: true
+llm: true
+---
+:::callout
+Steel’s Extensions system is currently in beta and is subject to improvements, updates, and changes. If you have feedback, join our Discord or open an issue on GitHub.
+:::
+
+Steel's extensions are designed to enhance the functionality of Steel sessions by providing additional features and capabilities. These extensions can be used to automate tasks, enhance security, and improve the overall agent experience. They can be installed through the API for your organization and attached to any session.
+
+Extensions have long been a part of the browser ecosystem, since the release of Internet Explorer version 4 in 1997, users have been able to create their own extensions and make their browser their own. With the advent of agentic browsing and browser agents, extensions have gained a whole new light. Allowing thousands of agents to extend their own browser sessions with custom functionality.
+
+### Getting Started
+
+Before extensions can be used in a browser session, they must first be uploaded either with a .zip/.crx file or downloaded from the Chrome Web Store.
+
+All extensions are stored globally against your organization. You only need to upload them once. The supported formats include .zip and .crx
+
+### Upload Extension From File
+
+The extensions uploaded have a couple of requirements. They need a preliminary manifest.json file to define the extension's metadata and functionality. This file should include details such as the extension's name, version, and any permissions required.
+
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+await client.extensions.upload({
+    file: fs.readFileSync('extensions/recorder/recorder.zip')
+  });
+```
+
+
+```python !! Python -wcn
+with open("extensions/recorder/recorder.zip", "rb") as file:
+    client.extensions.upload(
+        file=file
+    )
+```
+</CodeTabs>
+
+
+### Upload Extension from Chrome Web Store
+
+Go to the Chrome Web Store and click on the extension you want to upload. Copy the URL and include it in the request below
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+await client.extensions.upload({
+   url: "https://chromewebstore.google.com/detail/.../..."
+});
+```
+
+
+```python !! Python -wcn
+client.extensions.upload(
+    url="https://chromewebstore.google.com/detail/.../..."
+)
+```
+</CodeTabs>
+
+
+
+Once they are installed for your organization, you can inject them into your sessions.
+
+### Injecting Extensions into a Session
+
+You can inject specific extensions into your sessions based on the `extensionId` field or you can pass `all_ext` to inject all extensions from your organization.
+
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const session = await client.sessions.create({
+  extensionIds: ['all_ext'] // extensionIds=['extensionId_1', 'extensionId_2']
+});
+```
+
+
+```python !! Python -wcn
+client.sessions.create(
+    extension_ids=['all_ext'] # extension_ids=['extensionId_1', 'extensionId_2']
+)
+```
+</CodeTabs>
+
+
+And now your sessions have extensions!
+
+These extensions will be injected into the Steel browser session that then runs with that session. Extensions are loaded and initialized when the session starts. They can communicate with the session using the Chrome DevTools Protocol (CDP) and interact with the browser environment.
+
+### Updating Extensions From File
+
+After using your extensions, you can update them by uploading a new version of the extension. You will need to specify the `extensionId` of the extension you want to update.
+
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+await client.extensions.update("{extensionId}",{
+    file: fs.readFileSync("extensions/recorder2/recorder2.zip")
+  });
+```
+
+
+```python !! Python -wcn
+with open("extensions/recorder2/recorder2.zip", "rb") as file:
+    client.extensions.update("{extensionId}",
+        file=file
+    )
+```
+</CodeTabs>
+
+
+### Updating Extensions From Chrome Web Store
+
+You will need to specify the `extensionId` of the extension you want to update
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+await client.extensions.update("{extensionId}",{
+    url: "https://chromewebstore.google.com/detail/.../..."
+});
+```
+
+
+```python !! Python -wcn
+client.extensions.update("{extensionId}",
+    url="https://chromewebstore.google.com/detail/.../..."
+)
+```
+
+</CodeTabs>
+
+
+### Seeing your Extensions
+
+To see your organization's installed extensions, you can use the `GET /v1/extensions` endpoint.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const extensions = await client.extensions.list();
+```
+
+```python !! Python -wcn
+extensions = client.extensions.list()
+```
+
+</CodeTabs>
+
+
+### Deleting an Extension
+
+To delete one of your organization's installed extensions, you can use the `DELETE /v1/extensions/{extensionId}` endpoint.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+await client.extensions.delete("{extensonId}")
+```
+
+```python !! Python -wcn
+client.extensions.delete("{extensionId}")
+```
+
+</CodeTabs>
+
+
+### Deleting all Extensions
+
+To delete all of your organization's installed extensions, you can use the `DELETE /v1/extensions/` endpoint.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+await client.extensions.deleteAll()
+```
+
+```python !! Python -wcn
+client.extensions.deleteAll()
+```
+ </CodeTabs>
+
+
+ :::callout
+ type: help
+ ### Need help building with the Extensions API?
+ Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+ :::

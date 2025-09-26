@@ -1,0 +1,74 @@
+---
+title: "Changelog #019"
+sidebarTitle: "Changelog #019"
+llm: false
+---
+import Image from 'next/image';
+
+<Image
+    src="/images/1qPnwADZHqUbfaVWwOTmc.png"
+    alt="Changelog #019"
+    width={800}
+    height={500}
+/>
+
+This week brought some open-source improvements and enhanced developer experience across Steel's ecosystem. We focused on improving onboarding, docS and fixing critical session management issues.
+
+### ⭐ New
+
+#### Steel CAPTCHAs API
+
+Launched a complete CAPTCHAs API with real-time visibility and control over CAPTCHA detection, solving progress, and completion status. The API provides two powerful capabilities: status monitoring for tracking all CAPTCHAs across pages in real-time, and direct solving of image CAPTCHAs using XPath selectors for precise control over the solving process. No more waiting blindly or checking the DOM repeatedly - you get instant visibility into what CAPTCHAs are active, which are being solved, and exactly how long each task is taking.
+
+```typescript Typescript -wcn -f main.ts
+# Solving an image captcha, common on legacy sites like govt portals
+const response = await client.sessions.captchas.solveImage('sessionId', {
+  imageXPath: '//img[@id="captcha-image"]',
+  inputXPath: '//input[@name="captcha"]',
+});
+```
+
+
+**_Available on:_** Steel Cloud ☁️
+
+[Captcha API Overview Docs](https://docs.steel.dev/overview/captchas-api/overview)
+
+### 🔧 Improvements
+
+*   Revamped Quickstart page in Steel Cloud dashboard with new examples, CLI instructions, and a refreshed design for smoother onboarding/building
+
+*   Shipped integrations with Magnitude, Claude CUA, and Notte
+
+*   Enhanced Steel CLI with multiple fixes and stability improvements
+
+*   Added body validation compiler to improve request validation and error handling
+
+*   Streamlined extensions starter template with improved documentation and configuration
+
+*   Updated documentation across steel-browser repo for better clarity and accessibility
+
+*   Improved cross-platform compatibility by replacing bash scripts with text-based commands in steel-browser
+
+*   Enhanced session management patterns in cookbook examples
+
+*   Added comprehensive links to API documentation for better developer resources
+
+
+### 🐛 Bug Fixes
+
+*   Fixed Redis TTL session storage that was causing premature session expirations
+
+*   Resolved Puppeteer page mismatch issue that affected session control reliability
+
+*   Corrected extension ID mismatch in the list extensions component
+
+*   Fixed memory allocation issues for worker machines in the Steel API
+
+*   Fixed onboarding scroll behavior that caused navigation issues
+
+*   Corrected formatting and syntax errors in multiple code blocks across steel-browser repo
+
+*   Fixed missing package lock file issues in session management
+
+
+As always, thanks for testing out Steel. We really look forward to more of your feedback and continuing to build with this awesome, curious, and supportive community.

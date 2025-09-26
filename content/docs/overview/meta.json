@@ -1,0 +1,20 @@
+{
+  "title": "steel",
+  "root": false,
+  "pages": [
+    "---Overview---",
+    "intro-to-steel",
+    "steel-cli",
+    "need-help",
+    "pricing",
+    "legal",
+    "...sessions-api",
+    "...credentials-api",
+    "...files-api",
+    "...extensions-api",
+    "...captchas-api",
+    "...self-hosting",
+    "...stealth",
+    "llms-full.txt"
+  ]
+}

@@ -1,0 +1,22 @@
+bun.lockb
+node_modules
+/openapi
+.DS_Store
+**/.DS_Store
+.env
+.env.local
+.cache
+.cursorrules
+.next
+.source/
+tmp
+.cursor/
+.claude/
+
+# Local workflow files
+/tasks/**
+*.local.*
+
+# Generated files
+public/**/*.txt
+/generated

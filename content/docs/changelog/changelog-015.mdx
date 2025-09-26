@@ -1,0 +1,96 @@
+---
+title: "Changelog #015"
+sidebarTitle: "Changelog #015"
+llm: false
+---
+import Image from 'next/image'
+
+<Image src="/images/4-p00Zg3pQ_zsmXrbSfZE.png" alt="Changelog #015" width={800} height={500} />
+
+This week brought major improvements to proxy capabilities and stealth features, alongside plugin architecture enhancements and numerous stability fixes across the Steel ecosystem.
+
+### **⭐ New**
+
+#### **Geographic Targeting for Proxies 🌍**
+
+Steel-managed proxies now support targeting specific countries, states (US only), and cities. This gives you precise control over your browser session's apparent location while maintaining the quality and reliability of our residential proxy network.
+
+```typescript Typescript -wcn -f main.ts
+# Target specific country
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "country": "GB" }
+    }
+)
+
+# Target specific state (US only)
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "country": "US", "state": "NY" }
+    }
+)
+
+# Target specific city
+session = client.sessions.create(
+    use_proxy={
+        "geolocation": { "city": "LOS_ANGELES" }
+    }
+)
+```
+
+
+**_Available on:_** Steel Cloud ☁️
+
+[Documentation Link](https://docs.steel.dev/overview/stealth/proxies)
+
+#### **Humanized Mouse Movements** 🖱️
+
+Steel Browser now implements realistic mouse trajectories by intercepting CDP commands to simulate human-like cursor movement patterns. This enhancement improves stealth capabilities by making automated interactions appear more natural.
+
+```typescript Typescript -wcn -f main.ts
+session = client.sessions.create(
+    StealthConfig={
+        humanize_interactions=True
+    }
+)
+```
+
+
+**_Available on:_** Steel Cloud ☁️ | Steel-browser (OSS) 🔧
+
+### **🐛 Bug Fixes**
+
+*   Fixed ESM import error in steel-browser build process that prevented successful module loading
+
+*   Corrected proxy traffic byte counting logic in network monitoring for accurate data reporting
+
+*   Fixed dimensions calculation error in rendering engine that caused incorrect element sizing
+
+*   Fixed region misconfiguration causing subset of session to start in non-nearest regions
+
+
+### **🔧 Improvements**
+
+*   Enhanced WebSocket handling with registry and custom handler support `steel-browser`
+
+*   Exposed session service in plugin architecture for better extensibility `steel-browser`
+
+*   Added onSessionEnd hook to plugin manager for custom session termination handling
+
+*   Updated proxy handling to return user-selected proxies with improved metering accuracy
+
+*   Added API flag to skip fingerprinting when custom stealth logic is needed (use `StealthConfig={skip_fingerprint_injection=true}` flag when creating a session)
+
+*   Introduced environment variable to bypass internal hosts in proxy configuration `steel-browser`
+
+
+### **🏡 Housekeeping**
+
+*   Updated steel-cookbook browser-use example to reflect recent API changes
+
+*   Added recent work by Tongyi Lab, Alibaba Group to awesome-web-agents documentation
+
+*   Updated baseURL in steel-browser README following steel-sdk upgrade from last week
+
+
+Till next time 🫡

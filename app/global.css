@@ -1,0 +1,320 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "./radix.css";
+@import "./theme.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@source '.';
+@source '../components/**/*.{ts,tsx}';
+@source '../lib/**/*.{ts,tsx}';
+@source '../node_modules/fumadocs-ui/dist/**/*.js';
+
+:root {
+  /* Override Fumadocs navbar */
+  --fd-nav-height: 70px !important;
+
+  /* Navigation alignment offset */
+  --nav-offset: 175px;
+
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono);
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  /* Sidebar Colors */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.87 0 0);
+
+  /* CodeHike Styling */
+  --ch-0: var(--color-white);
+  --ch-1: #e4e1dc; /* Base text color */
+  --ch-2: #7c7f93; /* Not used */
+  --ch-3: #595650; /* Comments */
+  --ch-4: #30a46c; /* Strings */
+  --ch-5: #f5c2e7; /* Decorators/special */
+  --ch-6: #ff9e64; /* Constants/numbers */
+  --ch-7: #68ddfd; /* Keywords */
+  --ch-8: #ab4aba; /* Operators */
+  --ch-9: #0091ff; /* Functions */
+  --ch-10: #ff9ecf; /* Classes/types */
+  --ch-11: #e4e1dc; /* Parameters */
+  --ch-12: #ff9e64; /* this/self */
+  --ch-13: #89dceb; /* Built-ins/methods */
+  --ch-14: #dd7878; /* Other attributes */
+  --ch-15: #6c6f85; /* Strike-through */
+  --ch-16: #69a3e8; /* Links/highlights */
+  --ch-17: #dc8a78; /* Regex */
+  --ch-18: #1e1e2e; /* Background */
+  --ch-19: #4c4f6912; /* Line highlight */
+  --ch-20: #04a5e540; /* Range highlight */
+  --ch-21: #1a85ff; /* Info */
+  --ch-22: #7c7f934d; /* Selection */
+  --ch-23: #181825; /* Tab inactive */
+  --ch-24: #44475a; /* Group border */
+  --ch-25: #11111b; /* Header bg */
+  --ch-26: #7f849c; /* Line numbers */
+  --ch-27: #313244; /* Input bg */
+  --ch-28: #31324480; /* Hover bg */
+  --ch-29: #1e1e2ee6; /* Inline bg */
+  --ch-30: #a6adc8; /* Terminal black */
+  --ch-31: #585b70; /* Terminal bright black */
+  --ch-32: #45475a; /* Terminal bright white */
+  --ch-33: #bac2de; /* Terminal white */
+}
+
+.dark {
+  --background: var(--dark-sand-1);
+  --foreground: var(--dark-sand-12);
+  --card: var(--dark-sand-1);
+  --card-foreground: var(--dark-sand-12);
+  --popover: var(--dark-sand-1);
+  --popover-foreground: var(--dark-sand-12);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: var(--dark-sand-1);
+  --secondary-foreground: var(--dark-sand-12);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+  /* CodeHike Styling */
+
+  --ch-0: #232323;
+  --ch-1: #fff; /* Base text color */
+  --ch-2: #9399b2; /* Not used */
+  --ch-3: #595650; /* Comments */
+  --ch-4: #30a46c; /* Strings */
+  --ch-5: #f5c2e7; /* Decorators/special */
+  --ch-6: #e54d2e; /* Constants/numbers */
+  --ch-7: #68ddfd; /* Keywords */
+  --ch-8: #ab4aba; /* Operators */
+  --ch-9: #0091ff; /* Functions */
+  --ch-10: #ff9ecf; /* Classes/types */
+  --ch-11: #e4e1dc; /* Parameters */
+  --ch-12: #ff9e64; /* this/self */
+  --ch-13: #89dceb; /* Built-ins/methods */
+  --ch-14: #f2cdcd; /* Other attributes */
+  --ch-15: #a6adc8; /* Strike-through */
+  --ch-16: #69a3e8; /* Highlights */
+  --ch-17: #f5e0dc; /* Regex */
+  --ch-18: #1c1c1a; /* Background */
+  --ch-19: #cdd6f412; /* Line highlight */
+  --ch-20: #89dceb40; /* Range highlight */
+  --ch-21: #3794ff; /* Info */
+  --ch-22: #9399b240; /* Selection */
+  --ch-23: #181825; /* Tab inactive */
+  --ch-24: #585b70; /* Group border */
+  --ch-25: #11111b; /* Header bg */
+  --ch-26: #6f6f6f; /* Line numbers */
+  --ch-27: #313244; /* Input bg */
+  --ch-28: #31324480; /* Hover bg */
+  --ch-29: #1e1e2ee6; /* Inline bg */
+  --ch-30: #a6adc8; /* Terminal black */
+  --ch-31: #585b70; /* Terminal bright black */
+  --ch-32: #45475a; /* Terminal bright white */
+  --ch-33: #bac2de; /* Terminal white */
+}
+
+@theme inline {
+  /* Base Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-steel: var(--steel);
+  --color-inverted: var(--inverted);
+
+  /* CodeHike Colors */
+  --color-ch-code: var(--ch-0);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Sidebar Colors */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis-weight: none;
+  }
+  a {
+    @apply cursor-pointer;
+  }
+
+  pre {
+    @apply text-sm bg-[#1e1e2e];
+    border-radius: 8px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  code,
+  h1 a,
+  h2 a,
+  h3 a,
+  h4 a,
+  h5 a,
+  h6 a,
+  option {
+    font-family: var(--font-inter), sans-serif;
+    @apply font-normal;
+    color: #ffffff;
+  }
+
+  h1 {
+    font-weight: 500;
+    font-size: 32px;
+  }
+  h2 {
+    font-weight: 600;
+    font-size: 24px;
+  }
+  h3 {
+    font-weight: 600;
+    font-size: 20px;
+  }
+  h2 span {
+    font-family: var(--font-inter), sans-serif;
+  }
+
+  pre span {
+    font-family:
+      GeistMono,
+      ui-monospace,
+      SFMono-Regular,
+      Roboto Mono,
+      Menlo,
+      Monaco,
+      Liberation Mono,
+      DejaVu Sans Mono,
+      Courier New,
+      monospace !important;
+    font-weight: 300;
+    color: var(--ch-1);
+  }
+
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  /* override weird padding in OpenAPI  */
+  .flex.flex-row.items-center.gap-2.text-sm.p-3 {
+    padding-bottom: 15px !important;
+  }
+
+  /* remove margin left on fuma ui steps */
+  .fd-steps {
+    margin-left: 0 !important;
+  }
+
+  /* kill the vertical guide on every block rendered by Code Hike */
+  pre[data-ch="true"] .flex {
+    border-left: none !important;
+  }
+}
+
+[data-state="active"] [data-active-bar] {
+  opacity: 1 !important;
+  background: var(--accent, #e0e7ff); /* fallback to a light color */
+  transition: opacity 0.2s;
+}
+[data-active-bar] {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
