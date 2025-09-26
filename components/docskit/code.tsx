@@ -194,7 +194,7 @@ export async function toCodeGroup(props: {
               code={highlighted}
               className={cn(
                 !title && "!m-0",
-                "overflow-x-auto p-3 rounded-lg font-geist-mono bg-[var(--ch-18)] max-w-full",
+                "overflow-x-auto p-3 rounded-lg font-mono bg-[var(--ch-18)] max-w-full",
                 props.preClassName,
               )}
               style={{
