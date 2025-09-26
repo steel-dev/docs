@@ -200,7 +200,7 @@ export default async function Page(props: {
           <DocsPageContentWrapper>
             <DocsPageContent>
               {/*<DocsPageBreadcrumb />*/}
-              <div className="flex justify-between items-start gap-4">
+              <div className="flex justify-between items-start gap-4 mt-14">
                 <div className="flex items-center gap-3">
                   <DocsPageTitle className="mt-0" />
                   {page.data.isRpc && (

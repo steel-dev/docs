@@ -101,7 +101,7 @@ function SingleCode({
         CODEBLOCK,
         !hasTitle && "border-none",
         className,
-        "rounded-xl",
+        "rounded-lg",
       )}
       style={style}
     >
@@ -127,10 +127,10 @@ function SingleCode({
       )}
       {filename && (
         <div
-          className="flex items-center w-full text-sm font-mono border-b border-ch-border rounded-t-none"
+          className="flex items-center w-full text-sm font-mono rounded-t-none bg-[var(--ch-0)] p-1"
           style={{ minHeight: 32 }}
         >
-          <span className="pl-3 pr-2 flex-1 font-mono text-foreground">
+          <span className="pl-2 pr-2 flex-1 font-mono text-foreground">
             {filename}
           </span>
           <span className="ml-auto pr-3">
@@ -189,16 +189,20 @@ export async function toCodeGroup(props: {
         // ),
 
         pre: (
-          <Pre
-            code={highlighted}
-            className={cn(
-              !title && "!m-0",
-              "overflow-x-auto px-0 py-2 rounded-lg !bg-ch-code max-w-full", // rounded-lg
-              props.preClassName,
-            )}
-            style={highlighted.style}
-            handlers={handlers}
-          />
+          <div className="bg-[var(--ch-0)] p-1">
+            <Pre
+              code={highlighted}
+              className={cn(
+                !title && "!m-0",
+                "overflow-x-auto p-3 rounded-lg font-geist-mono bg-[var(--ch-18)] max-w-full",
+                props.preClassName,
+              )}
+              style={{
+                ...highlighted.style,
+              }}
+              handlers={handlers}
+            />
+          </div>
         ),
       };
     }),

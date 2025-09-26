@@ -1,6 +1,6 @@
-export const TITLEBAR = "px-2 py-1 w-full h-10 font-inter";
+export const TITLEBAR = "px-2 py-1 w-full h-10 font-inter bg-[var(--ch-0)]";
 export const CODEBLOCK =
-  "border rounded-xl selection:bg-ch-selection border-ch-border overflow-x-auto my-4 relative grid px-0 mx-0"; // removed px-4/m-3 etc.
+  "border rounded-xl selection:bg-ch-selection border-ch-border overflow-x-auto my-4 relative grid px-0 mx-0 bg-[var(--ch-18)]"; // removed px-4/m-3 etc.
 
 type CodeOptions = {
   copyButton?: boolean;

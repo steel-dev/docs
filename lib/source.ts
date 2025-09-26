@@ -399,166 +399,166 @@ export const steelThemeDark: ThemeRegistrationResolved = {
   },
 };
 
-export const steelThemeLight: ThemeRegistrationResolved = {
-  name: "steel-light",
-  displayName: "steel Light",
-  type: "light",
-  fg: "#7a756b", // --ch-1
-  bg: "#eff1f5", // --ch-18
-  settings: [
-    {
-      settings: {
-        foreground: "#7a756b", // --ch-1
-        background: "#eff1f5", // --ch-18
-      },
-    },
-    {
-      scope: ["comment", "punctuation.definition.comment"],
-      settings: {
-        foreground: "#b5aca1", // --ch-3
-        fontStyle: "italic",
-      },
-    },
-    {
-      scope: ["string", "punctuation.definition.string"],
-      settings: {
-        foreground: "#48944c", // --ch-4
-      },
-    },
-    {
-      scope: ["constant.character.escape"],
-      settings: {
-        foreground: "#ea76cb", // --ch-5
-      },
-    },
-    {
-      scope: [
-        "constant.numeric",
-        "variable.other.constant",
-        "entity.name.constant",
-        "constant.language.boolean",
-        "constant.language.false",
-        "constant.language.true",
-      ],
-      settings: {
-        foreground: "#ff5500", // --ch-6
-      },
-    },
-    {
-      scope: [
-        "keyword",
-        "keyword.operator.word",
-        "keyword.operator.new",
-        "variable.language.super",
-        "support.type.primitive",
-        "storage.type",
-        "storage.modifier",
-        "punctuation.definition.keyword",
-      ],
-      settings: {
-        foreground: "#bc812e", // --ch-7
-      },
-    },
-    {
-      scope: [
-        "keyword.operator",
-        "punctuation.accessor",
-        "punctuation.definition.generic",
-        "punctuation.definition.tag",
-        "punctuation.separator.key-value",
-      ],
-      settings: {
-        foreground: "#179299", // --ch-8
-      },
-    },
-    {
-      scope: [
-        "entity.name.function",
-        "meta.function-call.method",
-        "support.function",
-        "support.function.misc",
-        "variable.function",
-      ],
-      settings: {
-        foreground: "#3676b7", // --ch-9
-      },
-    },
-    {
-      scope: [
-        "entity.name.class",
-        "entity.other.inherited-class",
-        "support.class",
-        "meta.function-call.constructor",
-        "entity.name.struct",
-        "entity.name.type",
-        "support.type",
-      ],
-      settings: {
-        foreground: "#bc812e", // --ch-10
-      },
-    },
-    {
-      scope: ["variable.parameter", "meta.function.parameters"],
-      settings: {
-        foreground: "#7a756b", // --ch-11
-      },
-    },
-    {
-      scope: ["constant.language", "support.function.builtin"],
-      settings: {
-        foreground: "#bc812e", // --ch-12
-      },
-    },
-    {
-      scope: [
-        "support.type.property-name",
-        "entity.name.tag",
-        "entity.other.attribute-name",
-      ],
-      settings: {
-        foreground: "#3676b7", // --ch-9
-      },
-    },
-    {
-      scope: ["variable", "variable.other.readwrite"],
-      settings: {
-        foreground: "#dd7878", // --ch-14
-      },
-    },
-    {
-      scope: ["punctuation", "meta.brace"],
-      settings: {
-        foreground: "#6c6f85", // --ch-15
-      },
-    },
-    {
-      scope: ["invalid"],
-      settings: {
-        foreground: "#dd7878", // --ch-14
-      },
-    },
-    {
-      scope: ["invalid.deprecated"],
-      settings: {
-        foreground: "#acb0be", // --ch-24 equivalent
-      },
-    },
-  ],
-  colors: {
-    "editor.background": "#eff1f5", // --ch-18
-    "editor.foreground": "#7a756b", // --ch-1
-    "editorCursor.foreground": "#3676b7", // --ch-9
-    "editorIndentGuide.background": "#acb0be", // --ch-24 equivalent
-    "editorIndentGuide.activeBackground": "#8c8fa1", // --ch-26
-    "editor.lineHighlightBackground": "#4c4f6912", // --ch-19
-    "editor.selectionBackground": "#7c7f934d", // --ch-22
-    "editorBracketMatch.border": "#acb0be", // --ch-24 equivalent
-    "editorError.foreground": "#dd7878", // --ch-14
-    "editorWarning.foreground": "#3676b7", // --ch-9
-    "editorInfo.foreground": "#3676b7", // --ch-9
-    "editorHint.foreground": "#6c6f85", // --ch-15
-  },
-};
+// export const steelThemeLight: ThemeRegistrationResolved = {
+//   name: "steel-light",
+//   displayName: "steel Light",
+//   type: "light",
+//   fg: "#7a756b", // --ch-1
+//   bg: "#eff1f5", // --ch-18
+//   settings: [
+//     {
+//       settings: {
+//         foreground: "#7a756b", // --ch-1
+//         background: "#eff1f5", // --ch-18
+//       },
+//     },
+//     {
+//       scope: ["comment", "punctuation.definition.comment"],
+//       settings: {
+//         foreground: "#b5aca1", // --ch-3
+//         fontStyle: "italic",
+//       },
+//     },
+//     {
+//       scope: ["string", "punctuation.definition.string"],
+//       settings: {
+//         foreground: "#48944c", // --ch-4
+//       },
+//     },
+//     {
+//       scope: ["constant.character.escape"],
+//       settings: {
+//         foreground: "#ea76cb", // --ch-5
+//       },
+//     },
+//     {
+//       scope: [
+//         "constant.numeric",
+//         "variable.other.constant",
+//         "entity.name.constant",
+//         "constant.language.boolean",
+//         "constant.language.false",
+//         "constant.language.true",
+//       ],
+//       settings: {
+//         foreground: "#ff5500", // --ch-6
+//       },
+//     },
+//     {
+//       scope: [
+//         "keyword",
+//         "keyword.operator.word",
+//         "keyword.operator.new",
+//         "variable.language.super",
+//         "support.type.primitive",
+//         "storage.type",
+//         "storage.modifier",
+//         "punctuation.definition.keyword",
+//       ],
+//       settings: {
+//         foreground: "#bc812e", // --ch-7
+//       },
+//     },
+//     {
+//       scope: [
+//         "keyword.operator",
+//         "punctuation.accessor",
+//         "punctuation.definition.generic",
+//         "punctuation.definition.tag",
+//         "punctuation.separator.key-value",
+//       ],
+//       settings: {
+//         foreground: "#179299", // --ch-8
+//       },
+//     },
+//     {
+//       scope: [
+//         "entity.name.function",
+//         "meta.function-call.method",
+//         "support.function",
+//         "support.function.misc",
+//         "variable.function",
+//       ],
+//       settings: {
+//         foreground: "#3676b7", // --ch-9
+//       },
+//     },
+//     {
+//       scope: [
+//         "entity.name.class",
+//         "entity.other.inherited-class",
+//         "support.class",
+//         "meta.function-call.constructor",
+//         "entity.name.struct",
+//         "entity.name.type",
+//         "support.type",
+//       ],
+//       settings: {
+//         foreground: "#bc812e", // --ch-10
+//       },
+//     },
+//     {
+//       scope: ["variable.parameter", "meta.function.parameters"],
+//       settings: {
+//         foreground: "#7a756b", // --ch-11
+//       },
+//     },
+//     {
+//       scope: ["constant.language", "support.function.builtin"],
+//       settings: {
+//         foreground: "#bc812e", // --ch-12
+//       },
+//     },
+//     {
+//       scope: [
+//         "support.type.property-name",
+//         "entity.name.tag",
+//         "entity.other.attribute-name",
+//       ],
+//       settings: {
+//         foreground: "#3676b7", // --ch-9
+//       },
+//     },
+//     {
+//       scope: ["variable", "variable.other.readwrite"],
+//       settings: {
+//         foreground: "#dd7878", // --ch-14
+//       },
+//     },
+//     {
+//       scope: ["punctuation", "meta.brace"],
+//       settings: {
+//         foreground: "#6c6f85", // --ch-15
+//       },
+//     },
+//     {
+//       scope: ["invalid"],
+//       settings: {
+//         foreground: "#dd7878", // --ch-14
+//       },
+//     },
+//     {
+//       scope: ["invalid.deprecated"],
+//       settings: {
+//         foreground: "#acb0be", // --ch-24 equivalent
+//       },
+//     },
+//   ],
+//   colors: {
+//     "editor.background": "#eff1f5", // --ch-18
+//     "editor.foreground": "#7a756b", // --ch-1
+//     "editorCursor.foreground": "#3676b7", // --ch-9
+//     "editorIndentGuide.background": "#acb0be", // --ch-24 equivalent
+//     "editorIndentGuide.activeBackground": "#8c8fa1", // --ch-26
+//     "editor.lineHighlightBackground": "#4c4f6912", // --ch-19
+//     "editor.selectionBackground": "#7c7f934d", // --ch-22
+//     "editorBracketMatch.border": "#acb0be", // --ch-24 equivalent
+//     "editorError.foreground": "#dd7878", // --ch-14
+//     "editorWarning.foreground": "#3676b7", // --ch-9
+//     "editorInfo.foreground": "#3676b7", // --ch-9
+//     "editorHint.foreground": "#6c6f85", // --ch-15
+//   },
+// };
 
 // `loader()` also assign a URL to your pages
 // See https://fumadocs.vercel.app/docs/headless/source-api for more info
@@ -631,6 +631,9 @@ export const source = loader({
         if (frontmatter?.isLink) {
           dataToAdd.isLink = frontmatter.isLink;
         }
+        if (frontmatter?.isSeperator) {
+          dataToAdd.isSeperator = frontmatter.isSeperator;
+        }
 
         // if it's an API page, extract OpenAPI operations ourselves
         // if (node.url?.includes("/apis/") && fileData?.content) {
@@ -668,11 +671,11 @@ export const source = loader({
 });
 
 export const openapi = createOpenAPI({
-  // proxyUrl: "https://api.steel.so",
+  // proxyUrl: "https://api.steel.dev",
   shikiOptions: {
     themes: {
       dark: steelThemeDark,
-      light: steelThemeLight,
+      // light: steelThemeLight,
     },
   },
 });

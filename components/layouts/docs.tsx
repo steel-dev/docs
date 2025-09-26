@@ -171,7 +171,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                     <ArrowUpRight className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200" />
                   </Link>
                 </Button>
-                <ThemeToggle />
+                {/*<ThemeToggle />*/}
               </div>
             </div>
           </nav>
@@ -365,10 +365,19 @@ export function SidebarItem({
   if (item.type === "page") {
     const sidebarTitle = (item as any).data?.sidebarTitle;
     const displayName = sidebarTitle || item.name;
+    const isSeperator = (item as any).data?.isSeperator === true;
     const isRootPage = (item as any).data?.root === true;
     const isActive = pathname === item.url;
 
-    return (
+    return isSeperator ? (
+      <div className="text-primary uppercase text-[0.75rem] leading-none tracking-wide font-mono font-bold mt-6 mb-2 first:mt-0 px-2">
+        <Link href={item.url} className="flex items-center gap-2 flex-1">
+          {item.icon}
+          {displayName}
+          <PageBadges item={item} />
+        </Link>
+      </div>
+    ) : (
       <div className="flex items-center gap-1 div:pt-0.5 first:(div:pt-0)">
         {!isRootPage && numItems > 1 && (
           <div
@@ -504,7 +513,7 @@ export function PageBadges({ item }: { item: PageTree.Node }) {
     badges.push(
       <ArrowUpRight
         key="link"
-        className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200 bg-gray-600"
+        className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200"
       />,
     );
   }

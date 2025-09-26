@@ -1347,7 +1347,7 @@ export default {
     },
   ],
   colors: {
-    "editor.background": "var(--bg-background)",
+    "editor.background": "var(--ch-18)",
     "editor.foreground": "var(--ch-1)",
     "editor.lineHighlightBackground": "var(--ch-19)",
     "editor.rangeHighlightBackground": "var(--ch-20)",

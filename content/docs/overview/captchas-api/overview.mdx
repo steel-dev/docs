@@ -39,11 +39,6 @@ You can check the current CAPTCHA status for any session to understand what CAPT
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl -wc
-curl -X GET https://api.steel.dev/v1/sessions/{sessionId}/captchas/status \
--H "steel-api-key: YOUR_API_KEY_HERE"
-```
-
 ```typescript !! Typescript -wcn
 import Steel from 'steel-sdk';
 
@@ -115,14 +110,6 @@ The `url` parameter is optional and defaults to the current page.
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl -wc
-curl -X POST https://api.steel.dev/v1/sessions/{sessionId}/captchas/solve-image \
-   -H "Content-Type: application/json" \
-   -H "steel-api-key: YOUR_API_KEY_HERE" \
-   -d '{     "imageXPath": "//img[@id=\"captcha-image\"]",     "inputXPath": "//input[@name=\"captcha\"]",     "url": "https://example.com/login"   }'
-```
-
-
 ```typescript !! Typescript -wcn
 import Steel from 'steel-sdk';
 
@@ -135,7 +122,6 @@ const response = await client.sessions.captchas.solveImage('sessionId', {
 
 console.log(response.success);
 ```
-
 
 ```python !! Python -wcn
 from steel import Steel

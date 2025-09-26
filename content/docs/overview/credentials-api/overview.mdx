@@ -48,19 +48,6 @@ To upload credentials:
 
 <CodeTabs storage="languageSwitcher">
 
-```bash !! curl -wc
-curl -X POST https://api.steel.dev/v1/credentials \
-  -H "Content-Type: application/json" \
-  -H "steel-api-key: YOUR_API_KEY_HERE" \
-  -d '{
-    "origin": "https://app.example.com",
-    "value": {
-      "username": "test@example.com",
-      "password": "password123"
-    }
-  }'
-```
-
 ```typescript !! Typescript -wcn
 await client.credentials.create({
   origin: "https://app.example.com",
@@ -88,16 +75,6 @@ These credentials are encrypted and stored securely within Steel’s credential 
 When starting a session via `POST /sessions`, you can request credential injection using the optional `credentials` field:
 
 <CodeTabs storage="languageSwitcher">
-
-```bash !! curl -wc
-curl -X POST https://api.steel.dev/v1/sessions \
-  -H "Content-Type: application/json" \
-  -H "steel-api-key: YOUR_API_KEY_HERE" \
-  -d '{
-    "namespace": "default",
-    "credentials": {}
-  }'
-```
 
 ```typescript !! Typescript -wcn
 const session = await client.sessions.create({

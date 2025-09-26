@@ -66,7 +66,7 @@ export function MultiCode({
       </TabsList>
       {filename && (
         <div
-          className="flex items-center w-full text-sm font-mono border-b border-ch-border rounded-t-none"
+          className="flex items-center w-full text-sm font-mono border-b border-ch-border rounded-t-none bg-[var(--ch-0)]"
           style={{ minHeight: 32 }}
         >
           <span className="pl-3 pr-2 flex-1 font-mono text-foreground">

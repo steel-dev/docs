@@ -53,6 +53,7 @@ export interface MainItemType extends BaseLinkType {
   description?: ReactNode;
   isNew?: boolean;
   isLink?: boolean;
+  isSeperator?: boolean;
 }
 
 export interface IconItemType extends BaseLinkType {

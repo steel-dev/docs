@@ -61,13 +61,11 @@ export function SimpleCode({
           data-lang={lang}
           data-ch="true"
           className={cn(
-            "!m-0 overflow-auto px-0 py-2 m-3 rounded !bg-ch-code",
+            "!m-0 overflow-auto px-0 py-2 m-3 rounded-lg bg-[var(--chg-18)]",
             !title && "!m-0",
           )}
           style={{
             color: "var(--ch-1)",
-            background: "var(--bg-background)",
-            colorScheme: "var(--ch-0)",
           }}
         >
           <div style={{ minWidth: "fit-content" }}>

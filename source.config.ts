@@ -18,6 +18,7 @@ export const docs = defineDocs({
     schema: frontmatterSchema.extend({
       llm: z.boolean().optional(),
       isLink: z.boolean().optional(),
+      isSeperator: z.boolean().optional(),
       isNew: z.boolean().optional(),
       publishedAt: z.string().optional(),
       sidebarTitle: z.string().optional(),

@@ -22,6 +22,11 @@ const config = {
         permanent: true, // 301 redirect - tells crawlers this is the canonical location
       },
       {
+        source: "/overview/llms-full.txt",
+        destination: "/llms-full.txt",
+        permanent: true,
+      },
+      {
         source: "/steel-js-sdk",
         destination: "https://www.npmjs.com/package/steel-sdk",
         permanent: true,
@@ -58,7 +63,7 @@ const config = {
       },
       {
         source: "/integrations/valtown/quickstart",
-        destination: "https://www.val.town/v/steel/steel_puppeteer_starter",
+        destination: "https://www.val.town/x/steel/steel_puppeteer_starter",
         permanent: true,
       },
       {

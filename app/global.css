@@ -137,8 +137,8 @@
   --sidebar-ring: oklch(0.439 0 0);
   /* CodeHike Styling */
 
-  --ch-0: #1c1c1c;
-  --ch-1: #e4e1dc; /* Base text color */
+  --ch-0: #232323;
+  --ch-1: #fff; /* Base text color */
   --ch-2: #9399b2; /* Not used */
   --ch-3: #595650; /* Comments */
   --ch-4: #30a46c; /* Strings */
@@ -155,7 +155,7 @@
   --ch-15: #a6adc8; /* Strike-through */
   --ch-16: #69a3e8; /* Highlights */
   --ch-17: #f5e0dc; /* Regex */
-  --ch-18: #1c1c1c; /* Background */
+  --ch-18: #1c1c1a; /* Background */
   --ch-19: #cdd6f412; /* Line highlight */
   --ch-20: #89dceb40; /* Range highlight */
   --ch-21: #3794ff; /* Info */
@@ -163,7 +163,7 @@
   --ch-23: #181825; /* Tab inactive */
   --ch-24: #585b70; /* Group border */
   --ch-25: #11111b; /* Header bg */
-  --ch-26: #7f849c; /* Line numbers */
+  --ch-26: #6f6f6f; /* Line numbers */
   --ch-27: #313244; /* Input bg */
   --ch-28: #31324480; /* Hover bg */
   --ch-29: #1e1e2ee6; /* Inline bg */
@@ -274,7 +274,18 @@
   }
 
   pre span {
-    font-family: var(--font-mono), sans-serif !important;
+    font-family:
+      GeistMono,
+      ui-monospace,
+      SFMono-Regular,
+      Roboto Mono,
+      Menlo,
+      Monaco,
+      Liberation Mono,
+      DejaVu Sans Mono,
+      Courier New,
+      monospace !important;
+    font-weight: 300;
     color: var(--ch-1);
   }
 
