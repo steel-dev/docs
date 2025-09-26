@@ -11,7 +11,7 @@ Documentation for Steel.dev. Built with [Fumadocs](https://fumadocs.vercel.app/)
 Example structure:
 
 ```
-/tools/clarinet/
+/tools/steel/
 ├── Overview/                 # Introduction and setup
 ├── Steel CLI/             # Command-line features
 ├── Steel JS SDK/          # Testing and programmatic usage

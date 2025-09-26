@@ -4,29 +4,14 @@ export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   className?: string;
 }
 
-export type RecipeType = 'typescript' | 'bash' | 'clarity';
+export type RecipeType = "typescript" | "python";
 
-export type RecipeCategory = 'stacks-js' | 'clarity' | 'bitcoin' | 'chainhook' | 'api' | 'clarinet';
+export type RecipeCategory = "automation" | "agents";
 
 export const CategorySubTags = {
-  'stacks-js': [
-    'web',
-    'authentication',
-    'transactions',
-    'signing',
-    'smart-contracts',
-    'utils',
-  ] as const,
+  automation: ["web", "authentication", "utils"] as const,
 
-  clarity: [] as const,
-
-  bitcoin: ['transactions', 'signing'] as const,
-
-  chainhook: [] as const,
-
-  api: ['token-metadata', 'signer-metrics', 'rpc', 'platform', 'ordinals', 'runes'] as const,
-
-  clarinet: ['testing', 'deployment'] as const,
+  agents: ["testing", "deployment"] as const,
 } as const;
 
 export type SubTagsForCategory = {

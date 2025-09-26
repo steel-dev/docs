@@ -87,12 +87,11 @@ export function MobileNavigation({
 
       if (index === 1 && displaySegments[0].toLowerCase() === "apis") {
         const apiMappings: { [key: string]: string } = {
-          "stacks-blockchain-api": "Stacks Blockchain API",
-          "token-metadata-api": "Token Metadata API",
-          "platform-api": "Platform API",
-          "ordinals-api": "Ordinals API",
-          "runes-api": "Runes API",
-          "signer-metrics-api": "Signer Metrics API",
+          "sessions-api": "Sessions API",
+          "credentials-api": "Credentials API",
+          "extensions-api": "Extensions API",
+          "files-api": "Files API",
+          "captchas-api": "Captchas API",
         };
 
         if (apiMappings[segment.toLowerCase()]) {
