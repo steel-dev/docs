@@ -48,11 +48,11 @@ Paragraph (2-3 sentences) → Code Example → Paragraph → List/Table → Code
 <TerminalPicker storage="macOs" flags="-w">
 
 ```terminal !! macOS
-$ brew install tool
+$ brew install @steel-dev/cli
 ```
 
 ```terminal !! Windows
-$ winget install tool
+$ winget install @steel-dev/cli
 ```
 
 </TerminalPicker>
@@ -62,11 +62,13 @@ $ winget install tool
 <CodeTabs storage="languageSwitcher">
 
 ```typescript
-const result = await contract.call();
+const client = Steel()
+const result = await client.sessions.create()
 ```
 
 ```javascript
-const result = await contract.call();
+const client = Steel()
+const result = await client.sessions.create()
 ```
 
 </CodeTabs>
@@ -116,7 +118,7 @@ Content here
 
 **Languages**: `terminal`, `typescript`, `javascript`, `json`, `yaml`, `console`, `package-install`
 
-**Flags**: `-n` (line numbers), `-c` (copy button), `-w` (word wrap), `-a` (animate)
+**Flags**: `-n` (line numbers), `-c` (copy button), `-w` (word wrap), `-a` (animate), `-f <file-name>` (file name)
 
 **Annotations**:
 
@@ -173,6 +175,9 @@ Expand on what the tool does and its value. Include llms.txt link if available.
 - [Quickstart](/path): Get started in minutes
   :::
 ```
+
+use the `isLink: true` in the front matter to add a link icon to the right of the navbar icon
+use the `isSeperator: true` in the frontmatter to make a doc element look like a seperator (Bold/All caps and spaced out, good for special links)
 
 #### Quickstart Page
 
