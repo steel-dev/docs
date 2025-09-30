@@ -7,6 +7,10 @@ import {
   BrowserUseIcon,
   ClaudeIcon,
   OpenAIIcon,
+  Cloud,
+  Container,
+  FileIcon,
+  MagicIcon,
 } from "@/components/ui/icon";
 import SteelLogo from "@/public/images/logo.png";
 import Image from "next/image";
@@ -112,19 +116,19 @@ export default function HomePage() {
                 description="Use OpenAI Computer Use with Steel Browser."
               />
               <SmallCard
-                icon={<API />}
+                icon={<Cloud />}
                 href="/integrations/crewai/overview"
                 title="CrewAI"
                 description="Learn how to use CrewAI with Steel Browser."
               />
               <SmallCard
-                icon={<API />}
+                icon={<Container />}
                 href="/integrations/magnitude/quickstart"
                 title="Magnitude"
                 description="Use Magnitude with Steel Browser."
               />
               <SmallCard
-                icon={<API />}
+                icon={<MagicIcon />}
                 href="/integrations/notte/quickstart"
                 title="Notte"
                 description="Use Notte with Steel Browser."

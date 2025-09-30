@@ -44,15 +44,17 @@ export function CodeIcon({
     filename += "." + lang;
   }
   const { svg, color } = getIcon(filename);
-  const __html = svg.replace(
-    /svg/,
-    `svg fill='hsl(var(--muted-foreground))' height='28' style='margin: -8px'`,
-  );
+  const __html = svg
+    .replace(/svg/, `svg height='28' style='margin: -8px'`)
+    .replace(/<path(?![^>]*fill=)/gi, '<path fill="currentColor"')
+    .replace(/<rect(?![^>]*fill=)/gi, '<rect fill="currentColor"')
+    .replace(/<circle(?![^>]*fill=)/gi, '<circle fill="currentColor"');
+
   return (
     <span className={className}>
       <span
         dangerouslySetInnerHTML={{ __html }}
-        style={{ display: "contents" }}
+        style={{ display: "contents", color: "var(--muted-foreground)" }}
       />
     </span>
   );
