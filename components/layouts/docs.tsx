@@ -102,7 +102,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
     fetch(`https://api.github.com/repos/steel-dev/steel-browser`)
       .then((res) => res.json())
       .then((data) =>
-        setStars((Math.floor(data.stargazers_count / 100) * 100) / 1000),
+        setStars((Math.round(data.stargazers_count / 100) * 100) / 1000),
       );
   }, []);
 
