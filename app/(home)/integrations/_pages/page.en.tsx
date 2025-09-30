@@ -4,6 +4,9 @@ import {
   BrowserUseIcon,
   ClaudeIcon,
   OpenAIIcon,
+  Cloud,
+  Container,
+  MagicIcon,
 } from "@/components/ui/icon";
 
 export default function IntegrationsPage() {
@@ -38,21 +41,21 @@ export default function IntegrationsPage() {
               description="Use OpenAI Computer Use with Steel Browser."
             />
             <IndexCard
-              icon={<API />}
+              icon={<Cloud />}
               href="/integrations/crewai/overview"
               title="CrewAI"
               tag="Multi-Agent"
               description="Learn how to use CrewAI with Steel Browser."
             />
             <IndexCard
-              icon={<API />}
+              icon={<Container />}
               href="/integrations/magnitude/quickstart"
               title="Magnitude"
               tag="Browser Agent"
               description="Use Magnitude with Steel Browser."
             />
             <IndexCard
-              icon={<API />}
+              icon={<MagicIcon />}
               href="/integrations/notte/quickstart"
               title="Notte"
               tag="Browser Agent"

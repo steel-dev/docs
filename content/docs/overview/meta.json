@@ -7,7 +7,6 @@
     "steel-cli",
     "need-help",
     "pricing",
-    "legal",
     "...sessions-api",
     "...credentials-api",
     "...files-api",
@@ -15,6 +14,7 @@
     "...captchas-api",
     "...self-hosting",
     "...stealth",
-    "llms-full.txt"
+    "llms-full.txt",
+    "legal"
   ]
 }
