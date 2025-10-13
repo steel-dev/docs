@@ -23,7 +23,7 @@ import { useLocalizedNavigation } from "@/hooks/use-localized-navigation";
 import { cn } from "@/lib/utils";
 import { MobileMenuButton } from "../layout/mobile-menu-button";
 import { SearchToggle } from "../layout/search-toggle";
-import { ThemeToggle } from "../layout/theme-toggle";
+// import { ThemeToggle } from "../layout/theme-toggle";
 import {
   Accordion,
   AccordionContent,
@@ -57,7 +57,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
     width: 0,
     visible: false,
   });
-  const [stars, setStars] = React.useState<number>(5.2);
+  const [stars, setStars] = React.useState<number>(5.4);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -166,7 +166,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                   className="text-xs font-mono flex items-center gap-2 transition-colors"
                   color="#A1A0A7"
                 >
-                  <Github fill="#A1A0A7" width="16" /> 5.2k
+                  <Github fill="#A1A0A7" width="16" /> {stars}k
                 </Link>
                 <div className="w-px h-6 bg-zinc-700"></div>
                 {/*<CopyLLMSButton />*/}

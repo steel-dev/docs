@@ -64,11 +64,11 @@ const config = {
         destination: "https://render.com/deploy?image=steeldev/steel",
         permanent: true,
       },
-      {
-        source: "/overview/self-hosting/railway",
-        destination: "https://railway.app/template/FQG9Ca",
-        permanent: true,
-      },
+      // {
+      //   source: "/overview/self-hosting/railway",
+      //   destination: "https://railway.app/template/FQG9Ca",
+      //   permanent: true,
+      // },
       {
         source: "/integrations/valtown/quickstart",
         destination: "https://www.val.town/x/steel/steel_puppeteer_starter",

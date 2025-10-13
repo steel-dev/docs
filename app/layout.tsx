@@ -10,7 +10,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetBrainsMono.variable} ${GeistMono.variable}`}
+      className={`dark ${inter.variable} ${jetBrainsMono.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
       <body className="flex flex-col min-h-screen">
@@ -19,6 +19,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <RootProvider
               search={{
                 enabled: true,
+              }}
+              theme={{
+                enabled: false,
               }}
             >
               {children}

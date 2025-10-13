@@ -36,7 +36,7 @@ export default function ChangelogPage() {
       <div className="px-4 md:px-[var(--nav-offset)]">
         <div className="space-y-10">
           <div className="space-y-1">
-            <h3 className="text-3xl">Changelog ✨</h3>
+            <h3 className="text-3xl">Changelog</h3>
             <hr className="border-t border-border mt-8" />
           </div>
           <Cards>
