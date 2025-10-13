@@ -1,10 +1,5 @@
 {
   "title": "OpenAI Computer Use",
   "root": false,
-  "pages": [
-    "---OpenAI Computer Use---",
-    "overview",
-    "quickstart-py",
-    "quickstart-ts"
-  ]
+  "pages": ["---OpenAI Computer Use---", "overview", "quickstart-py", "quickstart-ts"]
 }

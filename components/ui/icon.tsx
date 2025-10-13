@@ -1,7 +1,7 @@
-import type { LucideIcon } from "lucide-react";
-import { TerminalIcon } from "lucide-react";
-import type React from "react";
-import type { JSX, SVGProps } from "react";
+import type { LucideIcon } from 'lucide-react';
+import { TerminalIcon } from 'lucide-react';
+import type React from 'react';
+import type { JSX, SVGProps } from 'react';
 
 export function create({ icon: Icon }: { icon?: LucideIcon }) {
   return (
@@ -28,15 +28,7 @@ export function BashIcon(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <rect
-        x="3"
-        y="5"
-        width="17"
-        height="14"
-        rx="2"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
+      <rect x="3" y="5" width="17" height="14" rx="2" stroke="currentColor" strokeWidth="2" />
       <path
         d="M7 10L9 12L7 14"
         stroke="currentColor"
@@ -44,19 +36,14 @@ export function BashIcon(props: SVGProps<SVGSVGElement>) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M12 14H16"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+      <path d="M12 14H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
 
 export function MagicIcon({
   size = 24,
-  color = "currentColor",
+  color = 'currentColor',
   className,
   style,
 }: IconProps): JSX.Element {
@@ -78,7 +65,7 @@ export function MagicIcon({
 
 export function ClaudeIcon({
   size = 24,
-  color = "currentColor",
+  color = 'currentColor',
   className,
   style,
 }: IconProps): JSX.Element {
@@ -100,7 +87,7 @@ export function ClaudeIcon({
 
 export function OpenAIIcon({
   size = 24,
-  color = "currentColor",
+  color = 'currentColor',
   className,
   style,
 }: IconProps): JSX.Element {
@@ -194,13 +181,7 @@ export function Bug(props: any) {
 
 export function DocsLogo(props: any) {
   return (
-    <svg
-      width="92"
-      height="25"
-      viewBox="0 0 92 25"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="92" height="25" viewBox="0 0 92 25" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M6.39469 3C2.863 3 0 5.73424 0 9.10709C0 12.4799 2.863 15.2142 6.39469 15.2142H13.4999C13.8923 15.2142 14.2104 15.518 14.2104 15.8928C14.2104 16.2675 13.8923 16.5713 13.4999 16.5713H0.497365C0.222678 16.5713 0 16.784 0 17.0463V21.5248C0 21.7872 0.222678 21.9998 0.497365 21.9998H13.4999C17.0316 21.9998 19.8946 19.2656 19.8946 15.8928C19.8946 12.5199 17.0316 9.78566 13.4999 9.78566H6.39469C6.00228 9.78566 5.68417 9.48186 5.68417 9.10709C5.68417 8.73233 6.00228 8.42853 6.39469 8.42853H18.4434C18.4535 8.42863 18.4636 8.42868 18.4737 8.42868H20.6053C20.9977 8.42868 21.3158 8.73248 21.3158 9.10724V21.525C21.3158 21.7873 21.5385 22 21.8132 22H26.5026C26.7773 22 27 21.7873 27 21.525V9.10724C27 5.73439 24.137 3.00015 20.6053 3.00015H19.8946V3H6.39469Z"
         fill="#EEEEEC"
@@ -223,27 +204,9 @@ export function API(props: SVGProps<SVGSVGElement>): JSX.Element {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <circle
-        cx="9.16729"
-        cy="3.84845"
-        r="2.28644"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
-      <circle
-        cx="14.8834"
-        cy="14.1373"
-        r="2.28644"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
-      <circle
-        cx="3.45119"
-        cy="14.1373"
-        r="2.28644"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
+      <circle cx="9.16729" cy="3.84845" r="2.28644" stroke="currentColor" strokeWidth="1.1" />
+      <circle cx="14.8834" cy="14.1373" r="2.28644" stroke="currentColor" strokeWidth="1.1" />
+      <circle cx="3.45119" cy="14.1373" r="2.28644" stroke="currentColor" strokeWidth="1.1" />
       <path
         d="M9.16729 7.56372V10.136M9.16729 10.136L6.88085 11.8508M9.16729 10.136L11.4537 11.8508"
         stroke="currentColor"
@@ -263,31 +226,11 @@ export function Cloud(props: SVGProps<SVGSVGElement>): JSX.Element {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <path
-        d="M21.7341 15.114L1.97607 15.114"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
-      <path
-        d="M1.04974 12.9636V7.76025H6.44958"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
-      <path
-        d="M4.56659 5.8419V0.88623H21.1918V5.8419"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
-      <path
-        d="M12.9514 12.9636V7.76025H18.0669"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
-      <path
-        d="M23.9503 12.9636V7.76025H19.7518"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
+      <path d="M21.7341 15.114L1.97607 15.114" stroke="currentColor" strokeWidth="1.1" />
+      <path d="M1.04974 12.9636V7.76025H6.44958" stroke="currentColor" strokeWidth="1.1" />
+      <path d="M4.56659 5.8419V0.88623H21.1918V5.8419" stroke="currentColor" strokeWidth="1.1" />
+      <path d="M12.9514 12.9636V7.76025H18.0669" stroke="currentColor" strokeWidth="1.1" />
+      <path d="M23.9503 12.9636V7.76025H19.7518" stroke="currentColor" strokeWidth="1.1" />
     </svg>
   );
 }
@@ -302,26 +245,10 @@ export function Js(props: SVGProps<SVGSVGElement>): JSX.Element {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <path
-        d="M1.92111 2.81079V21.3582"
-        stroke="currentColor"
-        strokeWidth="1.14856"
-      />
-      <path
-        d="M19.4024 2.81079L19.4024 17.734"
-        stroke="currentColor"
-        strokeWidth="1.14856"
-      />
-      <path
-        d="M17.6972 1.53198L3.62672 1.53198"
-        stroke="currentColor"
-        strokeWidth="1.14856"
-      />
-      <path
-        d="M17.6972 18.1609H5.33223"
-        stroke="currentColor"
-        strokeWidth="1.14856"
-      />
+      <path d="M1.92111 2.81079V21.3582" stroke="currentColor" strokeWidth="1.14856" />
+      <path d="M19.4024 2.81079L19.4024 17.734" stroke="currentColor" strokeWidth="1.14856" />
+      <path d="M17.6972 1.53198L3.62672 1.53198" stroke="currentColor" strokeWidth="1.14856" />
+      <path d="M17.6972 18.1609H5.33223" stroke="currentColor" strokeWidth="1.14856" />
       <path
         d="M3.83958 21.7849H19.4023V20.0793"
         stroke="currentColor"
@@ -354,26 +281,10 @@ export function Frontend(props: SVGProps<SVGSVGElement>): JSX.Element {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <path
-        d="M1.19843 2.19873V16.0931"
-        stroke="currentColor"
-        strokeWidth="1.3"
-      />
-      <path
-        d="M20.8015 2.19873V16.0931"
-        stroke="currentColor"
-        strokeWidth="1.3"
-      />
-      <path
-        d="M18.7293 1.25684L3.27064 1.25684"
-        stroke="currentColor"
-        strokeWidth="1.3"
-      />
-      <path
-        d="M18.7293 16.7432L3.27064 16.7432"
-        stroke="currentColor"
-        strokeWidth="1.3"
-      />
+      <path d="M1.19843 2.19873V16.0931" stroke="currentColor" strokeWidth="1.3" />
+      <path d="M20.8015 2.19873V16.0931" stroke="currentColor" strokeWidth="1.3" />
+      <path d="M18.7293 1.25684L3.27064 1.25684" stroke="currentColor" strokeWidth="1.3" />
+      <path d="M18.7293 16.7432L3.27064 16.7432" stroke="currentColor" strokeWidth="1.3" />
       <circle cx="4.75156" cy="4.83826" r="1.04114" fill="currentColor" />
       <circle cx="7.94226" cy="4.83826" r="1.04114" fill="currentColor" />
       <circle cx="11.1177" cy="4.83826" r="1.04114" fill="currentColor" />
@@ -403,16 +314,8 @@ export function Backend(props: SVGProps<SVGSVGElement>): JSX.Element {
         strokeWidth="1.1"
         strokeLinejoin="bevel"
       />
-      <path
-        d="M1.6265 5.11718L6.074 0.669678"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
-      <path
-        d="M1.55878 9.05293L9.7748 0.836914"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
+      <path d="M1.6265 5.11718L6.074 0.669678" stroke="currentColor" strokeWidth="1.1" />
+      <path d="M1.55878 9.05293L9.7748 0.836914" stroke="currentColor" strokeWidth="1.1" />
       <path
         d="M1.8178 12.5341L6.013 8.33893M13.2863 1.06567L8.88959 5.46233"
         stroke="currentColor"
@@ -448,54 +351,12 @@ export function Container(props: SVGProps<SVGSVGElement>): JSX.Element {
         rx="1"
         stroke="currentColor"
       />
-      <rect
-        x="6.98413"
-        y="12.9116"
-        width="3.57779"
-        height="3.57779"
-        rx="1"
-        stroke="currentColor"
-      />
-      <rect
-        x="6.98413"
-        y="7.15027"
-        width="3.57779"
-        height="3.57779"
-        rx="1"
-        stroke="currentColor"
-      />
-      <rect
-        x="12.9751"
-        y="1.38934"
-        width="3.57779"
-        height="3.57779"
-        rx="1"
-        stroke="currentColor"
-      />
-      <rect
-        x="12.9751"
-        y="12.9116"
-        width="3.57779"
-        height="3.57779"
-        rx="1"
-        stroke="currentColor"
-      />
-      <rect
-        x="18.9675"
-        y="12.9116"
-        width="3.57779"
-        height="3.57779"
-        rx="1"
-        stroke="currentColor"
-      />
-      <rect
-        x="12.9751"
-        y="7.15027"
-        width="3.57779"
-        height="3.57779"
-        rx="1"
-        stroke="currentColor"
-      />
+      <rect x="6.98413" y="12.9116" width="3.57779" height="3.57779" rx="1" stroke="currentColor" />
+      <rect x="6.98413" y="7.15027" width="3.57779" height="3.57779" rx="1" stroke="currentColor" />
+      <rect x="12.9751" y="1.38934" width="3.57779" height="3.57779" rx="1" stroke="currentColor" />
+      <rect x="12.9751" y="12.9116" width="3.57779" height="3.57779" rx="1" stroke="currentColor" />
+      <rect x="18.9675" y="12.9116" width="3.57779" height="3.57779" rx="1" stroke="currentColor" />
+      <rect x="12.9751" y="7.15027" width="3.57779" height="3.57779" rx="1" stroke="currentColor" />
     </svg>
   );
 }
@@ -1553,50 +1414,35 @@ export function ContentBackground(props: SVGProps<SVGSVGElement>): JSX.Element {
         d="M44.0465 70.1383C44.0465 69.7055 44.3714 69.4094 44.7844 69.4094C45.1975 69.4094 45.5223 69.7055 45.5223 70.1383C45.5223 70.5711 45.1975 70.8671 44.7844 70.8671C44.3714 70.8671 44.0465 70.5711 44.0465 70.1383ZM44.7844 69.577C44.4585 69.577 44.2141 69.8034 44.2141 70.1383C44.2141 70.4732 44.4585 70.6995 44.7844 70.6995C45.1103 70.6995 45.3547 70.4732 45.3547 70.1383C45.3547 69.8034 45.1103 69.577 44.7844 69.577Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M48.6134 68.3913V67.7668H52.7224V68.3913H48.6134Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M48.6134 68.3913V67.7668H52.7224V68.3913H48.6134Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
         d="M48.4458 68.5589V67.5991H52.89V68.5589H48.4458ZM48.6134 68.3912H52.7224V67.7667H48.6134V68.3912Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M54.497 68.3913V67.7668H58.606V68.3913H54.497Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M54.497 68.3913V67.7668H58.606V68.3913H54.497Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
         d="M54.3293 68.5589V67.5991H58.7736V68.5589H54.3293ZM54.497 68.3912H58.6059V67.7667H54.497V68.3912Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M60.3806 68.3913V67.7668H64.4895V68.3913H60.3806Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M60.3806 68.3913V67.7668H64.4895V68.3913H60.3806Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
         d="M60.2129 68.5589V67.5991H64.6571V68.5589H60.2129ZM60.3805 68.3912H64.4895V67.7667H60.3805V68.3912Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M66.2642 68.3913V67.7668H70.3732V68.3913H66.2642Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M66.2642 68.3913V67.7668H70.3732V68.3913H66.2642Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
         d="M66.0965 68.5589V67.5991H70.5407V68.5589H66.0965ZM66.2641 68.3912H70.3731V67.7667H66.2641V68.3912Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M72.1477 68.3913V67.7668H76.2567V68.3913H72.1477Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M72.1477 68.3913V67.7668H76.2567V68.3913H72.1477Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -1663,30 +1509,21 @@ export function ContentBackground(props: SVGProps<SVGSVGElement>): JSX.Element {
         d="M108.764 68.0135C108.764 67.5807 109.089 67.2846 109.502 67.2846C109.915 67.2846 110.24 67.5807 110.24 68.0135C110.24 68.4463 109.915 68.7423 109.502 68.7423C109.089 68.7423 108.764 68.4463 108.764 68.0135ZM109.502 67.4522C109.176 67.4522 108.931 67.6786 108.931 68.0135C108.931 68.3484 109.176 68.5747 109.502 68.5747C109.828 68.5747 110.072 68.3484 110.072 68.0135C110.072 67.6786 109.828 67.4522 109.502 67.4522Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M113.331 68.3913V67.7668H117.44V68.3913H113.331Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M113.331 68.3913V67.7668H117.44V68.3913H113.331Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
         d="M113.163 68.5589V67.5991H117.607V68.5589H113.163ZM113.331 68.3912H117.44V67.7667H113.331V68.3912Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M119.087 71.3331V70.7086H123.45V71.3331H119.087Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M119.087 71.3331V70.7086H123.45V71.3331H119.087Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
         d="M118.92 71.5007V70.541H123.617V71.5007H118.92ZM119.087 71.3331H123.45V70.7086H119.087V71.3331Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M125.098 68.3913V67.7668H129.207V68.3913H125.098Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M125.098 68.3913V67.7668H129.207V68.3913H125.098Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -2653,10 +2490,7 @@ export function ContentBackground(props: SVGProps<SVGSVGElement>): JSX.Element {
         d="M138.529 81.5596L137.216 79.9933H138.538L139.494 81.5596H138.529ZM138.607 81.392L137.575 80.1609H138.444L139.196 81.392H138.607Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M142.744 84.2318V83.6073H146.853V84.2318H142.744Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M142.744 84.2318V83.6073H146.853V84.2318H142.744Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -2773,20 +2607,14 @@ export function ContentBackground(props: SVGProps<SVGSVGElement>): JSX.Element {
         d="M208.78 85.9789C208.78 85.5461 209.105 85.2501 209.518 85.2501C209.931 85.2501 210.256 85.5461 210.256 85.9789C210.256 86.4117 209.931 86.7078 209.518 86.7078C209.105 86.7078 208.78 86.4118 208.78 85.9789ZM209.518 85.4177C209.192 85.4177 208.948 85.644 208.948 85.9789C208.948 86.3139 209.192 86.5402 209.518 86.5402C209.844 86.5402 210.088 86.3139 210.088 85.9789C210.088 85.644 209.844 85.4177 209.518 85.4177Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M213.347 84.2318V83.6073H217.456V84.2318H213.347Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M213.347 84.2318V83.6073H217.456V84.2318H213.347Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
         d="M213.179 84.3994V83.4396H217.623V84.3994H213.179ZM213.347 84.2318H217.456V83.6073H213.347V84.2318Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M219.23 84.2318V83.6073H223.339V84.2318H219.23Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M219.23 84.2318V83.6073H223.339V84.2318H219.23Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -3023,10 +2851,7 @@ export function ContentBackground(props: SVGProps<SVGSVGElement>): JSX.Element {
         d="M398.358 81.5506L399.339 79.9933H400.667L399.318 81.5506H398.358ZM398.662 81.3829H399.241L400.3 80.1609H399.431L398.662 81.3829Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M426.292 84.2318V83.6073H430.401V84.2318H426.292Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M426.292 84.2318V83.6073H430.401V84.2318H426.292Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -3263,10 +3088,7 @@ export function ContentBackground(props: SVGProps<SVGSVGElement>): JSX.Element {
         d="M562.929 83.854C562.929 83.4212 563.254 83.1251 563.667 83.1251C564.08 83.1251 564.405 83.4212 564.405 83.854C564.405 84.2868 564.08 84.5828 563.667 84.5828C563.254 84.5828 562.929 84.2868 562.929 83.854ZM563.667 83.2927C563.341 83.2927 563.096 83.5191 563.096 83.854C563.096 84.1889 563.341 84.4152 563.667 84.4152C563.993 84.4152 564.237 84.1889 564.237 83.854C564.237 83.5191 563.993 83.2927 563.667 83.2927Z"
         fill="hsl(var(--content))"
       />
-      <path
-        d="M586.31 84.2318V83.6073H590.419V84.2318H586.31Z"
-        fill="hsl(var(--content))"
-      />
+      <path d="M586.31 84.2318V83.6073H590.419V84.2318H586.31Z" fill="hsl(var(--content))" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -3582,12 +3404,7 @@ export function PlaywrightIcon({ className }: IconProps) {
 
 export function PythonIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g>
         <path
           d="M9.92813 20C4.85063 20 5.1675 17.7981 5.1675 17.7981L5.17375 15.5169H10.0187V14.8325H3.24813C3.24813 14.8325 0 15.2013 0 10.0775C0 4.955 2.83563 5.13625 2.83563 5.13625H4.52813V7.51375C4.52813 7.51375 4.43687 10.3494 7.31875 10.3494H12.1237C12.1237 10.3494 14.8237 10.3056 14.8237 12.9587V17.3456C14.8237 17.3456 15.2338 20 9.92813 20ZM7.25625 18.4662C7.73813 18.4662 8.12812 18.0762 8.12812 17.5944C8.12812 17.1125 7.73813 16.7225 7.25625 16.7225C7.14171 16.7223 7.02826 16.7448 6.9224 16.7885C6.81655 16.8323 6.72037 16.8965 6.63937 16.9775C6.55838 17.0585 6.49416 17.1547 6.45041 17.2605C6.40665 17.3664 6.38421 17.4798 6.38438 17.5944C6.38438 18.0762 6.77438 18.4662 7.25625 18.4662Z"
@@ -3701,12 +3518,7 @@ export function CircleDot(props: SVGProps<SVGSVGElement>): JSX.Element {
       </g>
       <defs>
         <clipPath id="clip0_834_787">
-          <rect
-            width="16"
-            height="16"
-            fill="white"
-            transform="translate(0.621582)"
-          />
+          <rect width="16" height="16" fill="white" transform="translate(0.621582)" />
         </clipPath>
       </defs>
     </svg>
@@ -3749,12 +3561,7 @@ export function Flame(props: SVGProps<SVGSVGElement>): JSX.Element {
       </g>
       <defs>
         <clipPath id="clip0_836_857">
-          <rect
-            width="16"
-            height="16"
-            fill="white"
-            transform="translate(0.621582)"
-          />
+          <rect width="16" height="16" fill="white" transform="translate(0.621582)" />
         </clipPath>
       </defs>
     </svg>

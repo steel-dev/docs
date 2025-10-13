@@ -1,27 +1,14 @@
 'use client';
 
 import type { DialogProps } from '@radix-ui/react-dialog';
-import { Circle, File, Laptop, Moon, Sun } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useTheme } from 'next-themes';
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from '@/components/ui/command';
+import { CommandDialog, CommandInput } from '@/components/ui/command';
 // import { docsConfig } from "@/app/config/docs";
 import { cn } from '@/lib/utils';
 
 export function CommandMenu({ ...props }: DialogProps) {
-  const router = useRouter();
   const [open, setOpen] = React.useState(false);
-  const { setTheme } = useTheme();
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {

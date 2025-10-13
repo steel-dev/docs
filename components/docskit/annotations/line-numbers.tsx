@@ -1,8 +1,8 @@
-import { type AnnotationHandler, InnerLine } from "codehike/code";
-import { GeistMono } from "geist/font/mono";
+import { type AnnotationHandler, InnerLine } from 'codehike/code';
+import { GeistMono } from 'geist/font/mono';
 
 export const lineNumbers: AnnotationHandler = {
-  name: "line-numbers",
+  name: 'line-numbers',
   Line: (props) => {
     const width = props.totalLines.toString().length + 1;
     return (

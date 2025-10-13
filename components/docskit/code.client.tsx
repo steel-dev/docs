@@ -1,25 +1,18 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
-import { CODEBLOCK, type CodeGroup, TITLEBAR } from "./code-group";
-import { CopyButton } from "./copy-button";
-import { useStateOrLocalStorage } from "./hooks/local-storage";
+import React from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
+import { CODEBLOCK, type CodeGroup, TITLEBAR } from './code-group';
+import { CopyButton } from './copy-button';
+import { useStateOrLocalStorage } from './hooks/local-storage';
 
-export function MultiCode({
-  group,
-  className,
-}: {
-  group: CodeGroup;
-  className?: string;
-}) {
+export function MultiCode({ group, className }: { group: CodeGroup; className?: string }) {
   const [currentTitle, setCurrentTitle] = useStateOrLocalStorage(
     group.storage,
     group.tabs[0].title,
   );
-  const current =
-    group.tabs.find((tab) => tab.title === currentTitle) || group.tabs[0];
+  const current = group.tabs.find((tab) => tab.title === currentTitle) || group.tabs[0];
 
   const { style, code, filename, options } = current;
 
@@ -31,18 +24,15 @@ export function MultiCode({
       style={style}
     >
       <TabsList
-        className={cn(
-          TITLEBAR,
-          "rounded-none p-0 pl-2 m-0 justify-start items-stretch !pt-0",
-        )}
+        className={cn(TITLEBAR, 'rounded-none p-0 pl-2 m-0 justify-start items-stretch !pt-0')}
       >
         {group.tabs.map(({ icon, title }) => (
           <TabsTrigger
             key={title}
             value={title}
             className={cn(
-              "rounded-none relative transition-colors duration-200 gap-2 px-3 font-mono flex items-center",
-              "text-ch-tab-inactive-foreground data-[state=active]:text-foreground hover:text-muted-foreground cursor-pointer",
+              'rounded-none relative transition-colors duration-200 gap-2 px-3 font-mono flex items-center',
+              'text-ch-tab-inactive-foreground data-[state=active]:text-foreground hover:text-muted-foreground cursor-pointer',
             )}
           >
             {icon}
@@ -51,15 +41,15 @@ export function MultiCode({
             <div
               className="absolute left-0 right-0 bottom-0 h-0.5"
               style={{
-                background: "#e0e7ff", // or use a custom color variable
+                background: '#e0e7ff', // or use a custom color variable
                 opacity: 0,
               }}
               data-active-bar
             />
           </TabsTrigger>
         ))}
-        {options.copyButton && filename === "" && (
-          <div className={cn("ml-auto mr-3 items-center flex")}>
+        {options.copyButton && filename === '' && (
+          <div className={cn('ml-auto mr-3 items-center flex')}>
             <CopyButton text={code} />
           </div>
         )}
@@ -69,9 +59,7 @@ export function MultiCode({
           className="flex items-center w-full text-sm font-mono border-b border-ch-border rounded-t-none bg-[var(--ch-0)]"
           style={{ minHeight: 32 }}
         >
-          <span className="pl-3 pr-2 flex-1 font-mono text-foreground">
-            {filename}
-          </span>
+          <span className="pl-3 pr-2 flex-1 font-mono text-foreground">{filename}</span>
           <span className="ml-auto pr-3">
             <CopyButton
               text={code}

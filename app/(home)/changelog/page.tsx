@@ -1,7 +1,7 @@
 export default async function ChangelogPage({ params }: { params: Promise<{ locale: string }> }) {
   const EnglishPage = (await import('./_pages/page.en')).default;
   return <EnglishPage />;
-  
+
   // const { locale } = await params;
 
   // // Dynamically import the locale-specific page

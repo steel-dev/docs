@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Copy } from "lucide-react";
+import { Copy } from 'lucide-react';
+import React, { useState } from 'react';
 
 export function CopyLLMSButton() {
   const [copied, setCopied] = useState(false);
@@ -19,7 +19,7 @@ export function CopyLLMSButton() {
       type="button"
     >
       <Copy className="w-4 h-4" />
-      {copied ? "Copied!" : "llms-full.txt"}
+      {copied ? 'Copied!' : 'llms-full.txt'}
     </button>
   );
 }

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { useCallback, useState } from "react";
-import { cn } from "@/lib/utils";
-import type { FeedbackResponse } from "@/types/feedback";
+import { ThumbsDown, ThumbsUp } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { cn } from '@/lib/utils';
+import type { FeedbackResponse } from '@/types/feedback';
 
 interface FeedbackWrapperProps {
   pageTitle: string;
@@ -11,17 +11,11 @@ interface FeedbackWrapperProps {
   className?: string;
 }
 
-export function FeedbackWrapper({
-  pageTitle,
-  pagePath,
-  className,
-}: FeedbackWrapperProps) {
-  const [feedback, setFeedback] = useState<"helpful" | "not-helpful" | null>(
-    null,
-  );
+export function FeedbackWrapper({ pageTitle, pagePath, className }: FeedbackWrapperProps) {
+  const [feedback, setFeedback] = useState<'helpful' | 'not-helpful' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTextarea, setShowTextarea] = useState(false);
-  const [additionalFeedback, setAdditionalFeedback] = useState("");
+  const [additionalFeedback, setAdditionalFeedback] = useState('');
   const [discussionUrl, setDiscussionUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,14 +26,14 @@ export function FeedbackWrapper({
 
       try {
         const pageUrl =
-          typeof window !== "undefined"
+          typeof window !== 'undefined'
             ? window.location.href
             : `https://docs.steel.dev${pagePath}`;
 
-        const response = await fetch("/api/feedback", {
-          method: "POST",
+        const response = await fetch('/api/feedback', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             pageTitle,
@@ -53,18 +47,18 @@ export function FeedbackWrapper({
         const data: FeedbackResponse = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || "Failed to submit feedback");
+          throw new Error(data.error || 'Failed to submit feedback');
         }
 
-        setFeedback(helpful ? "helpful" : "not-helpful");
+        setFeedback(helpful ? 'helpful' : 'not-helpful');
         if (data.discussionUrl) {
           setDiscussionUrl(data.discussionUrl);
         }
 
         setShowTextarea(false);
-        setAdditionalFeedback("");
+        setAdditionalFeedback('');
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong");
+        setError(err instanceof Error ? err.message : 'Something went wrong');
       } finally {
         setIsSubmitting(false);
       }
@@ -73,12 +67,12 @@ export function FeedbackWrapper({
   );
 
   const handleFeedbackClick = (helpful: boolean) => {
-    const newFeedback = helpful ? "helpful" : "not-helpful";
+    const newFeedback = helpful ? 'helpful' : 'not-helpful';
 
     if (feedback === newFeedback && showTextarea) {
       setFeedback(null);
       setShowTextarea(false);
-      setAdditionalFeedback("");
+      setAdditionalFeedback('');
     } else {
       setFeedback(newFeedback);
       setShowTextarea(true);
@@ -86,9 +80,9 @@ export function FeedbackWrapper({
   };
 
   const handleSubmit = () => {
-    if (feedback === "helpful") {
+    if (feedback === 'helpful') {
       submitFeedback(true);
-    } else if (feedback === "not-helpful") {
+    } else if (feedback === 'not-helpful') {
       submitFeedback(false);
     }
   };
@@ -96,7 +90,7 @@ export function FeedbackWrapper({
   const handleCancel = () => {
     setFeedback(null);
     setShowTextarea(false);
-    setAdditionalFeedback("");
+    setAdditionalFeedback('');
     setError(null);
   };
 

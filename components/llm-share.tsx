@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { Check, ChevronDown, Copy, ExternalLink } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ClaudeIcon, OpenAIIcon } from "@/components/ui/icon";
-import { useCurrentPageMarkdown, useLLMsTxt } from "@/hooks/use-llms-txt";
-import { cn } from "@/lib/utils";
-import { processMarkdownLinks } from "@/utils/process-markdown-links";
-import { Button } from "./ui/button";
+import { Check, ChevronDown, Copy, ExternalLink } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { ClaudeIcon, OpenAIIcon } from '@/components/ui/icon';
+import { useCurrentPageMarkdown, useLLMsTxt } from '@/hooks/use-llms-txt';
+import { cn } from '@/lib/utils';
+import { processMarkdownLinks } from '@/utils/process-markdown-links';
+import { Button } from './ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from './ui/dropdown-menu';
 
 interface LLMShareProps {
   content: string;
@@ -21,16 +21,16 @@ interface LLMShareProps {
 
 const getLLMProviders = () => [
   {
-    name: "ChatGPT",
-    url: "https://chat.openai.com",
+    name: 'ChatGPT',
+    url: 'https://chat.openai.com',
     icon: OpenAIIcon,
-    description: "Ask questions about this page",
+    description: 'Ask questions about this page',
   },
   {
-    name: "Claude",
-    url: "https://claude.ai",
+    name: 'Claude',
+    url: 'https://claude.ai',
     icon: ClaudeIcon,
-    description: "Ask questions about this page",
+    description: 'Ask questions about this page',
   },
 ];
 
@@ -54,7 +54,7 @@ export function LLMShare({ content }: LLMShareProps) {
             contentToCopy = await response.text();
           }
         } catch (error) {
-          console.error("Failed to fetch generated markdown:", error);
+          console.error('Failed to fetch generated markdown:', error);
           // Fall back to original content
         }
       }
@@ -64,29 +64,27 @@ export function LLMShare({ content }: LLMShareProps) {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 1200);
     } catch (err) {
-      console.error("Failed to copy text: ", err);
+      console.error('Failed to copy text: ', err);
     }
   };
 
-  const handleShare = async (
-    provider: ReturnType<typeof getLLMProviders>[number],
-  ) => {
+  const handleShare = async (provider: ReturnType<typeof getLLMProviders>[number]) => {
     try {
       const instruction = `Read from ${markdownUrl} so I can ask questions about it.`;
 
       const encodedInstruction = encodeURIComponent(instruction);
 
       const shareUrl =
-        provider.name === "Claude"
+        provider.name === 'Claude'
           ? `https://claude.ai/new?q=${encodedInstruction}`
           : `${provider.url}?q=${encodedInstruction}`;
 
-      window.open(shareUrl, "_blank");
+      window.open(shareUrl, '_blank');
 
       // prefetch the section-specific llms.txt for next time
       refetch();
     } catch (error) {
-      console.error("[LLMShare] Failed to share:", error);
+      console.error('[LLMShare] Failed to share:', error);
     }
   };
 
@@ -100,15 +98,11 @@ export function LLMShare({ content }: LLMShareProps) {
       >
         <span
           className={cn(
-            "inline-flex items-center justify-center rounded p-0.5 transition-all duration-150",
-            isCopied && "text-yellow-300",
+            'inline-flex items-center justify-center rounded p-0.5 transition-all duration-150',
+            isCopied && 'text-yellow-300',
           )}
         >
-          {isCopied ? (
-            <Check className="h-3 w-3" />
-          ) : (
-            <Copy className="h-3 w-3" />
-          )}
+          {isCopied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
         </span>
         Copy markdown
       </button>
@@ -133,9 +127,7 @@ export function LLMShare({ content }: LLMShareProps) {
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <provider.icon className="h-3 w-3 text-muted-foreground" />
-                  <span className="font-medium font-mono">
-                    Open in {provider.name}
-                  </span>
+                  <span className="font-medium font-mono">Open in {provider.name}</span>
                 </div>
               </div>
               <ExternalLink className="ml-auto h-3 w-3 text-muted-foreground" />
