@@ -85,7 +85,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
   React.useEffect(() => {
     fetch(`https://api.github.com/repos/steel-dev/steel-browser`)
       .then((res) => res.json())
-      .then((data) => setStars((Math.ceil(data.stargazers_count / 100) * 100) / 1000));
+      .then((data) => setStars((Math.round(data.stargazers_count / 100) * 100) / 1000));
   }, []);
 
   return (
