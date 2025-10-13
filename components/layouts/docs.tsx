@@ -57,6 +57,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
     width: 0,
     visible: false,
   });
+  const [stars, setStars] = React.useState<number>(5.2);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -96,6 +97,14 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
       window.clearTimeout(id);
     };
   }, [pathname, localizedLinks]);
+
+  React.useEffect(() => {
+    fetch(`https://api.github.com/repos/steel-dev/steel-browser`)
+      .then((res) => res.json())
+      .then((data) =>
+        setStars((Math.ceil(data.stargazers_count / 100) * 100) / 1000),
+      );
+  }, []);
 
   return (
     <MobileMenuProvider>
@@ -252,11 +261,23 @@ export function Sidebar() {
       const filteredItems = items.filter((item) => !shouldFilterItem(item));
       const numItems = filteredItems.length;
 
-      return filteredItems.sort().map((item) => (
-        <SidebarItem key={item.$id} item={item} numItems={numItems}>
-          {item.type === "folder" ? renderItems(item.children) : null}
-        </SidebarItem>
-      ));
+      return filteredItems.map((item, idx, arr) => {
+        const isSeperator = (item as any).data?.isSeperator === true;
+        const prevIsSeperator =
+          idx > 0 && (arr[idx - 1] as any).data?.isSeperator === true;
+        const isFirstSeperatorInRun = isSeperator && !prevIsSeperator;
+
+        return (
+          <SidebarItem
+            key={item.$id}
+            item={item}
+            numItems={numItems}
+            isFirstSeperatorInRun={isFirstSeperatorInRun}
+          >
+            {item.type === "folder" ? renderItems(item.children) : null}
+          </SidebarItem>
+        );
+      });
     }
 
     return renderItems(root.children);
@@ -319,10 +340,12 @@ export function SidebarItem({
   item,
   children,
   numItems,
+  isFirstSeperatorInRun = false,
 }: {
   item: PageTree.Node;
   children: ReactNode;
   numItems: number;
+  isFirstSeperatorInRun: boolean;
 }) {
   const pathname = usePathname();
 
@@ -370,7 +393,12 @@ export function SidebarItem({
     const isActive = pathname === item.url;
 
     return isSeperator ? (
-      <div className="text-primary uppercase text-[0.75rem] leading-none tracking-wide font-mono font-bold mt-6 mb-2 first:mt-0 px-2">
+      <div
+        className={cn(
+          "text-primary uppercase text-[0.75rem] leading-none tracking-wide font-mono font-bold mb-2 px-2",
+          isFirstSeperatorInRun && "mt-6",
+        )}
+      >
         <Link href={item.url} className="flex items-center gap-2 flex-1">
           {item.icon}
           {displayName}
@@ -378,7 +406,7 @@ export function SidebarItem({
         </Link>
       </div>
     ) : (
-      <div className="flex items-center gap-1 div:pt-0.5 first:(div:pt-0)">
+      <div className="flex items-center gap-1 div:pt-0.5 first:(div:pt-0) group transition-all duration-100 ease-linear">
         {!isRootPage && numItems > 1 && (
           <div
             className={cn(
@@ -393,14 +421,13 @@ export function SidebarItem({
             linkVariants({
               active: isActive,
             }),
-            // Special styling for root pages - applies on top of linkVariants
             isRootPage && ["font-normal font-sans text-sm pl-2"],
             !isRootPage && ["pl-2"],
-            // Style the icon when root page is active
             isRootPage &&
               pathname === item.url && [
                 "[&_.icons]:bg-primary [&_.icons]:border-primary [&_.icons]:text-white dark:[&_.icons]:text-neutral-950",
               ],
+            "group-hover:text-primary",
           )}
         >
           <div className="!font-normal text-[0.875rem] flex items-center gap-2 flex-1">
