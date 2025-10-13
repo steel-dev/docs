@@ -1,0 +1,114 @@
+---
+title: Overview
+sidebarTitle: Overview
+description: Reuse browser context, auth, cookies, extensions, credentials, and browser settings across sessions.
+full: true
+llm: true
+---
+### Overview
+
+Steel's profiles API allows you to create, update, and persist profiles acrsoss sessions. Profiles are used to store information about the browser session like auth, cookies, extensions, credentials, and browser settings.
+
+Then you can keep reusing profiles across sessions for each different use case. Think a LinkedIn profile, a GitHub profile, or a Facebook profile.
+
+This allows your agents to look more human, persist everything across sessions and frees you to focus on the most important part of your workflow.
+
+### Limits
+- There is a 300 MB limit on the size of a profile, if the upload fails after a session, the profile will be set to a `FAILED` state and cannot be used
+- If a profile is not used after 30 days, it will be automatically deleted
+
+### How Profiles Work
+
+Profiles work by storing a snapshot of the browser's User Data Directory. This includes all the data that is stored in the browser, such as cookies, extensions, credentials, and browser settings.
+
+1. Session gets created with a `persistProfile` flag
+2. Initial profile gets created with some information on the session and gets stored in an `UPLOADING` state
+3. After the session is released, the userDataDir is persisted and the additional information on the profile is updated and the profile is set to the `READY` state
+4. Whenever a session is created with the `profileId`, the profile is loaded from the storage and the session is started with the same userDataDir and context
+
+#### Persist a profile when starting a session
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+// Start a session and persist the profile
+const firstSession = await client.sessions.create({ persistProfile: true })
+```
+
+```python !! Python -wcn
+# Start a session and persist the profile
+first_session = client.sessions.create(persist_profile=True)
+```
+</CodeTabs>
+
+#### Start a second session with your new profile
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+// Start a session with the persisted profile
+const secondSession = await client.sessions.create({ profileId: firstSession.profileId })
+```
+
+```python !! Python -wcn
+# Start a session with the persisted profile
+second_session = client.sessions.create(profile_id=first_session.profile_id)
+```
+</CodeTabs>
+
+This will return a profileId from the session which will allow you to pass it into new sessions in the future.
+
+### Persisting browser information automatically
+
+Persisting additional information about the browser session like auth, cookies, extensions, credentials, and browser settings is not on by default, to keep building up context with each session, pass persistProfile=True along with your profileId.
+
+#### Update your profile after a new session
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+// Update the profile with new information, this will update the profile with whatever happens in the session
+const thirdSession = await client.sessions.create({ profileId: firstSession.profileId, persistProfile: true })
+```
+
+```python !! Python -wcn
+# Update the profile with new information, this will update the profile with whatever happens in the session
+third_session = client.sessions.create(profile_id=first_session.profile_id, persist_profile=True)
+```
+</CodeTabs>
+
+### Persisting browser information manually
+
+You can also manually create and update a profile via the Profiles API. This allows you to update the proxy, user-agent, or replace the entire userDataDir for your profile.
+
+#### Create your profile
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+// Create a new profile with new information
+await client.profiles.create({ userDataDir: fs.readFileSync('path/to/userDataDir.zip'), userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'})
+```
+
+```python !! Python -wcn
+# Create a new profile with new information
+with open("path/to/userDataDir.zip", "rb") as file:
+    client.profiles.create(user_data_dir=file, user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3')
+```
+</CodeTabs>
+
+
+#### Update your profile with some information
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+// Update the profile with new information, this will be used next session
+await client.profiles.update(firstSession.profileId, { userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'})
+```
+
+```python !! Python -wcn
+# Update the profile with new information, this will be used next session
+client.profiles.update(first_session.profile_id, user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3')
+```
+</CodeTabs>
