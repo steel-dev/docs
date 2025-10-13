@@ -46,7 +46,7 @@ const config = {
       },
       {
         source: "/api-reference",
-        destination: "https://docs.steel.dev/api-reference",
+        destination: "https://steel.apidocumentation.com/api-reference",
         permanent: true,
       },
       {

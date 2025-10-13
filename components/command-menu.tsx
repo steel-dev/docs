@@ -3,10 +3,7 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  CommandDialog,
-  CommandInput,
-} from '@/components/ui/command';
+import { CommandDialog, CommandInput } from '@/components/ui/command';
 // import { docsConfig } from "@/app/config/docs";
 import { cn } from '@/lib/utils';
 

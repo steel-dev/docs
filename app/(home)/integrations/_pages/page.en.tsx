@@ -1,13 +1,13 @@
-import { Cards, IndexCard } from "@/components/card";
+import { Cards, IndexCard } from '@/components/card';
 import {
   API,
   BrowserUseIcon,
   ClaudeIcon,
-  OpenAIIcon,
   Cloud,
   Container,
   MagicIcon,
-} from "@/components/ui/icon";
+  OpenAIIcon,
+} from '@/components/ui/icon';
 
 export default function IntegrationsPage() {
   return (

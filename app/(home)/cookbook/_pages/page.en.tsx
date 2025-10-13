@@ -1,6 +1,6 @@
-import { Brackets, Database } from "lucide-react";
-import { Cards, IndexCard } from "@/components/card";
-import { KeyIcon, FileIcon } from "@/components/ui/icon";
+import { Brackets, Database } from 'lucide-react';
+import { Cards, IndexCard } from '@/components/card';
+import { FileIcon, KeyIcon } from '@/components/ui/icon';
 
 export default function ToolsPage() {
   return (

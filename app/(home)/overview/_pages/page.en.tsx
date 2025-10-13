@@ -1,19 +1,19 @@
-import { Database, Brackets } from "lucide-react";
-import { Card, Cards, SmallCard } from "@/components/card";
+import { Brackets, Database } from 'lucide-react';
+import Image from 'next/image';
+import { Card, Cards, SmallCard } from '@/components/card';
 import {
   API,
-  TSIcon,
-  PythonIcon,
   BrowserUseIcon,
   ClaudeIcon,
-  OpenAIIcon,
   Cloud,
   Container,
   FileIcon,
   MagicIcon,
-} from "@/components/ui/icon";
-import SteelLogo from "@/public/images/logo.png";
-import Image from "next/image";
+  OpenAIIcon,
+  PythonIcon,
+  TSIcon,
+} from '@/components/ui/icon';
+import SteelLogo from '@/public/images/logo.png';
 
 export default function HomePage() {
   return (
@@ -32,10 +32,7 @@ export default function HomePage() {
               />
               <div className="flex flex-col [&_p]:mb-6 space-y-3">
                 <h3 className="text-3xl">Steel Documentation</h3>
-                <p>
-                  Find all the guides and resources you need to build on the
-                  Steel API.
-                </p>
+                <p>Find all the guides and resources you need to build on the Steel API.</p>
               </div>
             </div>
           </div>
@@ -47,7 +44,7 @@ export default function HomePage() {
                 variant="default"
                 title="Sessions API"
                 description="Explore API endpoints for managing Steel Sessions."
-                tags={["API", "Sessions"]}
+                tags={['API', 'Sessions']}
               />
             </Cards>
             <Cards className="xl:!grid-cols-4">
@@ -57,7 +54,7 @@ export default function HomePage() {
                 variant="default"
                 title="Captchas API"
                 description="Explore API endpoints for managing Steel Captchas."
-                tags={["API", "Captchas"]}
+                tags={['API', 'Captchas']}
               />
               <Card
                 className="group space-y-1"
@@ -65,33 +62,27 @@ export default function HomePage() {
                 variant="default"
                 title="Extensions API"
                 description="Explore API endpoints for building on Steel."
-                tags={["API", "Extensions"]}
+                tags={['API', 'Extensions']}
               />
               <Card
                 className="group space-y-1"
                 href="/overview/credentials-api/overview"
                 title="Credentials API"
                 description="Explore API endpoints for managing Steel Credentials."
-                tags={["API", "Credentials"]}
+                tags={['API', 'Credentials']}
               />
               <Card
                 className="group space-y-1"
                 href="/overview/files-api/overview"
                 title="Files API"
                 description="Explore API Endpoints for managing Files on Steel."
-                tags={["API", "Files"]}
+                tags={['API', 'Files']}
               />
             </Cards>
           </div>
           <div className="flex flex-col">
-            <h4
-              id="explore-by-category"
-              className="text-muted-foreground scroll-m-20"
-            >
-              <a
-                href="#explore-by-category"
-                className="not-prose group text-sm uppercase"
-              >
+            <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
+              <a href="#explore-by-category" className="not-prose group text-sm uppercase">
                 Integrations
               </a>
             </h4>
@@ -136,14 +127,8 @@ export default function HomePage() {
             </Cards>
           </div>
           <div className="flex flex-col">
-            <h4
-              id="explore-by-category"
-              className="text-muted-foreground scroll-m-20"
-            >
-              <a
-                href="#explore-by-category"
-                className="not-prose group text-sm uppercase"
-              >
+            <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
+              <a href="#explore-by-category" className="not-prose group text-sm uppercase">
                 Libraries &amp; SDKs
               </a>
             </h4>
@@ -164,14 +149,8 @@ export default function HomePage() {
             </Cards>
           </div>
           <div className="flex flex-col">
-            <h4
-              id="explore-by-category"
-              className="text-muted-foreground scroll-m-20"
-            >
-              <a
-                href="#explore-by-category"
-                className="not-prose group text-sm uppercase"
-              >
+            <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
+              <a href="#explore-by-category" className="not-prose group text-sm uppercase">
                 Resources
               </a>
             </h4>

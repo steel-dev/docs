@@ -126,6 +126,6 @@ export {
   rotation2,
   simplexNoise,
   textureRandomizerGB,
-  textureRandomizerR
+  textureRandomizerR,
 };
 //# sourceMappingURL=shader-utils.js.map
