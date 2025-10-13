@@ -31,7 +31,10 @@ export function ThemeToggle({
     <button
       type="button"
       aria-label={`Switch to ${nextTheme} mode`}
-      className={cn('inline-flex items-center cursor-pointer bg-transparent text-primary hover:text-muted-foreground', className)}
+      className={cn(
+        'inline-flex items-center cursor-pointer bg-transparent text-primary hover:text-muted-foreground',
+        className,
+      )}
       data-theme-toggle=""
       onClick={() => setTheme(nextTheme)}
       {...props}

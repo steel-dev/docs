@@ -191,7 +191,7 @@ const drawSizingHelpers = `
   opacity += graphicOriginPoint;
 `;
 const defaultObjectSizing = {
-  fit: "contain",
+  fit: 'contain',
   scale: 1,
   rotation: 0,
   offsetX: 0,
@@ -199,10 +199,10 @@ const defaultObjectSizing = {
   originX: 0.5,
   originY: 0.5,
   worldWidth: 0,
-  worldHeight: 0
+  worldHeight: 0,
 };
 const defaultPatternSizing = {
-  fit: "none",
+  fit: 'none',
   scale: 1,
   rotation: 0,
   offsetX: 0,
@@ -210,12 +210,12 @@ const defaultPatternSizing = {
   originX: 0.5,
   originY: 0.5,
   worldWidth: 0,
-  worldHeight: 0
+  worldHeight: 0,
 };
 const ShaderFitOptions = {
   none: 0,
   contain: 1,
-  cover: 2
+  cover: 2,
 };
 export {
   ShaderFitOptions,
@@ -225,6 +225,6 @@ export {
   sizingDebugVariablesDeclaration,
   sizingUV,
   sizingUniformsDeclaration,
-  sizingVariablesDeclaration
+  sizingVariablesDeclaration,
 };
 //# sourceMappingURL=shader-sizing.js.map

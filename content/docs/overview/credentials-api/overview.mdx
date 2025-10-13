@@ -11,19 +11,19 @@ import Image from 'next/image'
 Securely store and inject login credentials into browser sessions without exposing them to agents or the page.
 
 :::callout
-Steel’s Credential system is currently in beta and is subject to improvements, updates, and changes. It will be free to use and store credentials during this period.
+Steel's Credential system is currently in beta and is subject to improvements, updates, and changes. It will be free to use and store credentials during this period.
 If you have feedback, join our Discord or open an issue on GitHub.
 :::
 
-Steel’s Credentials system is designed to allow developers to securely store credentials, inject them into sessions, and automatically sign-into websites. All without leaking sensitive data back to the agents, programs, or humans viewing a live session.
+Steel's Credentials system is designed to allow developers to securely store credentials, inject them into sessions, and automatically sign-into websites. All without leaking sensitive data back to the agents, programs, or humans viewing a live session.
 
 Some of the most important use-cases for AI agents are hidden behind an auth wall. Some of the data most important to both our work and personal lives live inside sign-in-protected applications. If we want browser agents to help us automate the most tedious aspects of our lives, they need access to those same applications.
 
 The problem is sending your personal credentials (username/passwords, etc) to a browser-agent, powered by an opaque LLM API that may or may not be training on your data, represents a non-trivial security risk. Further, the process of logging in can be error prone and keeping/storing credentials on behalf of users, as an application developer, can represent a ton of responsibility and overhead.
 
-That is the motivation behind Steel’s Credentials system. Credentials are stored globally against your organization, so once created, you can reuse them in any session going forward – no need to constantly re-enter or re-provision them.
+That is the motivation behind Steel's Credentials system. Credentials are stored globally against your organization, so once created, you can reuse them in any session going forward – no need to constantly re-enter or re-provision them.
 
-Steel’s Credentials system is built around three core goals:
+Steel's Credentials system is built around three core goals:
 
 - Secure storage of credentials using enterprise-grade encryption.
 - Controlled injection into browser sessions without exposing sensitive fields.

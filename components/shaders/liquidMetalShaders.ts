@@ -3,8 +3,9 @@
  *       https://github.com/paper-design/shaders       *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-import { sizingVariablesDeclaration } from "./shader-sizing";
-import { declarePI, rotation2, simplexNoise, colorBandingFix } from "./shader-utils";
+import { sizingVariablesDeclaration } from './shader-sizing';
+import { colorBandingFix, declarePI, rotation2, simplexNoise } from './shader-utils';
+
 const liquidMetalFragmentShader = `#version 300 es
 precision mediump float;
 
@@ -212,10 +213,7 @@ const LiquidMetalShapes = {
   none: 0,
   circle: 1,
   daisy: 2,
-  metaballs: 3
+  metaballs: 3,
 };
-export {
-  LiquidMetalShapes,
-  liquidMetalFragmentShader
-};
+export { LiquidMetalShapes, liquidMetalFragmentShader };
 //# sourceMappingURL=liquid-metal.js.map

@@ -1,5 +1,4 @@
 export default async function OverviewPage({ params }: { params: Promise<{ locale: string }> }) {
-
   const EnglishPage = (await import('./_pages/page.en')).default;
   return <EnglishPage />;
 

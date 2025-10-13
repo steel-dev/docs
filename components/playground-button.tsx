@@ -1,6 +1,6 @@
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "./ui/button";
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from './ui/button';
 
 export default function PlaygroundButton({ href }: { href: string }) {
   return (

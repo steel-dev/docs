@@ -1,16 +1,16 @@
-import { Database, Brackets } from "lucide-react";
+import { Brackets, Database } from "lucide-react";
+import Image from "next/image";
 import { Card, Cards, SmallCard } from "@/components/card";
 import {
   API,
-  TSIcon,
-  PythonIcon,
   BrowserUseIcon,
   ClaudeIcon,
-  OpenAIIcon,
   Cloud,
   Container,
-  FileIcon,
   MagicIcon,
+  OpenAIIcon,
+  PythonIcon,
+  TSIcon,
 } from "@/components/ui/icon";
 import SteelLogo from "@/public/images/logo.png";
 import { LiquidMetal as LiquidMetal1 } from "@paper-design/shaders-react";

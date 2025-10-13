@@ -19,7 +19,6 @@ import {
 import { cn } from "@/lib/utils";
 
 export function CommandMenu({ ...props }: DialogProps) {
-  const router = useRouter();
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {

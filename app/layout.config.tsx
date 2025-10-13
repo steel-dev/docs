@@ -1,4 +1,4 @@
-import type { BaseLayoutProps } from "@/components/layouts/shared";
+import type { BaseLayoutProps } from '@/components/layouts/shared';
 /**
  * Shared layout configurations
  *
@@ -8,36 +8,36 @@ import type { BaseLayoutProps } from "@/components/layouts/shared";
  */
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    title: "Steel Docs",
+    title: 'Steel Docs',
   },
   links: [
     {
-      text: "Overview",
-      url: "/overview",
-      active: "nested-url",
+      text: 'Overview',
+      url: '/overview',
+      active: 'nested-url',
     },
     {
-      text: "Integrations",
-      url: "/integrations",
-      active: "nested-url",
+      text: 'Integrations',
+      url: '/integrations',
+      active: 'nested-url',
     },
     {
-      text: "Cookbook",
-      url: "/cookbook",
-      active: "nested-url",
+      text: 'Cookbook',
+      url: '/cookbook',
+      active: 'nested-url',
     },
     {
-      text: "Changelog",
-      url: "/changelog",
-      active: "nested-url",
+      text: 'Changelog',
+      url: '/changelog',
+      active: 'nested-url',
     },
     {
-      text: "Playground",
-      url: "/playground",
+      text: 'Playground',
+      url: '/playground',
     },
     {
-      text: "API Reference",
-      url: "/api-reference",
+      text: 'API Reference',
+      url: '/api-reference',
     },
     // {
     //   type: "menu",

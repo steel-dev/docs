@@ -1,6 +1,6 @@
-import { Brackets, Database } from "lucide-react";
-import { Cards, IndexCard } from "@/components/card";
-import { KeyIcon, FileIcon } from "@/components/ui/icon";
+import { Brackets, Database } from 'lucide-react';
+import { Cards, IndexCard } from '@/components/card';
+import { FileIcon, KeyIcon } from '@/components/ui/icon';
 
 export default function ToolsPage() {
   return (
@@ -8,7 +8,7 @@ export default function ToolsPage() {
       <div className="px-4 md:px-[var(--nav-offset)]">
         <div className="space-y-10">
           <div className="space-y-1">
-            <h3 className="text-3xl">Cookbook 👨‍🍳</h3>
+            <h3 className="text-3xl">Cookbook</h3>
             <hr className="border-t border-border mt-8" />
           </div>
           <Cards>
