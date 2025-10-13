@@ -12,6 +12,7 @@
     "...files-api",
     "...extensions-api",
     "...captchas-api",
+    "...profiles-api",
     "...self-hosting",
     "...stealth",
     "llms-full.txt",
