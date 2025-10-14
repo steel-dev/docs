@@ -1,0 +1,86 @@
+---
+title: Mobile Mode
+sidebarTitle: Mobile Mode
+description: Create browser sessions that appear as mobile devices with full mobile fingerprints and touch capabilities.
+llm: false
+---
+
+### Overview
+
+Mobile mode allows Steel sessions to appear as mobile devices. Pass `deviceConfig: { device: "mobile" }` when creating a session and the browser presents itself with mobile user agent, viewport, touch capabilities, and browser characteristics—everything aligned to look like a phone instead of desktop.
+
+Most websites serve fundamentally different experiences to mobile devices. Desktop sites have nested navigation, hover menus, and complex interactions. Mobile sites strip these away into linear flows and touch-optimized interfaces. For AI agents, this simplification can directly improve task completion.
+
+### How It Works
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+import { chromium } from 'playwright';
+
+const client = new Steel({ steelAPIKey: process.env.STEEL_API_KEY });
+
+// Create a session with mobile device configuration
+const session = await client.sessions.create({
+  deviceConfig: { device: "mobile" }
+});
+
+// Connect to the mobile session
+const browser = await chromium.connectOverCDP(
+  `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`
+);
+
+const page = await browser.contexts()[0].pages()[0];
+await page.goto('https://example.com');
+```
+
+```python !! Python -wcn
+from steel import Steel
+from playwright.async_api import async_playwright
+import os
+
+client = Steel(steel_api_key=os.environ.get("STEEL_API_KEY"))
+
+# Create a session with mobile device configuration
+session = client.sessions.create(
+    device_config={"device": "mobile"}
+)
+
+# Connect to the mobile session
+async with async_playwright() as p:
+    browser = await p.chromium.connect_over_cdp(
+        f"wss://connect.steel.dev?apiKey={os.environ.get('STEEL_API_KEY')}&sessionId={session.id}"
+    )
+    
+    page = browser.contexts[0].pages[0]
+    await page.goto('https://example.com')
+```
+
+</CodeTabs>
+
+The session automatically configures mobile viewport dimensions, touch events, and a full mobile device fingerprint. Sites see a consistent mobile device visiting from a browser app, not a desktop browser with a spoofed user agent. Before this, you could override the user agent string, but the rest of the fingerprint wouldn't match—sites would detect the inconsistency.
+
+Mobile mode works with all existing features including proxies, CAPTCHA solving, and session persistence.
+
+### Why This Matters
+
+**Simplified Navigation**
+
+Mobile sites present content sequentially rather than using nested menus or hover states. An e-commerce checkout that requires navigating dropdown menus on desktop becomes a vertical list on mobile. Fewer interactive elements means clearer action spaces and less chance of mistakes.
+
+**Performance and Cost Benefits**
+
+Mobile sites load faster with fewer widgets and less aggressive lazy-loading. They also have simpler DOM structures. Less HTML for your model to process means lower token costs. If you're using vision, it means fewer image tokens too.
+
+**Consistent Fingerprints**
+
+Without mobile mode, your sessions use desktop fingerprints by default. Mobile mode provides a complete, consistent mobile device fingerprint that websites trust.
+
+:::callout
+type: help
+### Need help with mobile mode?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) or [@steeldotdev](https://twitter.com/steeldotdev).
+
+Part of Steel's launch week. More at [steel.dev/launch-week](https://steel.dev/launch-week).
+:::
