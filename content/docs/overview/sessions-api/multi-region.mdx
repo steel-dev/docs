@@ -74,10 +74,8 @@ Steel is available in the following regions:
 | Los Angeles    | LAX  | Los Angeles, USA          |
 | Chicago        | ORD  | Chicago, USA              |
 | Washington DC  | IAD  | Washington DC, USA        |
-| Mumbai         | BOM  | Mumbai, India             |
 | Santiago       | SCL  | Santiago, Chile           |
 | Frankfurt      | FRA  | Frankfurt, Germany        |
-| Hong Kong      | HKG  | Hong Kong                 |
 
 ### Region vs Proxy Selection
 
@@ -88,24 +86,24 @@ You can combine region selection with proxy settings:
 <CodeTabs storage="languageSwitcher">
 
 ```typescript !! Typescript -wcn
-// Browser runs in Hong Kong, but uses a US proxy for requests
+// Browser runs in Frankfurt, but uses a US proxy for requests
 const session = await client.sessions.create({
-    region: "HKG",
+    region: "FRA",
     useProxy: true
 });
 
 ```
 
 ```python !! Python -wcn
-# Browser runs in Hong Kong, but uses a US proxy for requests
+# Browser runs in Frankfurt, but uses a US proxy for requests
 session = client.sessions.create(
-    region="HKG",
+    region="FRA",
     use_proxy=True
 )
 ```
 </CodeTabs>
 
-We’ll be launching new features soon to allow you to control regions for proxies as well. Right now, all are US based.
+We'll be launching new features soon to allow you to control regions for proxies as well. Right now, all are US based.
 
 :::callout
 type: help
