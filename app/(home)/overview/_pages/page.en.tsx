@@ -13,7 +13,7 @@ import {
   MagicIcon,
 } from "@/components/ui/icon";
 import SteelLogo from "@/public/images/logo.png";
-import Image from "next/image";
+import { LiquidMetal as LiquidMetal1 } from "@paper-design/shaders-react";
 
 export default function HomePage() {
   return (
@@ -22,13 +22,25 @@ export default function HomePage() {
         <div className="space-y-10">
           <div className="space-y-1">
             <div className="flex space-x-6 items-end">
-              <Image
-                alt="metallic logo"
-                src={SteelLogo}
-                width={188}
-                height={140}
-                className="mt-0 mb-6 first-line:rounded-md bg-background"
-                priority
+              <LiquidMetal1
+                image={SteelLogo as HTMLImageElement}
+                speed={1}
+                colorBack="#00000000"
+                colorTint="#FFFFFF"
+                softness={0.1}
+                repetition={2}
+                shiftRed={0.3}
+                shiftBlue={0.3}
+                distortion={0.07}
+                contour={0.4}
+                scale={1}
+                rotation={0}
+                angle={70}
+                style={{
+                  borderRadius: "12px",
+                  height: "188px",
+                  width: "188px",
+                }}
               />
               <div className="flex flex-col [&_p]:mb-6 space-y-3">
                 <h3 className="text-3xl">Steel Documentation</h3>
