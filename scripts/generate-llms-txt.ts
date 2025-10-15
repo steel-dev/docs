@@ -28,34 +28,36 @@ interface PageMetadata {
 function getAllPages(): PageMetadata[] {
   const sourcePages = source.getPages();
 
-  return sourcePages
-    .map((page) => {
-      // Extract section from URL (split by / and filter out empty strings)
-      const urlParts = page.url.split("/").filter(Boolean);
-      const section = urlParts.slice(0, -1); // All parts except the last one
+  return (
+    sourcePages
+      .map((page) => {
+        // Extract section from URL (split by / and filter out empty strings)
+        const urlParts = page.url.split("/").filter(Boolean);
+        const section = urlParts.slice(0, -1); // All parts except the last one
 
-      // Clean URL for content links (remove locale prefix)
-      let cleanUrl = page.url;
-      const locales = ["en", "es"]; // Add your supported locales here
-      if (urlParts.length > 0 && locales.includes(urlParts[0])) {
-        // Remove the locale prefix for content links
-        cleanUrl = "/" + urlParts.slice(1).join("/");
-      }
+        // Clean URL for content links (remove locale prefix)
+        let cleanUrl = page.url;
+        const locales = ["en", "es"]; // Add your supported locales here
+        if (urlParts.length > 0 && locales.includes(urlParts[0])) {
+          // Remove the locale prefix for content links
+          cleanUrl = "/" + urlParts.slice(1).join("/");
+        }
 
-      return {
-        title: (page.data as any)?.title || page.file.name,
-        description: (page.data as any)?.description || "",
-        url: page.url, // Keep original URL for file path generation
-        cleanUrl: cleanUrl, // Add clean URL for content links
-        section: section,
-      };
-    })
-    .filter(
-      (page) =>
-        !page.url.includes("/changelog/") &&
-        !page.section.includes("changelog"),
-    )
-    .sort((a, b) => a.url.localeCompare(b.url));
+        return {
+          title: (page.data as any)?.title || page.file.name,
+          description: (page.data as any)?.description || "",
+          url: page.url, // Keep original URL for file path generation
+          cleanUrl: cleanUrl, // Add clean URL for content links
+          section: section,
+        };
+      })
+      // .filter(
+      //   (page) =>
+      //     !page.url.includes("/changelog/") &&
+      //     !page.section.includes("changelog"),
+      // )
+      .sort((a, b) => a.url.localeCompare(b.url))
+  );
 }
 
 // Generate llms.txt content for a set of pages
