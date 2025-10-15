@@ -118,7 +118,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
         >
           <nav className="flex flex-row items-center gap-4 size-full px-2 md:px-4">
             {/* Mobile layout */}
-            <div className="flex md:hidden items-center justify-between w-full">
+            <div className="flex xl:hidden items-center justify-between w-full">
               <MobileMenuButton tree={tree} />
               <Link
                 href="/"
@@ -130,15 +130,18 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
             </div>
 
             {/* Desktop layout */}
-            <div className="hidden md:flex flex-row items-center gap-4 w-full h-full">
-              <div className="flex flex-row items-center gap-4">
+            <div className="hidden xl:flex flex-row items-center gap-4 w-full h-full">
+              <div className="flex flex-row items-center gap-4 flex-shrink-0">
                 {/* <NavbarSidebarTrigger /> */}
                 <Link href="/" className="mr-6 flex items-center space-x-2">
                   <DocsLogo />
                 </Link>
               </div>
 
-              <div ref={menuWrapperRef} className="relative h-full">
+              <div
+                ref={menuWrapperRef}
+                className="relative h-full flex-1 min-w-0"
+              >
                 <NavigationMenu className="flex items-center h-full">
                   <NavigationMenuList className="flex flex-row items-center h-full">
                     {localizedLinks?.map((link) => renderNavItem(link))}
@@ -157,7 +160,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                 />
               </div>
 
-              <div className="flex flex-1 items-center justify-end space-x-2 lg:space-x-3">
+              <div className="flex flex-shrink-0 items-center justify-end space-x-1 xl:space-x-2 2xl:space-x-3">
                 <Link href="https://discord.gg/steel-dev">
                   <Discord fill="#A1A09A" width="16" />
                 </Link>
@@ -173,7 +176,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                 <SearchToggle />
                 <Button
                   asChild
-                  className="bg-yellow-300 font-mono text-neutral-900 flex items-baseline gap-0.5 px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden lg:flex"
+                  className="bg-yellow-300 font-mono text-neutral-900 flex items-baseline gap-0.5 px-2 xl:px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden xl:flex flex-shrink-0"
                 >
                   <Link href="https://app.steel.dev" target="_blank">
                     Sign in

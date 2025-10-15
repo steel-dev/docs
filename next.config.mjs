@@ -54,11 +54,11 @@ const config = {
         destination: "https://playground.steel.dev/",
         permanent: true,
       },
-      {
-        source: "/overview/steel-cli",
-        destination: "https://github.com/steel-dev/cli",
-        permanent: true,
-      },
+      // {
+      //   source: "/overview/steel-cli",
+      //   destination: "https://github.com/steel-dev/cli",
+      //   permanent: true,
+      // },
       {
         source: "/overview/self-hosting/render",
         destination: "https://render.com/deploy?image=steeldev/steel",

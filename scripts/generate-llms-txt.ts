@@ -50,6 +50,11 @@ function getAllPages(): PageMetadata[] {
         section: section,
       };
     })
+    .filter(
+      (page) =>
+        !page.url.includes("/changelog/") &&
+        !page.section.includes("changelog"),
+    )
     .sort((a, b) => a.url.localeCompare(b.url));
 }
 

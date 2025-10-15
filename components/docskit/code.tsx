@@ -1,9 +1,4 @@
-import {
-  type AnnotationHandler,
-  highlight,
-  Pre,
-  type RawCode,
-} from "codehike/code";
+import { type AnnotationHandler, highlight, type RawCode } from "codehike/code";
 import { CollapsiblePre } from "./collapsible-pre";
 import React from "react";
 import { cn } from "@/lib/utils";
@@ -166,8 +161,8 @@ export async function toCodeGroup(props: {
       const { flags, title, filename } = extractFlags(tab);
       const tabOptions = flagsToOptions(flags);
       const options = { ...groupOptions, ...tabOptions };
+      // const handlers = getHandlers(options);
       const highlighted = await highlight(tab, theme);
-      const handlers = getHandlers(options);
       return {
         options,
         title,
@@ -175,35 +170,35 @@ export async function toCodeGroup(props: {
         style: highlighted.style,
         code: highlighted.code,
         icon: <CodeIcon title={title} lang={tab.lang} />,
-        // pre: (
-        //   <CollapsiblePre
-        //     code={highlighted}
-        //     className={cn(
-        //       !title && "!m-0",
-        //       "overflow-x-auto px-0 py-2 rounded-lg !bg-ch-code max-w-full", // rounded-lg
-        //       props.preClassName,
-        //     )}
-        //     style={highlighted.style}
-        //     // handlers={handlers}
-        //   />
-        // ),
-
         pre: (
           <div className="bg-[var(--ch-0)] p-1">
-            <Pre
+            <CollapsiblePre
               code={highlighted}
-              className={cn(
-                !title && "!m-0",
-                "overflow-x-auto p-3 rounded-lg font-mono bg-[var(--ch-18)] max-w-full",
-                props.preClassName,
-              )}
+              title={title}
+              preClassName={props.preClassName}
               style={{
                 ...highlighted.style,
               }}
-              handlers={handlers}
             />
           </div>
         ),
+
+        // pre: (
+        //   <div className="bg-[var(--ch-0)] p-1">
+        //     <Pre
+        //       code={highlighted}
+        //       className={cn(
+        //         !title && "!m-0",
+        //         "overflow-x-auto p-3 rounded-lg font-mono bg-[var(--ch-18)] max-w-full",
+        //         props.preClassName,
+        //       )}
+        //       style={{
+        //         ...highlighted.style,
+        //       }}
+        //       handlers={handlers}
+        //     />
+        //   </div>
+        // ),
       };
     }),
   );
