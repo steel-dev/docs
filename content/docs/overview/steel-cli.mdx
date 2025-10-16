@@ -5,8 +5,455 @@ sidebarTitle: Steel CLI
 llm: true
 ---
 
-### Overview
+## Overview
 
-The Steel CLI is a command-line interface for interacting with the Steel platform. It provides a set of commands for starting projects, running AI Agents and interfacing with the platform.
+The Steel CLI is a powerful command-line interface for interacting with the Steel platform. It provides an easy way to create browser automation projects, run AI agents, and manage your Steel workflows directly from your terminal.
 
-Github [Steel CLI](https://github.com/steel-dev/cli)
+**Key Features:**
+- Quick project scaffolding with pre-built templates
+- Instant script execution without local setup
+- Switch between local and cloud execution modes
+- Integration with popular AI frameworks (OpenAI, Claude, Browser Use, etc.)
+- Support for Playwright, Puppeteer, and Selenium
+
+**GitHub Repository:** [steel-dev/cli](https://github.com/steel-dev/cli)
+
+## Installation
+
+The Steel CLI requires Node.js 18 or higher.
+
+```bash
+npm i @steel-dev/cli -g
+```
+
+Verify the installation:
+
+```bash
+steel --version
+```
+
+For TypeScript examples, ensure you have `ts-node` installed globally:
+
+```bash
+npm install -g ts-node
+```
+
+## Quick Start
+
+### 1. Login to Steel
+
+First, authenticate with your Steel account:
+
+```bash
+steel login
+```
+
+This will open your browser to authenticate. Once complete, you're ready to go!
+
+### 2. Run Your First Automation
+
+The fastest way to get started is using the `run` command, which executes automations instantly without creating any files:
+
+```bash
+# Run a Playwright automation
+steel run playwright
+
+# Run with a specific task
+steel run playwright --task "Navigate to example.com and take a screenshot"
+
+# Run a Python automation with Browser Use
+steel run browser-use
+```
+
+### 3. Create a New Project
+
+For more substantial projects, use `forge` to scaffold a complete project:
+
+```bash
+# Interactive mode - choose from available templates
+steel forge
+
+# Create a specific template
+steel forge playwright --name my-automation
+
+# Create with specific options
+steel forge playwright-py --name my-project --skip_auth
+```
+
+## Core Commands
+
+### `steel forge` - Create Projects
+
+The `forge` command scaffolds complete projects with all necessary dependencies and boilerplate code.
+
+**Usage:**
+```bash
+steel forge [template] [options]
+```
+
+**Popular Templates:**
+
+| Template | Language | Description |
+|----------|----------|-------------|
+| `playwright` | TypeScript | Drive Steel sessions with Playwright |
+| `playwright-py` | Python | Playwright automation in Python |
+| `puppeteer` | TypeScript | Use Puppeteer with Steel |
+| `selenium` | Python | Selenium WebDriver integration |
+| `browser-use` | Python | AI agent framework by Browser Use |
+| `stagehand` | TypeScript | Stagehand AI framework |
+| `magnitude` | TypeScript | Magnitude AI agent framework |
+| `claude-cua` | TypeScript | Claude Computer Use with Steel |
+| `oai-cua` | TypeScript | OpenAI Computer Use with Steel |
+| `auth` | TypeScript | Reusable authentication context |
+| `creds` | TypeScript | Steel Credentials API example |
+| `files` | TypeScript | Steel Files API example |
+
+**Options:**
+- `-n, --name` - Project name
+- `-a, --api_url` - Custom Steel API URL
+- `--api_key` - Steel API key
+- `--openai_key` - OpenAI API key (for AI templates)
+- `--skip_auth` - Skip authentication prompts
+
+**Examples:**
+
+```bash
+# Interactive template selection
+steel forge
+
+# Create a Playwright TypeScript project
+steel forge playwright --name web-scraper
+
+# Create a Python Browser Use project
+steel forge browser-use --name ai-agent --openai_key your_key
+
+# Create with custom API configuration
+steel forge puppeteer --name custom-bot --api_url https://api.steel.dev
+```
+
+### `steel run` - Instant Execution
+
+Run automations immediately without creating project files. Perfect for quick tests and one-off scripts.
+
+**Usage:**
+```bash
+steel run [template] [options]
+```
+
+**Available Templates:**
+
+| Template | Language | Description |
+|----------|----------|-------------|
+| `playwright` | TypeScript | Playwright + TypeScript |
+| `playwright-js` | JavaScript | Playwright in JavaScript |
+| `puppeteer` | TypeScript | Puppeteer + TypeScript |
+| `puppeteer-js` | JavaScript | Puppeteer in JavaScript |
+| `playwright-py` | Python | Playwright in Python |
+| `selenium` | Python | Selenium WebDriver |
+| `browser-use` | Python | Browser Use AI agent |
+| `oai-cua` | TypeScript | OpenAI Computer Use |
+| `oai-cua-py` | Python | OpenAI Computer Use (Python) |
+| `magnitude` | TypeScript | Magnitude AI framework |
+| `files` | TypeScript | Files API example |
+| `creds` | TypeScript | Credentials API example |
+
+**Options:**
+- `-t, --task` - Specific task description for AI agents
+- `-o, --view` - Open live session viewer in browser
+- `-a, --api_url` - Custom Steel API URL
+- `--api_key` - Steel API key
+- `--openai_key` - OpenAI API key
+- `--skip_auth` - Skip authentication
+- `--no-update-check` - Disable update checking
+
+**Examples:**
+
+```bash
+# Run Playwright automation interactively
+steel run playwright
+
+# Run with live session viewer
+steel run playwright --view
+
+# Run AI agent with specific task
+steel run browser-use --task "Find the latest iPhone price on Apple's website"
+
+# Run OpenAI Computer Use agent
+steel run oai-cua --task "Research the top 3 trending
+ GitHub repos today" --openai_key your_key
+
+# Run without update check (useful in CI)
+steel run playwright --no-update-check
+```
+
+### `steel settings` - Configure Execution Mode
+
+Switch between local and cloud execution modes for your Steel automations.
+
+**Usage:**
+```bash
+steel settings
+```
+
+This opens an interactive menu where you can choose:
+
+- **Cloud Mode** (default) - Run automations on Steel's managed infrastructure
+  - No local browser installation needed
+  - Scalable and production-ready
+  - Access to Steel's proxy network
+  - Automatic resource management
+
+- **Local Mode** - Run automations on your local machine
+  - Useful for development and debugging
+  - Requires local browser installation
+  - Direct access to local files and resources
+
+**Example Workflow:**
+
+```bash
+# Check current settings
+steel settings
+
+# Switch to local mode for debugging
+steel settings
+# Select "Local" from the menu
+
+# Run your automation locally
+steel run playwright
+
+# Switch back to cloud for production
+steel settings
+# Select "Cloud" from the menu
+```
+
+## Additional Commands
+
+### Authentication
+
+```bash
+# Login to Steel
+steel login
+
+# Logout from Steel
+steel logout
+
+# View current session info
+steel config
+```
+
+### Cache Management
+
+The CLI caches templates and files for faster execution:
+
+```bash
+# View cache information
+steel cache
+
+# Clear all cached files
+steel cache --clean
+```
+
+### Development Tools
+
+```bash
+# Start Steel Browser in development mode
+steel browser start
+
+# Start on specific port with verbose logging
+steel browser start --port 3000 --verbose
+
+# Stop development server
+steel browser stop
+```
+
+### Help & Resources
+
+```bash
+# View CLI help
+steel --help
+
+# Get help for specific command
+steel forge --help
+
+# Open Steel documentation
+steel docs
+
+# Join Steel Discord community
+steel support
+
+# Star the GitHub repository
+steel star
+```
+
+### Updates
+
+```bash
+# Update to latest version
+steel update
+
+# Check for updates without installing
+steel update --check
+
+# Force update
+steel update --force
+```
+
+The CLI automatically checks for updates every 24 hours. Disable with:
+
+```bash
+# Using flag
+steel run --no-update-check
+
+# Using environment variable
+STEEL_CLI_SKIP_UPDATE_CHECK=true steel run
+```
+
+## Practical Examples
+
+### Example 1: Quick Web Scraping
+
+```bash
+# Run a Playwright automation with live viewer
+steel run playwright --view
+
+# In the generated code, add your scraping logic
+# The browser session will be visible in your browser
+```
+
+### Example 2: Create a Browser-use Project
+
+```bash
+# Create a new Browser Use project
+steel forge browser-use --name price-monitor
+
+cd price-monitor
+
+# Install dependencies
+uv add -r requirements.txt
+
+# Edit the generated script with your logic
+# Run your agent
+uv run main.py
+```
+
+### Example 3: Using Authentication Context
+
+```bash
+# Create a project with reusable auth
+steel forge auth --name linkedin-scraper
+
+# This template shows how to:
+# 1. Authenticate once and save session
+# 2. Reuse authentication across runs
+# 3. Handle session expiration
+```
+
+### Example 4: Multi-Step Workflow
+
+```bash
+# 1. Create project with credentials API
+steel forge creds --name secure-automation
+
+# 2. Configure for cloud execution
+steel settings
+# Select "Cloud"
+
+# 3. The project will use Steel's credentials management
+#    for secure handling of sensitive data
+```
+
+### Example 5: Local Development, Cloud Production
+
+```bash
+# Develop locally
+steel settings  # Choose "Local"
+steel forge playwright --name my-bot
+cd my-bot
+
+# Test locally
+npm start
+
+# Deploy to cloud
+steel settings  # Choose "Cloud"
+npm start  # Now runs on Steel's infrastructure
+```
+
+## Best Practices
+
+### 1. Use Cloud Mode for Production
+Cloud mode provides better scalability, reliability, and doesn't require local browser maintenance.
+
+### 2. Leverage Templates
+Templates include best practices and proper error handling. Start with a template rather than from scratch.
+
+### 3. Use `--view` for Debugging
+When developing automations, use `steel run playwright --view` to watch the browser in real-time.
+
+### 4. Cache Management
+Run `steel cache --clean` periodically to free up disk space, especially after trying many templates.
+
+### 5. Environment Variables
+For CI/CD pipelines, use environment variables:
+
+```bash
+export STEEL_API_KEY=your_key
+export STEEL_CLI_SKIP_UPDATE_CHECK=true
+steel run playwright --skip_auth
+```
+
+### 6. Version Control
+When using `forge`, make sure to:
+- Add `.env` files to `.gitignore`
+- Commit the generated project structure
+- Document required API keys in README
+
+## Troubleshooting
+
+### Command Not Found
+If `steel` command isn't found after installation:
+
+```bash
+# Reinstall globally
+npm install -g @steel-dev/cli
+
+# Or use npx
+npx @steel-dev/cli run playwright
+```
+
+### Authentication Issues
+
+```bash
+# Clear session and re-authenticate
+steel logout
+steel login
+```
+
+### Template Errors
+
+```bash
+# Clear cache and try again
+steel cache --clean
+steel forge playwright
+```
+
+### Node Version
+
+Ensure you're using Node.js 18 or higher:
+
+```bash
+node --version
+# Should be v18.0.0 or higher
+```
+
+## Next Steps
+
+- Explore the [Steel API Documentation](/docs/api) for advanced features
+- Join the [Steel Discord](https://discord.gg/steel) for community support
+- Check out [example projects](https://github.com/steel-dev/cli/tree/main/docs) in the CLI repository
+- Learn about [Steel Sessions](/docs/sessions) for persistent browser contexts
+
+## Support
+
+- **Documentation**: Run `steel docs` or visit [steel.dev/docs](https://steel.dev/docs)
+- **Discord**: Run `steel support` or join our [Discord community](https://discord.gg/steel)
+- **GitHub**: Report issues at [github.com/steel-dev/cli](https://github.com/steel-dev/cli)
