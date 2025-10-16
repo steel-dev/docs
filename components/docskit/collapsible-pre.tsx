@@ -1,21 +1,52 @@
 'use client';
 
-import { Pre } from "codehike/code";
+import { AnnotationHandler, Pre } from "codehike/code";
+import { type CodeGroup } from "./code-group";
 import React from "react";
+import { callout } from "./annotations/callout";
+import { collapse } from "./annotations/collapse";
+import { diff } from "./annotations/diff";
+import { fold } from "./annotations/fold";
+import { hover } from "./annotations/hover";
+import { lineNumbers } from "./annotations/line-numbers";
+import { link } from "./annotations/link";
+import { mark } from "./annotations/mark";
+import { tokenTransitions } from "./annotations/token-transitions";
+import { tooltip } from "./annotations/tooltip";
+import { wordWrap } from "./annotations/word-wrap";
 import { cn } from "@/lib/utils";
+
+function getHandlers(options: CodeGroup["options"]) {
+  return [
+    mark,
+    tooltip,
+    fold,
+    link,
+    options.animate && tokenTransitions,
+    options.lineNumbers && lineNumbers,
+    diff,
+    ...collapse,
+    options.wordWrap && wordWrap,
+    callout,
+    hover,
+  ].filter(Boolean) as AnnotationHandler[];
+}
 
 // Collapsible wrapper for Pre component
 export function CollapsiblePre({
   code,
   title,
   preClassName,
+  options,
   ...props
 }: React.ComponentProps<typeof Pre> & {
   code: any;
   title?: string;
   preClassName?: string;
+  options: CodeGroup["options"];
 }) {
   const [expanded, setExpanded] = React.useState(false);
+  const handlers = getHandlers(options);
 
   // code.code is the raw code string
   const codeString = code.code || "";
@@ -38,6 +69,7 @@ export function CollapsiblePre({
           "overflow-x-auto p-3 rounded-lg font-mono bg-[var(--ch-18)] max-w-full",
           preClassName,
         )}
+        handlers={handlers}
         code={code}
       />
     );
@@ -57,6 +89,7 @@ export function CollapsiblePre({
               "overflow-x-auto p-3 rounded-lg font-mono bg-[var(--ch-18)] max-w-full",
               preClassName,
             )}
+            handlers={handlers}
             style={{
               whiteSpace: "pre-wrap",
               wordBreak: "break-word",
