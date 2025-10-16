@@ -64,13 +64,7 @@ export function CodeSync(props: {
 }
 
 // Shared client component
-function CodeClient({
-  group,
-  className,
-}: {
-  group: CodeGroup;
-  className?: string;
-}) {
+function CodeClient({ group, className }: { group: CodeGroup; className?: string }) {
   return group.tabs.length === 1 ? (
     <SingleCode group={group} className={className} />
   ) : (
@@ -78,44 +72,30 @@ function CodeClient({
   );
 }
 
-function SingleCode({
-  group,
-  className,
-}: {
-  group: CodeGroup;
-  className?: string;
-}) {
+function SingleCode({ group, className }: { group: CodeGroup; className?: string }) {
   const tab = group.tabs[0];
   if (!tab) return null;
 
   const { pre, style, code, title, icon, options, filename } = tab;
-  const hasTitle = title?.trim() !== "";
+  const hasTitle = title?.trim() !== '';
   return (
     <div
-      className={cn(
-        CODEBLOCK,
-        !hasTitle && "border-none",
-        className,
-        "rounded-lg",
-      )}
+      className={cn(CODEBLOCK, !hasTitle && 'border-none', className, 'rounded-lg')}
       style={style}
     >
       {hasTitle && (
         <div
           className={cn(
             TITLEBAR,
-            "flex items-center gap-2",
-            "text-muted-foreground text-sm font-mono",
+            'flex items-center gap-2',
+            'text-muted-foreground text-sm font-mono',
           )}
         >
           <span className="pl-2 pr-1">{icon}</span>
           {title}
-          {options.copyButton && filename === "" && (
-            <div className={cn("ml-auto mr-1 items-center")}>
-              <CopyButton
-                text={code}
-                className="text-ch-tab-inactive-foreground"
-              />
+          {options.copyButton && filename === '' && (
+            <div className={cn('ml-auto mr-1 items-center')}>
+              <CopyButton text={code} className="text-ch-tab-inactive-foreground" />
             </div>
           )}
         </div>
@@ -125,9 +105,7 @@ function SingleCode({
           className="flex items-center w-full text-sm font-mono rounded-t-none bg-[var(--ch-0)] p-1"
           style={{ minHeight: 32 }}
         >
-          <span className="pl-2 pr-2 flex-1 font-mono text-foreground">
-            {filename}
-          </span>
+          <span className="pl-2 pr-2 flex-1 font-mono text-foreground">{filename}</span>
           <span className="ml-auto pr-3">
             <CopyButton
               text={code}
@@ -210,7 +188,7 @@ export async function toCodeGroup(props: {
   };
 }
 
-function getHandlers(options: CodeGroup["options"]) {
+function getHandlers(options: CodeGroup['options']) {
   return [
     mark,
     tooltip,
@@ -240,15 +218,15 @@ function getHandlers(options: CodeGroup["options"]) {
 
 function extractFlags(codeblock: RawCode) {
   // Support: foo.js -abc -f filename.txt
-  const meta = codeblock.meta || "";
+  const meta = codeblock.meta || '';
   const flagMatch = meta.match(/-(\w+)/);
   const fileMatch = meta.match(/-f\s+([^\s]+)/);
-  const flags = flagMatch ? flagMatch[1] : "";
-  const filename = fileMatch ? fileMatch[1] : "";
+  const flags = flagMatch ? flagMatch[1] : '';
+  const filename = fileMatch ? fileMatch[1] : '';
   // Remove flags and filename from title
   let title = meta
-    .replace(flagMatch ? flagMatch[0] : "", "")
-    .replace(fileMatch ? fileMatch[0] : "", "")
+    .replace(flagMatch ? flagMatch[0] : '', '')
+    .replace(fileMatch ? fileMatch[0] : '', '')
     .trim();
   return { title, flags, filename };
 }

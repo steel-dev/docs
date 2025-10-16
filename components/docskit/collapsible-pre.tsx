@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { Pre } from "codehike/code";
 import React from "react";
