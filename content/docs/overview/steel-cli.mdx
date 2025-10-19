@@ -22,20 +22,20 @@ The Steel CLI is a powerful command-line interface for interacting with the Stee
 
 The Steel CLI requires Node.js 18 or higher.
 
-```bash
-npm i @steel-dev/cli -g
+```package-install -wc
+@steel-dev/cli -g
 ```
 
 Verify the installation:
 
-```bash
+```bash Terminal -wc
 steel --version
 ```
 
 For TypeScript examples, ensure you have `ts-node` installed globally:
 
-```bash
-npm install -g ts-node
+```package-install
+ts-node -g
 ```
 
 ## Quick Start
@@ -44,7 +44,7 @@ npm install -g ts-node
 
 First, authenticate with your Steel account:
 
-```bash
+```bash Terminal -wc
 steel login
 ```
 
@@ -54,7 +54,7 @@ This will open your browser to authenticate. Once complete, you're ready to go!
 
 The fastest way to get started is using the `run` command, which executes automations instantly without creating any files:
 
-```bash
+```bash Terminal -w
 # Run a Playwright automation
 steel run playwright
 
@@ -69,7 +69,7 @@ steel run browser-use
 
 For more substantial projects, use `forge` to scaffold a complete project:
 
-```bash
+```bash Terminal -w
 # Interactive mode - choose from available templates
 steel forge
 
@@ -87,7 +87,7 @@ steel forge playwright-py --name my-project --skip_auth
 The `forge` command scaffolds complete projects with all necessary dependencies and boilerplate code.
 
 **Usage:**
-```bash
+```bash Terminal
 steel forge [template] [options]
 ```
 
@@ -117,7 +117,7 @@ steel forge [template] [options]
 
 **Examples:**
 
-```bash
+```bash Terminal
 # Interactive template selection
 steel forge
 
@@ -136,7 +136,7 @@ steel forge puppeteer --name custom-bot --api_url https://api.steel.dev
 Run automations immediately without creating project files. Perfect for quick tests and one-off scripts.
 
 **Usage:**
-```bash
+```bash Terminal
 steel run [template] [options]
 ```
 
@@ -168,7 +168,7 @@ steel run [template] [options]
 
 **Examples:**
 
-```bash
+```bash Terminal
 # Run Playwright automation interactively
 steel run playwright
 
@@ -191,7 +191,7 @@ steel run playwright --no-update-check
 Switch between local and cloud execution modes for your Steel automations.
 
 **Usage:**
-```bash
+```bash Terminal -wc
 steel settings
 ```
 
@@ -210,7 +210,7 @@ This opens an interactive menu where you can choose:
 
 **Example Workflow:**
 
-```bash
+```bash Terminal
 # Check current settings
 steel settings
 
@@ -230,7 +230,7 @@ steel settings
 
 ### Authentication
 
-```bash
+```bash Terminal
 # Login to Steel
 steel login
 
@@ -245,7 +245,7 @@ steel config
 
 The CLI caches templates and files for faster execution:
 
-```bash
+```bash Terminal
 # View cache information
 steel cache
 
@@ -255,7 +255,7 @@ steel cache --clean
 
 ### Development Tools
 
-```bash
+```bash Terminal
 # Start Steel Browser in development mode
 steel browser start
 
@@ -268,7 +268,7 @@ steel browser stop
 
 ### Help & Resources
 
-```bash
+```bash Terminal
 # View CLI help
 steel --help
 
@@ -287,7 +287,7 @@ steel star
 
 ### Updates
 
-```bash
+```bash Terminal
 # Update to latest version
 steel update
 
@@ -300,7 +300,7 @@ steel update --force
 
 The CLI automatically checks for updates every 24 hours. Disable with:
 
-```bash
+```bash Terminal
 # Using flag
 steel run --no-update-check
 
@@ -312,7 +312,7 @@ STEEL_CLI_SKIP_UPDATE_CHECK=true steel run
 
 ### Example 1: Quick Web Scraping
 
-```bash
+```bash Terminal
 # Run a Playwright automation with live viewer
 steel run playwright --view
 
@@ -322,7 +322,7 @@ steel run playwright --view
 
 ### Example 2: Create a Browser-use Project
 
-```bash
+```bash Terminal
 # Create a new Browser Use project
 steel forge browser-use --name price-monitor
 
@@ -338,7 +338,7 @@ uv run main.py
 
 ### Example 3: Using Authentication Context
 
-```bash
+```bash Terminal
 # Create a project with reusable auth
 steel forge auth --name linkedin-scraper
 
@@ -350,7 +350,7 @@ steel forge auth --name linkedin-scraper
 
 ### Example 4: Multi-Step Workflow
 
-```bash
+```bash Terminal
 # 1. Create project with credentials API
 steel forge creds --name secure-automation
 
@@ -364,7 +364,7 @@ steel settings
 
 ### Example 5: Local Development, Cloud Production
 
-```bash
+```bash Terminal
 # Develop locally
 steel settings  # Choose "Local"
 steel forge playwright --name my-bot
@@ -395,7 +395,7 @@ Run `steel cache --clean` periodically to free up disk space, especially after t
 ### 5. Environment Variables
 For CI/CD pipelines, use environment variables:
 
-```bash
+```bash Terminal -wc
 export STEEL_API_KEY=your_key
 export STEEL_CLI_SKIP_UPDATE_CHECK=true
 steel run playwright --skip_auth
@@ -412,7 +412,7 @@ When using `forge`, make sure to:
 ### Command Not Found
 If `steel` command isn't found after installation:
 
-```bash
+```bash Terminal
 # Reinstall globally
 npm install -g @steel-dev/cli
 
@@ -422,7 +422,7 @@ npx @steel-dev/cli run playwright
 
 ### Authentication Issues
 
-```bash
+```bash Terminal -w
 # Clear session and re-authenticate
 steel logout
 steel login
@@ -430,7 +430,7 @@ steel login
 
 ### Template Errors
 
-```bash
+```bash Terminal -w
 # Clear cache and try again
 steel cache --clean
 steel forge playwright
@@ -440,7 +440,7 @@ steel forge playwright
 
 Ensure you're using Node.js 18 or higher:
 
-```bash
+```bash Terminal -w
 node --version
 # Should be v18.0.0 or higher
 ```
