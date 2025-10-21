@@ -11,6 +11,7 @@ import {
 import remarkDirective from "remark-directive";
 import { z } from "zod";
 import { remarkCustomDirectives } from "./lib/remark-custom-directives";
+import { remarkFormatCode } from "./lib/remark-format-code";
 
 export const docs = defineDocs({
   dir: "content/docs",
@@ -59,6 +60,7 @@ export default defineConfig({
       [remarkCodeHike, chConfig],
       remarkDirective,
       remarkCustomDirectives,
+      remarkFormatCode,
       ...v,
     ],
     recmaPlugins: [[recmaCodeHike, chConfig]],

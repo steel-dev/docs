@@ -146,7 +146,7 @@ export default async function Page(props: {
                     code: (props: React.PropsWithChildren) => (
                       <code
                         {...props}
-                        className="border border-border rounded-md p-1 bg-code text-sm text-muted-foreground [h1_&]:text-xl [&_code]:text-sm"
+                        className="border border-border rounded-md p-1 bg-yellow-300 text-sm text-muted-foreground [h1_&]:text-xl [&_code]:text-sm"
                       />
                     ),
                     hr: (props: React.PropsWithChildren) => (
@@ -228,7 +228,7 @@ export default async function Page(props: {
                     code: (props: React.PropsWithChildren) => (
                       <code
                         {...props}
-                        className="border border-border rounded-md p-1 bg-code text-sm text-muted-foreground [h1_&]:text-xl [&_code]:text-sm"
+                        className="border border-border rounded-md py-0.5 px-1.5 text-[13px] leading-[20px] tracking-[-0.1px] font-normal align-middle bg-[var(--inline-code-bg)] text-[var(--inline-code-text)] [h1_&]:text-xl [&_code]:text-[13px] font-mono"
                       />
                     ),
                     hr: (props: React.PropsWithChildren) => (

@@ -135,8 +135,9 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+  --inline-code-bg: #fdbe0012;
+  --inline-code-text: #f0c000;
   /* CodeHike Styling */
-
   --ch-0: #232323;
   --ch-1: #fff; /* Base text color */
   --ch-2: #9399b2; /* Not used */

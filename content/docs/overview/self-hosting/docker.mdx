@@ -6,31 +6,28 @@ full: true
 llm: true
 ---
 # Overview
-This guide provides step-by-step instructions to set up your own Steel Browser instance using Docker. The setup consists of two main components: an API service that manages Chrome instances and a user interface for interaction.
 
-### Prerequisites
+This guide provides step-by-step instructions to set up your own Steel Browser instance using Docker. The setup consists of multiple deployment options – from the traditional docker-compose setup to the new, simplified single Docker image deployment.
 
-*   Docker (20.10.0 or later)
+## Prerequisites
 
-*   At least 4GB of RAM
+* Docker (20.10.0 or later)
+* At least 4GB of RAM
+* 10GB of free disk space
 
-*   10GB of free disk space
+## Quick Start Using Docker Compose
 
+1. Create a new directory for your Steel Browser instance:
 
-### Quick Start
-
-1.  Create a new directory for your Steel Browser instance:
-
-```bash Terminal -wc
+```bash
 mkdir steel-browser && cd steel-browser
 ```
 
+2. Create the following file:
 
-2.  Create the following file:
+### docker-compose.yaml
 
-    #### docker-compose.yaml
-
-```yaml YAML -wc -f docker-compose.yaml
+```yaml
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:latest
@@ -57,84 +54,115 @@ networks:
     driver: bridge
 ```
 
+3. Launch the containers:
 
-3.  Launch the containers:
-
-```bash Terminal -wc
+```bash
 docker compose up -d
 ```
 
-4.  Access Steel Browser by opening `http://localhost:5173`in your web browser.
+4. Access Steel Browser by opening `http://localhost:5173` in your web browser.
 
+## Alternative Deployment: Single Docker Image
 
-### Advanced Setup
+Steel Browser can now be deployed using a single Docker image—no more complex docker-compose setup!
 
-#### Building From Source
+### Single Docker Image Deployment
 
-If you prefer to build the containers yourself:
+Run the following command to launch Steel Browser:
 
-1.  Clone the repository:
+```bash
+docker run --rm -it -p 3000:3000 -p 9223:9223 ghcr.io/steel-dev/steel-browser:latest
+```
 
-```bash Terminal -wc
+This command will:
+- Pull the latest Docker image from GitHub Container Registry.
+- Expose the API on port 3000 and Chrome debugging on port 9223.
+- Run the container interactively and remove it when stopped.
+
+Access Steel Browser via your browser at `http://localhost:3000` and the UI at `http://localhost:3000/ui`.
+
+## Building the Singular Docker Image Locally
+
+If you wish to build the Docker image from source rather than relying on the pre-built image, follow these steps:
+
+1. Clone the repository:
+
+```bash
 git clone https://github.com/steel-dev/steel-browser.git
 cd steel-browser
 ```
 
+2. Build the Docker image:
 
-2.  Create a `.env` file (optional):
+```bash
+docker build -t steel-browser:local .
+```
 
-3.  Build and start using the development compose file:
+3. Run the newly built image:
 
-```bash Terminal -wc
+```bash
+docker run --rm -it -p 3000:3000 -p 9223:9223 steel-browser:local
+```
+
+This method gives you the flexibility to modify the image locally. Compared to the docker-compose setup where the API and UI are managed in separate containers, here everything runs within one container, simplifying deployment for testing and development.
+
+## Advanced Setup
+
+### Building From Source with Docker Compose
+
+If you prefer to build the containers yourself with docker-compose:
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/steel-dev/steel-browser.git
+cd steel-browser
+```
+
+2. Create a `.env` file (optional).
+
+3. Build and start using the development compose file:
+
+```bash
 docker compose -f docker-compose.dev.yml up -d --build
 ```
 
+_The “-d” flag runs the containers in the background._
 
-    _The “-d” will run the containers in the background._
+### Configuration Options
 
+* **API Port**: Default is 3000 (internally also 3000). If changed in the compose file, update the API binding accordingly.
+* **UI Port**: Default is 5173 (or 80 inside container). Adjust if needed.
+* **Chrome Debugging Port**: Default is 9223. Required for browser communication.
 
-#### Configuration Options
-
-*   **API Port**: Default is 3000 (also 3000 inside the container). Change in the compose file if needed
-
-    *   Heads up, changing the external facing port won’t change the fact that anything on the `steel-network` will just use internal ports — so you will also have to change the port that the api binds to, for it to be reflected in the UI
-
-*   **UI Port**: Default is 5173 (or 80 inside container). Adjust if required
-
-*   **Chrome Debugging Port**: Default is 9223. Required for browser communication
-
-
-#### Volume Persistence
+### Volume Persistence
 
 The `.cache` directory stores Chrome data and extensions. Mount it as a volume for persistence:
 
-```yaml YAML -wc -f docker-compose.yaml
+```yaml
 volumes:
   - ./.cache:/app/.cache
 ```
 
+## Architecture
 
-### Architecture
+Steel Browser consists of two main components when using docker-compose:
 
-Steel Browser consists of two main components:
+1. **API Container**: Runs Chrome in headless mode and provides CDP (Chrome DevTools Protocol) services.
+2. **UI Container**: An Nginx-based frontend for interacting with the browser.
 
-1.  **API Container**: Runs Chrome in headless mode, providing CDP (Chrome DevTools Protocol) services
+When using the single Docker image deployment, both the API and UI are integrated into one container.
 
-2.  **UI Container**: Nginx-based frontend for interacting with the browser
+## Customizing the Build
 
-
-### Customizing the Build
-
-#### Using a Different Chrome Version
+### Using a Different Chrome Version
 
 The API container uses Chrome 128.0.6613.119 by default. To use a different version:
 
-1.  Create a custom Dockerfile based on the API one
+1. Create a custom Dockerfile based on the API one.
+2. Modify the Chrome installation section:
 
-2.  Modify the Chrome installation section:
-
-
-```dockerfile Dockerfile -w -f Dockerfile
+```dockerfile
 ARG CHROME_VERSION="128.0.6613.119"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -143,16 +171,15 @@ RUN apt-get update && \
     curl \
     unzip \
     && CHROME_DEB="google-chrome-stable_${CHROME_VERSION}-1_amd64.deb" \
-    && wget -q "https://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/${CHROME_DEB}" \
+    && wget -q "https://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/${CHROME_DEB}"
     # ...rest of the installation...
 ```
 
-
-#### Changing Node Version
+### Changing Node Version
 
 Both containers use Node 22.13.0 by default. To use a different version, modify the build arguments:
 
-```yaml YAML -wc -f docker-compose.yaml
+```yaml
 services:
   api:
     build:
@@ -162,64 +189,48 @@ services:
         NODE_VERSION: 18.19.0
 ```
 
+## Troubleshooting
 
-### Troubleshooting
-
-#### Chrome Won't Start
+### Chrome Won't Start
 
 Ensure your host has enough resources and check the API container logs:
 
-```bash Terminal -wc
+```bash
 docker logs steel-browser_api_1
 ```
 
+Common issues include:
+* Running on ARM architecture (There are official images for ARM, or build the image yourself)
+* Insufficient memory
+* Missing shared libraries
+* Permission issues with the `.cache` directory
 
-Common issues:
-
-*   Running on ARM architecture (solution for this coming soon!)
-
-*   Insufficient memory
-
-*   Missing shared libraries
-
-*   Permission problems with `.cache` directory
-
-
-#### Connectivity Issues
+### Connectivity Issues
 
 If the UI can't connect to the API:
+1. Verify both containers are running.
+2. Check if the API is accessible:
 
-1.  Verify both containers are running:
-
-2.  Check if the API is accessible:
-
-```bash Terminal -wc
+```bash
 curl http://localhost:3000/api/health
 ```
 
+3. Ensure the containers can communicate over the network:
 
-3.  Ensure the containers can communicate over the network:
-
-```bash Terminal -wc
+```bash
 docker exec steel-browser_ui_1 curl http://api:3000/api/health
 ```
 
-
-
-### Production Deployment
+## Production Deployment
 
 For production environments:
-
-1.  Use specific image versions instead of `latest`
-
-2.  Set up proper reverse proxy with HTTPS
-
-3.  Configure appropriate resource limits
-
+1. Use specific image versions rather than `latest`.
+2. Set up a proper reverse proxy with HTTPS.
+3. Configure appropriate resource limits.
 
 Example production compose file:
 
-```yaml YAML -wc -f docker-compose.yaml
+```yaml
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:sha256:...
@@ -249,40 +260,31 @@ networks:
     driver: bridge
 ```
 
+## Security Considerations
 
-### Security Considerations
+* Avoid exposing the Chrome debugging port (9223) to the public internet.
+* Consider not exposing the API if the UI and API are running within the same secured network.
+* Set up proper authentication if deploying publicly.
+* Keep containers updated with the latest versions.
 
-*   Don't expose Chrome debugging port (9223) to the public internet
-
-    *   You can also choose to not expose the API as well if you’re automations/agent also run within the same network as the `ui` and `api` containers
-
-*   Set up proper authentication if deploying publicly
-
-*   Keep containers updated with the latest versions
-
-
-### Updating
+## Updating
 
 To update to the latest version:
 
-```bash Terminal -wc
+```bash
 docker compose pull
 docker compose up -d
 ```
 
-
 For custom builds:
 
-```bash Terminal -wc
+```bash
 git pull
 docker compose -f docker-compose.dev.yml up -d --build
 ```
 
-
-Now your Steel Browser instance is up and running on your own infrastructure!
-
 :::callout
 type: help
 ### Need help running locally?
-Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+Reach out to us on the **#help** channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
