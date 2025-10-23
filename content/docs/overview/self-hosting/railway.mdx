@@ -33,14 +33,14 @@ Hosting Steel Browser on Railway provides a reliable, scalable environment for r
 
 Verify your instance is running:
 
-```bash
+```bash Terminal -wcn
 curl https://your-domain.railway.app/v1/health
 ```
 
 **Connecting to Steel Browser:**
 After deployment, create a session and connect to your Steel Browser instance on the public domain using Playwright:
 
-```typescript
+```typescript Typescript -wcn
 import { chromium } from "playwright";
 import Steel from "steel-sdk";
 const client = new Steel({
