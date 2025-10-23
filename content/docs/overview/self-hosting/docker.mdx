@@ -19,7 +19,7 @@ This guide provides step-by-step instructions to set up your own Steel Browser i
 
 1. Create a new directory for your Steel Browser instance:
 
-```bash
+```bash Terminal -wc
 mkdir steel-browser && cd steel-browser
 ```
 
@@ -27,7 +27,7 @@ mkdir steel-browser && cd steel-browser
 
 ### docker-compose.yaml
 
-```yaml
+```yaml YAML -wcn
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:latest
@@ -56,7 +56,7 @@ networks:
 
 3. Launch the containers:
 
-```bash
+```bash Terminal -wc
 docker compose up -d
 ```
 
@@ -70,7 +70,7 @@ Steel Browser can now be deployed using a single Docker image—no more complex 
 
 Run the following command to launch Steel Browser:
 
-```bash
+```bash Terminal -wc
 docker run --rm -it -p 3000:3000 -p 9223:9223 ghcr.io/steel-dev/steel-browser:latest
 ```
 
@@ -87,20 +87,20 @@ If you wish to build the Docker image from source rather than relying on the pre
 
 1. Clone the repository:
 
-```bash
+```bash Terminal -wc
 git clone https://github.com/steel-dev/steel-browser.git
 cd steel-browser
 ```
 
 2. Build the Docker image:
 
-```bash
+```bash Terminal -wc
 docker build -t steel-browser:local .
 ```
 
 3. Run the newly built image:
 
-```bash
+```bash Terminal -wc
 docker run --rm -it -p 3000:3000 -p 9223:9223 steel-browser:local
 ```
 
@@ -114,7 +114,7 @@ If you prefer to build the containers yourself with docker-compose:
 
 1. Clone the repository:
 
-```bash
+```bash Terminal -wc
 git clone https://github.com/steel-dev/steel-browser.git
 cd steel-browser
 ```
@@ -123,7 +123,7 @@ cd steel-browser
 
 3. Build and start using the development compose file:
 
-```bash
+```bash Terminal -wc
 docker compose -f docker-compose.dev.yml up -d --build
 ```
 
@@ -139,7 +139,7 @@ _The “-d” flag runs the containers in the background._
 
 The `.cache` directory stores Chrome data and extensions. Mount it as a volume for persistence:
 
-```yaml
+```yaml YAML -wcn
 volumes:
   - ./.cache:/app/.cache
 ```
@@ -162,7 +162,7 @@ The API container uses Chrome 128.0.6613.119 by default. To use a different vers
 1. Create a custom Dockerfile based on the API one.
 2. Modify the Chrome installation section:
 
-```dockerfile
+```dockerfile Dockerfile -wcn
 ARG CHROME_VERSION="128.0.6613.119"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -179,7 +179,7 @@ RUN apt-get update && \
 
 Both containers use Node 22.13.0 by default. To use a different version, modify the build arguments:
 
-```yaml
+```yaml YAML -wcn
 services:
   api:
     build:
@@ -195,7 +195,7 @@ services:
 
 Ensure your host has enough resources and check the API container logs:
 
-```bash
+```bash Terminal -wcn
 docker logs steel-browser_api_1
 ```
 
@@ -211,13 +211,13 @@ If the UI can't connect to the API:
 1. Verify both containers are running.
 2. Check if the API is accessible:
 
-```bash
+```bash Terminal -wcn
 curl http://localhost:3000/api/health
 ```
 
 3. Ensure the containers can communicate over the network:
 
-```bash
+```bash Terminal -wcn
 docker exec steel-browser_ui_1 curl http://api:3000/api/health
 ```
 
@@ -230,7 +230,7 @@ For production environments:
 
 Example production compose file:
 
-```yaml
+```yaml YAML -wcn
 services:
   api:
     image: ghcr.io/steel-dev/steel-browser-api:sha256:...
@@ -271,14 +271,14 @@ networks:
 
 To update to the latest version:
 
-```bash
+```bash Terminal -wcn
 docker compose pull
 docker compose up -d
 ```
 
 For custom builds:
 
-```bash
+```bash Terminal -wcn
 git pull
 docker compose -f docker-compose.dev.yml up -d --build
 ```
