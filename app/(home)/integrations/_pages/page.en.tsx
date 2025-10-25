@@ -1,4 +1,4 @@
-import { Cards, IndexCard } from '@/components/card';
+import { Cards, IndexCard } from "@/components/card";
 import {
   API,
   BrowserUseIcon,
@@ -7,7 +7,7 @@ import {
   Container,
   MagicIcon,
   OpenAIIcon,
-} from '@/components/ui/icon';
+} from "@/components/ui/icon";
 
 export default function IntegrationsPage() {
   return (
@@ -21,14 +21,14 @@ export default function IntegrationsPage() {
           <Cards>
             <IndexCard
               icon={<BrowserUseIcon />}
-              href="/integrations/browser-use/overview"
+              href="/integrations/browser-use/integrations-overview"
               title="Browser-Use Integration"
               tag="Browser Agent"
               description="Use Browser-Use to interact with a Steel browser."
             />
             <IndexCard
               icon={<ClaudeIcon />}
-              href="/integrations/claude-computer-use/overview"
+              href="/integrations/claude-computer-use/integrations-overview"
               title="Claude Computer Use"
               tag="Browser Agent"
               description="Use Claude Computer Use with Steel Browser."
@@ -42,7 +42,7 @@ export default function IntegrationsPage() {
             />
             <IndexCard
               icon={<Cloud />}
-              href="/integrations/crewai/overview"
+              href="/integrations/crewai/integrations-overview"
               title="CrewAI"
               tag="Multi-Agent"
               description="Learn how to use CrewAI with Steel Browser."

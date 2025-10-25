@@ -106,7 +106,7 @@ export function MobileNavigation({
           <SearchToggle />
         </div>
 
-        <nav className="overflow-y-auto h-[calc(100vh-64px)] bg-background px-3">
+        <nav className="overflow-y-auto h-[calc(100dvh-64px)] bg-background px-3">
           <div className="py-2">
             {activeSubmenu ? (
               (
