@@ -32,10 +32,6 @@ export const baseOptions: BaseLayoutProps = {
       active: 'nested-url',
     },
     {
-      text: 'Playground',
-      url: '/playground',
-    },
-    {
       text: 'API Reference',
       url: '/api-reference',
     },

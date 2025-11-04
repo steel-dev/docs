@@ -49,11 +49,6 @@ const config = {
         destination: "https://steel.apidocumentation.com/api-reference",
         permanent: true,
       },
-      {
-        source: "/playground",
-        destination: "https://playground.steel.dev/",
-        permanent: true,
-      },
       // {
       //   source: "/overview/steel-cli",
       //   destination: "https://github.com/steel-dev/cli",

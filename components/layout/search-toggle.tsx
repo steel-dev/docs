@@ -1,7 +1,10 @@
 "use client";
+
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { shortcutLabel } from "lib/utils/is-mac-like";
-import { SearchIcon } from "lucide-react";
+
+import { Search, SearchIcon } from "lucide-react";
+
 import { useEffect, useState, type ComponentProps } from "react";
 
 export function SearchToggle(props: ComponentProps<"div">) {
