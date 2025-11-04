@@ -2,16 +2,18 @@
 
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { shortcutLabel } from "lib/utils/is-mac-like";
+
 import { Search, SearchIcon } from "lucide-react";
+
 import { useEffect, useState, type ComponentProps } from "react";
 
 export function SearchToggle(props: ComponentProps<"div">) {
   const { enabled, setOpenSearch } = useSearchContext();
   const [shortcut, setShortcut] = useState("  ");
 
-  useEffect(() =>{
-    setShortcut(shortcutLabel())
-  }, [])
+  useEffect(() => {
+    setShortcut(shortcutLabel());
+  }, []);
 
   if (!enabled) return;
 
@@ -29,7 +31,7 @@ export function SearchToggle(props: ComponentProps<"div">) {
 
       {/* For desktop, show the search bar */}
       <div
-        className="hidden md:flex w-full max-w-[160px] lg:max-w-[225px] h-9 bg-white dark:bg-background rounded-md shadow-[0px_1px_2px_0px_rgba(0,0,0,0.36)] outline-[0.50px] outline-offset-[-0.50px] outline-zinc-800  justify-start items-center gap-2 px-2 cursor-pointer group"
+        className="hidden md:flex w-full max-w-40 lg:max-w-[225px] h-9 bg-white dark:bg-background rounded-md shadow-[0px_1px_2px_0px_rgba(0,0,0,0.36)] outline-[0.50px] outline-offset-[-0.50px] outline-zinc-800  justify-start items-center gap-2 px-2 cursor-pointer group"
         onClick={() => setOpenSearch(true)}
         {...props}
       >

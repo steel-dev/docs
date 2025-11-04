@@ -1,0 +1,153 @@
+---
+title: Live Sessions
+sidebarTitle: Live Sessions
+description: How to embed and share live browser sessions in your applications
+llm: false
+---
+
+Steel sessions can be viewed live directly from your app or dashboard.  
+With the new **headful experience**, live views now stream real-time video using WebRTC — low-latency, high-fidelity, and OS-accurate.
+
+Legacy **headless sessions** continue to use the same debug URL but display content using Chrome’s screencasting for backward compatibility.
+
+## Embed Headful Live Sessions (Recommended)
+
+### What Changed
+Steel’s live view now uses **WebRTC-based video streaming at 25 fps (H.264)**, replacing Chrome’s screencasting and screenshot-based method.
+
+- Real-time OS-level capture  
+- Stable 25 fps playback  
+- Low-latency streaming with full visual fidelity  
+
+> **Tip:** Headful sessions are now **default** for all new sessions.  
+> You’ll use the same `debugUrl`, and Steel automatically chooses the proper playback technology.
+
+---
+
+### Getting the Debug URL
+
+When creating a session with the API, the response includes a `debugUrl`.  
+You can open this URL directly in your browser or embed it inside an application.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import { Steel } from "steel-sdk";
+
+const client = new Steel({ apiKey: process.env.STEEL_API_KEY });
+const session = await client.sessions.create();
+
+console.log("Debug URL:", session.debugUrl);
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+client = Steel()
+session = client.sessions.create()
+print("Debug URL:", session.debug_url)
+```
+
+</CodeTabs>
+
+---
+
+### Embedding in Your Application
+
+Embed the session directly in your UI using an iframe:
+
+```html
+<iframe
+  src="{session.debugUrl}?interactive=true"
+  style="width: 100%; height: 600px; border: none;"
+></iframe>
+```
+
+- Streams real-time browser output using **WebRTC + H.264**  
+- Works in all major browsers with baseline H.264 support  
+- `interactive=true` allows remote mouse/keyboard input for collaborative debugging or human-in-the-loop workflows  
+
+> **Note:** For security reasons, debug URLs are **unauthenticated**.  
+> Anyone with the debug URL can view or interact with that session.  
+> Use your own-access controls if embedding in a user-facing product.
+
+---
+
+### Supported Parameters (Headful)
+
+| Parameter | Type | Default | Description |
+|------------|------|----------|-------------|
+| `interactive` | boolean | `true` | Enables or disables remote control of the live session. |
+
+Example:
+
+```html
+<iframe
+  src={`${session.debugUrl}?interactive=false`}
+  style="width: 100%; height: 600px; border: none;"
+></iframe>
+```
+
+Disabling interactivity makes the view read-only, ideal for watch-only monitoring scenarios.
+
+---
+
+## Headless (Legacy)
+
+> Headless live sessions remain supported for existing workflows.  
+> They use Chrome’s screencasting instead of WebRTC and expose additional configuration options.
+
+### Configuration Options (Headless Only)
+
+| Parameter | Type | Default | Description |
+|------------|------|----------|-------------|
+| `theme` | string | `"dark"` | UI theme (`dark` or `light`) |
+| `interactive` | boolean | `true` | Enable or disable interaction |
+| `showControls` | boolean | `true` | Show or hide navigation UI |
+| `pageId` | string | (empty) | Focus the view on a specific page/tab |
+| `pageIndex` | string | (empty) | Display a specific tab by index |
+
+Example:
+
+```html
+<iframe
+  src={`${session.debugUrl}?theme=light&interactive=true&showControls=true&pageIndex=0`}
+  style="width: 100%; height: 600px; border: none;"
+></iframe>
+```
+
+---
+
+### Common Use Cases
+
+**Read-only viewer**
+
+```html
+<iframe
+  src={`${session.debugUrl}?interactive=false`}
+  style="width: 100%; height: 600px; border: none;"
+></iframe>
+```
+
+**Human-in-the-loop control**
+
+Allow humans to take over automation tasks or debug live workflows interactively using `interactive=true`.
+
+---
+
+### Troubleshooting
+
+If the embedded view appears blank or unresponsive:
+- Ensure the session is active (default timeout: 5 min).  
+- Confirm your browser supports **H.264 baseline** playback.  
+- Check your container has fixed dimensions (`width` and `height`).  
+- Verify the correct session and valid API key were used.
+
+---
+
+### Summary
+
+All new sessions now run **headful by default**, streaming real-time video with WebRTC.  
+Use the same `debugUrl` to embed or view — Steel automatically determines the correct playback mode.  
+
+Headless live streams remain available for legacy sessions but will be phased out over time.
