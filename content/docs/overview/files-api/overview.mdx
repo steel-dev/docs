@@ -322,6 +322,57 @@ await page.setInputFiles("#file-input", [uploadedSessionFile.path]);
 ```
 
 
+#### Browser-Use Example
+
+Browser-use needs some setup before it can be used. This includes setting up the browser profile with the correct downloads path and adding in a step hook to extract downloaded files to your local machine if necessary.
+
+```python Python -wcn -f main.py
+# Before agent main loop...
+
+# Hook to extract downloaded files to local machine if necessary
+async def step_hook_start(agent):
+    if os.environ.get("BROWSER_PROVIDER") == "steel":
+        await agent._check_and_update_downloads()
+        if agent.available_file_paths and len(agent.available_file_paths) > 0:
+            has_new_files = False
+            for file_path in agent.available_file_paths:
+                if file_path not in downloaded_files:
+                    downloaded_files.append(file_path)
+                    has_new_files = True
+            if has_new_files:
+                try:
+                    extracted_files = await browser_service.extract_downloaded_files(DOWNLOAD_PATH)
+                    logger.info(f"Extracted files: {extracted_files}")
+                except Exception as e:
+                    logger.error(f"Failed to extract downloaded files: {e}")
+
+async def main():
+    try:
+        browser_session = Browser(cdp_url=cdp_url, downloads_path="/files")
+        await browser_session.connect()
+        await browser_session.cdp_client.send.Target.createBrowserContext()
+        browser_context_ids_return = await browser_session.cdp_client.send.Target.getBrowserContexts()
+        browser_context_ids = browser_context_ids_return['browserContextIds']
+        browser_context_id = browser_context_ids[0]
+        await browser_session.cdp_client.send.Browser.setDownloadBehavior(params={"behavior": "allow", "downloadPath": "/files", "eventsEnabled": True, "browserContextId": browser_context_id})
+        agent = Agent(task=TASK, llm=model, browser_session=browser_session)
+        agent.browser_session.browser_profile.downloads_path = LOCAL_DOWNLOAD_PATH
+        agent_results = await agent.run(
+            on_step_start=step_hook_start,
+            max_steps=5
+        )
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        # Clean up resources
+        if session:
+            client.sessions.release(session.id)
+            print("Session released")
+        print("Done!")
+# Rest of code...
+```
+
+
 #### Complete Example
 
 End-to-end workflow demonstrating global file management and session file operations.

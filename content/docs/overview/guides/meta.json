@@ -1,0 +1,15 @@
+{
+  "title": "Guides",
+  "root": true,
+  "pages": [
+    "---Guides---",
+    "embed-live-sessions",
+    "human-in-the-loop",
+    "embed-session-recordings",
+    "playwright-node",
+    "playwright-python",
+    "puppeteer",
+    "reusing-auth-context",
+    "selenium"
+  ]
+}
