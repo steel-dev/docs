@@ -195,12 +195,6 @@ export default function HomePage() {
                 title="API Reference"
                 description="View the Steel API reference."
               />
-              <SmallCard
-                icon={<Database />}
-                href="/playground"
-                title="Playground"
-                description="Explore the examples and quick-start guides in Steel playground."
-              />
             </Cards>
           </div>
         </div>
