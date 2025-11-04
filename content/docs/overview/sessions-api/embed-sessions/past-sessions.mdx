@@ -1,0 +1,155 @@
+---
+title: Past Sessions
+sidebarTitle: Past Sessions
+description: How to access recordings of past browser sessions and display them within your app
+llm: false
+---
+
+Steel automatically records every session so you can replay it later.  
+With the new headful session recordings, you can now embed real MP4 playback — no event reconstruction, no missing UI elements.
+
+For older implementations, we still support headless playback via rrweb.
+
+## Embed Headful Session Recordings (Recommended)
+
+### What Changed
+Steel has moved from slow, unreliable screencasting and event-based playback to full OS-level streaming and MP4 recordings.
+
+- 25fps WebRTC-based video streaming  
+- MP4 recordings showing the exact screen output  
+- No discrepancies between actual sessions and replays  
+
+> **Tip:** Headful sessions are now **default** for all Steel sessions.  
+> No changes are needed to your integration — this gives you direct control over embedding playback.
+
+### Retrieving the Recording Playlist
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const playlist = await fetch("https://api.steel.dev/v1/sessions/{session_id}/hls", {
+  headers: {
+    "steel-api-key": "YOUR_API_KEY"
+  }
+});
+```
+
+```python !! Python -wcn
+import requests
+
+url = "https://api.steel.dev/v1/sessions/{session_id}/hls"
+headers = {
+    "steel-api-key": "YOUR_API_KEY"
+}
+response = requests.get(url, headers=headers)
+playlist = response.text
+```
+
+</CodeTabs>
+
+This returns an HLS playlist that can be used in any compatible video player.
+
+### Embedding in a Web Page
+
+```html
+<!doctype html>
+<html>
+  <body>
+    <video id="player" controls playsinline style="width:100%;max-width:900px;"></video>
+
+    <script type="module">
+      import Hls from "https://cdn.jsdelivr.net/npm/hls.js@^1.5.0/dist/hls.mjs";
+      const sessionId = "e4d682bb-a7f2-432c-ad13-8b116695d59e";
+      const API_KEY = "YOUR_API_KEY";
+      const manifestUrl = `https://api.steel.dev/v1/sessions/${sessionId}/hls`;
+      const video = document.getElementById("player");
+
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          xhrSetup: (xhr) => {
+            xhr.setRequestHeader("steel-api-key", API_KEY);
+          }
+        });
+        hls.loadSource(manifestUrl);
+        hls.attachMedia(video);
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = manifestUrl;
+      } else {
+        video.outerHTML = "<p>Your browser does not support HLS.</p>";
+      }
+    </script>
+  </body>
+</html>
+```
+
+**Notes:**
+- Works with any HLS-compatible player (e.g., Safari, HLS.js, JW Player, Video.js).  
+- Recordings are durable MP4 streams for accurate, 1:1 playback.
+
+## Headless
+
+> Headless playback is supported for legacy sessions.  
+> New sessions use headful replays for full visual fidelity — we recommend migrating when possible.
+
+### Overview
+Every Steel browser session records page events.  
+You can fetch those events from the `/v1/sessions/:id/events` endpoint and replay them using `rrweb-player`.
+
+### Retrieve the Recorded Events
+
+**SDK Example**
+
+```ts
+const events = await client.sessions.events(session.id);
+```
+
+or
+
+```python
+events = client.sessions.events(session_id=session.id)
+```
+
+**Direct API**
+
+```text
+GET /v1/sessions/:id/events
+```
+
+### Replay with rrweb-player
+
+**Install**
+```bash
+npm install rrweb-player
+```
+
+**Usage**
+```ts
+import rrwebPlayer from "rrweb-player";
+import "rrweb-player/dist/style.css";
+
+const events = await client.sessions.events(session.id);
+const playerElement = document.getElementById("player-container");
+
+new rrwebPlayer({
+  target: playerElement,
+  props: {
+    events: events,
+    width: 800,
+    height: 600,
+    autoPlay: true,
+    skipInactive: true
+  }
+});
+```
+
+**HTML**
+```html
+<div id="player-container"></div>
+```
+
+---
+
+### Summary
+All new sessions now run **headful by default**.  
+Headless event-based playback remains available for legacy recordings but will be deprecated in the future.  
+Use headful recordings for the most accurate, reliable replays.
