@@ -1,11 +1,18 @@
 "use client";
+
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { shortcutLabel } from "lib/utils/is-mac-like";
 import { Search, SearchIcon } from "lucide-react";
-import type { ComponentProps } from "react";
+import { useEffect, useState, type ComponentProps } from "react";
 
 export function SearchToggle(props: ComponentProps<"div">) {
   const { enabled, setOpenSearch } = useSearchContext();
+  const [shortcut, setShortcut] = useState("  ");
+
+  useEffect(() =>{
+    setShortcut(shortcutLabel())
+  }, [])
+
   if (!enabled) return;
 
   return (
@@ -34,7 +41,7 @@ export function SearchToggle(props: ComponentProps<"div">) {
         </div>
         <div className="px-1.5 py-[3px] bg-muted rounded-xs outline outline-[0.50px] outline-offset-[-0.50px] outline-zinc-800 inline-flex justify-center items-center">
           <div className="text-center justify-center text-zinc-500 text-xs font-normal font-mono leading-none group-hover:text-primary">
-            {shortcutLabel() || "  "}
+            {shortcut}
           </div>
         </div>
       </div>
