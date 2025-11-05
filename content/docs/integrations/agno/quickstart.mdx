@@ -20,22 +20,9 @@ Make sure you have:
 
 Create and activate a virtual environment, then install dependencies:
 
-```bash Terminal -wc
-# Create project
-mkdir steel-agno-starter
-cd steel-agno-starter
-
-# (Recommended) Create & activate a virtual environment
-python3 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Create files
-touch main.py .env
-
-# Install dependencies
-pip install agno steel-sdk python-dotenv playwright
+```package-install python
+agno steel-sdk python-dotenv playwright
 ```
-
 
 Create a `.env` file with your keys and a default task:
 
