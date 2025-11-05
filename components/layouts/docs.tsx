@@ -288,7 +288,7 @@ export function Sidebar() {
 }
 
 export const linkVariants = cva(
-  'flex items-center gap-3 w-full rounded-lg text-muted-foreground !font-sans [&_svg]:size-3',
+  'flex items-center gap-3 w-full text-muted-foreground font-sans! [&_svg]:size-3',
   {
     variants: {
       active: {
@@ -390,29 +390,26 @@ export function SidebarItem({
       </div>
     ) : (
       <div className="flex items-center gap-1 div:pt-0.5 first:(div:pt-0) group transition-all duration-100 ease-linear">
-        {!isRootPage && numItems > 1 && (
-          <div className={cn('h-[100%] w-[1px] bg-[#202020] ml-2', isActive && 'bg-white')} />
-        )}
         <Link
           href={item.url}
           className={cn(
-            linkVariants({
-              active: isActive,
-            }),
-            isRootPage && ['font-normal font-sans text-sm pl-2'],
-            !isRootPage && ['pl-2'],
+            linkVariants({ active: isActive }),
+            isRootPage && "font-normal font-sans text-sm pl-2",
             isRootPage &&
               pathname === item.url && [
-                '[&_.icons]:bg-primary [&_.icons]:border-primary [&_.icons]:text-white dark:[&_.icons]:text-neutral-950',
+                "[&_.icons]:bg-primary [&_.icons]:border-primary [&_.icons]:text-white dark:[&_.icons]:text-neutral-950",
               ],
-            'group-hover:text-primary',
+            !isRootPage && [
+              "pl-2 border-l border-[#202020] ml-2",
+              isActive && "border-l-white",
+            ],
+            "group-hover:text-primary",
+            "flex items-center gap-2 flex-1 font-normal! text-[0.875rem]",
           )}
         >
-          <div className="!font-normal text-[0.875rem] flex items-center gap-2 flex-1">
-            {item.icon}
-            {displayName}
-            <PageBadges item={item} />
-          </div>
+          {item.icon}
+          {displayName}
+          <PageBadges item={item} />
         </Link>
       </div>
     );
@@ -435,7 +432,7 @@ export function SidebarItem({
   const accordionValue = getStringValue(item.$id) || getStringValue(item.name) || 'folder';
 
   return (
-    <div className="pl-4">
+    <div>
       <Accordion
         type="single"
         collapsible
@@ -444,26 +441,27 @@ export function SidebarItem({
         onValueChange={(value) => setIsOpen(value === accordionValue)}
       >
         <AccordionItem value={accordionValue} className="border-0">
-          <AccordionTrigger className="p-0 hover:no-underline [&>svg]:hidden h-auto">
+          <AccordionTrigger className="p-0 [&>svg]:hidden h-auto group">
             <div
               className={cn(
                 linkVariants({
                   active: item.index ? pathname === item.index.url : false,
                 }),
-                'justify-between w-full',
-                '!font-normal',
+                "justify-between w-full relative flex items-center gap-2 flex-1 text-[0.875rem] font-normal transition-all",
+                "pl-2 border-l border-[#202020] ml-2",
+                item.index && pathname === item.index.url && "border-l-white",
               )}
             >
-              <div className="!font-normal flex items-center gap-2 flex-1">
+              <div className="flex items-center gap-2 flex-1">
                 {item.index ? (
                   <Link
                     href={item.index.url}
                     onClick={(e) => e.stopPropagation()}
                     className={cn(
-                      'flex items-center gap-2 font-sans hover:no-underline',
+                      "flex items-center gap-2 font-sans group-hover:no-underline group-hover:text-primary",
                       pathname === item.index.url
-                        ? 'font-normal text-primary'
-                        : 'font-normal text-muted-foreground',
+                        ? "font-normal text-primary"
+                        : "font-normal text-muted-foreground",
                     )}
                   >
                     {item.index.icon}
@@ -487,7 +485,7 @@ export function SidebarItem({
             </div>
           </AccordionTrigger>
           <AccordionContent className="pb-0 pt-0">
-            <div className="border-l flex flex-col">{children}</div>
+            <div className="flex flex-col pl-1">{children}</div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
