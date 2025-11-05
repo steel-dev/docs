@@ -9,6 +9,7 @@
     "mobile-mode",
     "multi-region",
     "embed-sessions",
-    "human-in-the-loop"
+    "human-in-the-loop",
+    "reusing-auth-context"
   ]
 }

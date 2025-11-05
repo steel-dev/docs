@@ -9,6 +9,10 @@ The Steel Sessions API provides a `contexts` endpoint that allows you to capture
 
 In this guide, you'll learn how to use the Steel Sessions API to reuse authentication between browser sessions.
 
+:::callout
+For an easier way to reuse authentication, context, cookies, extensions etc. consider using Steel's new [Profiles API](/overview/profiles-api/overview). It utilizes auth context alongside a complete browser profile to automatically reuse all your auth, not just context or cookies.
+:::
+
 For additional practical examples and recipes, check out the [Steel Cookbook](https://github.com/steel-dev/steel-cookbook).
 
 
@@ -17,7 +21,10 @@ For additional practical examples and recipes, check out the [Steel Cookbook](ht
 
 *   Steel API Key
 
-*   [Steel SDK](https://github.com/steel-dev/steel-python) installed (`npm install steel-sdk`)
+*   [Steel SDK](https://github.com/steel-dev/steel-python) installed.
+```package-install
+steel-sdk
+```
 
 *   Familiarity with [Steel sessions](https://docs.steel.dev/overview/sessions-api/overview)
 
