@@ -48,7 +48,7 @@ const client = new Steel();
 
 // Create session in Los Angeles data center
 const session = await client.sessions.create({
-    region: "LAX"
+    region: "lax"
 });
 ```
 
@@ -59,7 +59,7 @@ client = Steel()
 
 # Create session in Los Angeles data center
 session = client.sessions.create(
-    region="LAX"
+    region="lax"
 )
 ```
 </CodeTabs>
@@ -74,8 +74,6 @@ Steel is available in the following regions:
 | Los Angeles    | LAX  | Los Angeles, USA          |
 | Chicago        | ORD  | Chicago, USA              |
 | Washington DC  | IAD  | Washington DC, USA        |
-| Santiago       | SCL  | Santiago, Chile           |
-| Frankfurt      | FRA  | Frankfurt, Germany        |
 
 ### Region vs Proxy Selection
 
@@ -88,7 +86,7 @@ You can combine region selection with proxy settings:
 ```typescript !! Typescript -wcn
 // Browser runs in Frankfurt, but uses a US proxy for requests
 const session = await client.sessions.create({
-    region: "FRA",
+    region: "lax",
     useProxy: true
 });
 
@@ -97,7 +95,7 @@ const session = await client.sessions.create({
 ```python !! Python -wcn
 # Browser runs in Frankfurt, but uses a US proxy for requests
 session = client.sessions.create(
-    region="FRA",
+    region="lax",
     use_proxy=True
 )
 ```
