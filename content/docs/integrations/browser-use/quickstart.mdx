@@ -20,21 +20,11 @@ Ensure you have the following:
 
 #### Step 1: Set up your environment
 
-First, create a project directory, set up a virtual environment, and install the required packages:
+First, set up a virtual environment, and install the required packages:
 
-```bash Terminal -wc
-# Create a project directory
-mkdir steel-browser-use-agent
-cd steel-browser-use-agent
-
-# Recommended: Create and activate a virtual environment
-uv venv
-source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
-
-# Install required packages
-pip install steel-sdk browser-use python-dotenv
+```package-install python
+steel-sdk browser-use python-dotenv
 ```
-
 
 Create a `.env` file with your API keys:
 

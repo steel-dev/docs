@@ -1,5 +1,15 @@
 {
   "title": "Sessions API",
   "root": false,
-  "pages": ["---Sessions API---", "overview", "quickstart", "session-lifecycle", "mobile-mode","multi-region","embed-sessions"]
+  "pages": [
+    "---Sessions API---",
+    "overview",
+    "quickstart",
+    "session-lifecycle",
+    "mobile-mode",
+    "multi-region",
+    "embed-sessions",
+    "human-in-the-loop",
+    "reusing-auth-context"
+  ]
 }

@@ -1,0 +1,12 @@
+{
+  "title": "Guides",
+  "root": true,
+  "pages": [
+    "---Guides---",
+    "human-in-the-loop",
+    "playwright-node",
+    "playwright-python",
+    "puppeteer",
+    "selenium"
+  ]
+}

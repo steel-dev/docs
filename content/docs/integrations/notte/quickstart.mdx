@@ -14,26 +14,14 @@ llm: true
 *   **Python 3.11+**
 :::
 
-### Step 1: Project Setup
+### Step 1: Project Setup and Install Dependencies
 
-Create a virtual environment and a minimal project:
-
-```bash Terminal -wc
-python3 -m venv .venv && \
-source .venv/bin/activate && \
-mkdir notte-steel && cd notte-steel && \
-touch main.py .env
+```package-install python
+steel-sdk notte python-dotenv
 ```
 
 
-### Step 2: Install Dependencies
-
-```bash Terminal -wc
-pip install steel-sdk notte python-dotenv
-```
-
-
-### Step 3: Environment Variables
+### Step 2: Environment Variables
 
 Create a `.env` file with your API keys and a default task:
 
@@ -44,7 +32,7 @@ TASK="Go to Wikipedia and search for machine learning"
 ```
 
 
-### Step 4: Initialize Steel & Notte, then Connect via CDP
+### Step 3: Initialize Steel & Notte, then Connect via CDP
 
 Set up Steel, load env vars, and prepare to start the Notte agent.
 
@@ -67,7 +55,7 @@ TASK = os.getenv("TASK") or "Go to Wikipedia and search for machine learning"
 ```
 
 
-### Step 5: Run a Notte Agent Task
+### Step 4: Run a Notte Agent Task
 
 Create a Steel session, connect Notte via **CDP**, run your task, and print the result.
 
