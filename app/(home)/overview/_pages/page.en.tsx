@@ -7,7 +7,7 @@ import {
   ClaudeIcon,
   Cloud,
   Container,
-  MagicIcon,
+  GeminiIcon,
   OpenAIIcon,
   PythonIcon,
   TSIcon,
@@ -110,10 +110,10 @@ export default function HomePage() {
             <hr className="border-t border-border my-2" />
             <Cards className="xl:!grid-cols-3">
               <SmallCard
-                icon={<BrowserUseIcon />}
-                href="/integrations/browser-use/integrations-overview"
-                title="Browser-Use Integration"
-                description="Use Browser-Use to interact with a Steel browser."
+                icon={<GeminiIcon />}
+                href="/integrations/gemini-computer-use/overview"
+                title="Gemini Computer Use"
+                description="Use Gemini Computer Use with Steel Browser."
               />
               <SmallCard
                 icon={<ClaudeIcon />}
@@ -128,10 +128,10 @@ export default function HomePage() {
                 description="Use OpenAI Computer Use with Steel Browser."
               />
               <SmallCard
-                icon={<Cloud />}
-                href="/integrations/crewai/integrations-overview"
-                title="CrewAI"
-                description="Learn how to use CrewAI with Steel Browser."
+                icon={<BrowserUseIcon />}
+                href="/integrations/browser-use/integrations-overview"
+                title="Browser-Use"
+                description="Use Browser-Use to interact with a Steel browser."
               />
               <SmallCard
                 icon={<Container />}
@@ -140,10 +140,10 @@ export default function HomePage() {
                 description="Use Magnitude with Steel Browser."
               />
               <SmallCard
-                icon={<MagicIcon />}
-                href="/integrations/notte/quickstart"
-                title="Notte"
-                description="Use Notte with Steel Browser."
+                icon={<Cloud />}
+                href="/integrations/crewai/integrations-overview"
+                title="CrewAI"
+                description="Learn how to use CrewAI with Steel Browser."
               />
             </Cards>
           </div>

@@ -5,6 +5,7 @@ import {
   ClaudeIcon,
   Cloud,
   Container,
+  GeminiIcon,
   MagicIcon,
   OpenAIIcon,
 } from "@/components/ui/icon";
@@ -20,11 +21,11 @@ export default function IntegrationsPage() {
           </div>
           <Cards>
             <IndexCard
-              icon={<BrowserUseIcon />}
-              href="/integrations/browser-use/integrations-overview"
-              title="Browser-Use Integration"
+              icon={<GeminiIcon />}
+              href="/integrations/gemini-computer-use/overview"
+              title="Gemini Computer Use"
               tag="Browser Agent"
-              description="Use Browser-Use to interact with a Steel browser."
+              description="Use Gemini Computer Use with Steel Browser."
             />
             <IndexCard
               icon={<ClaudeIcon />}
@@ -39,6 +40,13 @@ export default function IntegrationsPage() {
               title="OpenAI Computer Use"
               tag="Browser Agent"
               description="Use OpenAI Computer Use with Steel Browser."
+            />
+            <IndexCard
+              icon={<BrowserUseIcon />}
+              href="/integrations/browser-use/integrations-overview"
+              title="Browser-Use"
+              tag="Browser Agent"
+              description="Use Browser-Use to interact with a Steel browser."
             />
             <IndexCard
               icon={<Cloud />}

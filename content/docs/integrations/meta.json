@@ -7,6 +7,7 @@
     "...browser-use",
     "...claude-computer-use",
     "...crewai",
+    "...gemini-computer-use",
     "...magnitude",
     "...notte",
     "...openai-computer-use",
