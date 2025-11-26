@@ -54,7 +54,7 @@ export async function formatCodeBlock(code: string, language: string): Promise<s
 function cleanupPython(code: string): string {
   return code
     .split('\n')
-    .map(line => line.trimEnd()) // Remove trailing whitespace
+    .map((line) => line.trimEnd()) // Remove trailing whitespace
     .join('\n')
     .replace(/\n{3,}/g, '\n\n') // Max 2 consecutive empty lines
     .trim(); // Remove leading/trailing empty lines
@@ -63,7 +63,7 @@ function cleanupPython(code: string): string {
 function cleanupGeneric(code: string): string {
   return code
     .split('\n')
-    .map(line => line.trimEnd()) // Remove trailing whitespace
+    .map((line) => line.trimEnd()) // Remove trailing whitespace
     .join('\n')
     .replace(/\n{3,}/g, '\n\n') // Max 2 consecutive empty lines
     .trim(); // Remove leading/trailing empty lines

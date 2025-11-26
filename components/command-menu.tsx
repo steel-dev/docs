@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import type { DialogProps } from "@radix-ui/react-dialog";
-import { Circle, File, Laptop, Moon, Sun } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
-import * as React from "react";
-import { Button } from "@/components/ui/button";
+import type { DialogProps } from '@radix-ui/react-dialog';
+import { Circle, File, Laptop, Moon, Sun } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
+import * as React from 'react';
+import { Button } from '@/components/ui/button';
 import {
   CommandDialog,
   CommandEmpty,
@@ -14,16 +14,16 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 // import { docsConfig } from "@/app/config/docs";
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 export function CommandMenu({ ...props }: DialogProps) {
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || e.key === "/") {
+      if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
         if (
           (e.target instanceof HTMLElement && e.target.isContentEditable) ||
           e.target instanceof HTMLInputElement ||
@@ -38,8 +38,8 @@ export function CommandMenu({ ...props }: DialogProps) {
       }
     };
 
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
   }, []);
 
   const runCommand = React.useCallback((command: () => unknown) => {
@@ -51,8 +51,8 @@ export function CommandMenu({ ...props }: DialogProps) {
     <>
       <Button
         className={cn(
-          "relative h-8 w-full justify-start rounded-[0.5rem] bg-background text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-40 lg:w-56 xl:w-64",
-          "border border-input hover:bg-accent hover:text-accent-foreground",
+          'relative h-8 w-full justify-start rounded-[0.5rem] bg-background text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-40 lg:w-56 xl:w-64',
+          'border border-input hover:bg-accent hover:text-accent-foreground',
         )}
         onClick={() => setOpen(true)}
         {...props}

@@ -1,4 +1,4 @@
-import { Cards, IndexCard } from "@/components/card";
+import { Cards, IndexCard } from '@/components/card';
 import {
   API,
   BrowserUseIcon,
@@ -8,7 +8,7 @@ import {
   GeminiIcon,
   MagicIcon,
   OpenAIIcon,
-} from "@/components/ui/icon";
+} from '@/components/ui/icon';
 
 export default function IntegrationsPage() {
   return (

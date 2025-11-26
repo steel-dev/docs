@@ -1,22 +1,22 @@
 'use client';
 
-import { AnnotationHandler, Pre } from "codehike/code";
-import { type CodeGroup } from "./code-group";
-import React from "react";
-import { callout } from "./annotations/callout";
-import { collapse } from "./annotations/collapse";
-import { diff } from "./annotations/diff";
-import { fold } from "./annotations/fold";
-import { hover } from "./annotations/hover";
-import { lineNumbers } from "./annotations/line-numbers";
-import { link } from "./annotations/link";
-import { mark } from "./annotations/mark";
-import { tokenTransitions } from "./annotations/token-transitions";
-import { tooltip } from "./annotations/tooltip";
-import { wordWrap } from "./annotations/word-wrap";
-import { cn } from "@/lib/utils";
+import { AnnotationHandler, Pre } from 'codehike/code';
+import React from 'react';
+import { cn } from '@/lib/utils';
+import { callout } from './annotations/callout';
+import { collapse } from './annotations/collapse';
+import { diff } from './annotations/diff';
+import { fold } from './annotations/fold';
+import { hover } from './annotations/hover';
+import { lineNumbers } from './annotations/line-numbers';
+import { link } from './annotations/link';
+import { mark } from './annotations/mark';
+import { tokenTransitions } from './annotations/token-transitions';
+import { tooltip } from './annotations/tooltip';
+import { wordWrap } from './annotations/word-wrap';
+import { type CodeGroup } from './code-group';
 
-function getHandlers(options: CodeGroup["options"]) {
+function getHandlers(options: CodeGroup['options']) {
   return [
     mark,
     tooltip,
@@ -43,14 +43,14 @@ export function CollapsiblePre({
   code: any;
   title?: string;
   preClassName?: string;
-  options: CodeGroup["options"];
+  options: CodeGroup['options'];
 }) {
   const [expanded, setExpanded] = React.useState(false);
   const handlers = getHandlers(options);
 
   // code.code is the raw code string
-  const codeString = code.code || "";
-  const codeLines = codeString.split("\n");
+  const codeString = code.code || '';
+  const codeLines = codeString.split('\n');
   const isCollapsible = codeLines.length > 30;
 
   // const displayCode = expanded
@@ -65,8 +65,8 @@ export function CollapsiblePre({
       <Pre
         {...props}
         className={cn(
-          !title && "!m-0",
-          "overflow-x-auto p-3 rounded-lg font-mono bg-[var(--ch-18)] max-w-full",
+          !title && '!m-0',
+          'overflow-x-auto p-3 rounded-lg font-mono bg-[var(--ch-18)] max-w-full',
           preClassName,
         )}
         handlers={handlers}
@@ -79,22 +79,22 @@ export function CollapsiblePre({
     <>
       {/* Code block container - separate from button */}
       <div className="relative">
-        <div className={!expanded ? "max-h-96 overflow-auto" : ""}>
+        <div className={!expanded ? 'max-h-96 overflow-auto' : ''}>
           <Pre
             {...props}
             // code={displayCode}
             code={code}
             className={cn(
-              !title && "!m-0",
-              "overflow-x-auto p-3 rounded-lg font-mono bg-[var(--ch-18)] max-w-full",
+              !title && '!m-0',
+              'overflow-x-auto p-3 rounded-lg font-mono bg-[var(--ch-18)] max-w-full',
               preClassName,
             )}
             handlers={handlers}
             style={{
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              maxWidth: "100%",
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              maxWidth: '100%',
               ...props.style,
             }}
           />
@@ -109,6 +109,7 @@ export function CollapsiblePre({
       {/* Button rendered separately - not inside scrollable container */}
       <div className="relative -mt-9 flex justify-center z-50">
         <button
+          type="button"
           className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-zinc-300 hover:text-white transition-all duration-200 bg-[#0c0c0c]/95 hover:bg-[#1a1a1a]/95 border border-zinc-600/30 rounded-md shadow-lg backdrop-blur-sm"
           onClick={() => setExpanded(!expanded)}
         >

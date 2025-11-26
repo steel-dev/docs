@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useSearchContext } from "fumadocs-ui/contexts/search";
-import { shortcutLabel } from "lib/utils/is-mac-like";
+import { useSearchContext } from 'fumadocs-ui/contexts/search';
+import { shortcutLabel } from 'lib/utils/is-mac-like';
 
-import { Search, SearchIcon } from "lucide-react";
+import { Search, SearchIcon } from 'lucide-react';
 
-import { useEffect, useState, type ComponentProps } from "react";
+import { type ComponentProps, useEffect, useState } from 'react';
 
-export function SearchToggle(props: ComponentProps<"div">) {
+export function SearchToggle(props: ComponentProps<'div'>) {
   const { enabled, setOpenSearch } = useSearchContext();
-  const [shortcut, setShortcut] = useState("  ");
+  const [shortcut, setShortcut] = useState('  ');
 
   useEffect(() => {
     setShortcut(shortcutLabel());

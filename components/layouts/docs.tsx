@@ -1,39 +1,25 @@
-"use client";
+'use client';
 
-import { cva } from "class-variance-authority";
-import { usePathname } from "fumadocs-core/framework";
-import Link from "fumadocs-core/link";
-import type { PageTree } from "fumadocs-core/server";
-import { useSidebar } from "fumadocs-ui/contexts/sidebar";
-import { TreeContextProvider, useTreeContext } from "fumadocs-ui/contexts/tree";
-import { CopyLLMSButton } from "components/llmsbutton";
-import {
-  ArrowUpRight,
-  ChevronDown,
-  ChevronRight,
-  SidebarIcon,
-} from "lucide-react";
-import React, {
-  type ButtonHTMLAttributes,
-  type ReactNode,
-  useMemo,
-} from "react";
-import { MobileMenuProvider } from "@/contexts/mobile-menu";
-import { useLocalizedNavigation } from "@/hooks/use-localized-navigation";
-import { cn } from "@/lib/utils";
-import { MobileMenuButton } from "../layout/mobile-menu-button";
-import { SearchToggle } from "../layout/search-toggle";
+import { cva } from 'class-variance-authority';
+import { CopyLLMSButton } from 'components/llmsbutton';
+import { usePathname } from 'fumadocs-core/framework';
+import Link from 'fumadocs-core/link';
+import type { PageTree } from 'fumadocs-core/server';
+import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
+import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree';
+import { ArrowUpRight, ChevronDown, ChevronRight, SidebarIcon } from 'lucide-react';
+import React, { type ButtonHTMLAttributes, type ReactNode, useMemo } from 'react';
+import { MobileMenuProvider } from '@/contexts/mobile-menu';
+import { useLocalizedNavigation } from '@/hooks/use-localized-navigation';
+import { cn } from '@/lib/utils';
+import { MobileMenuButton } from '../layout/mobile-menu-button';
+import { SearchToggle } from '../layout/search-toggle';
 // import { ThemeToggle } from "../layout/theme-toggle";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../ui/accordion";
-import { Button } from "../ui/button";
-import { DocsLogo, Github, Discord } from "../ui/icon";
-import { NavigationMenu, NavigationMenuList } from "../ui/navigation-menu";
-import { renderNavItem } from "./links";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { Button } from '../ui/button';
+import { Discord, DocsLogo, Github } from '../ui/icon';
+import { NavigationMenu, NavigationMenuList } from '../ui/navigation-menu';
+import { renderNavItem } from './links';
 
 export interface DocsLayoutProps {
   tree: PageTree.Root;
@@ -131,10 +117,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                 </Link>
               </div>
 
-              <div
-                ref={menuWrapperRef}
-                className="relative h-full flex-1 min-w-0"
-              >
+              <div ref={menuWrapperRef} className="relative h-full flex-1 min-w-0">
                 <NavigationMenu className="flex items-center h-full">
                   <NavigationMenuList className="flex flex-row items-center h-full">
                     {localizedLinks?.map((link) => renderNavItem(link))}
@@ -394,17 +377,14 @@ export function SidebarItem({
           href={item.url}
           className={cn(
             linkVariants({ active: isActive }),
-            isRootPage && "font-normal font-sans text-sm pl-2",
+            isRootPage && 'font-normal font-sans text-sm pl-2',
             isRootPage &&
               pathname === item.url && [
-                "[&_.icons]:bg-primary [&_.icons]:border-primary [&_.icons]:text-white dark:[&_.icons]:text-neutral-950",
+                '[&_.icons]:bg-primary [&_.icons]:border-primary [&_.icons]:text-white dark:[&_.icons]:text-neutral-950',
               ],
-            !isRootPage && [
-              "pl-2 border-l border-[#202020] ml-2",
-              isActive && "border-l-white",
-            ],
-            "group-hover:text-primary",
-            "flex items-center gap-2 flex-1 font-normal! text-[0.875rem]",
+            !isRootPage && ['pl-2 border-l border-[#202020] ml-2', isActive && 'border-l-white'],
+            'group-hover:text-primary',
+            'flex items-center gap-2 flex-1 font-normal! text-[0.875rem]',
           )}
         >
           {item.icon}
@@ -447,9 +427,9 @@ export function SidebarItem({
                 linkVariants({
                   active: item.index ? pathname === item.index.url : false,
                 }),
-                "justify-between w-full relative flex items-center gap-2 flex-1 text-[0.875rem] font-normal transition-all",
-                "pl-2 border-l border-[#202020] ml-2",
-                item.index && pathname === item.index.url && "border-l-white",
+                'justify-between w-full relative flex items-center gap-2 flex-1 text-[0.875rem] font-normal transition-all',
+                'pl-2 border-l border-[#202020] ml-2',
+                item.index && pathname === item.index.url && 'border-l-white',
               )}
             >
               <div className="flex items-center gap-2 flex-1">
@@ -458,10 +438,10 @@ export function SidebarItem({
                     href={item.index.url}
                     onClick={(e) => e.stopPropagation()}
                     className={cn(
-                      "flex items-center gap-2 font-sans group-hover:no-underline group-hover:text-primary",
+                      'flex items-center gap-2 font-sans group-hover:no-underline group-hover:text-primary',
                       pathname === item.index.url
-                        ? "font-normal text-primary"
-                        : "font-normal text-muted-foreground",
+                        ? 'font-normal text-primary'
+                        : 'font-normal text-muted-foreground',
                     )}
                   >
                     {item.index.icon}

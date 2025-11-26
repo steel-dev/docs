@@ -6,10 +6,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@source '.';
-@source '../components/**/*.{ts,tsx}';
-@source '../lib/**/*.{ts,tsx}';
-@source '../node_modules/fumadocs-ui/dist/**/*.js';
+@source ".";
+@source "../components/**/*.{ts,tsx}";
+@source "../lib/**/*.{ts,tsx}";
+@source "../node_modules/fumadocs-ui/dist/**/*.js";
 
 :root {
   /* Override Fumadocs navbar */
