@@ -6,7 +6,6 @@ llm: true
 ---
 
 This guide shows you how to build a Perplexity-like research workflow in Node.js/TypeScript that:
-- Generates targeted search queries with OpenAI
 - Finds relevant links with the Brave Search API
 - Scrapes those links to Markdown via Steel’s /v1/scrape endpoint
 - Synthesizes a well-cited answer with inline citations
@@ -66,8 +65,6 @@ OPENAI_MODEL=gpt-5-nano
 # Steel.dev
 STEEL_API_KEY=steel_...
 STEEL_SCRAPE_ENDPOINT=https://api.steel.dev/v1/scrape
-# Optional pacing between scrape requests (ms), useful for rate limits
-STEEL_TIMEOUT=3000
 
 # Brave Search
 BRAVE_API_KEY=brv_...
@@ -78,8 +75,8 @@ BRAVE_SAFESEARCH=moderate
 
 # Search behavior
 SEARCH_TOP_K=10
-REQUEST_TIMEOUT_MS=30000
-CONCURRENCY=2
+REQUEST_TIMEOUT_MS=5000
+CONCURRENCY=5
 
 # Your question to research
 QUERY="What are the latest improvements in WebAssembly and their benefits?"
@@ -137,11 +134,7 @@ async function main() {
   });
 
   // 1) Use Brave to get top relevant URLs (do double to get more relevant results to search)
-  const { urls } = await multiQueryBraveSearch(query, topK * 2);
-  // const searchRes = await searchTopRelevantUrls(query, requestedTopK * 2);
-  // const urls = (searchRes.urls || []).slice(0, requestedTopK * 2);
-
-  // console.log(urls, urls.length);
+  const { urls } = await singleQueryBraveSearch(query, topK * 2);
 
   if (urls.length === 0) {
     return console.error("No URLs found for the given query.");
@@ -192,141 +185,40 @@ Step 1: Generate richer search coverage
 - Results are aggregated and ranked by frequency and reciprocal rank.
 
 ```typescript
-export async function multiQueryBraveSearch(
+export async function singleQueryBraveSearch(
   userQuery: string,
   topKPerQuery = config.search.topK,
 ): Promise<MultiQuerySearchResult> {
-  // 1) Ask OpenAI to produce exactly 3 queries as strict JSON.
-  const prompt = [
-    "You are a search strategist.",
-    "Given the user's query, generate exactly 3 search queries that maximize the likelihood of finding relevant, recent, and factual information.",
-    "Avoid generic questions; use specific keywords.",
-    "",
-    "Return strict JSON with this shape:",
-    '{ "queries": ["...", "...", "..."] }',
-    "",
-    `User query: ${userQuery}`,
-  ].join("\n");
+  const spinner = ora("Searching...").start();
+  const normalizedQuery = userQuery.trim() || userQuery;
+  const queries = [normalizedQuery];
 
-  const completion = await openai.chat.completions.create({
-    model: config.openai.model,
-    messages: [
-      { role: "system", content: "You produce JSON only. No prose." },
-      { role: "user", content: prompt },
-    ],
-  });
-
-  const rawContent =
-    completion.choices?.[0]?.message?.content?.trim() ?? '{"queries": []}';
-
-  let queries: string[] = [];
   try {
-    const parsed = JSON.parse(rawContent);
-    if (Array.isArray(parsed?.queries)) {
-      queries = parsed.queries.map((q: unknown) =>
-        typeof q === "string" ? q.trim() : "",
-      );
-    }
-  } catch {
-    // Fallback: split lines
-    queries = rawContent
-      .split("\n")
-      .map((l) => l.replace(/^[-*\d.)\s]+/, "").trim())
-      .filter(Boolean)
-      .slice(0, 3);
-  }
+    const { urls } = await searchTopRelevantUrls(
+      normalizedQuery,
+      topKPerQuery ?? config.search.topK,
+    );
 
-  // Ensure exactly 3 queries, fall back to the original user query variations if needed
-  queries = Array.from(
-    new Set(
-      queries
-        .filter(Boolean)
-        .map((q) => q.replace(/\s+/g, " ").trim())
-        .slice(0, 3),
-    ),
-  );
-  while (queries.length < 3) {
-    if (queries.length === 0) queries.push(userQuery);
-    else queries.push(`${userQuery} ${queries.length + 1}`);
-  }
-  queries = queries.slice(0, 3);
+    spinner.succeed("Search complete");
 
-  console.info("Generated queries", { queries });
-
-  // 2) For each query, call Brave Search with a 1s delay between calls.
-  const perQueryUrls: string[][] = [];
-  for (let i = 0; i < queries.length; i++) {
-    const q = queries[i];
-    if (q == null) {
-      perQueryUrls.push([]);
-      continue;
-    }
-    if (i > 0) {
-      await new Promise((r) => setTimeout(r, 1000));
-    }
-    try {
-      const { urls } = await searchTopRelevantUrls(
-        q,
-        topKPerQuery ?? config.search.topK,
-      );
-      perQueryUrls.push(urls);
-    } catch (err) {
-      console.warn("Brave search failed for generated query", {
-        query: q,
-        err: (err as Error)?.message,
-      });
-      perQueryUrls.push([]);
-    }
-  }
-
-  // 3) Rank aggregation: reciprocal rank sum + frequency and best rank tiebreakers
-  type Acc = {
-    score: number;
-    occurrences: number;
-    ranks: number[];
-  };
-  const scores = new Map<string, Acc>();
-
-  perQueryUrls.forEach((urls) => {
-    urls.forEach((u, idx) => {
-      const url = u.trim();
-      if (!url) return;
-      const rank = idx + 1; // 1-based
-      const inc = 1 / rank; // reciprocal rank
-      const prev = scores.get(url) ?? { score: 0, occurrences: 0, ranks: [] };
-      prev.score += inc;
-      prev.occurrences += 1;
-      prev.ranks.push(rank);
-      scores.set(url, prev);
-    });
-  });
-
-  // 4) Deduplicate and sort
-  const ranked: RankedUrl[] = Array.from(scores.entries())
-    .map(([url, acc]) => ({
-      url,
-      score: acc.score,
-      occurrences: acc.occurrences,
-      ranks: acc.ranks.sort((a, b) => a - b),
-    }))
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score; // primary: score
-      if (b.occurrences !== a.occurrences) return b.occurrences - a.occurrences; // secondary: frequency
-      // tertiary: best (lowest) rank
-      const aBest = a.ranks[0] ?? Number.POSITIVE_INFINITY;
-      const bBest = b.ranks[0] ?? Number.POSITIVE_INFINITY;
-      return aBest - bBest;
+    return {
+      queries,
+      urls,
+      _raw: { perQueryUrls: [urls] },
+    };
+  } catch (err) {
+    spinner.fail("Search failed");
+    console.warn("Brave search failed for query", {
+      query: normalizedQuery,
+      err: (err as Error)?.message,
     });
 
-  console.info("Ranked URLs across multi-query search", {
-    unique: ranked.length,
-  });
-
-  return {
-    queries,
-    urls: ranked.map((url) => url.url),
-    _raw: { openai: completion, perQueryUrls },
-  };
+    return {
+      queries,
+      urls: [],
+      _raw: { error: err },
+    };
+  }
 }
 ```
 
@@ -411,49 +303,31 @@ Step 2: Scrape each URL to Markdown with Steel
 - The response contains `content.markdown`, `links`, and metadata.
 
 ```typescript
-export async function scrapeUrlToMarkdown(url: string): Promise<ScrapeResult> {
-  const endpoint = config.steel.scrapeEndpoint;
-
-  const body: SteelScrapeRequest = {
-    url,
-    format: ["markdown"],
-  };
-
-  const res = await fetchWithTimeout(endpoint, {
-    method: "POST",
-    headers: {
-      "Steel-Api-Key": config.steel.apiKey,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error("Steel.dev scrape failed", {
-      status: res.status,
-      statusText: res.statusText,
-      url,
-      response: text?.slice(0, 1000),
+export async function scrapeUrlToMarkdown(
+  url: string,
+): Promise<ScrapeResult | null> {
+  try {
+    const client = new Steel({
+      steelAPIKey: config.steel.apiKey,
+      timeout: config.requestTimeoutMs,
     });
-    throw new Error(
-      `Steel.dev scrape failed for ${url}: ${res.status} ${res.statusText}`,
-    );
-  }
 
-  const payload = (await res.json()) as SteelScrapeResponse;
-  const markdown = payload?.content?.markdown;
-  const links = payload?.links;
-
-  if (!markdown) {
-    console.warn("Steel.dev response did not include recognizable markdown", {
+    const res = await client.scrape({
       url,
-      payload: JSON.stringify(payload).slice(0, 1000),
+      format: ["markdown"],
     });
-    throw new Error(`Steel.dev response missing markdown content for ${url}`);
-  }
 
-  return { url, markdown, links };
+    const markdown = res?.content?.markdown;
+    const links = res?.links;
+
+    if (!markdown) {
+      throw new Error(`Steel.dev response missing markdown content for ${url}`);
+    }
+
+    return { url, markdown, links };
+  } catch {
+    return null;
+  }
 }
 ```
 
@@ -468,6 +342,7 @@ Step 3: Synthesize an answer with inline citations
 export async function synthesizeWithCitations(
   input: SynthesisInput,
 ): Promise<SynthesisOutput> {
+  const spinner = ora("Synthesizing answer...").start();
   // Build context block
   const contextHeader =
     "Context materials (each item shows [index] and URL, followed by markdown content)";
@@ -477,11 +352,39 @@ export async function synthesizeWithCitations(
     contextLines.push(`\n[${idx}] ${m.url}\n---\n${m.markdown}\n`);
   });
 
-  const system = ` <goal> You are Perplexity, ... </output>`;
+  const now = new Date();
+
+  // Day of week, month, day, year
+  const dateFormatter = new Intl.DateTimeFormat("en-NZ", {
+    weekday: "long",
+    month: "long",
+    day: "2-digit",
+    year: "numeric",
+    timeZone: "Pacific/Auckland",
+  });
+
+  // Time with hour + timezone abbreviation
+  const timeFormatter = new Intl.DateTimeFormat("en-NZ", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "Pacific/Auckland",
+    timeZoneName: "short", // gives "NZDT"
+  });
+
+  const dateStr = dateFormatter.format(now);
+  const timeStr = timeFormatter.format(now);
+
+  // Combine + remove the minutes (":00") if you want "7 PM" instead of "7:00 PM"
+  const final = `${dateStr}, ${timeStr.replace(/:00/, "")}`;
+
+  const system = `<goal> You are ...`
 
   const user = [`User query: ${input.query}`, "", contextLines.join("\n")].join(
     "\n",
   );
+  let answer = "";
+  let started = false;
 
   const completion = await openai.chat.completions.create({
     model: config.openai.model,
@@ -489,15 +392,28 @@ export async function synthesizeWithCitations(
       { role: "system", content: system },
       { role: "user", content: user },
     ],
+    stream: true,
   });
 
-  const answer = completion.choices?.[0]?.message?.content?.trim() ?? "";
+  for await (const chunk of completion) {
+    const content = chunk.choices[0]?.delta?.content;
+    if (content) {
+      if (!started) {
+        started = true;
+        spinner.succeed("Answer synthesized");
+        process.stdout.write("\n");
+      }
+      answer += content;
+      process.stdout.write(content);
+    }
+  }
 
   // Collect sources in index order for convenience
   const sources = input.materials.map((m, i) => ({ index: i + 1, url: m.url }));
 
-  console.info("Synthesis complete", {
-    answerPreview: answer.slice(0, 160),
+  console.log("\n\nSources:");
+  sources.forEach((source) => {
+    console.log(`[${source.index}] ${source.url}`);
   });
 
   return {
@@ -511,20 +427,17 @@ export async function synthesizeWithCitations(
 Run and interpret the output
 ----------------------------
 
-After `npm start`, the script logs a JSON result like:
+After `npm start`, the script logs the result step-by-step:
 
-```json
-{
-  "query": "What are the latest improvements in WebAssembly and their benefits?",
-  "answer": "Recent WebAssembly updates improved component model support and tooling, enabling easier interop and faster iterations.[1][2] These changes reduce bundle size, improve portability, and speed up non‑JS language performance across platforms.[2][3]",
-  "citations": [
-    { "index": 1, "url": "https://example.com/article-1" },
-    { "index": 2, "url": "https://example.com/article-2" },
-    { "index": 3, "url": "https://example.com/article-3" }
-  ],
-  "model": "gpt-5-nano",
-  "meta": { "tookMs": 12345 }
-}
+```bash
+✔ Search complete
+✔ Scraping complete
+✔ Answer synthesized
+
+Prediction markets offer a practical way to hedge specific risks and to add liquidity to broader market positions by turning uncertain outcomes into tradable, cash-settled contracts. Their price signals aggregate diverse information in real time, creating hedging tools and a more liquid trading environment than many traditional markets. [1]
+...
+
+## How prediction markets create hedging opportunities
 ```
 
 Tuning and tips
@@ -535,11 +448,8 @@ Tuning and tips
   - `CONCURRENCY` controls how many pages you scrape at once.
 
 - Respect rate limits
-  - Steel Hobby plan allows ~20 requests/min. To add an actual delay between scrapes, replace the no-op `setTimeout(() => {}, config.steel.timeout)` with an awaited delay:
-```typescript
-// Replace this in scrapeUrlsToMarkdown's worker loop:
-await new Promise((r) => setTimeout(r, config.steel.timeout));
-```
+- Steel Hobby plan allows ~20 requests/min. To add an actual delay between scrapes, replace the no-op `setTimeout(() => {}, config.steel.timeout)` with an awaited delay:
+
 
 - Timeouts
   - `REQUEST_TIMEOUT_MS` applies to both Brave and Steel requests.
