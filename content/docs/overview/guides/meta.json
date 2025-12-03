@@ -7,6 +7,7 @@
     "playwright-node",
     "playwright-python",
     "puppeteer",
-    "selenium"
+    "selenium",
+    "perplexity"
   ]
 }
