@@ -64,7 +64,6 @@ OPENAI_MODEL=gpt-5-nano
 
 # Steel.dev
 STEEL_API_KEY=steel_...
-STEEL_SCRAPE_ENDPOINT=https://api.steel.dev/v1/scrape
 
 # Brave Search
 BRAVE_API_KEY=brv_...
@@ -87,23 +86,18 @@ What this example does
 
 At a high level:
 
-1) Generate multiple targeted queries for better coverage
-- Uses OpenAI to turn the user query into 3 high‑signal search queries
+1. Search Brave for relevant URLs
 
-2) Search and rank URLs with Brave
-- Calls Brave’s Web Search API for each generated query
-- Aggregates and ranks URLs using a reciprocal-rank strategy
+2. Scrape sources to Markdown with Steel
+    - Sends each URL to Steel’s `/v1/scrape` to obtain clean Markdown
 
-3) Scrape sources to Markdown with Steel
-- Sends each URL to Steel’s `/v1/scrape` to obtain clean Markdown
-
-4) Synthesize a well‑cited answer with OpenAI
-- Builds a context block from scraped Markdown
-- Instructs the model to produce inline [n] citations, matching the material order
+3. Synthesize a well‑cited answer with OpenAI
+    - Builds a context block from scraped Markdown
+    - Instructs the model to produce inline [n] citations, matching the material order
 
 The core orchestration happens here:
 
-```typescript
+```typescript Typescript -wcn -f index.ts
 import { config } from "./config";
 import {
   scrapeUrlsToMarkdown,
@@ -177,14 +171,12 @@ main()
   });
 ```
 
-Step 1: Generate richer search coverage
+Step 1: Get relevant URLs
 ---------------------------------------
 
-- The example asks OpenAI to produce 3 specific queries that maximize recall and signal.
-- It then calls Brave Search for each query, pausing briefly between calls.
-- Results are aggregated and ranked by frequency and reciprocal rank.
+- The example calls the Brave API to recieve relevant URLs based on the user query
 
-```typescript
+```typescript Typescript -wcn
 export async function singleQueryBraveSearch(
   userQuery: string,
   topKPerQuery = config.search.topK,
@@ -224,7 +216,7 @@ export async function singleQueryBraveSearch(
 
 Under the hood, the Brave call itself looks like this:
 
-```typescript
+```typescript Typescript -wcn
 export async function searchTopRelevantUrls(
   query: string,
   topK = config.search.topK,
@@ -272,9 +264,6 @@ export async function searchTopRelevantUrls(
   }
 
   if (urls.length === 0) {
-    console.warn("No URLs returned from Brave, attempting salvage from raw", {
-      raw: JSON.stringify(data).slice(0, 1000),
-    });
     const rawText = JSON.stringify(data);
     const regex = /\bhttps?:\/\/[^\s"'<>]+/gi;
     const salvaged = (rawText.match(regex) ?? []) as string[];
@@ -286,11 +275,8 @@ export async function searchTopRelevantUrls(
     .filter(Boolean)
     .slice(0, topK);
 
-  console.info("Collected URLs from Brave", { count: normalized.length });
-
   return {
     urls: normalized,
-    _raw: data,
   };
 }
 ```
@@ -298,11 +284,11 @@ export async function searchTopRelevantUrls(
 Step 2: Scrape each URL to Markdown with Steel
 ----------------------------------------------
 
-- For each URL, POST to Steel’s scrape endpoint.
+- For each URL, make a request to Steel's `/v1/scrape` endpoint.
 - Request Markdown by setting `format: ["markdown"]`.
-- The response contains `content.markdown`, `links`, and metadata.
+- The response contains `content.markdown`, and metadata.
 
-```typescript
+```typescript Typescript -wcn
 export async function scrapeUrlToMarkdown(
   url: string,
 ): Promise<ScrapeResult | null> {
@@ -338,7 +324,7 @@ Step 3: Synthesize an answer with inline citations
 - Prompt the model to cite with `[n]` as it writes.
 - Return an answer plus a `sources` array mapping `[n] -> url`.
 
-```typescript
+```typescript Typescript -wcn
 export async function synthesizeWithCitations(
   input: SynthesisInput,
 ): Promise<SynthesisOutput> {
@@ -419,7 +405,6 @@ export async function synthesizeWithCitations(
   return {
     answer,
     sources,
-    _raw: completion,
   };
 }
 ```
@@ -429,15 +414,18 @@ Run and interpret the output
 
 After `npm start`, the script logs the result step-by-step:
 
-```bash
+```
 ✔ Search complete
 ✔ Scraping complete
 ✔ Answer synthesized
 
-Prediction markets offer a practical way to hedge specific risks and to add liquidity to broader market positions by turning uncertain outcomes into tradable, cash-settled contracts. Their price signals aggregate diverse information in real time, creating hedging tools and a more liquid trading environment than many traditional markets. [1]
-...
-
-## How prediction markets create hedging opportunities
+## Prediction Markets
+Prediction markets offer a practical way to
+hedge specific risks and to add liquidity to broader
+market positions by turning uncertain outcomes into tradable,
+cash-settled contracts. Their price signals aggregate diverse
+information in real time, creating hedging tools and a more
+liquid trading environment than many traditional markets. [1] ...
 ```
 
 Tuning and tips
@@ -448,7 +436,7 @@ Tuning and tips
   - `CONCURRENCY` controls how many pages you scrape at once.
 
 - Respect rate limits
-- Steel Hobby plan allows ~20 requests/min. To add an actual delay between scrapes, replace the no-op `setTimeout(() => {}, config.steel.timeout)` with an awaited delay:
+- Steel Hobby plan allows ~20 requests/min.
 
 
 - Timeouts
@@ -458,7 +446,6 @@ Tuning and tips
   - Use `OPENAI_MODEL` to choose a cost-effective model for both query generation and synthesis.
 
 - Debugging
-  - The code returns `_raw` payloads in some helpers to aid troubleshooting.
   - Log the ranked URL list before scraping if you need to inspect relevance.
 
 Example project
@@ -471,7 +458,6 @@ What to customize next
 
 - Swap Brave for another Search API if you prefer
 - Add caching for search and scrapes
-- Stream synthesis tokens for a live UI
 - Persist answers and materials to a database
 - Filter sources by domain whitelist/blacklist
 
