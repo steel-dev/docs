@@ -98,7 +98,7 @@ Want to do more with your session? Here are some common options you can add when
 const session = await client.sessions.create({
     useProxy: true,           // Use Steel's residential proxy network
     solveCaptcha: true,       // Enable automatic CAPTCHA solving
-    apiTimeout: 1800000,      // Set 30-minute timeout (default is 5 minutes)
+    timeout: 1800000,      // Set 30-minute timeout (default is 5 minutes)
     userAgent: 'custom-ua'    // Set a custom user agent
 });
 ```

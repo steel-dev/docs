@@ -23,7 +23,7 @@ Understanding how sessions live and die helps you manage resources effectively a
 
 ### Session Lifetime and Timeout
 
-When you start a session, it stays alive for 5 minutes by default but you can change it by passing the `apiTimeout`/`api_timeout` parameter. After the time passes, the session will be automatically released.
+When you start a session, it stays alive for 5 minutes by default but you can change it by passing the timeout parameter. After the time passes, the session will be automatically released.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -34,7 +34,7 @@ const client = new Steel();
 
 // Create session and keep it running for 10 minutes.
 const session = await client.sessions.create({
-  apiTimeout: 600000 // 10 minutes (NOTE: Units are in milliseconds)
+  timeout: 600000 // 10 minutes (NOTE: Units are in milliseconds)
 });
 ```
 
