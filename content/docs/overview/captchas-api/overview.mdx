@@ -19,6 +19,56 @@ CAPTCHA solving is particularly useful for:
 *   AI agents that need to navigate CAPTCHA-protected websites
 
 
+### Session Configuration
+
+To enable autosolving, simply set `solveCaptcha: true` when creating a session.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+const session = await client.sessions.create({
+  solveCaptcha: true
+});
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+client = Steel()
+session = client.sessions.create(
+    solve_captcha=True
+)
+```
+</CodeTabs>
+
+To detect CAPTCHAs without automatically solving them, disable `autoCaptchaSolving` in the stealth config:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const session = await client.sessions.create({
+  solveCaptcha: true,
+  stealthConfig: {
+    autoCaptchaSolving: false
+  }
+});
+```
+
+```python !! Python -wcn
+session = client.sessions.create(
+    solve_captcha=True,
+    stealth_config={
+        "autoCaptchaSolving": False
+    }
+)
+```
+</CodeTabs>
+
+
 ### How CAPTCHA Solving Works with the CAPTCHAs API
 
 Steel's CAPTCHAs API operates through a bridge architecture that connects your browser sessions with our external CAPTCHA-solving capabilities. It helps with four key parts:
@@ -76,11 +126,15 @@ The status endpoint returns an array of current pages and their CAPTCHA states. 
             "type":"image_to_text",
             "status":"solving",
             "created":1640995200000,
-            "totalDuration":5000
+            "url":"https://example.com/login",
+            "pageId":"page_12345",
+            "detectionTime":1640995200500,
+            "totalDuration":5000,
+            "solveTime":1640995205500
          }
       ],
       "created":1640995200000,
-      "lastUpdated":1640995205000
+      "lastUpdated":1640995205500
    }
 ]
 ```
@@ -95,6 +149,8 @@ Tasks can have the following statuses:
 
 *   `validating`: CAPTCHA is currently being validated
 
+*   `validation_failed`: CAPTCHA token failed validation after submission
+
 *   `solving`: CAPTCHA is currently being solved
 
 *   `solved`: CAPTCHA has been successfully solved
@@ -102,6 +158,44 @@ Tasks can have the following statuses:
 *   `failed_to_detect`: CAPTCHA detection failed
 
 *   `failed_to_solve`: CAPTCHA solving failed
+
+
+### Manual Solving
+
+If auto-solving is disabled, use the solve endpoint to trigger solving. You can solve all detected CAPTCHAs or target specific ones.
+
+The `taskId`, `url`, and `pageId` required for targeting specific CAPTCHAs can be retrieved from the CAPTCHA status response. When using `taskId`, use the value from the task's `id` field.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+// Solve all detected CAPTCHAs
+await client.sessions.captchas.solve('sessionId');
+
+// Solve specific task
+await client.sessions.captchas.solve('sessionId', { taskId: 'task_123' });
+
+// Solve by URL
+await client.sessions.captchas.solve('sessionId', { url: 'https://example.com' });
+
+// Solve by Page ID
+await client.sessions.captchas.solve('sessionId', { pageId: 'page_123' });
+```
+
+```python !! Python -wcn
+# Solve all detected CAPTCHAs
+client.sessions.captchas.solve("sessionId")
+
+# Solve specific task
+client.sessions.captchas.solve("sessionId", task_id="task_123")
+
+# Solve by URL
+client.sessions.captchas.solve("sessionId", url="https://example.com")
+
+# Solve by Page ID
+client.sessions.captchas.solve("sessionId", page_id="page_123")
+```
+</CodeTabs>
 
 
 ### Solving Image CAPTCHAs

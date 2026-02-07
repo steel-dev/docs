@@ -77,29 +77,95 @@ When you enable CAPTCHA solving in your Steel session, here's what happens behin
 5.  **Verification**: The system verifies that the CAPTCHA was successfully solved before allowing the session to continue.
 
 
-### Best Practices for Implementation
+### Session Configuration
 
-#### 1\. Enable CAPTCHA Solving
+To enable autosolving, simply set `solveCaptcha: true` when creating a session.
 
 <CodeTabs storage="languageSwitcher">
 
-```typescript !! Typescript -wc
-// Typescript
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
 const session = await client.sessions.create({
-    solveCaptcha: true  // Enable CAPTCHA solving
+  solveCaptcha: true
 });
 ```
 
 ```python !! Python -wcn
-# Python
+from steel import Steel
+
+client = Steel()
 session = client.sessions.create(
-    solve_captcha=True  # Enable CAPTCHA solving
+    solve_captcha=True
 )
 ```
 </CodeTabs>
 
+To detect CAPTCHAs without automatically solving them, disable `autoCaptchaSolving` in the stealth config:
 
-#### 2\. Implement Proper Waiting
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const session = await client.sessions.create({
+  solveCaptcha: true,
+  stealthConfig: {
+    autoCaptchaSolving: false
+  }
+});
+```
+
+```python !! Python -wcn
+session = client.sessions.create(
+    solve_captcha=True,
+    stealth_config={
+        "autoCaptchaSolving": False
+    }
+)
+```
+</CodeTabs>
+
+### Manual Solving
+
+If auto-solving is disabled, use the solve endpoint to trigger solving. You can solve all detected CAPTCHAs or target specific ones.
+
+The `taskId`, `url`, and `pageId` required for targeting specific CAPTCHAs can be retrieved from the [CAPTCHA status response](/overview/captchas-api/overview#getting-captcha-status). When using `taskId`, use the value from the task's `id` field.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+// Solve all detected CAPTCHAs
+await client.sessions.captchas.solve('sessionId');
+
+// Solve specific task
+await client.sessions.captchas.solve('sessionId', { taskId: 'task_123' });
+
+// Solve by URL
+await client.sessions.captchas.solve('sessionId', { url: 'https://example.com' });
+
+// Solve by Page ID
+await client.sessions.captchas.solve('sessionId', { pageId: 'page_123' });
+```
+
+```python !! Python -wcn
+# Solve all detected CAPTCHAs
+client.sessions.captchas.solve("sessionId")
+
+# Solve specific task
+client.sessions.captchas.solve("sessionId", task_id="task_123")
+
+# Solve by URL
+client.sessions.captchas.solve("sessionId", url="https://example.com")
+
+# Solve by Page ID
+client.sessions.captchas.solve("sessionId", page_id="page_123")
+```
+</CodeTabs>
+
+### Best Practices for Implementation
+
+#### 1\. Implement Proper Waiting
 
 When navigating to pages that might contain CAPTCHAs, it's important to implement proper waiting strategies:
 
@@ -118,7 +184,7 @@ await page.wait_for_timeout(2000)  # Additional safety buffer
 ```
 </CodeTabs>
 
-#### 3\. Detecting CAPTCHA Presence
+#### 2. Detecting CAPTCHA Presence
 
 You can detect CAPTCHA presence using these selectors:
 
