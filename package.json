@@ -25,8 +25,12 @@
     "mdast-util-to-hast": ">=13.2.1",
     "nth-check": ">=2.0.1",
     "diff": ">=5.2.2",
-    "gray-matter>js-yaml": "3.14.2",
-    "svgo>js-yaml": "3.14.2"
+    "gray-matter": {
+      "js-yaml": "3.14.2"
+    },
+    "svgo": {
+      "js-yaml": "3.14.2"
+    }
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.1",
