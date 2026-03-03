@@ -1,459 +1,346 @@
 ---
 title: Steel CLI
 sidebarTitle: Steel CLI
-# isLink: true
 llm: true
 ---
 
 ## Overview
 
-The Steel CLI is a powerful command-line interface for interacting with the Steel platform. It provides an easy way to create browser automation projects, run AI agents, and manage your Steel workflows directly from your terminal.
+`@steel-dev/cli` lets you run full browser workflows from the terminal, end-to-end.
+You can start a browser session, navigate pages, click/fill/type, extract content, and
+stop the session without wiring custom browser infrastructure.
 
-**Key Features:**
-- Quick project scaffolding with pre-built templates
-- Instant script execution without local setup
-- Switch between local and cloud execution modes
-- Integration with popular AI frameworks (OpenAI, Claude, Browser Use, etc.)
-- Support for Playwright, Puppeteer, and Selenium
+What it enables:
 
-**GitHub Repository:** [steel-dev/cli](https://github.com/steel-dev/cli)
+- Run browser automation in cloud mode (default) or self-hosted/local mode
+- Drive pages with terminal-first browser commands (`open`, `snapshot`, `fill`, `click`, etc.)
+- Use API tools for `scrape`, `screenshot`, and `pdf`
+- Bootstrap projects quickly with `forge` and run templates instantly with `run`
+
+Under the hood, `steel browser` is directly integrated with the `agent-browser` runtime.
+That means Steel adds session lifecycle, auth, and endpoint routing while preserving
+familiar browser command behavior.
+
+- GitHub: [steel-dev/cli](https://github.com/steel-dev/cli)
+- Package: [npmjs.com/package/@steel-dev/cli](https://www.npmjs.com/package/@steel-dev/cli)
+
+## Documentation Index (for Agents)
+
+If you are using an AI agent and want a complete docs index before exploring pages:
+
+- `https://docs.steel.dev/llms-full.txt`
+
+This returns a flattened, agent-friendly text map of the docs site.
 
 ## Installation
 
-The Steel CLI requires Node.js 18 or higher.
+Requirements:
 
-```package-install -wc
-@steel-dev/cli -g
+- Node.js `>=18`
+
+Install globally:
+
+```bash Terminal
+npm i -g @steel-dev/cli
 ```
 
-Verify the installation:
+Or run without global install:
 
-```bash Terminal -wc
-steel --version
-```
-
-For TypeScript examples, ensure you have `ts-node` installed globally:
-
-```package-install
-ts-node -g
+```bash Terminal
+npx @steel-dev/cli --help
 ```
 
 ## Quick Start
 
-### 1. Login to Steel
-
-First, authenticate with your Steel account:
+### Cloud Mode (Default)
 
 ```bash Terminal -wc
 steel login
+steel browser start --session my-job
+steel browser open https://example.com --session my-job
+steel browser snapshot -i --session my-job
+steel browser stop --session my-job
 ```
 
-This will open your browser to authenticate. Once complete, you're ready to go!
-
-### 2. Run Your First Automation
-
-The fastest way to get started is using the `run` command, which executes automations instantly without creating any files:
-
-```bash Terminal -w
-# Run a Playwright automation
-steel run playwright
-
-# Run with a specific task
-steel run browser-use --task "Navigate to example.com and take a screenshot"
-
-# Run a Python automation with Browser Use
-steel run browser-use
-```
-
-### 3. Create a New Project
-
-For more substantial projects, use `forge` to scaffold a complete project:
-
-```bash Terminal -w
-# Interactive mode - choose from available templates
-steel forge
-
-# Create a specific template
-steel forge playwright --name my-automation
-
-# Create with specific options
-steel forge playwright-py --name my-project --skip_auth
-```
-
-## Core Commands
-
-### `steel forge` - Create Projects
-
-The `forge` command scaffolds complete projects with all necessary dependencies and boilerplate code.
-
-**Usage:**
-```bash Terminal
-steel forge [template] [options]
-```
-
-**Popular Templates:**
-
-| Template | Language | Description |
-|----------|----------|-------------|
-| `playwright` | TypeScript | Drive Steel sessions with Playwright |
-| `playwright-py` | Python | Playwright automation in Python |
-| `puppeteer` | TypeScript | Use Puppeteer with Steel |
-| `selenium` | Python | Selenium WebDriver integration |
-| `browser-use` | Python | AI agent framework by Browser Use |
-| `stagehand` | TypeScript | Stagehand AI framework |
-| `magnitude` | TypeScript | Magnitude AI agent framework |
-| `claude-cua` | TypeScript | Claude Computer Use with Steel |
-| `oai-cua` | TypeScript | OpenAI Computer Use with Steel |
-| `auth` | TypeScript | Reusable authentication context |
-| `creds` | TypeScript | Steel Credentials API example |
-| `files` | TypeScript | Steel Files API example |
-
-**Options:**
-- `-n, --name` - Project name
-- `-a, --api_url` - Custom Steel API URL
-- `--api_key` - Steel API key
-- `--openai_key` - OpenAI API key (for AI templates)
-- `--skip_auth` - Skip authentication prompts
-
-**Examples:**
+### Self-Hosted Endpoint
 
 ```bash Terminal
-# Interactive template selection
-steel forge
-
-# Create a Playwright TypeScript project
-steel forge playwright --name web-scraper
-
-# Create a Python Browser Use project
-steel forge browser-use --name ai-agent --openai_key your_key
-
-# Create with custom API configuration
-steel forge puppeteer --name custom-bot --api_url https://api.steel.dev
+steel browser start --api-url https://steel.your-domain.dev/v1 --session my-job
+steel browser open https://example.com --api-url https://steel.your-domain.dev/v1 --session my-job
 ```
 
-### `steel run` - Instant Execution
-
-Run automations immediately without creating project files. Perfect for quick tests and one-off scripts.
-
-**Usage:**
-```bash Terminal
-steel run [template] [options]
-```
-
-**Available Templates:**
-
-| Template | Language | Description |
-|----------|----------|-------------|
-| `playwright` | TypeScript | Playwright + TypeScript |
-| `playwright-js` | JavaScript | Playwright in JavaScript |
-| `puppeteer` | TypeScript | Puppeteer + TypeScript |
-| `puppeteer-js` | JavaScript | Puppeteer in JavaScript |
-| `playwright-py` | Python | Playwright in Python |
-| `selenium` | Python | Selenium WebDriver |
-| `browser-use` | Python | Browser Use AI agent |
-| `oai-cua` | TypeScript | OpenAI Computer Use |
-| `oai-cua-py` | Python | OpenAI Computer Use (Python) |
-| `magnitude` | TypeScript | Magnitude AI framework |
-| `files` | TypeScript | Files API example |
-| `creds` | TypeScript | Credentials API example |
-
-**Options:**
-- `-t, --task` - Specific task description for AI agents
-- `-o, --view` - Open live session viewer in browser
-- `-a, --api_url` - Custom Steel API URL
-- `--api_key` - Steel API key
-- `--openai_key` - OpenAI API key
-- `--skip_auth` - Skip authentication
-- `--no-update-check` - Disable update checking
-
-**Examples:**
+### Local Runtime (`localhost`) Flow
 
 ```bash Terminal
-# Run Playwright automation interactively
-steel run playwright
-
-# Run with live session viewer
-steel run playwright --view
-
-# Run AI agent with specific task
-steel run browser-use --task "Find the latest iPhone price on Apple's website"
-
-# Run OpenAI Computer Use agent
-steel run oai-cua --task "Research the top 3 trending
- GitHub repos today" --openai_key your_key
-
-# Run without update check (useful in CI)
-steel run playwright --no-update-check
+steel dev install
+steel dev start
+steel browser start --local --session local-job
+steel browser open https://example.com --session local-job
+steel browser stop --session local-job
+steel dev stop
 ```
 
-### `steel settings` - Configure Execution Mode
+## Skills for Coding Agents
 
-Switch between local and cloud execution modes for your Steel automations.
+Steel ships a dedicated skill package for browser workflows:
 
-**Usage:**
-```bash Terminal -wc
-steel settings
-```
+- [skills/steel-browser](https://github.com/steel-dev/cli/tree/main/skills/steel-browser)
 
-This opens an interactive menu where you can choose:
+This is designed for coding agents, including:
 
-- **Cloud Mode** (default) - Run automations on Steel's managed infrastructure
-  - No local browser installation needed
-  - Scalable and production-ready
-  - Access to Steel's proxy network
-  - Automatic resource management
+- Codex
+- OpenCode
+- OpenClaw
+- Claude Code
 
-- **Local Mode** - Run automations on your local machine
-  - Useful for development and debugging
-  - Requires local browser installation
-  - Direct access to local files and resources
-
-**Example Workflow:**
+Install from GitHub:
 
 ```bash Terminal
-# Check current settings
-steel settings
-
-# Switch to local mode for debugging
-steel settings
-# Select "Local" from the menu
-
-# Run your automation locally
-steel run playwright
-
-# Switch back to cloud for production
-steel settings
-# Select "Cloud" from the menu
+npx skills add github:steel-dev/cli/skills/steel-browser
 ```
 
-## Additional Commands
-
-### Authentication
+Or from a local checkout:
 
 ```bash Terminal
-# Login to Steel
-steel login
-
-# Logout from Steel
-steel logout
-
-# View current session info
-steel config
+npx skills add ./skills/steel-browser
 ```
 
-### Cache Management
+After installation, restart your agent client so it can discover newly installed skills.
 
-The CLI caches templates and files for faster execution:
+What this skill gives agents:
+
+- Mode-aware command planning (cloud vs self-hosted)
+- Named-session lifecycle discipline (`start -> work -> stop`)
+- Reliable command patterns for `steel browser` passthrough actions
+- Migration guidance from `agent-browser`
+- Troubleshooting playbooks for auth/session/CAPTCHA failures
+
+### Typical Agent Skill Workflow
+
+Most agent loops follow this pattern:
+
+1. Start or attach a named session.
+2. Open a page and inspect interactable elements (`snapshot -i`).
+3. Perform actions (`fill`, `select`, `check`, `click`).
+4. Wait for the post-action state and verify output.
+5. Stop the session when done.
 
 ```bash Terminal
-# View cache information
-steel cache
-
-# Clear all cached files
-steel cache --clean
+SESSION="signup-demo-$(date +%s)"
+steel browser start --session "$SESSION"
+steel browser open https://example.com/signup --session "$SESSION"
+steel browser snapshot -i --session "$SESSION"
+steel browser fill @e1 "Jane Doe" --session "$SESSION"
+steel browser fill @e2 "jane@example.com" --session "$SESSION"
+steel browser select @e3 "California" --session "$SESSION"
+steel browser check @e4 --session "$SESSION"
+steel browser click @e5 --session "$SESSION"
+steel browser wait --load networkidle --session "$SESSION"
+steel browser stop --session "$SESSION"
 ```
 
-### Development Tools
+If you already know upstream `agent-browser`, the behavior is typically command-prefix only:
 
 ```bash Terminal
-# Start Steel Browser in development mode
-steel browser start
-
-# Start on specific port with verbose logging
-steel browser start --port 3000 --verbose
-
-# Stop development server
-steel browser stop
+agent-browser open https://example.com/signup
+agent-browser snapshot -i
+agent-browser fill @e1 "Jane Doe"
+agent-browser fill @e2 "jane@example.com"
+agent-browser select @e3 "California"
+agent-browser check @e4
+agent-browser click @e5
+agent-browser wait --load networkidle
 ```
 
-### Help & Resources
+## Command Model
+
+### Steel-Owned Browser Lifecycle Commands
+
+- `steel browser start`
+- `steel browser stop`
+- `steel browser sessions`
+- `steel browser live`
+- `steel browser captcha solve`
+
+### Inherited Browser Commands (Passthrough)
+
+All non-lifecycle `steel browser <command>` calls are routed through the vendored
+`agent-browser` runtime.
+
+Migration is usually command-prefix only:
+
+- Before: `agent-browser <command> ...`
+- After: `steel browser <command> ...`
+
+### Essential Inherited Commands
+
+These are the most common inherited commands agents use:
+
+- Page navigation: `open`, `back`, `forward`, `reload`
+- Page understanding: `snapshot`, `snapshot -i`
+- Interaction: `click`, `fill`, `type`, `select`, `check`, `press`, `hover`
+- Data retrieval: `get text`, `get html`, `get title`, `get url`
+- Synchronization: `wait`, `wait --load networkidle`, `wait --text`
+- Debugging: `screenshot`, `errors`, `console`
+
+Use command help directly when needed:
 
 ```bash Terminal
-# View CLI help
-steel --help
+steel browser --help
+steel browser click --help
+steel browser wait --help
+```
 
-# Get help for specific command
+For full command references:
+- [Steel browser commands reference](https://github.com/steel-dev/cli/blob/main/docs/references/steel-browser-commands.md)
+- [Steel browser session lifecycle reference](https://github.com/steel-dev/cli/blob/main/docs/references/steel-browser.md)
+
+## Command Overview
+
+| Group | Commands |
+|---|---|
+| Quickstart | `forge`, `run` |
+| Browser lifecycle | `browser start`, `browser stop`, `browser sessions`, `browser live`, `browser captcha solve` |
+| Browser passthrough | `steel browser <inherited-command>` |
+| API tools | `scrape`, `screenshot`, `pdf` |
+| Local runtime | `dev install`, `dev start`, `dev stop` |
+| Account + utility | `login`, `logout`, `config`, `settings`, `cache`, `docs`, `support`, `star`, `update` |
+
+## Common Workflows
+
+### 1. Named Session Lifecycle
+
+```bash Terminal
+SESSION="job-$(date +%s)"
+steel browser start --session "$SESSION"
+steel browser open https://example.com --session "$SESSION"
+steel browser snapshot -i --session "$SESSION"
+steel browser get title --session "$SESSION"
+steel browser stop --session "$SESSION"
+```
+
+### 2. CAPTCHA-Aware Sessions
+
+```bash Terminal
+# Manual solve mode
+steel browser start --session my-job --session-solve-captcha
+steel browser captcha solve --session my-job
+
+# Auto solve mode (stealth preset)
+steel browser start --session my-job --stealth
+```
+
+### 3. `agent-browser` Migration
+
+```bash Terminal
+# Before
+agent-browser open https://example.com
+agent-browser snapshot -i
+agent-browser click @e3
+
+# After
+steel browser open https://example.com
+steel browser snapshot -i
+steel browser click @e3
+```
+
+### 4. API Tool Commands
+
+```bash Terminal
+# Scrape (markdown-first output by default)
+steel scrape https://example.com
+
+# Screenshot
+steel screenshot https://example.com --full-page
+
+# PDF
+steel pdf https://example.com
+```
+
+## `forge` and `run` (Templates)
+
+Use `forge` to scaffold a project and `run` to execute templates instantly.
+
+```bash Terminal
+# Scaffold a project
+steel forge playwright --name my-bot
+
+# Run an instant task-oriented template flow
+steel run browser-use --task "Research the latest browser automation libraries"
+```
+
+List all templates and flags:
+
+```bash Terminal
 steel forge --help
-
-# Open Steel documentation
-steel docs
-
-# Join Steel Discord community
-steel support
-
-# Star the GitHub repository
-steel star
+steel run --help
 ```
 
-### Updates
+## Endpoint Resolution
+
+For browser lifecycle, passthrough bootstrap, and API tools (`scrape`, `screenshot`, `pdf`),
+endpoint selection is deterministic.
+
+Self-hosted precedence:
+
+1. `--api-url <url>`
+2. `STEEL_BROWSER_API_URL`
+3. `STEEL_LOCAL_API_URL`
+4. `browser.apiUrl` in `~/.config/steel/config.json`
+5. `http://localhost:3000/v1`
+
+Cloud precedence:
+
+1. `STEEL_API_URL`
+2. `https://api.steel.dev/v1`
+
+Attach-flag override:
+
+- If `--cdp` or `--auto-connect` is provided, Steel skips bootstrap injection and forwards
+  passthrough arguments unchanged.
+
+## Auth, Config, and Updates
 
 ```bash Terminal
-# Update to latest version
+steel login
+steel config
+steel logout
+steel settings
+steel cache --clean
 steel update
-
-# Check for updates without installing
 steel update --check
-
-# Force update
 steel update --force
 ```
 
-The CLI automatically checks for updates every 24 hours. Disable with:
+Disable auto-update checks (24-hour cache window):
 
 ```bash Terminal
-# Using flag
 steel run --no-update-check
-
-# Using environment variable
 STEEL_CLI_SKIP_UPDATE_CHECK=true steel run
+CI=true steel run
+NODE_ENV=test steel run
 ```
 
-## Practical Examples
+## Runtime and Output Notes
 
-### Example 1: Quick Web Scraping
-
-```bash Terminal
-# Run a Playwright automation with live viewer
-steel run playwright --view
-
-# In the generated code, add your scraping logic
-# The browser session will be visible in your browser
-```
-
-### Example 2: Create a Browser-use Project
-
-```bash Terminal
-# Create a new Browser Use project
-steel forge browser-use --name price-monitor
-
-cd price-monitor
-
-# Install dependencies
-uv add -r requirements.txt
-
-# Edit the generated script with your logic
-# Run your agent
-uv run main.py
-```
-
-### Example 3: Using Authentication Context
-
-```bash Terminal
-# Create a project with reusable auth
-steel forge auth --name linkedin-scraper
-
-# This template shows how to:
-# 1. Authenticate once and save session
-# 2. Reuse authentication across runs
-# 3. Handle session expiration
-```
-
-### Example 4: Multi-Step Workflow
-
-```bash Terminal
-# 1. Create project with credentials API
-steel forge creds --name secure-automation
-
-# 2. Configure for cloud execution
-steel settings
-# Select "Cloud"
-
-# 3. The project will use Steel's credentials management
-#    for secure handling of sensitive data
-```
-
-### Example 5: Local Development, Cloud Production
-
-```bash Terminal
-# Develop locally
-steel settings  # Choose "Local"
-steel forge playwright --name my-bot
-cd my-bot
-
-# Test locally
-npm start
-
-# Deploy to cloud
-steel settings  # Choose "Cloud"
-npm start  # Now runs on Steel's infrastructure
-```
-
-## Best Practices
-
-### 1. Use Cloud Mode for Production
-Cloud mode provides better scalability, reliability, and doesn't require local browser maintenance.
-
-### 2. Leverage Templates
-Templates include best practices and proper error handling. Start with a template rather than from scratch.
-
-### 3. Use `--view` for Debugging
-When developing automations, use `steel run playwright --view` to watch the browser in real-time.
-
-### 4. Cache Management
-Run `steel cache --clean` periodically to free up disk space, especially after trying many templates.
-
-### 5. Environment Variables
-For CI/CD pipelines, use environment variables:
-
-```bash Terminal -wc
-export STEEL_API_KEY=your_key
-export STEEL_CLI_SKIP_UPDATE_CHECK=true
-steel run playwright --skip_auth
-```
-
-### 6. Version Control
-When using `forge`, make sure to:
-- Add `.env` files to `.gitignore`
-- Commit the generated project structure
-- Document required API keys in README
+- `steel scrape` defaults to markdown-first output; use `--raw` for full JSON payload.
+- `steel browser start` and `steel browser sessions` return display-safe `connect_url` values
+  with sensitive query parameters redacted.
+- Browser command paths bypass auto-update checks to reduce interactive latency.
 
 ## Troubleshooting
 
-### Command Not Found
-If `steel` command isn't found after installation:
+- `Missing browser auth...`: run `steel login` or set `STEEL_API_KEY`.
+- `Failed to reach Steel session API ...`: confirm mode and endpoint settings (`--local`,
+  `--api-url`, env vars).
+- Session reuse issues: use a consistent `--session <name>` across every step.
+- Local runtime issues: run `steel dev install` once, then `steel dev start`.
+- Stale state: run `steel browser stop --all` and start a fresh named session.
 
-```bash Terminal
-# Reinstall globally
-npm install -g @steel-dev/cli
+## References
 
-# Or use npx
-npx @steel-dev/cli run playwright
-```
-
-### Authentication Issues
-
-```bash Terminal -w
-# Clear session and re-authenticate
-steel logout
-steel login
-```
-
-### Template Errors
-
-```bash Terminal -w
-# Clear cache and try again
-steel cache --clean
-steel forge playwright
-```
-
-### Node Version
-
-Ensure you're using Node.js 18 or higher:
-
-```bash Terminal -w
-node --version
-# Should be v18.0.0 or higher
-```
-
-## Next Steps
-
-- Explore the [Steel API Documentation](/docs/api) for advanced features
-- Join the [Steel Discord](https://discord.gg/steel) for community support
-- Check out [example projects](https://github.com/steel-dev/cli/tree/main/docs) in the CLI repository
-- Learn about [Steel Sessions](/docs/sessions) for persistent browser contexts
-
-## Support
-
-- **Documentation**: Run `steel docs` or visit [steel.dev/docs](https://steel.dev/docs)
-- **Discord**: Run `steel support` or join our [Discord community](https://discord.gg/steel)
-- **GitHub**: Report issues at [github.com/steel-dev/cli](https://github.com/steel-dev/cli)
+- [Steel CLI README](https://github.com/steel-dev/cli/blob/main/README.md)
+- [Generated CLI Reference](https://github.com/steel-dev/cli/blob/main/docs/cli-reference.md)
+- [Steel Browser Reference](https://github.com/steel-dev/cli/blob/main/docs/references/steel-browser.md)
+- [Migration Guide (`agent-browser` -> `steel browser`)](https://github.com/steel-dev/cli/blob/main/docs/migration-agent-browser.md)
+- [Steel Browser Skill Package](https://github.com/steel-dev/cli/tree/main/skills/steel-browser)
