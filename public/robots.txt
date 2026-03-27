@@ -19,4 +19,5 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Host: https://docs.hiro.so
+Host: docs.steel.dev
+Sitemap: https://docs.steel.dev/sitemap.xml

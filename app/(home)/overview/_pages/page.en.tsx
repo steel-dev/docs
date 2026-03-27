@@ -1,5 +1,5 @@
 import { LiquidMetal as LiquidMetal1 } from '@paper-design/shaders-react';
-import { Brackets, Database } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import { Card, Cards, SmallCard } from '@/components/card';
 import {
@@ -173,6 +173,12 @@ export default function HomePage() {
                 href="/api-reference"
                 title="API Reference"
                 description="View the Steel API reference."
+              />
+              <SmallCard
+                icon={<Sparkles />}
+                href="/llms.txt"
+                title="Instructions for AI Agents"
+                description="Start here for the LLM-friendly docs index in /llms.txt."
               />
             </Cards>
           </div>

@@ -302,8 +302,34 @@ export async function generateMetadata(props: {
   }
   if (!page) notFound();
 
+  const canonicalPath = page.url.replace(/^\/en(\/|$)/, '/');
+
   return {
     title: page.data.title,
     description: page.data.description,
+    alternates: {
+      canonical: canonicalPath,
+    },
+    openGraph: {
+      title: page.data.title,
+      description: page.data.description,
+      url: canonicalPath,
+      siteName: 'Steel Docs',
+      type: 'article',
+      images: [
+        {
+          url: '/images/logo.png',
+          width: 800,
+          height: 600,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.data.title,
+      description: page.data.description,
+      creator: '@steelsystems',
+      images: ['/images/logo.png'],
+    },
   };
 }

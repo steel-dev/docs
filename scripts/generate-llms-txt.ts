@@ -24,6 +24,41 @@ interface PageMetadata {
   section: string[];
 }
 
+const ROOT_SECTION_ORDER = ['overview', 'integrations', 'cookbook', 'changelog'];
+const ROOT_INTRO_LINES = [
+  '> Steel is an open-source cloud browser infrastructure platform for AI agents. It gives your agent a real browser that can navigate pages, fill forms, solve CAPTCHAs, persist auth, and extract content from modern websites. Steel is the fastest remote browser in independent benchmarks: 0.89s average lifecycle, 1.7x to 9x faster than alternatives.',
+  '',
+  '## Who Steel is for',
+  '',
+  '- **AI agent builders** who need reliable, authenticated web access in production.',
+  '- **Scraping and data extraction teams** who want managed browser infrastructure without running headless Chrome themselves.',
+  '- **Automation engineers** migrating Playwright, Puppeteer, or Selenium scripts to the cloud.',
+  '- **Teams that need persistent browser state**: login sessions, cookies, credentials, and extensions that survive across runs.',
+  '',
+  '## For coding agents',
+  '',
+  '- [Install guide](https://setup.steel.dev/install.md): Install the Steel CLI, add the `steel-browser` skill, authenticate, and verify with `steel scrape`.',
+  '- [Steel CLI + Skill](https://docs.steel.dev/overview/steel-cli): Learn the terminal workflow, `steel browser` commands, and agent skill setup.',
+  '- [Steel Browser Skill Package](https://github.com/steel-dev/cli/tree/main/skills/steel-browser): Install the dedicated skill for coding agents.',
+  '',
+  '## Why Steel',
+  '',
+  '- **Performance**: 0.89s avg browser lifecycle (p95: 1.09s). 25.6% control-plane tax, the lowest measured in independent testing.',
+  '- **Open source**: Core browser runtime at [github.com/steel-dev/steel-browser](https://github.com/steel-dev/steel-browser). Benchmark code at [github.com/steel-dev/browserbench](https://github.com/steel-dev/browserbench).',
+  '- **Self-hostable**: Run Steel in your own infrastructure with Docker or Railway one-click deploy. No vendor lock-in.',
+  '- **Framework agnostic**: Works with Playwright, Puppeteer, and Selenium. Native Node and Python SDKs.',
+  '- **Production ready**: Profiles for persistent auth, CAPTCHA solving, stealth/proxy tooling, agent logs, and live session debugging.',
+  '',
+  '## Key features',
+  '',
+  '- Steel runs isolated cloud browser sessions through an API, CLI, and SDKs.',
+  '- Steel can return page content as HTML, markdown, screenshots, and PDFs.',
+  '- Steel can persist browser state across runs with profiles, cookies, credentials, extensions, and auth context.',
+  '- Steel includes anti-bot tooling: proxies, stealth settings, CAPTCHA solving, and mobile-mode browsing.',
+  '- Steel includes debugging and observability tools: live sessions, past session embeds, recordings, WebRTC streaming, and agent logs.',
+  '- Steel supports cloud, self-hosted, and local runtime workflows.',
+];
+
 // Get all pages from source
 function getAllPages(): PageMetadata[] {
   const sourcePages = source.getPages();
@@ -65,8 +100,15 @@ function generateLLMsContent(
   pages: PageMetadata[],
   title: string,
   currentSection: string[] = [],
+  introLines: string[] = [],
 ): string {
-  const lines = [`# ${title}`, '', '## Pages', ''];
+  const lines = [`# ${title}`, ''];
+
+  if (introLines.length > 0) {
+    lines.push(...introLines, '');
+  }
+
+  lines.push('## Pages', '');
 
   // For deep sections (like /tools), we want to group by the next level
   const groupDepth = currentSection.length;
@@ -94,6 +136,16 @@ function generateLLMsContent(
     if (b === '_overview') return 1;
     if (a === 'root') return -1;
     if (b === 'root') return 1;
+
+    if (currentSection.length === 0) {
+      const aIndex = ROOT_SECTION_ORDER.indexOf(a);
+      const bIndex = ROOT_SECTION_ORDER.indexOf(b);
+
+      if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+      if (aIndex !== -1) return -1;
+      if (bIndex !== -1) return 1;
+    }
+
     return a.localeCompare(b);
   });
 
@@ -176,8 +228,15 @@ async function generateAllLLMsTxt() {
   console.log(`📄 Found ${allPages.length} pages`);
 
   // Generate root llms.txt with production URLs
-  const rootContent = generateLLMsContent(allPages, 'Steel Documentation', []);
-  await fs.writeFile(path.join(PUBLIC_DIR, 'llms.txt'), rootContent);
+  const rootContent = generateLLMsContent(allPages, 'Steel Documentation', [], ROOT_INTRO_LINES);
+  const rootContentWithOptional = [
+    rootContent,
+    '',
+    '## Optional',
+    '',
+    `- [llms-full.txt](${config.productionUrl}/llms-full.txt): Full concatenated docs bundle for tools that prefer a single LLM-friendly context file.`,
+  ].join('\n');
+  await fs.writeFile(path.join(PUBLIC_DIR, 'llms.txt'), rootContentWithOptional);
   console.log('✔️  Generated root llms.txt');
 
   // Generate section-level llms.txt files
