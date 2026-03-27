@@ -1,3 +1,8 @@
+# Public docs are crawlable by default.
+User-agent: *
+Allow: /
+
+# Explicit AI assistant and AI search bot allowances.
 User-agent: GPTBot
 Allow: /
 
@@ -5,6 +10,12 @@ User-agent: ChatGPT-User
 Allow: /
 
 User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
 Allow: /
 
 User-agent: ClaudeBot
@@ -19,5 +30,5 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Host: docs.steel.dev
 Sitemap: https://docs.steel.dev/sitemap.xml
+Host: docs.steel.dev
