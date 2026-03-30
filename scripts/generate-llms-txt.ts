@@ -60,6 +60,12 @@ function getAllPages(): PageMetadata[] {
   );
 }
 
+// Format a page URL for llms.txt, appending .mdx so agents get markdown
+function formatPageUrl(cleanUrl: string): string {
+  if (cleanUrl === '/') return `${config.productionUrl}/`;
+  return `${config.productionUrl}${cleanUrl}.mdx`;
+}
+
 // Generate llms.txt content for a set of pages
 function generateLLMsContent(
   pages: PageMetadata[],
@@ -112,10 +118,7 @@ function generateLLMsContent(
     if (section === '_overview') {
       // These are overview pages at the current level
       for (const page of sectionPages) {
-        const pageUrl =
-          page.cleanUrl === '/'
-            ? `${config.productionUrl}/`
-            : `${config.productionUrl}${page.cleanUrl}`;
+        const pageUrl = formatPageUrl(page.cleanUrl);
         lines.push(
           `- [${page.title}](${pageUrl})${page.description ? `: ${page.description}` : ''}`,
         );
@@ -132,10 +135,7 @@ function generateLLMsContent(
       }
 
       for (const page of sectionPages) {
-        const pageUrl =
-          page.cleanUrl === '/'
-            ? `${config.productionUrl}/`
-            : `${config.productionUrl}${page.cleanUrl}`;
+        const pageUrl = formatPageUrl(page.cleanUrl);
         lines.push(
           `- [${page.title}](${pageUrl})${page.description ? `: ${page.description}` : ''}`,
         );
@@ -144,10 +144,7 @@ function generateLLMsContent(
     } else {
       // Root level pages
       for (const page of sectionPages) {
-        const pageUrl =
-          page.cleanUrl === '/'
-            ? `${config.productionUrl}/`
-            : `${config.productionUrl}${page.cleanUrl}`;
+        const pageUrl = formatPageUrl(page.cleanUrl);
         lines.push(
           `- [${page.title}](${pageUrl})${page.description ? `: ${page.description}` : ''}`,
         );
