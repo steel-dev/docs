@@ -8,12 +8,23 @@ function isMarkdownPreferred(request: NextRequest): boolean {
   return MARKDOWN_TYPES.some((type) => accept.includes(type));
 }
 
+function isProgrammaticClient(request: NextRequest): boolean {
+  // Browsers always send Sec-Fetch-Dest; curl/WebFetch/python-requests do not
+  return !request.headers.has('sec-fetch-dest');
+}
+
 export default function middleware(request: NextRequest, event: NextFetchEvent) {
   const { pathname } = request.nextUrl;
 
   if (isMarkdownPreferred(request) && !pathname.startsWith('/llms')) {
     const rewriteUrl = request.nextUrl.clone();
     rewriteUrl.pathname = `/llms.mdx${pathname}`;
+    return NextResponse.rewrite(rewriteUrl);
+  }
+
+  if (pathname === '/' && isProgrammaticClient(request)) {
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = '/llms.txt';
     return NextResponse.rewrite(rewriteUrl);
   }
 
