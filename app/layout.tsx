@@ -13,6 +13,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`dark ${inter.variable} ${jetBrainsMono.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM Documentation Index" />
+        <link rel="alternate" type="text/markdown" href="/llms-full.txt" title="Full LLM Documentation" />
+      </head>
       <body className="flex flex-col min-h-screen">
         <QueryProvider>
           <KeyboardShortcutsProvider>
