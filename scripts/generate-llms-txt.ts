@@ -168,6 +168,63 @@ async function ensureDir(dir: string) {
   }
 }
 
+const AGENT_INSTRUCTIONS = `# Steel Documentation
+
+> Steel is a cloud browser API for AI agents and developers.
+> Use Steel to launch cloud browsers, scrape content, and automate web tasks.
+
+## Quick Reference
+
+- Install: \`npm install steel-sdk\` (Node.js) or \`pip install steel-sdk\` (Python)
+- CLI: \`curl -sSf https://setup.steel.dev | sh\`
+- Auth header: \`steel-api-key: <your-key>\`
+- Auth env var: \`STEEL_API_KEY\`
+- API base URL: \`https://api.steel.dev\`
+- WebSocket: \`wss://connect.steel.dev?apiKey=<key>&sessionId=<id>\`
+- API reference: https://steel.apidocumentation.com/api-reference
+
+## Agent Instructions
+
+- For the simplest one-liner scrape, use the CLI:
+  \`\`\`bash
+  steel scrape https://example.com
+  \`\`\`
+- For simple scraping without a browser session, use the REST scrape endpoint:
+  \`\`\`
+  curl -X POST https://api.steel.dev/v1/scrape \\
+    -H "steel-api-key: YOUR_KEY" \\
+    -H "Content-Type: application/json" \\
+    -d '{"url": "https://example.com"}'
+  \`\`\`
+- For browser automation, connect Puppeteer or Playwright via WebSocket:
+  \`\`\`js
+  import Steel from 'steel-sdk';
+  import puppeteer from 'puppeteer-core';
+
+  const client = new Steel({ steelAPIKey: process.env.STEEL_API_KEY });
+  const session = await client.sessions.create();
+  const browser = await puppeteer.connect({
+    browserWSEndpoint: \`wss://connect.steel.dev?apiKey=\${process.env.STEEL_API_KEY}&sessionId=\${session.id}\`,
+  });
+  // ... use browser ...
+  await browser.close();
+  await client.sessions.release(session.id);
+  \`\`\`
+- Python SDK:
+  \`\`\`python
+  from steel import Steel
+  client = Steel(steel_api_key="YOUR_KEY")  # or set STEEL_API_KEY env var
+  result = client.scrape(url="https://example.com")
+  print(result.content.html)
+  \`\`\`
+- Always release sessions when done: \`client.sessions.release(sessionId)\`
+- Do NOT use \`session.websocketUrl\` directly — construct the WSS URL as shown above
+- The Node SDK constructor param is \`steelAPIKey\` (not \`apiKey\`)
+- The Python SDK constructor param is \`steel_api_key\` (not \`api_key\`)
+- Individual doc pages are available as markdown by appending \`.mdx\` to any URL
+
+`;
+
 // Main generation function
 async function generateAllLLMsTxt() {
   console.log('🚀 Starting documentation generation...');
@@ -175,9 +232,9 @@ async function generateAllLLMsTxt() {
   const allPages = getAllPages();
   console.log(`📄 Found ${allPages.length} pages`);
 
-  // Generate root llms.txt with production URLs
   const rootContent = generateLLMsContent(allPages, 'Steel Documentation', []);
-  await fs.writeFile(path.join(PUBLIC_DIR, 'llms.txt'), rootContent);
+  const pageIndex = rootContent.replace(/^# Steel Documentation\n/, '');
+  await fs.writeFile(path.join(PUBLIC_DIR, 'llms.txt'), AGENT_INSTRUCTIONS + pageIndex);
   console.log('✔️  Generated root llms.txt');
 
   // Generate section-level llms.txt files
