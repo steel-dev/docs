@@ -137,6 +137,19 @@ const config = {
       },
     ];
   },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Link",
+            value: '</llms.txt>; rel="alternate"; type="text/markdown", </llms-full.txt>; rel="alternate"; type="text/markdown"',
+          },
+        ],
+      },
+    ];
+  },
   images: {
     domains: ["cdn.openai.com"],
   },
