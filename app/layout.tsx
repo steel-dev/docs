@@ -1,10 +1,20 @@
 import './global.css';
 import { RootProvider } from 'fumadocs-ui/provider';
 import { GeistMono } from 'geist/font/mono';
+import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { inter, jetBrainsMono } from '@/fonts';
 import { KeyboardShortcutsProvider } from '@/hooks/use-keyboard-shortcuts';
 import { QueryProvider } from '@/providers/query-provider';
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://docs.steel.dev'),
+  alternates: {
+    types: {
+      'text/plain': '/llms.txt',
+    },
+  },
+};
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -13,20 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`dark ${inter.variable} ${jetBrainsMono.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <link
-          rel="alternate"
-          type="text/markdown"
-          href="/llms.txt"
-          title="LLM Documentation Index"
-        />
-        <link
-          rel="alternate"
-          type="text/markdown"
-          href="/llms-full.txt"
-          title="Full LLM Documentation"
-        />
-      </head>
+      <head />
       <body className="flex flex-col min-h-screen">
         <QueryProvider>
           <KeyboardShortcutsProvider>

@@ -302,8 +302,25 @@ export async function generateMetadata(props: {
   }
   if (!page) notFound();
 
+  const canonicalPath = page.url.replace(/^\/en(\/|$)/, '/');
+
   return {
     title: page.data.title,
     description: page.data.description,
+    alternates: {
+      canonical: canonicalPath,
+    },
+    openGraph: {
+      title: page.data.title,
+      description: page.data.description,
+      url: canonicalPath,
+      siteName: 'Steel Docs',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary',
+      title: page.data.title,
+      description: page.data.description,
+    },
   };
 }
