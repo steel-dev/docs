@@ -214,6 +214,14 @@ const AGENT_INSTRUCTIONS = `# Steel Documentation
   result = client.scrape(url="https://example.com")
   print(result.content.html)
   \`\`\`
+- \`client.scrape()\` returns a \`ScrapeResponse\` with:
+  - \`result.content.html\` — full HTML string
+  - \`result.content.markdown\` — markdown version
+  - \`result.content.cleaned_html\` — cleaned HTML
+  - \`result.content.readability\` — readability text
+  - \`result.metadata.status_code\` — HTTP status (int)
+  - \`result.metadata.title\` — page title
+  - \`result.links\` — list of extracted links
 - Always release sessions when done: \`client.sessions.release(sessionId)\`
 - Do NOT use \`session.websocketUrl\` directly — construct the WSS URL as shown above
 - The Node SDK constructor param is \`steelAPIKey\` (not \`apiKey\`)
