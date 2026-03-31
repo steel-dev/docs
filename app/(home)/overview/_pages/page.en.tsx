@@ -1,7 +1,8 @@
 import { LiquidMetal as LiquidMetal1 } from '@paper-design/shaders-react';
-import { Brackets, Database } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import { Card, Cards, SmallCard } from '@/components/card';
+import { CLIInstallCard } from '@/components/home/cli-install-card';
 import {
   API,
   BrowserUseIcon,
@@ -49,7 +50,8 @@ export default function HomePage() {
             </div>
           </div>
           <div className="space-y-5">
-            <Cards className="!grid-cols-1">
+            <Cards>
+              <CLIInstallCard />
               <Card
                 className="group space-y-1"
                 href="/overview/sessions-api/overview"
@@ -173,6 +175,12 @@ export default function HomePage() {
                 href="/api-reference"
                 title="API Reference"
                 description="View the Steel API reference."
+              />
+              <SmallCard
+                icon={<Sparkles />}
+                href="/llms.txt"
+                title="Instructions for AI Agents"
+                description="Point your agent to docs.steel.dev/llms.txt for a fast start with Steel."
               />
             </Cards>
           </div>
