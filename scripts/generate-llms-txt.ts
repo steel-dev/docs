@@ -50,8 +50,14 @@ function getAllPages(): PageMetadata[] {
         const dataTitle: string | undefined = (page.data as any)?.title;
         const rawTitle: string = dataTitle || toTitleCase(page.file.name);
         const GENERIC_TITLES = [
-          'overview', 'quickstart', 'quickstart-py', 'quickstart-ts',
-          'index', 'introduction', 'getting-started', 'integrations-overview',
+          'overview',
+          'quickstart',
+          'quickstart-py',
+          'quickstart-ts',
+          'index',
+          'introduction',
+          'getting-started',
+          'integrations-overview',
         ];
         const isGeneric = GENERIC_TITLES.includes(rawTitle.toLowerCase().replace(/\s+/g, '-'));
         let title = rawTitle;
