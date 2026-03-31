@@ -43,8 +43,25 @@ function getAllPages(): PageMetadata[] {
           cleanUrl = '/' + urlParts.slice(1).join('/');
         }
 
+        // Build a disambiguated title: if the title is generic (e.g. "Overview",
+        // "Quickstart"), prepend the parent section for clarity.
+        const toTitleCase = (s: string) =>
+          s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+        const dataTitle: string | undefined = (page.data as any)?.title;
+        const rawTitle: string = dataTitle || toTitleCase(page.file.name);
+        const GENERIC_TITLES = [
+          'overview', 'quickstart', 'quickstart-py', 'quickstart-ts',
+          'index', 'introduction', 'getting-started', 'integrations-overview',
+        ];
+        const isGeneric = GENERIC_TITLES.includes(rawTitle.toLowerCase().replace(/\s+/g, '-'));
+        let title = rawTitle;
+        if (isGeneric && section.length > 0) {
+          const parent = toTitleCase(section[section.length - 1]);
+          title = `${parent} ${toTitleCase(rawTitle)}`;
+        }
+
         return {
-          title: (page.data as any)?.title || page.file.name,
+          title,
           description: (page.data as any)?.description || '',
           url: page.url, // Keep original URL for file path generation
           cleanUrl: cleanUrl, // Add clean URL for content links
@@ -100,6 +117,17 @@ function generateLLMsContent(
     if (b === '_overview') return 1;
     if (a === 'root') return -1;
     if (b === 'root') return 1;
+
+    // At root level, use a fixed order: overview first, changelog last
+    if (currentSection.length === 0) {
+      const ROOT_ORDER = ['overview', 'integrations', 'cookbook', 'changelog'];
+      const ai = ROOT_ORDER.indexOf(a);
+      const bi = ROOT_ORDER.indexOf(b);
+      if (ai !== -1 && bi !== -1) return ai - bi;
+      if (ai !== -1) return -1;
+      if (bi !== -1) return 1;
+    }
+
     return a.localeCompare(b);
   });
 
