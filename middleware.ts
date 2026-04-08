@@ -23,9 +23,9 @@ export default function middleware(request: NextRequest, event: NextFetchEvent) 
   }
 
   if (pathname === '/' && isProgrammaticClient(request)) {
-    const rewriteUrl = request.nextUrl.clone();
-    rewriteUrl.pathname = '/llms.txt';
-    return NextResponse.rewrite(rewriteUrl);
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/llms.txt';
+    return NextResponse.redirect(redirectUrl);
   }
 
   return NextResponse.next();
