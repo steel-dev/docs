@@ -16,16 +16,16 @@ function isProgrammaticClient(request: NextRequest): boolean {
 export default function middleware(request: NextRequest, event: NextFetchEvent) {
   const { pathname } = request.nextUrl;
 
-  if (isMarkdownPreferred(request) && !pathname.startsWith('/llms')) {
-    const rewriteUrl = request.nextUrl.clone();
-    rewriteUrl.pathname = `/llms.mdx${pathname}`;
-    return NextResponse.rewrite(rewriteUrl);
-  }
-
   if (pathname === '/' && isProgrammaticClient(request)) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/llms.txt';
     return NextResponse.redirect(redirectUrl);
+  }
+
+  if (isMarkdownPreferred(request) && !pathname.startsWith('/llms')) {
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = `/llms.mdx${pathname}`;
+    return NextResponse.rewrite(rewriteUrl);
   }
 
   return NextResponse.next();
