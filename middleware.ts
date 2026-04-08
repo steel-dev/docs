@@ -22,7 +22,7 @@ export default function middleware(request: NextRequest, event: NextFetchEvent) 
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (isMarkdownPreferred(request) && !pathname.startsWith('/llms')) {
+  if (isMarkdownPreferred(request) && !pathname.startsWith('/llms') && !pathname.endsWith('.mdx')) {
     const rewriteUrl = request.nextUrl.clone();
     rewriteUrl.pathname = `/llms.mdx${pathname}`;
     return NextResponse.rewrite(rewriteUrl);
