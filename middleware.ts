@@ -22,7 +22,7 @@ export default function middleware(request: NextRequest, event: NextFetchEvent) 
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (isMarkdownPreferred(request) && !pathname.startsWith('/llms') && !pathname.endsWith('.mdx')) {
+  if (isMarkdownPreferred(request) && !pathname.startsWith('/llms')) {
     const rewriteUrl = request.nextUrl.clone();
     rewriteUrl.pathname = `/llms.mdx${pathname}`;
     return NextResponse.rewrite(rewriteUrl);
@@ -33,9 +33,6 @@ export default function middleware(request: NextRequest, event: NextFetchEvent) 
 
 export const config = {
   matcher: [
-    // Match .md files
-    '/(.*).md',
-    '/docs/(.*).md',
     // Match all paths except Next.js internals, API routes, and static files
     '/((?!_next|api/).*)', // This excludes /api/ but includes /apis/
   ],

@@ -83,10 +83,8 @@ function getAllPages(): PageMetadata[] {
   );
 }
 
-// Format a page URL for llms.txt, appending .mdx so agents get markdown
 function formatPageUrl(cleanUrl: string): string {
-  if (cleanUrl === '/') return `${config.productionUrl}/`;
-  return `${config.productionUrl}${cleanUrl}.mdx`;
+  return `${config.productionUrl}${cleanUrl}`;
 }
 
 // Generate llms.txt content for a set of pages
@@ -260,7 +258,7 @@ const AGENT_INSTRUCTIONS = `# Steel Documentation
 - Do NOT use \`session.websocketUrl\` directly — construct the WSS URL as shown above
 - The Node SDK constructor param is \`steelAPIKey\` (not \`apiKey\`)
 - The Python SDK constructor param is \`steel_api_key\` (not \`api_key\`)
-- Individual doc pages are available as markdown by appending \`.mdx\` to any URL
+- Individual doc pages are available as markdown via content negotiation (send \`Accept: text/markdown\`)
 
 `;
 
