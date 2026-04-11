@@ -1,0 +1,134 @@
+---
+title: Claude Code
+sidebarTitle: Claude Code
+description: Use Claude Code with Steel CLI to drive real browser sessions, scrape rendered pages, and monitor browser workflows from the terminal.
+llm: true
+---
+
+### Overview
+
+The Claude Code integration uses Steel CLI as a terminal tool inside Claude Code. This lets Claude Code:
+
+*   Start and control Steel browser sessions from the terminal
+
+*   Use `steel scrape` for rendered page extraction
+
+*   Inspect live browser state with snapshots and the Steel session viewer
+
+*   Turn successful browser runs into repeatable scripts or project-specific workflows
+
+
+Claude Code already works well with local tools and shell commands. Steel extends that model with a real cloud browser for sites that need JavaScript, session state, or interactive navigation.
+
+### Requirements
+
+*   **Node.js**: Version 18 or higher
+
+*   **Claude Code**: Installed locally
+
+*   **Steel CLI**: Installed locally
+
+*   **Steel API Key**: Active Steel account
+
+
+### Setup
+
+#### Step 1: Install Steel CLI
+
+```bash Terminal
+curl -LsSf https://setup.steel.dev | sh
+```
+
+Or via npm:
+
+```bash Terminal
+npm i -g @steel-dev/cli
+```
+
+#### Step 2: Log in
+
+```bash Terminal
+steel login
+```
+
+#### Step 3: Install the browser skill (recommended)
+
+The `steel-browser` skill gives Claude Code better command discovery and more reliable browser workflows.
+
+```bash Terminal
+npx skills add github:steel-dev/cli/skills/steel-browser
+```
+
+Restart Claude Code after installing so it can discover the skill.
+
+### Example: Run a browser session
+
+Once Steel CLI is available, Claude Code can use it directly:
+
+```bash Terminal -wc
+steel browser start --session docs-review
+steel browser open https://docs.steel.dev --session docs-review
+steel browser snapshot -i --session docs-review
+steel browser stop --session docs-review
+```
+
+This is the core workflow for page inspection, navigation, clicking, form entry, and other multi-step browser tasks.
+
+### Example: Scrape a rendered page
+
+For tasks that only need page content, `steel scrape` is often faster:
+
+```bash Terminal
+steel scrape https://example.com
+```
+
+That makes it a good fit for summarization, extraction, and research tasks where the page needs to be rendered first but does not require interaction.
+
+### Authenticated workflows
+
+For authenticated sites, it is better to prepare reusable auth state in Steel ahead of time rather than asking Claude Code to handle login from scratch during every run.
+
+See:
+
+*   [Profiles API](/overview/profiles-api/overview)
+
+*   [Reusing Auth Context](/overview/sessions-api/reusing-auth-context)
+
+
+### Live debugging
+
+Steel sessions return a viewer URL that makes it easier to monitor what the browser is doing in real time. This is useful when Claude Code reaches a modal, a sign-in wall, or a page that does not behave as expected.
+
+### Repeatable workflows
+
+After a successful run, Claude Code can help turn the browser workflow into something more repeatable:
+
+*   A bash script for local execution
+
+*   A project-specific command or workflow
+
+*   A documented runbook for recurring tasks
+
+
+### Constraints
+
+*   **Command approvals depend on your Claude Code settings.** Shell access may require approval depending on your permission mode.
+
+*   **First runs are usually the roughest.** Dynamic web apps often need a few retries before the workflow is stable.
+
+*   **Authenticated sites work best with prepared Steel auth state.** Reusing profiles or auth context is generally more reliable than repeated interactive logins.
+
+
+### Additional Resources
+
+*   [Give Claude Code a real browser](https://steel.dev/blog/give-claude-code-a-real-browser) – Blog post on using Claude Code with Steel
+
+*   [Claude Code overview](https://code.claude.com/docs/en/overview) – Official Claude Code documentation
+
+*   [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works) – Built-in tools, permissions, and execution model
+
+*   [Steel CLI docs](/overview/steel-cli) – Full command reference and workflows
+
+*   [Steel browser skill](https://github.com/steel-dev/cli/tree/main/skills/steel-browser) – Skill package for coding agents
+
+*   [Discord](https://discord.gg/steel-dev) – Get help and share what you build
