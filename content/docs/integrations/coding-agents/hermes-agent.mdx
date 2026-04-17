@@ -6,7 +6,7 @@ llm: true
 ---
 
 :::callout
-The Steel integration for Hermes is currently pending upstream. It is being developed in [NousResearch/hermes-agent PR #5555](https://github.com/NousResearch/hermes-agent/pull/5555) and may change before it lands in a Hermes release.
+The Steel integration for Hermes is currently pending upstream. It is being developed in [NousResearch/hermes-agent PR #5555](https://github.com/NousResearch/hermes-agent/pull/5555) and may change before it lands in a Hermes release. Upvote or comment on the PR to signal interest.
 :::
 
 ### Overview
@@ -14,26 +14,17 @@ The Steel integration for Hermes is currently pending upstream. It is being deve
 The pending Hermes integration adds Steel as a cloud browser provider inside Hermes. Based on the current upstream pull request, the integration is expected to provide:
 
 *   Steel as a selectable browser provider during Hermes setup
-
 *   Steel-backed browser sessions for web navigation and interaction
-
 *   A `steel_scrape` tool for server-side content extraction
-
 *   Support for Steel-specific options such as proxying and CAPTCHA solving
-
 *   Viewer URL support so you can monitor browser sessions while the agent runs
-
 
 If this ships as proposed, Hermes users will be able to route browser tasks through Steel by setting `STEEL_API_KEY` and selecting Steel in Hermes configuration.
 
 ### Requirements
 
 *   **Hermes Agent**: A build that includes the Steel integration from PR #5555 or a future release that ships it
-
 *   **Steel API Key**: Active Steel account
-
-*   **LLM Provider**: Any model supported by Hermes for tool-calling workflows
-
 
 ### Expected setup flow
 
@@ -46,13 +37,10 @@ hermes setup
 During setup:
 
 1.  Choose your model provider
-
-2.  Select Steel as the browser provider if the option is available
-
+2.  Select Steel as the browser provider
 3.  Add your `STEEL_API_KEY`
 
-
-If you are using a current release of Hermes and do not see Steel in the setup flow, that is expected until the integration lands upstream.
+If you are using a current release of Hermes and do not see Steel in the setup flow, that is expected until the integration lands upstream. To try it now, check out the PR branch and run Hermes from source.
 
 ### Expected workflow
 
@@ -64,46 +52,17 @@ Find a hotel near Grand Central and compare the top options.
 
 In the proposed implementation, Hermes would start a Steel session, browse the relevant sites, and return a viewer URL alongside the task output so you can inspect the session while it runs.
 
-The same proposal also adds a `steel_scrape` tool for content extraction when a full browser session is not necessary.
-
-### Current status
-
-At the time of writing, the Steel integration is documented in the open upstream pull request:
-
-*   [NousResearch/hermes-agent PR #5555](https://github.com/NousResearch/hermes-agent/pull/5555)
-
-That PR describes:
-
-*   A `SteelProvider`
-
-*   A `steel_scrape` tool
-
-*   Setup wizard support for selecting Steel
-
-*   Additional Steel-related environment variables and browser hints
-
-
-Until that work merges and ships, treat this page as a preview of the proposed integration rather than a released setup guide.
-
 ### Constraints
 
 *   **This integration is not yet part of a released Hermes build.** Check the upstream PR or Hermes changelog before relying on it.
-
 *   **The setup flow may change before release.** Provider names, environment variables, or supported options may still be updated.
-
 *   **Documentation should be validated against the released Hermes version once the PR lands.**
-
 
 ### Additional Resources
 
 *   [Steel is now a native browser provider in Hermes](https://steel.dev/blog/steel-is-now-a-native-browser-provider-in-hermes) – Blog post covering the Hermes integration
-
 *   [Hermes Agent repository](https://github.com/NousResearch/hermes-agent) – Upstream project
-
 *   [Steel integration PR #5555](https://github.com/NousResearch/hermes-agent/pull/5555) – Proposed Steel provider implementation
-
 *   [Steel CLI docs](/overview/steel-cli) – Steel browser workflows from the terminal
-
 *   [Steel Sessions API Reference](/api-reference) – Programmatic session management
-
 *   [Discord](https://discord.gg/steel-dev) – Get help and share what you build
