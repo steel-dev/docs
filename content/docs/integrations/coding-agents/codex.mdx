@@ -1,0 +1,79 @@
+---
+title: Codex
+sidebarTitle: Codex
+description: Use Codex with Steel CLI to scrape pages, run browser sessions, and automate browser workflows from the terminal.
+llm: true
+---
+
+### Overview
+
+The Codex integration uses Steel CLI as a terminal tool inside Codex with the help of steel-browser agent skill. This lets Codex:
+
+*   Start and control Steel browser sessions from the Codex session
+*   Scrape fully rendered pages and perform computer-use actions
+*   Inspect live browser state with snapshots and the Steel session viewer
+*   Turn one-off browser runs into reusable scripts
+
+Codex and Steel fit together well because both are command-line tools. Once Steel CLI is installed and available on `PATH`, Codex can inspect command help, run the commands it needs, and verify results from the terminal.
+
+### Requirements
+
+*   **Node.js**: Version 18 or higher
+*   **Codex CLI**: Installed locally
+*   **Steel CLI**: Installed locally
+*   **Steel API Key**: Active Steel account
+
+### Setup
+
+#### Step 1: Install Steel CLI
+
+```bash Terminal
+curl -LsSf https://setup.steel.dev | sh
+```
+
+#### Step 2: Log in
+
+```bash Terminal
+steel login
+```
+
+#### Step 3: Install the browser skill (recommended)
+
+The `steel-browser` skill gives Codex better command discovery and more consistent browser workflows.
+
+```bash Terminal
+npx skills add https://github.com/steel-dev/cli --skill steel-browser
+```
+
+Restart Codex after installing so it can discover the skill.
+
+This gives Codex a real browser loop for navigation, clicking, form entry, and session-aware browsing.
+
+### Automation workflow
+
+After a successful manual run, you can ask Codex to turn the workflow into a script:
+
+```
+Write a bash script based on what you just did.
+```
+
+That works well for jobs like recurring research, internal reporting, or lightweight monitoring. A common pattern is:
+
+1.  Run the task once interactively
+2.  Convert it into a script
+3.  Schedule it with cron or another runner
+
+### Constraints
+
+*   **Command approvals depend on your Codex settings.** Codex may ask before running shell commands unless you have configured a more permissive approval mode.
+*   **Authenticated workflows usually need preconfigured Steel auth state.** For reusable login state, see [Profiles API](/overview/profiles-api/overview) and [Reusing Auth Context](/overview/sessions-api/reusing-auth-context).
+
+
+### Additional Resources
+
+*   [Codex + Steel + Resend blog post](https://steel.dev/blog/codex-wired-steel-and-resend-into-a-daily-newsletter) – Example workflow for building a daily newsletter with Codex
+*   [Codex CLI docs](https://developers.openai.com/codex/cli) – Install and use Codex locally
+*   [Steel CLI docs](/overview/steel-cli) – Full command reference and workflows
+*   [Steel browser skill](https://github.com/steel-dev/cli/tree/main/skills/steel-browser) – Skill package for coding agents
+*   [Get a free API key](https://app.steel.dev) – Sign up and start a session
+*   [Discord](https://discord.gg/steel-dev) – Get help and share what you build

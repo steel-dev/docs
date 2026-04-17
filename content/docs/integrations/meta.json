@@ -2,6 +2,7 @@
   "title": "Integrations",
   "root": true,
   "pages": [
+    "...coding-agents",
     "...agentkit",
     "...agno",
     "...browser-use",
