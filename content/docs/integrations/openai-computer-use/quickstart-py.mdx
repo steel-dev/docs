@@ -5,7 +5,7 @@ description: How to use OpenAI Computer Use with Steel
 llm: true
 ---
 
-This guide will walk you through how to use OpenAI's `computer-use-preview` model with Steel's Computer API to create AI agents that can navigate the web.
+This guide will walk you through how to use OpenAI's `gpt-5.4` model (with built-in computer use) and Steel's Computer API to create AI agents that can navigate the web.
 
 We'll be implementing a simple CUA loop that functions as described below:
 
@@ -17,7 +17,7 @@ We'll be implementing a simple CUA loop that functions as described below:
 
 *   A Steel API key ([sign up here](https://app.steel.dev/))
 
-*   An OpenAI API key with access to the `computer-use-preview` model
+*   An OpenAI API key with access to the `gpt-5.4` model
 
 
 #### Step 1: Setup and Helper Functions
@@ -124,18 +124,11 @@ class Agent:
     def __init__(self):
         self.steel = Steel(steel_api_key=STEEL_API_KEY)
         self.session = None
-        self.model = "computer-use-preview"
-        self.viewport_width = 1280
-        self.viewport_height = 768
+        self.model = "gpt-5.4"
+        self.viewport_width = 1440
+        self.viewport_height = 900
         self.system_prompt = BROWSER_SYSTEM_PROMPT
-        self.tools = [
-            {
-                "type": "computer-preview",
-                "display_width": self.viewport_width,
-                "display_height": self.viewport_height,
-                "environment": "browser",
-            }
-        ]
+        self.tools = [{"type": "computer"}]
         self.print_steps = True
         self.auto_acknowledge_safety = True
 
@@ -179,27 +172,38 @@ class Agent:
             "ESCAPE": "Escape",
             "TAB": "Tab",
             "BACKSPACE": "Backspace",
+            "BKSP": "Backspace",
             "DELETE": "Delete",
+            "DEL": "Delete",
             "SPACE": "Space",
             "CTRL": "Control",
             "CONTROL": "Control",
             "ALT": "Alt",
             "SHIFT": "Shift",
             "META": "Meta",
+            "SUPER": "Meta",
             "CMD": "Meta",
+            "COMMAND": "Meta",
             "UP": "ArrowUp",
             "DOWN": "ArrowDown",
             "LEFT": "ArrowLeft",
             "RIGHT": "ArrowRight",
+            "ARROWUP": "ArrowUp",
+            "ARROWDOWN": "ArrowDown",
+            "ARROWLEFT": "ArrowLeft",
+            "ARROWRIGHT": "ArrowRight",
             "HOME": "Home",
             "END": "End",
             "PAGEUP": "PageUp",
             "PAGEDOWN": "PageDown",
+            "INSERT": "Insert",
         }
         if upper in synonyms:
             return synonyms[upper]
         if upper.startswith("F") and upper[1:].isdigit():
             return "F" + upper[1:]
+        if len(k) == 1 and k.isalpha() and k.isupper():
+            return k.lower()
         return k
 
     def normalize_keys(self, keys: List[str]) -> List[str]:
@@ -369,7 +373,7 @@ class Agent:
                 "call_id": item["call_id"],
                 "acknowledged_safety_checks": pending_checks,
                 "output": {
-                    "type": "input_image",
+                    "type": "computer_screenshot",
                     "image_url": f"data:image/png;base64,{screenshot_base64}",
                 },
             }
@@ -381,13 +385,11 @@ class Agent:
         self,
         task: str,
         print_steps: bool = True,
-        debug: bool = False,
         max_iterations: int = 50,
     ) -> str:
         self.print_steps = print_steps
 
         input_items: List[Dict[str, Any]] = [
-            {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": task},
         ]
 
@@ -429,8 +431,11 @@ class Agent:
             try:
                 response = create_response(
                     model=self.model,
+                    instructions=self.system_prompt,
                     input=[*input_items, *new_items],
                     tools=self.tools,
+                    reasoning={"effort": "medium"},
+                    parallel_tool_calls=False,
                     truncation="auto",
                 )
 
@@ -506,7 +511,7 @@ def main():
         start_time = time.time()
 
         try:
-            result = agent.execute_task(TASK, True, False, 50)
+            result = agent.execute_task(TASK, True, 50)
             duration = f"{(time.time() - start_time):.1f}"
 
             print("\n" + "=" * 60)
@@ -557,6 +562,6 @@ python main.py
 
 *   Explore the [Steel API documentation](/overview) for more advanced features
 
-*   Check out the [OpenAI documentation](https://platform.openai.com/docs/guides/tools-computer-use) for more information about the computer-use-preview model
+*   Check out the [OpenAI documentation](https://platform.openai.com/docs/guides/tools-computer-use) for more information about computer use with `gpt-5.4`
 
 *   Add additional features like session recording or multi-session management

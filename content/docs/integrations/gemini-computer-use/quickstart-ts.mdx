@@ -5,7 +5,7 @@ description: How to use Gemini Computer Use with Steel
 llm: true
 ---
 
-This guide will walk you through how to use Google's `gemini-2.5-computer-use-preview` model with Steel's Computer API to create AI agents that can navigate the web.
+This guide will walk you through how to use Google's `gemini-3-flash-preview` model (with built-in computer use) and Steel's Computer API to create AI agents that can navigate the web.
 
 Gemini's Computer Use model uses a normalized coordinate system (0-1000) and provides built-in actions for browser control, making it straightforward to integrate with Steel.
 
@@ -52,16 +52,18 @@ import * as dotenv from "dotenv";
 import { Steel } from "steel-sdk";
 import {
   GoogleGenAI,
+  FunctionResponse,
+  Environment,
+  FinishReason,
+} from "@google/genai";
+import type {
   Content,
   Part,
   FunctionCall,
-  FunctionResponse,
   Tool,
-  Environment,
   GenerateContentConfig,
   GenerateContentResponse,
   Candidate,
-  FinishReason,
 } from "@google/genai";
 
 dotenv.config();
@@ -70,7 +72,6 @@ export const STEEL_API_KEY = process.env.STEEL_API_KEY || "your-steel-api-key-he
 export const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "your-gemini-api-key-here";
 export const TASK = process.env.TASK || "Go to Steel.dev and find the latest news";
 
-export const MODEL = "gemini-2.5-computer-use-preview-10-2025";
 export const MAX_COORDINATE = 1000;
 
 export function formatToday(): string {
@@ -116,18 +117,14 @@ export interface ActionResult {
   url?: string;
 }
 
-export {
-  Steel,
-  GoogleGenAI,
+export { Steel, GoogleGenAI, FunctionResponse, Environment, FinishReason };
+export type {
   Content,
   Part,
   FunctionCall,
-  FunctionResponse,
   Tool,
-  Environment,
   GenerateContentConfig,
   Candidate,
-  FinishReason,
 };
 ```
 
@@ -138,20 +135,21 @@ export {
 import {
   Steel,
   GoogleGenAI,
-  Content,
-  Part,
-  FunctionCall,
   FunctionResponse,
-  Tool,
   Environment,
-  GenerateContentConfig,
-  Candidate,
   FinishReason,
   STEEL_API_KEY,
   GEMINI_API_KEY,
-  MODEL,
   MAX_COORDINATE,
   BROWSER_SYSTEM_PROMPT,
+} from "./helpers";
+import type {
+  Content,
+  Part,
+  FunctionCall,
+  Tool,
+  GenerateContentConfig,
+  Candidate,
   Coordinates,
   ActionResult,
 } from "./helpers";
@@ -159,6 +157,7 @@ import {
 export class Agent {
   private client: GoogleGenAI;
   private steel: Steel;
+  private model: string;
   private session: Steel.Session | null = null;
   private contents: Content[];
   private tools: Tool[];
@@ -170,10 +169,11 @@ export class Agent {
   constructor() {
     this.client = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
     this.steel = new Steel({ steelAPIKey: STEEL_API_KEY });
+    this.model = "gemini-3-flash-preview";
     this.contents = [];
     this.currentUrl = "about:blank";
-    this.viewportWidth = 1280;
-    this.viewportHeight = 768;
+    this.viewportWidth = 1440;
+    this.viewportHeight = 900;
     this.tools = [
       {
         computerUse: {
@@ -201,6 +201,15 @@ export class Agent {
     ];
   }
 
+  private splitKeys(k?: string): string[] {
+    return k
+      ? k
+          .split("+")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+  }
+
   private normalizeKey(key: string): string {
     if (!key) return key;
     const k = key.trim();
@@ -212,22 +221,31 @@ export class Agent {
       ESCAPE: "Escape",
       TAB: "Tab",
       BACKSPACE: "Backspace",
+      BKSP: "Backspace",
       DELETE: "Delete",
+      DEL: "Delete",
       SPACE: "Space",
       CTRL: "Control",
       CONTROL: "Control",
       ALT: "Alt",
       SHIFT: "Shift",
       META: "Meta",
+      SUPER: "Meta",
       CMD: "Meta",
+      COMMAND: "Meta",
       UP: "ArrowUp",
       DOWN: "ArrowDown",
       LEFT: "ArrowLeft",
       RIGHT: "ArrowRight",
+      ARROWUP: "ArrowUp",
+      ARROWDOWN: "ArrowDown",
+      ARROWLEFT: "ArrowLeft",
+      ARROWRIGHT: "ArrowRight",
       HOME: "Home",
       END: "End",
       PAGEUP: "PageUp",
       PAGEDOWN: "PageDown",
+      INSERT: "Insert",
     };
     if (upper in synonyms) return synonyms[upper];
     if (upper.startsWith("F") && /^\d+$/.test(upper.slice(1))) {
@@ -456,6 +474,28 @@ export class Agent {
         };
       }
 
+      case "search": {
+        await this.steel.sessions.computer(this.session!.id, {
+          action: "press_key",
+          keys: ["Control", "l"],
+        });
+        await this.steel.sessions.computer(this.session!.id, {
+          action: "type_text",
+          text: "https://www.google.com",
+        });
+        await this.steel.sessions.computer(this.session!.id, {
+          action: "press_key",
+          keys: ["Enter"],
+        });
+        await this.steel.sessions.computer(this.session!.id, {
+          action: "wait",
+          duration: 2,
+        });
+        this.currentUrl = "https://www.google.com";
+        const screenshot = await this.takeScreenshot();
+        return { screenshotBase64: screenshot, url: this.currentUrl };
+      }
+
       case "navigate": {
         let url = args.url as string;
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
@@ -486,8 +526,7 @@ export class Agent {
 
       case "key_combination": {
         const keysStr = args.keys as string;
-        const keys = keysStr.split("+").map((k) => k.trim());
-        const normalizedKeys = this.normalizeKeys(keys);
+        const normalizedKeys = this.normalizeKeys(this.splitKeys(keysStr));
 
         const resp: any = await this.steel.sessions.computer(this.session!.id, {
           action: "press_key",
@@ -544,7 +583,9 @@ export class Agent {
     if (!candidate.content?.parts) return "";
     const texts: string[] = [];
     for (const part of candidate.content.parts) {
-      if (part.text) {
+      // Gemini 3 Flash occasionally emits stray digit/whitespace-only text
+      // parts (e.g. "0", "00") alongside the real response. Skip them.
+      if (part.text && !/^[\s\d]*$/.test(part.text)) {
         texts.push(part.text);
       }
     }
@@ -601,7 +642,7 @@ export class Agent {
 
       try {
         const response = await this.client.models.generateContent({
-          model: MODEL,
+          model: this.model,
           contents: this.contents,
           config: this.config,
         });
@@ -693,7 +734,7 @@ export class Agent {
       const content = this.contents[i];
       if (content.role === "model") {
         const text = content.parts
-          ?.filter((p) => p.text)
+          ?.filter((p) => p.text && !/^[\s\d]*$/.test(p.text))
           .map((p) => p.text)
           .join(" ")
           .trim();
@@ -793,7 +834,7 @@ You'll see each action the agent takes displayed in the console, and you can vie
 
 #### Understanding Gemini's Coordinate System
 
-Gemini's Computer Use model uses a normalized coordinate system where both X and Y coordinates range from 0 to 1000. The agent automatically converts these to actual pixel coordinates based on the viewport size (1280x768 by default).
+Gemini's Computer Use model uses a normalized coordinate system where both X and Y coordinates range from 0 to 1000. The agent automatically converts these to actual pixel coordinates based on the viewport size (1440x900 by default, matching Google's recommended resolution for Computer Use).
 
 #### Next Steps
 

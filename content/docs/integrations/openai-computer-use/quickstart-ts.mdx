@@ -5,7 +5,7 @@ description: How to use OpenAI Computer Use with Steel
 llm: true
 ---
 
-This guide will walk you through how to use OpenAI's `computer-use-preview` model with Steel's Computer API to create AI agents that can navigate the web.
+This guide will walk you through how to use OpenAI's `gpt-5.4` model (with built-in computer use) and Steel's Computer API to create AI agents that can navigate the web.
 
 We'll be implementing a simple CUA loop that functions as described below:
 
@@ -17,7 +17,7 @@ We'll be implementing a simple CUA loop that functions as described below:
 
 *   A Steel API key ([sign up here](https://steel.dev/))
 
-*   An OpenAI API key with access to the `computer-use-preview` model
+*   An OpenAI API key with access to the `gpt-5.4` model
 
 
 #### Step 1: Setup and Helper Functions
@@ -224,18 +224,11 @@ export class Agent {
 
   constructor() {
     this.steel = new Steel({ steelAPIKey: STEEL_API_KEY });
-    this.model = "computer-use-preview";
-    this.viewportWidth = 1280;
-    this.viewportHeight = 768;
+    this.model = "gpt-5.4";
+    this.viewportWidth = 1440;
+    this.viewportHeight = 900;
     this.systemPrompt = BROWSER_SYSTEM_PROMPT;
-    this.tools = [
-      {
-        type: "computer-preview",
-        display_width: this.viewportWidth,
-        display_height: this.viewportHeight,
-        environment: "browser",
-      },
-    ];
+    this.tools = [{ type: "computer" }];
   }
 
   private center(): [number, number] {
@@ -286,27 +279,37 @@ export class Agent {
       ESCAPE: "Escape",
       TAB: "Tab",
       BACKSPACE: "Backspace",
+      BKSP: "Backspace",
       DELETE: "Delete",
+      DEL: "Delete",
       SPACE: "Space",
       CTRL: "Control",
       CONTROL: "Control",
       ALT: "Alt",
       SHIFT: "Shift",
       META: "Meta",
+      SUPER: "Meta",
       CMD: "Meta",
+      COMMAND: "Meta",
       UP: "ArrowUp",
       DOWN: "ArrowDown",
       LEFT: "ArrowLeft",
       RIGHT: "ArrowRight",
+      ARROWUP: "ArrowUp",
+      ARROWDOWN: "ArrowDown",
+      ARROWLEFT: "ArrowLeft",
+      ARROWRIGHT: "ArrowRight",
       HOME: "Home",
       END: "End",
       PAGEUP: "PageUp",
       PAGEDOWN: "PageDown",
+      INSERT: "Insert",
     };
     if (upper in synonyms) return synonyms[upper];
     if (upper.startsWith("F") && /^\d+$/.test(upper.slice(1))) {
       return "F" + upper.slice(1);
     }
+    if (k.length === 1 && /[A-Z]/.test(k)) return k.toLowerCase();
     return k;
   }
 
@@ -518,7 +521,7 @@ export class Agent {
         call_id: item.call_id,
         acknowledged_safety_checks: pendingChecks,
         output: {
-          type: "input_image",
+          type: "computer_screenshot",
           image_url: `data:image/png;base64,${screenshotBase64}`,
         },
       };
@@ -532,16 +535,11 @@ export class Agent {
   async executeTask(
     task: string,
     printSteps: boolean = true,
-    debug: boolean = false,
     maxIterations: number = 50
   ): Promise<string> {
     this.printSteps = printSteps;
 
     const inputItems = [
-      {
-        role: "system",
-        content: this.systemPrompt,
-      },
       {
         role: "user",
         content: task,
@@ -590,8 +588,11 @@ export class Agent {
       try {
         const response = await createResponse({
           model: this.model,
+          instructions: this.systemPrompt,
           input: [...inputItems, ...newItems],
           tools: this.tools,
+          reasoning: { effort: "medium" },
+          parallel_tool_calls: false,
           truncation: "auto",
         });
 
@@ -682,7 +683,7 @@ async function main(): Promise<void> {
     console.log("✅ Steel session started!");
 
     const startTime = Date.now();
-    const result = await agent.executeTask(TASK, true, false, 50);
+    const result = await agent.executeTask(TASK, true, 50);
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
 
     console.log("\n" + "=".repeat(60));
@@ -732,6 +733,6 @@ You'll see each action the agent takes displayed in the console, and you can vie
 
 *   Explore the [Steel API documentation](/overview) for more advanced features
 
-*   Check out the [OpenAI documentation](https://platform.openai.com/docs/guides/tools-computer-use) for more information about the computer-use-preview model
+*   Check out the [OpenAI documentation](https://platform.openai.com/docs/guides/tools-computer-use) for more information about computer use with `gpt-5.4`
 
 *   Add additional features like session recording or multi-session management
