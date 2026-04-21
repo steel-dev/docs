@@ -89,8 +89,7 @@ from browser_use.llm import ChatOpenAI
 
 # Create a ChatOpenAI model for agent reasoning
 model = ChatOpenAI(
-    model="gpt-4o",
-    temperature=0.3,
+    model="gpt-5",
     api_key=os.getenv('OPENAI_API_KEY')
 )
 
@@ -116,7 +115,7 @@ This configures the AI agent with:
 
 
 **Models:**
-This example uses **GPT-4o**, but you can use any browser-use compatible models like Anthropic, DeepSeek, or Gemini. See the full list of supported models here.
+This example uses **GPT-5**, but you can use any browser-use compatible models like Anthropic, DeepSeek, or Gemini. See the full list of supported models here.
 
 #### Step 5: Run your Agent
 
@@ -221,7 +220,7 @@ async def main():
 
         cdp_url = f"wss://connect.steel.dev?apiKey={STEEL_API_KEY}&sessionId={session.id}"
 
-        model = ChatOpenAI(model="gpt-4o", temperature=0.3, api_key=OPENAI_API_KEY)
+        model = ChatOpenAI(model="gpt-5", api_key=OPENAI_API_KEY)
         agent = Agent(task=TASK, llm=model, browser_session=BrowserSession(cdp_url=cdp_url))
 
         start_time = time.time()

@@ -76,7 +76,7 @@ const StoriesSchema = z.object({
 ```
 
 
-These schemas will help Stagehand extract structured data from web pages using Zod validation.
+These schemas will help Stagehand extract structured data from web pages using Zod validation. Stagehand v3 supports both Zod v3 and v4.
 
 ### Step 3: Create a Steel browser session
 
@@ -104,6 +104,8 @@ When you run this, you'll see a URL where you can watch your browser session liv
 
 ### Step 4: Configure and connect Stagehand
 
+In Stagehand v3, the `modelClientOptions` + `modelName` pair has been unified into a single `model` field, and AI methods (`act`, `extract`, `observe`) live directly on the `Stagehand` instance rather than on `page`.
+
 ```typescript Typescript -wcn -f index.ts
   // Configure Stagehand to use Steel session
   const stagehand = new Stagehand({
@@ -111,8 +113,8 @@ When you run this, you'll see a URL where you can watch your browser session liv
     localBrowserLaunchOptions: {
       cdpUrl: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
     },
-    enableCaching: false,
-    modelClientOptions: {
+    model: {
+      modelName: "openai/gpt-5",
       apiKey: OPENAI_API_KEY,
     },
   });
@@ -120,6 +122,9 @@ When you run this, you'll see a URL where you can watch your browser session liv
   // Initialize Stagehand
   console.log("🤖 Initializing Stagehand...");
   await stagehand.init();
+
+  // Grab the active page from Stagehand's context
+  const page = await stagehand.context.awaitActivePage();
 
   console.log("Connected to Steel browser via Stagehand");
 
@@ -130,24 +135,24 @@ This connects Stagehand to your Steel browser session via Chrome DevTools Protoc
 
 ### Step 5: Navigate and extract data
 
-Add the automation logic to navigate to a website and extract information:
+Add the automation logic to navigate to a website and extract information. In v3, `extract` takes a positional `(instruction, schema)` pair:
 
 ```typescript Typescript -wcn -f index.ts
   try {
     // Navigate to Hacker News
     console.log("📰 Navigating to Hacker News...");
-    await stagehand.page.goto("https://news.ycombinator.com");
+    await page.goto("https://news.ycombinator.com");
 
     // Extract top stories using AI
     console.log("🔍 Extracting top stories...");
-    const stories = await stagehand.page.extract({
-      instruction: "extract the titles and ranks of the first 5 stories on the page",
-      schema: StoriesSchema,
-    });
+    const stories = await stagehand.extract(
+      "extract the titles and ranks of the first 5 stories on the page",
+      StoriesSchema
+    );
 
     // Display results
     console.log("\n📋 Top 5 Hacker News Stories:");
-    stories.stories.forEach((story, index) => {
+    stories.stories.forEach((story) => {
       console.log(`${story.rank}. ${story.title}`);
     });
 
@@ -272,9 +277,9 @@ async function main() {
       localBrowserLaunchOptions: {
         cdpUrl: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
       },
-      enableCaching: false,
-      modelClientOptions: {
-        apiKey: OPENAI_API_KEY,
+      model: {
+        modelName: "openai/gpt-5",
+        apiKey: OPENAI_API_KEY!,
       },
     });
 
@@ -282,18 +287,20 @@ async function main() {
     await stagehand.init();
     console.log("Connected to Steel browser via Stagehand");
 
+    const page = await stagehand.context.awaitActivePage();
+
     // Navigate and extract data
     console.log("📰 Navigating to Hacker News...");
-    await stagehand.page.goto("https://news.ycombinator.com");
+    await page.goto("https://news.ycombinator.com");
 
     console.log("🔍 Extracting top stories...");
-    const stories = await stagehand.page.extract({
-      instruction: "extract the titles and ranks of the first 5 stories on the page",
-      schema: StoriesSchema,
-    });
+    const stories = await stagehand.extract(
+      "extract the titles and ranks of the first 5 stories on the page",
+      StoriesSchema
+    );
 
     console.log("\n📋 Top 5 Hacker News Stories:");
-    stories.stories.forEach((story, index) => {
+    stories.stories.forEach((story) => {
       console.log(`${story.rank}. ${story.title}`);
     });
 
@@ -326,6 +333,10 @@ main().catch((error) => {
 
 ### Advanced Usage Examples
 
+#### Safer AI Actions
+
+Pick actions that you know exist on the page — "click the 'new' link" is more reliable than "click the search button if it exists", because the LLM has to return an empty object when it can't find the element, which triggers schema-validation noise in the logs.
+
 #### Custom Data Extraction Schema
 
 ```typescript Typescript -wcn -f schema.ts
@@ -340,10 +351,10 @@ const ProductSchema = z.object({
   ),
 });
 
-const productData = await stagehand.page.extract({
-  instruction: "extract product information from this e-commerce page",
-  schema: ProductSchema,
-});
+const productData = await stagehand.extract(
+  "extract product information from this e-commerce page",
+  ProductSchema,
+);
 
 ```
 
@@ -351,19 +362,17 @@ const productData = await stagehand.page.extract({
 #### Complex Actions with Natural Language
 
 ```typescript Typescript -wcn -f index.ts
+// Click a specific navigation link
+await stagehand.act("click the 'new' link in the top navigation");
+
 // Fill out a form using natural language
-await stagehand.page.act(
+await stagehand.act(
   "fill out the contact form with name 'John Doe', email 'john@example.com', and message 'Hello!'"
 );
 
 // Navigate through multi-step processes
-await stagehand.page.act(
+await stagehand.act(
   "click on the 'Sign Up' button and then fill out the registration form"
-);
-
-// Handle dynamic content
-await stagehand.page.act(
-  "wait for the page to load completely, then click on the first product"
 );
 
 ```
@@ -375,7 +384,7 @@ Now that you have a working Stagehand + Steel automation, try these enhancements
 
 *   **Custom data extraction**: Create your own Zod schemas for different websites
 
-*   **Complex interactions**: Use `stagehand.page.act()` for clicking, typing, and navigation
+*   **Complex interactions**: Use `stagehand.act()` for clicking, typing, and navigation
 
 *   **Multiple pages**: Navigate through multi-step workflows
 

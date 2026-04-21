@@ -9,11 +9,11 @@ llm: true
 
 Make sure you have:
 
-*   Python **3.11+**
+*   Python **3.10+** (CrewAI 1.x requires `<3.14`)
 
 *   **Steel API key** (get one at [app.steel.dev](http://app.steel.dev/))
 
-*   (Optional) any LLM provider keys CrewAI will use (e.g., OpenAI). CrewAI can run with your default env/provider setup.
+*   **OpenAI API key** (this starter pins the agent LLM to `gpt-5-nano`)
 
 
 #### Step 1: Project setup
@@ -21,7 +21,7 @@ Make sure you have:
 Create and activate a virtual environment, then install dependencies:
 
 ```package-install python
-crewai[tools] steel-sdk python-dotenv pydantic
+"crewai[tools]>=1.14,<2" "openai>=2,<3" "pydantic>=2.11,<3" steel-sdk python-dotenv
 ```
 
 
@@ -124,6 +124,7 @@ class Crew():
                 "using web research, verification, and synthesis to produce precise, actionable findings."
             ),
             tools=[SteelScrapeWebsiteTool()],
+            llm="gpt-5-nano",
             verbose=True,
         )
 
@@ -137,6 +138,7 @@ class Crew():
                 "the original instruction '{task}', ensuring completeness and clarity."
             ),
             tools=[SteelScrapeWebsiteTool()],
+            llm="gpt-5-nano",
             verbose=True,
         )
 
@@ -294,6 +296,7 @@ class Crew():
                 "using web research, verification, and synthesis to produce precise, actionable findings."
             ),
             tools=[SteelScrapeWebsiteTool()],
+            llm="gpt-5-nano",
             verbose=True
         )
 
@@ -307,6 +310,7 @@ class Crew():
                 "the original instruction '{task}', ensuring completeness and clarity."
             ),
             tools=[SteelScrapeWebsiteTool()],
+            llm="gpt-5-nano",
             verbose=True
         )
 

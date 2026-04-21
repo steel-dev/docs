@@ -9,11 +9,11 @@ llm: true
 
 Make sure you have:
 
-*   Python **3.11+**
+*   Python **3.10+**
 
 *   Steel API key (get one at [**app.steel.dev**](http://app.steel.dev/))
 
-*   (Optional) OpenAI API key if your Agno setup uses OpenAI models
+*   OpenAI API key (Agno v2 requires an explicit model — this starter uses OpenAI)
 
 
 #### Step 1: Project setup
@@ -21,14 +21,14 @@ Make sure you have:
 Create and activate a virtual environment, then install dependencies:
 
 ```package-install python
-agno steel-sdk python-dotenv playwright
+"agno>=2.5,<3" "openai>=2,<3" steel-sdk python-dotenv playwright
 ```
 
 Create a `.env` file with your keys and a default task:
 
 ```env ENV -wcn -f .env
 STEEL_API_KEY=your_steel_api_key_here
-OPENAI_API_KEY=your_openai_api_key_here  # optional, if your Agno model needs it
+OPENAI_API_KEY=your_openai_api_key_here
 TASK=Go to https://quotes.toscrape.com and: 1. Get the first 3 quotes with authors 2. Navigate to page 2 3. Get 2 more quotes from page 2
 ```
 
@@ -225,11 +225,13 @@ Create an **Agent** that uses your toolkit to perform multi-step tasks.
 import os
 from dotenv import load_dotenv
 from agno.agent import Agent
+from agno.models.openai import OpenAIChat
 from steel_tools import SteelTools
 
 load_dotenv()
 
 STEEL_API_KEY = os.getenv("STEEL_API_KEY") or "your-steel-api-key-here"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or "your-openai-api-key-here"
 TASK = os.getenv("TASK") or "Go to https://quotes.toscrape.com and get some quotes"
 
 def main():
@@ -237,6 +239,7 @@ def main():
 
     agent = Agent(
         name="Web Scraper",
+        model=OpenAIChat(id="gpt-5-nano", api_key=OPENAI_API_KEY),
         tools=[tools],
         instructions=[
             "Use the tools to browse and extract content.",
@@ -274,6 +277,7 @@ from typing import Any, Dict, List, Optional
 from agno.tools import Toolkit
 from agno.utils.log import log_debug, logger
 from agno.agent import Agent
+from agno.models.openai import OpenAIChat
 from playwright.sync_api import sync_playwright
 from steel import Steel
 
@@ -283,6 +287,7 @@ load_dotenv()
 
 # Replace with your own API keys
 STEEL_API_KEY = os.getenv("STEEL_API_KEY") or "your-steel-api-key-here"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or "your-openai-api-key-here"
 
 # Replace with your own task
 TASK = os.getenv("TASK") or "Go to https://quotes.toscrape.com and: 1. Get the first 3 quotes with authors 2. Navigate to page 2 3. Get 2 more quotes from page 2"
@@ -463,9 +468,15 @@ def main():
         print("   Get your API key at: https://app.steel.dev/settings/api-keys")
         return
 
+    if OPENAI_API_KEY == "your-openai-api-key-here":
+        print("⚠️  WARNING: Please replace 'your-openai-api-key-here' with your actual OpenAI API key")
+        print("   Get your API key at: https://platform.openai.com/api-keys")
+        return
+
     tools = SteelTools(api_key=STEEL_API_KEY)
     agent = Agent(
         name="Web Scraper",
+        model=OpenAIChat(id="gpt-5-nano", api_key=OPENAI_API_KEY),
         tools=[tools],
         instructions=[
             "Extract content clearly and format nicely",
