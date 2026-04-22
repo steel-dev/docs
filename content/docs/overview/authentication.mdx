@@ -1,0 +1,198 @@
+---
+title: Authentication
+sidebarTitle: Authentication
+description: Authenticate requests to the Steel API and Steel SDKs using an API key.
+llm: true
+---
+
+Every request to Steel is authenticated with an API key tied to your organization. This page covers how to get a key, how to use it with the REST API, SDKs, and WebSocket connections, and how to manage and rotate keys over time.
+
+### Overview
+
+Steel uses API key authentication. Once you've created a key in the dashboard, you pass it to Steel one of three ways depending on the interface you're using:
+
+- **REST API**: as the `steel-api-key` HTTP header
+- **SDKs (Node.js / Python)**: as a client option, or via the `STEEL_API_KEY` environment variable
+- **Browser connections (CDP over WebSocket)**: as the `apiKey` query parameter on `wss://connect.steel.dev`
+
+A single key grants access to your entire organization's Steel resources: sessions, files, credentials, profiles, and everything else. Treat it like a password.
+
+### Getting Your API Key
+
+1. Sign in at [app.steel.dev](https://app.steel.dev).
+2. Open **Settings → API Keys** ([direct link](https://app.steel.dev/settings/api-keys)).
+3. Click **Create API Key**, give it a descriptive name (e.g. `production`, `local-dev`, `ci`), and copy the value.
+
+:::callout
+type: warn
+
+### Save your key somewhere safe
+
+The full key is only shown once at the moment of creation. If you lose it, you'll need to delete the key and create a new one.
+:::
+
+### Setting Up Environment Variables
+
+Both SDKs and most example code in these docs assume your key is available as the `STEEL_API_KEY` environment variable. The easiest setup is a `.env` file in your project root:
+
+```bash .env -wcn
+STEEL_API_KEY=ste-your-api-key-here
+```
+
+Make sure `.env` is listed in your `.gitignore` so the key never lands in version control.
+
+### Using the API Key
+
+#### SDKs
+
+If `STEEL_API_KEY` is set in your environment, the official SDKs will pick it up automatically. You don't need to pass anything explicitly.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+// Reads STEEL_API_KEY from the environment
+const client = new Steel();
+
+const session = await client.sessions.create();
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+# Reads STEEL_API_KEY from the environment
+client = Steel()
+
+session = client.sessions.create()
+```
+
+</CodeTabs>
+
+You can also pass the key explicitly, which is useful when you manage multiple keys or fetch the value from a secrets manager at runtime:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from "steel-sdk";
+
+const client = new Steel({
+  steelAPIKey: process.env.STEEL_API_KEY,
+});
+```
+
+```python !! Python -wcn
+import os
+from steel import Steel
+
+client = Steel(
+    steel_api_key=os.environ["STEEL_API_KEY"],
+)
+```
+
+</CodeTabs>
+
+#### REST API
+
+When calling the REST API directly, send your key in the `steel-api-key` header.
+
+```bash cURL -wcn
+curl https://api.steel.dev/v1/sessions \
+  -H "steel-api-key: $STEEL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+The same header works for every authenticated endpoint: sessions, files, credentials, profiles, extensions, and so on. See the [API Reference](/api-reference) for the full list.
+
+#### Browser Connections (CDP over WebSocket)
+
+When connecting an automation framework (Playwright, Puppeteer, Selenium) to a live Steel session over the Chrome DevTools Protocol, pass your key as the `apiKey` query parameter on the `wss://connect.steel.dev` endpoint:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import { chromium } from "playwright";
+
+const browser = await chromium.connectOverCDP(
+  `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`,
+);
+```
+
+```python !! Python -wcn
+import os
+from playwright.sync_api import sync_playwright
+
+playwright = sync_playwright().start()
+browser = playwright.chromium.connect_over_cdp(
+    f"wss://connect.steel.dev?apiKey={os.environ['STEEL_API_KEY']}&sessionId={session.id}"
+)
+```
+
+</CodeTabs>
+
+The `sessionId` parameter is optional: if omitted, Steel will start a new session with default settings and connect you to it. See the framework-specific guides for full examples: [Puppeteer](/cookbook/puppeteer), [Playwright](/cookbook/playwright), [Playwright (Python)](/cookbook/playwright-python), [Selenium](/cookbook/selenium).
+
+#### Steel CLI
+
+The [Steel CLI](/overview/steel-cli) authenticates with the same keys. The easiest way is:
+
+```bash Terminal -wcn
+steel login
+```
+
+This walks you through signing in and stores a key locally. Alternatively, set `STEEL_API_KEY` in your environment and the CLI will use it directly: useful for CI and non-interactive environments.
+
+### Managing Your API Keys
+
+All key management happens in the [API Keys dashboard](https://app.steel.dev/settings/api-keys). From there you can:
+
+- **Create** a new key: pick a clear name so you can later identify where it's being used.
+- **View** the list of existing keys, when they were created, and when they were last used.
+- **Delete** a key: this immediately revokes it. Any service still using that key will start receiving `401 Unauthorized` responses.
+
+Steel does not currently expose key management through the public API: keys are only created and deleted through the dashboard.
+
+#### Rotating Keys
+
+To rotate a key without downtime:
+
+1. Create a new API key in the dashboard.
+2. Roll the new key out to all the places that use it (environment variables, secret managers, CI, etc.).
+3. Verify traffic is flowing under the new key (the "Last used" timestamp in the dashboard will update).
+4. Delete the old key.
+
+We recommend using separate keys per environment (e.g. `production`, `staging`, `local-dev`) so you can rotate them independently and narrow the blast radius of a leak.
+
+### Security Best Practices
+
+- **Never commit keys to source control.** Use `.env` files (and `.gitignore` them), your platform's secret manager, or CI secrets.
+- **Never ship keys in client-side code.** Steel keys are meant for trusted server-side environments. Exposing one in a browser bundle, mobile app, or public repo effectively makes it public.
+- **Scope keys per environment.** One key per environment (prod, staging, dev) makes incidents easier to contain.
+- **Rotate on suspicion.** If a key might have been exposed (in logs, a screenshare, a repo, a CI job), delete it and create a new one immediately.
+- **Use the `name` field.** Naming your keys when you create them makes it much easier to audit and revoke the right one later.
+
+### Troubleshooting
+
+If Steel rejects your request, you'll get an HTTP `401 Unauthorized` with a short message explaining why:
+
+- **`Invalid Steel API Key`**: the key you sent doesn't match any active key on your account. Double-check it for typos, trailing whitespace, or the wrong environment variable. If you recently deleted the key, it will no longer work.
+- **`Missing API key`**: no `steel-api-key` header was sent. Make sure your SDK client was initialized with a key, or that the header is present on your raw HTTP request.
+- **`Account suspended`** (`403 Forbidden`): your organization has been blocked. Reach out to [team@steel.dev](mailto:team@steel.dev?subject=Account%20Suspension) to resolve this.
+
+A quick way to sanity-check a key is to hit the sessions endpoint:
+
+```bash Terminal -wcn
+curl -i https://api.steel.dev/v1/sessions \
+  -H "steel-api-key: $STEEL_API_KEY"
+```
+
+A `200 OK` means you're authenticated. A `401` means the key is wrong or missing.
+
+:::callout
+type: help
+
+### Stuck on auth?
+
+Ping us in the **#help** channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section, or email [team@steel.dev](mailto:team@steel.dev?subject=Authentication%20Help).
+:::
