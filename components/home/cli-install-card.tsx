@@ -4,7 +4,7 @@ import { Check, Copy } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-const CLI_INSTALL_COMMAND = 'curl -LsSf https://setup.steel.dev | sh';
+const CLI_INSTALL_COMMAND = 'curl -fsS https://setup.steel.dev | sh';
 
 export function CLIInstallCard() {
   const [copied, setCopied] = React.useState(false);
