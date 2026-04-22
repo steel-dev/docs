@@ -34,20 +34,19 @@ This returns a flattened, agent-friendly text map of the docs site.
 
 ## Installation
 
-Requirements:
+Install with the official script (recommended):
 
-- Node.js `>=18`
+```bash Terminal
+curl -fsSL https://setup.steel.dev | sh
+```
 
-Install globally:
+This installs the native `steel` binary to `~/.steel/bin` and runs `steel init`
+to log you in, verify connectivity, and install coding-agent skills.
+
+Alternative: install via npm (wraps the native binary):
 
 ```bash Terminal
 npm i -g @steel-dev/cli
-```
-
-Or run without global install:
-
-```bash Terminal
-npx @steel-dev/cli --help
 ```
 
 ## Quick Start
@@ -199,12 +198,14 @@ For full command references:
 
 | Group | Commands |
 |---|---|
-| Quickstart | `forge`, `run` |
+| Onboarding | `init`, `forge` |
 | Browser lifecycle | `browser start`, `browser stop`, `browser sessions`, `browser live`, `browser captcha solve` |
 | Browser passthrough | `steel browser <inherited-command>` |
 | API tools | `scrape`, `screenshot`, `pdf` |
 | Local runtime | `dev install`, `dev start`, `dev stop` |
-| Account + utility | `login`, `logout`, `config`, `settings`, `cache`, `docs`, `support`, `star`, `update` |
+| Profiles | `profile import`, `profile sync`, `profile list`, `profile delete` |
+| Credentials | `credentials list`, `credentials create`, `credentials update`, `credentials delete` |
+| Account + utility | `login`, `logout`, `config`, `doctor`, `cache`, `update` |
 
 ## Common Workflows
 
@@ -257,23 +258,19 @@ steel screenshot https://example.com --full-page
 steel pdf https://example.com
 ```
 
-## `forge` and `run` (Templates)
+## `forge` (Templates)
 
-Use `forge` to scaffold a project and `run` to execute templates instantly.
+Use `forge` to scaffold a project from a template.
 
 ```bash Terminal
 # Scaffold a project
 steel forge playwright --name my-bot
-
-# Run an instant task-oriented template flow
-steel run browser-use --task "Research the latest browser automation libraries"
 ```
 
 List all templates and flags:
 
 ```bash Terminal
 steel forge --help
-steel run --help
 ```
 
 ## Endpoint Resolution
@@ -305,7 +302,6 @@ Attach-flag override:
 steel login
 steel config
 steel logout
-steel settings
 steel cache --clean
 steel update
 steel update --check
@@ -315,10 +311,10 @@ steel update --force
 Disable auto-update checks (24-hour cache window):
 
 ```bash Terminal
-steel run --no-update-check
-STEEL_CLI_SKIP_UPDATE_CHECK=true steel run
-CI=true steel run
-NODE_ENV=test steel run
+steel scrape https://example.com --no-update-check
+STEEL_CLI_SKIP_UPDATE_CHECK=true steel scrape https://example.com
+CI=true steel scrape https://example.com
+NODE_ENV=test steel scrape https://example.com
 ```
 
 ## Runtime and Output Notes
