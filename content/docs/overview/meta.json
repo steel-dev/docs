@@ -4,6 +4,7 @@
   "pages": [
     "---Overview---",
     "intro-to-steel",
+    "authentication",
     "steel-cli",
     "need-help",
     "pricinglimits",
