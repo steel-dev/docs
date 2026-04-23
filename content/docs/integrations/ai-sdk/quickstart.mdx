@@ -235,7 +235,7 @@ const researchAgent = new ToolLoopAgent({
 :::callout
 type: tip
 ### Why add `snapshot` at all?
-Without it, the agent has to guess CSS selectors. Wrong guess → empty extract → retry → another model round-trip. `snapshot` returns the page's visible text + link list in one `page.evaluate` (<500ms), so the agent can decide whether `extract` is even necessary. For link-heavy sites (trending pages, news indexes, search results) the findings are already in the `links` list, and the agent skips `extract` entirely — saving a step.
+Without it, the agent has to guess CSS selectors. Wrong guess → empty extract → retry → another model round-trip. `snapshot` returns the page's visible text + link list in one `page.evaluate` (&lt;500ms), so the agent can decide whether `extract` is even necessary. For link-heavy sites (trending pages, news indexes, search results) the findings are already in the `links` list, and the agent skips `extract` entirely — saving a step.
 :::
 
 ### Step 6: Run the agent and clean up
