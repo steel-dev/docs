@@ -68,7 +68,8 @@ let browser: Browser | null = null;
 let page: Page | null = null;
 
 const openSession = tool({
-  description: "Open a Steel cloud browser session. Call exactly once, first.",
+  description:
+    "Open a Steel cloud browser session. Call this exactly once, before anything else.",
   inputSchema: z.object({}),
   execute: async () => {
     session = await steel.sessions.create({});
@@ -82,7 +83,8 @@ const openSession = tool({
 });
 
 const navigate = tool({
-  description: "Navigate the open session to a URL.",
+  description:
+    "Navigate the open session to a URL and wait for the page to load.",
   inputSchema: z.object({ url: z.string().url() }),
   execute: async ({ url }) => {
     if (!page) throw new Error("openSession must be called first.");
@@ -91,14 +93,51 @@ const navigate = tool({
   },
 });
 
-const extract = tool({
-  description: "Extract structured data from the current page using CSS selectors.",
+const snapshot = tool({
+  description:
+    "Return a readable snapshot of the current page: title, URL, visible text (capped), and a list of links with their text and href. Call this BEFORE extract so you never have to guess CSS selectors.",
   inputSchema: z.object({
-    rowSelector: z.string(),
+    maxChars: z.number().int().positive().max(10_000).default(4_000),
+    maxLinks: z.number().int().positive().max(200).default(50),
+  }),
+  execute: async ({ maxChars, maxLinks }) => {
+    if (!page) throw new Error("openSession must be called first.");
+    return (await page.evaluate(
+      ({ maxChars, maxLinks }: { maxChars: number; maxLinks: number }) => {
+        const text = (document.body.innerText || "").slice(0, maxChars);
+        const links = Array.from(document.querySelectorAll("a[href]"))
+          .slice(0, maxLinks)
+          .map((a) => {
+            const anchor = a as HTMLAnchorElement;
+            const t = (anchor.innerText || anchor.textContent || "").trim().slice(0, 120);
+            return { text: t, href: anchor.href };
+          })
+          .filter((l) => l.text && l.href);
+        return { url: location.href, title: document.title, text, links };
+      },
+      { maxChars, maxLinks }
+    )) as { url: string; title: string; text: string; links: { text: string; href: string }[] };
+  },
+});
+
+const extract = tool({
+  description:
+    "Extract structured data from the current page using CSS selectors. Provide one row selector plus a list of per-row field selectors.",
+  inputSchema: z.object({
+    rowSelector: z
+      .string()
+      .describe("CSS selector matching each item. e.g. 'article.Box-row'"),
     fields: z.array(z.object({
       name: z.string(),
-      selector: z.string(),
-      attr: z.string().optional(),
+      selector: z
+        .string()
+        .describe(
+          "CSS selector relative to the row. Use an empty string to read the row element itself."
+        ),
+      attr: z
+        .string()
+        .optional()
+        .describe("Optional attribute to read instead of innerText, e.g. 'href'."),
     })).min(1).max(10),
     limit: z.number().int().positive().max(20).default(10),
   }),
@@ -124,9 +163,12 @@ const extract = tool({
               ? (row.querySelector(f.selector) as Element | null)
               : row;
             if (!el) { item[f.name] = ""; continue; }
-            item[f.name] = f.attr
-              ? (el.getAttribute(f.attr) ?? "").trim()
-              : (((el as HTMLElement).innerText ?? el.textContent ?? "")).trim();
+            if (f.attr) {
+              item[f.name] = (el.getAttribute(f.attr) ?? "").trim();
+            } else {
+              const text = (el as HTMLElement).innerText ?? el.textContent ?? "";
+              item[f.name] = text.trim();
+            }
           }
           return item;
         });
@@ -158,7 +200,9 @@ const reportFindings = tool({
   description:
     "Call this LAST with your final findings. Calling this ends the research.",
   inputSchema: z.object({
-    summary: z.string(),
+    summary: z
+      .string()
+      .describe("One-paragraph summary of what these repos have in common."),
     repos: z.array(z.object({
       name: z.string(),
       url: z.string(),
@@ -173,14 +217,16 @@ const researchAgent = new ToolLoopAgent({
   model: anthropic("claude-haiku-4-5"),
   instructions: [
     "You operate a Steel cloud browser via tools.",
-    "Workflow: (1) openSession, (2) navigate, (3) snapshot to see the page,",
-    "(4) optionally extract for structured rows, (5) reportFindings to finish.",
-    "Prefer snapshot's links list over guessing selectors. Do not invent data.",
+    "Workflow: (1) call openSession, (2) navigate to the target URL,",
+    "(3) call snapshot to see the page's text and links,",
+    "(4) only call extract when you need structured rows beyond what snapshot gives you,",
+    "(5) call reportFindings once with your final result.",
+    "Do not invent data. Prefer snapshot's links list over guessing selectors.",
   ].join(" "),
   stopWhen: [stepCountIs(15), hasToolCall("reportFindings")],
   tools: { openSession, navigate, snapshot, extract, reportFindings },
   onStepFinish: async ({ stepNumber, toolCalls, usage }) => {
-    const names = toolCalls?.map((t: any) => t.toolName).join(", ") || "(text)";
+    const names = toolCalls?.map((t: any) => t.toolName).join(", ") || "(text only)";
     console.log(`  step ${stepNumber}: ${names} | ${usage?.totalTokens ?? 0} tokens`);
   },
 });
@@ -200,7 +246,8 @@ The agent opens the Steel session itself during its first step. The final typed 
 async function main() {
   try {
     const result = await researchAgent.generate({
-      prompt: "Go to https://github.com/trending/python?since=daily and return the top 3 AI/ML repos. For each, give name, URL, stars, and description.",
+      prompt:
+        "Go to https://github.com/trending/python?since=daily and return the top 3 AI/ML-related repositories. For each, give its full name (owner/repo), GitHub URL, star count as shown on the page, and the repo description.",
     });
 
     const steps = (result as any).steps ?? [];
@@ -285,7 +332,8 @@ let browser: Browser | null = null;
 let page: Page | null = null;
 
 const openSession = tool({
-  description: "Open a Steel cloud browser session. Call exactly once, first.",
+  description:
+    "Open a Steel cloud browser session. Call this exactly once, before anything else.",
   inputSchema: z.object({}),
   execute: async () => {
     session = await steel.sessions.create({});
@@ -299,7 +347,8 @@ const openSession = tool({
 });
 
 const navigate = tool({
-  description: "Navigate the open session to a URL.",
+  description:
+    "Navigate the open session to a URL and wait for the page to load.",
   inputSchema: z.object({ url: z.string().url() }),
   execute: async ({ url }) => {
     if (!page) throw new Error("openSession must be called first.");
@@ -310,7 +359,7 @@ const navigate = tool({
 
 const snapshot = tool({
   description:
-    "Return a readable snapshot of the current page: title, URL, visible text (capped), and a list of links. Call this BEFORE extract so you never have to guess CSS selectors.",
+    "Return a readable snapshot of the current page: title, URL, visible text (capped), and a list of links with their text and href. Call this BEFORE extract so you never have to guess CSS selectors.",
   inputSchema: z.object({
     maxChars: z.number().int().positive().max(10_000).default(4_000),
     maxLinks: z.number().int().positive().max(200).default(50),
@@ -336,13 +385,23 @@ const snapshot = tool({
 });
 
 const extract = tool({
-  description: "Extract structured data from the current page using CSS selectors.",
+  description:
+    "Extract structured data from the current page using CSS selectors. Provide one row selector plus a list of per-row field selectors.",
   inputSchema: z.object({
-    rowSelector: z.string(),
+    rowSelector: z
+      .string()
+      .describe("CSS selector matching each item. e.g. 'article.Box-row'"),
     fields: z.array(z.object({
       name: z.string(),
-      selector: z.string(),
-      attr: z.string().optional(),
+      selector: z
+        .string()
+        .describe(
+          "CSS selector relative to the row. Use an empty string to read the row element itself."
+        ),
+      attr: z
+        .string()
+        .optional()
+        .describe("Optional attribute to read instead of innerText, e.g. 'href'."),
     })).min(1).max(10),
     limit: z.number().int().positive().max(20).default(10),
   }),
@@ -364,9 +423,12 @@ const extract = tool({
               ? (row.querySelector(f.selector) as Element | null)
               : row;
             if (!el) { item[f.name] = ""; continue; }
-            item[f.name] = f.attr
-              ? (el.getAttribute(f.attr) ?? "").trim()
-              : (((el as HTMLElement).innerText ?? el.textContent ?? "")).trim();
+            if (f.attr) {
+              item[f.name] = (el.getAttribute(f.attr) ?? "").trim();
+            } else {
+              const text = (el as HTMLElement).innerText ?? el.textContent ?? "";
+              item[f.name] = text.trim();
+            }
           }
           return item;
         });
@@ -381,7 +443,9 @@ const reportFindings = tool({
   description:
     "Call this LAST with your final findings. Calling this ends the research.",
   inputSchema: z.object({
-    summary: z.string(),
+    summary: z
+      .string()
+      .describe("One-paragraph summary of what these repos have in common."),
     repos: z.array(z.object({
       name: z.string(),
       url: z.string(),
@@ -396,14 +460,16 @@ const researchAgent = new ToolLoopAgent({
   model: anthropic("claude-haiku-4-5"),
   instructions: [
     "You operate a Steel cloud browser via tools.",
-    "Workflow: (1) openSession, (2) navigate, (3) snapshot to see the page,",
-    "(4) optionally extract for structured rows, (5) reportFindings to finish.",
-    "Prefer snapshot's links list over guessing selectors. Do not invent data.",
+    "Workflow: (1) call openSession, (2) navigate to the target URL,",
+    "(3) call snapshot to see the page's text and links,",
+    "(4) only call extract when you need structured rows beyond what snapshot gives you,",
+    "(5) call reportFindings once with your final result.",
+    "Do not invent data. Prefer snapshot's links list over guessing selectors.",
   ].join(" "),
   stopWhen: [stepCountIs(15), hasToolCall("reportFindings")],
   tools: { openSession, navigate, snapshot, extract, reportFindings },
   onStepFinish: async ({ stepNumber, toolCalls, usage }) => {
-    const names = toolCalls?.map((t: any) => t.toolName).join(", ") || "(text)";
+    const names = toolCalls?.map((t: any) => t.toolName).join(", ") || "(text only)";
     console.log(`  step ${stepNumber}: ${names} | ${usage?.totalTokens ?? 0} tokens`);
   },
 });
@@ -411,7 +477,8 @@ const researchAgent = new ToolLoopAgent({
 async function main() {
   try {
     const result = await researchAgent.generate({
-      prompt: "Go to https://github.com/trending/python?since=daily and return the top 3 AI/ML repos. For each, give name, URL, stars, and description.",
+      prompt:
+        "Go to https://github.com/trending/python?since=daily and return the top 3 AI/ML-related repositories. For each, give its full name (owner/repo), GitHub URL, star count as shown on the page, and the repo description.",
     });
 
     const steps = (result as any).steps ?? [];

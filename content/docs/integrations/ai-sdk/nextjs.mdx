@@ -35,7 +35,7 @@ ANTHROPIC_API_KEY=your-anthropic-api-key-here
 
 ### Step 3: API route
 
-`streamText` drives the loop. Tools are defined **inside** the handler so each request gets its own Steel session held in a closure. `prepareStep` phase-gates tools. `onFinish`/`onAbort` release the session.
+`streamText` drives the loop. Tools are defined **inside** the handler so each request gets its own Steel session held in a closure. `prepareStep` phase-gates tools. `onFinish`/`onAbort` release the session. `submitForm` shows off v6's `needsApproval` — the tool call streams to the UI for confirmation before executing.
 
 ```typescript Typescript -wcn -f app/api/chat/route.ts
 import { anthropic } from "@ai-sdk/anthropic";
@@ -50,6 +50,7 @@ import { chromium, type Browser, type Page } from "playwright";
 import Steel from "steel-sdk";
 import { z } from "zod";
 
+// Playwright needs the Node.js runtime (not Edge).
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
@@ -70,13 +71,20 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: anthropic("claude-haiku-4-5"),
-    system:
-      "Open a Steel session, navigate, call snapshot to see the page, and only call extract when you need structured rows. Do not invent data.",
+    system: [
+      "You operate a Steel cloud browser via tools.",
+      "Workflow: (1) call openSession, (2) navigate to the target URL,",
+      "(3) call snapshot to see the page's text and links,",
+      "(4) only call extract when you need structured rows beyond what snapshot gives,",
+      "(5) reply to the user in plain English.",
+      "Prefer snapshot's links list over guessing selectors. Do not invent data.",
+    ].join(" "),
     messages: await convertToModelMessages(messages),
     stopWhen: stepCountIs(15),
     tools: {
       openSession: tool({
-        description: "Open a Steel cloud browser session.",
+        description:
+          "Open a Steel cloud browser session. Call this exactly once, before anything else.",
         inputSchema: z.object({}),
         execute: async () => {
           session = await steel.sessions.create({});
@@ -89,23 +97,23 @@ export async function POST(req: Request) {
         },
       }),
       navigate: tool({
-        description: "Navigate to a URL.",
+        description: "Navigate the open session to a URL.",
         inputSchema: z.object({ url: z.string().url() }),
         execute: async ({ url }) => {
-          if (!page) throw new Error("openSession first.");
-          await page.goto(url, { waitUntil: "domcontentloaded" });
+          if (!page) throw new Error("openSession must be called first.");
+          await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45_000 });
           return { url: page.url(), title: await page.title() };
         },
       }),
       snapshot: tool({
         description:
-          "Return a readable snapshot of the current page: title, URL, visible text, and link list. Call BEFORE extract.",
+          "Return a readable snapshot of the current page: title, URL, visible text (capped), and a list of links with their text and href. Call this BEFORE extract so you never have to guess CSS selectors.",
         inputSchema: z.object({
           maxChars: z.number().int().positive().max(10_000).default(4_000),
           maxLinks: z.number().int().positive().max(200).default(50),
         }),
         execute: async ({ maxChars, maxLinks }) => {
-          if (!page) throw new Error("openSession first.");
+          if (!page) throw new Error("openSession must be called first.");
           return (await page.evaluate(
             ({ maxChars, maxLinks }: { maxChars: number; maxLinks: number }) => {
               const text = (document.body.innerText || "").slice(0, maxChars);
@@ -124,7 +132,8 @@ export async function POST(req: Request) {
         },
       }),
       extract: tool({
-        description: "Extract rows with CSS selectors.",
+        description:
+          "Extract structured data from the current page using CSS selectors.",
         inputSchema: z.object({
           rowSelector: z.string(),
           fields: z.array(z.object({
@@ -135,7 +144,7 @@ export async function POST(req: Request) {
           limit: z.number().int().positive().max(20).default(10),
         }),
         execute: async ({ rowSelector, fields, limit }) => {
-          if (!page) throw new Error("openSession first.");
+          if (!page) throw new Error("openSession must be called first.");
           // Batch the extraction inside one page.evaluate — N*M serial
           // CDP calls would cost seconds on a cloud browser.
           const items = (await page.evaluate(
@@ -154,9 +163,12 @@ export async function POST(req: Request) {
                     ? (row.querySelector(f.selector) as Element | null)
                     : row;
                   if (!el) { item[f.name] = ""; continue; }
-                  item[f.name] = f.attr
-                    ? (el.getAttribute(f.attr) ?? "").trim()
-                    : (((el as HTMLElement).innerText ?? el.textContent ?? "")).trim();
+                  if (f.attr) {
+                    item[f.name] = (el.getAttribute(f.attr) ?? "").trim();
+                  } else {
+                    const text = (el as HTMLElement).innerText ?? el.textContent ?? "";
+                    item[f.name] = text.trim();
+                  }
                 }
                 return item;
               });
@@ -166,13 +178,32 @@ export async function POST(req: Request) {
           return { count: items.length, items };
         },
       }),
+      // v6's needsApproval: destructive tools stream to the UI without executing,
+      // wait for user confirmation, then resume. Wire up approval UI on the client
+      // for this to run end-to-end.
+      submitForm: tool({
+        description: "Submit a form on the current page. Requires user approval.",
+        inputSchema: z.object({
+          reason: z.string().describe("Why this submission is safe."),
+        }),
+        needsApproval: true,
+        execute: async ({ reason }) => {
+          return { submitted: false, note: `Demo only. Reason: ${reason}` };
+        },
+      }),
     },
+    // Phase-gate: no one can navigate before the session is open, and the
+    // agent can't open a second session.
     prepareStep: async ({ stepNumber, steps }) => {
       const opened = steps.some((s: any) =>
         s.toolCalls?.some((tc: any) => tc.toolName === "openSession")
       );
       if (stepNumber === 0 || !opened) return { activeTools: ["openSession"] };
-      return { activeTools: ["navigate", "snapshot", "extract"] };
+      return { activeTools: ["navigate", "snapshot", "extract", "submitForm"] };
+    },
+    onStepFinish: async ({ toolCalls, usage }) => {
+      const names = toolCalls?.map((t: any) => t.toolName).join(", ") || "";
+      console.log(`  step: ${names || "(text)"} | ${usage?.totalTokens ?? 0} tokens`);
     },
     onFinish: cleanup,
     onAbort: cleanup,
