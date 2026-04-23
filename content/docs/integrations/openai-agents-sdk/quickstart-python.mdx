@@ -161,7 +161,7 @@ async def extract(
 :::callout
 type: warn
 ### Don't do N×M serial CDP calls
-`page.query_selector_all` + `row.query_selector` + `el.inner_text()` look fine locally but each `await` is a separate CDP round-trip to Steel's cloud browser (~200-300ms each). A 10×4 extract becomes 40 round-trips (8-12 seconds). The `page.evaluate` version above runs the whole extraction in the browser: one round-trip, <500ms.
+`page.query_selector_all` + `row.query_selector` + `el.inner_text()` look fine locally but each `await` is a separate CDP round-trip to Steel's cloud browser (~200-300ms each). A 10×4 extract becomes 40 round-trips (8-12 seconds). The `page.evaluate` version above runs the whole extraction in the browser: one round-trip, &lt;500ms.
 :::
 
 ### Step 5: Build the Agent
