@@ -5,6 +5,7 @@
     "...coding-agents",
     "...agentkit",
     "...agno",
+    "...ai-sdk",
     "...browser-use",
     "...claude-computer-use",
     "...crewai",

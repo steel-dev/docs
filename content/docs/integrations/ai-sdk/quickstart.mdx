@@ -1,0 +1,448 @@
+---
+title: Quickstart
+sidebarTitle: Quickstart
+description: Build a typed, tool-using browser agent with Steel and the Vercel AI SDK v6 ToolLoopAgent. The agent opens a Steel session, navigates and extracts, and ends with a typed final tool whose input is the structured result.
+llm: true
+---
+
+Scroll to the bottom to see a full example!
+
+### Requirements
+
+*   **Steel API key**
+
+*   **Anthropic API key**
+
+*   **Node.js 20+**
+
+### Step 1: Project Setup
+
+Create a new TypeScript project and basic script:
+
+```bash Terminal -wc
+mkdir steel-ai-sdk && \
+cd steel-ai-sdk && \
+npm init -y && \
+npm install -D typescript @types/node ts-node && \
+npx tsc --init && \
+npm pkg set scripts.start="ts-node index.ts" && \
+touch index.ts .env
+```
+
+### Step 2: Install Dependencies
+
+```package-install
+ai @ai-sdk/anthropic steel-sdk playwright zod dotenv
+```
+
+### Step 3: Environment Variables
+
+Create a `.env` file with your API keys:
+
+```env ENV -wcn -f .env
+STEEL_API_KEY=your-steel-api-key-here
+ANTHROPIC_API_KEY=your-anthropic-api-key-here
+```
+
+### Step 4: Define Steel tools
+
+Each tool is a typed `tool()` with a Zod input schema. Browser state (the Steel session + Playwright page) lives in a closure so every tool call sees the same page.
+
+```typescript Typescript -wcn -f index.ts
+import * as dotenv from "dotenv";
+import Steel from "steel-sdk";
+import { anthropic } from "@ai-sdk/anthropic";
+import { ToolLoopAgent, tool, stepCountIs, hasToolCall } from "ai";
+import { chromium, type Browser, type Page } from "playwright";
+import { z } from "zod";
+
+dotenv.config();
+
+const STEEL_API_KEY = process.env.STEEL_API_KEY || "your-steel-api-key-here";
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "your-anthropic-api-key-here";
+
+const steel = new Steel({ steelAPIKey: STEEL_API_KEY });
+
+let session: Awaited<ReturnType<typeof steel.sessions.create>> | null = null;
+let browser: Browser | null = null;
+let page: Page | null = null;
+
+const openSession = tool({
+  description: "Open a Steel cloud browser session. Call exactly once, first.",
+  inputSchema: z.object({}),
+  execute: async () => {
+    session = await steel.sessions.create({});
+    browser = await chromium.connectOverCDP(
+      `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`
+    );
+    const ctx = browser.contexts()[0];
+    page = ctx.pages()[0] ?? (await ctx.newPage());
+    return { sessionId: session.id, liveViewUrl: session.sessionViewerUrl };
+  },
+});
+
+const navigate = tool({
+  description: "Navigate the open session to a URL.",
+  inputSchema: z.object({ url: z.string().url() }),
+  execute: async ({ url }) => {
+    if (!page) throw new Error("openSession must be called first.");
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45_000 });
+    return { url: page.url(), title: await page.title() };
+  },
+});
+
+const extract = tool({
+  description: "Extract structured data from the current page using CSS selectors.",
+  inputSchema: z.object({
+    rowSelector: z.string(),
+    fields: z.array(z.object({
+      name: z.string(),
+      selector: z.string(),
+      attr: z.string().optional(),
+    })).min(1).max(10),
+    limit: z.number().int().positive().max(20).default(10),
+  }),
+  execute: async ({ rowSelector, fields, limit }) => {
+    if (!page) throw new Error("openSession must be called first.");
+    // Run the whole extraction inside one page.evaluate so we pay the
+    // CDP round-trip once, not N*M times. Serial CDP calls (row.$,
+    // el.getAttribute, el.innerText) are the single biggest source of
+    // slowness on a cloud browser.
+    const items = (await page.evaluate(
+      ({ rowSelector, fields, limit }: {
+        rowSelector: string;
+        fields: { name: string; selector: string; attr?: string }[];
+        limit: number;
+      }) => {
+        const rows = Array.from(
+          document.querySelectorAll(rowSelector)
+        ).slice(0, limit);
+        return rows.map((row) => {
+          const item: Record<string, string> = {};
+          for (const f of fields) {
+            const el = f.selector
+              ? (row.querySelector(f.selector) as Element | null)
+              : row;
+            if (!el) { item[f.name] = ""; continue; }
+            item[f.name] = f.attr
+              ? (el.getAttribute(f.attr) ?? "").trim()
+              : (((el as HTMLElement).innerText ?? el.textContent ?? "")).trim();
+          }
+          return item;
+        });
+      },
+      { rowSelector, fields, limit }
+    )) as Record<string, string>[];
+    return { count: items.length, items };
+  },
+});
+```
+
+:::callout
+type: warn
+### Don't do N×M serial CDP calls
+The obvious implementation — `page.$$(rowSelector)` then `await row.$(f.selector)` and `await el.innerText()` per field — looks fine locally but each of those awaits is a separate CDP round-trip to Steel's cloud browser (~200-300ms each). A 10×4 extract becomes 40 round-trips (8-12 seconds). The `page.evaluate` version above is one round-trip: <500ms.
+:::
+
+### Step 5: Build the ToolLoopAgent
+
+The agent's last move is a **`reportFindings` tool** with a Zod-typed input and **no `execute`**. In v6, a tool without an `execute` stops the loop as soon as it's called — so this tool doubles as the structured-output carrier. The typed final result is the tool call's `input`.
+
+:::callout
+type: tip
+Why not `output: Output.object(...)`? On Anthropic, forcing a JSON response format disables tool calling — the provider warns `"JSON response format does not support tools. The provided tools are ignored."` The "final tool" pattern is the v6-idiomatic way to combine tool loops with typed output.
+:::
+
+```typescript Typescript -wcn -f index.ts
+const reportFindings = tool({
+  description:
+    "Call this LAST with your final findings. Calling this ends the research.",
+  inputSchema: z.object({
+    summary: z.string(),
+    repos: z.array(z.object({
+      name: z.string(),
+      url: z.string(),
+      stars: z.string().optional(),
+      description: z.string().optional(),
+    })).min(1).max(5),
+  }),
+  // intentionally no execute: lacking execute makes v6 stop the loop
+});
+
+const researchAgent = new ToolLoopAgent({
+  model: anthropic("claude-haiku-4-5"),
+  instructions: [
+    "You operate a Steel cloud browser via tools.",
+    "Workflow: (1) openSession, (2) navigate, (3) snapshot to see the page,",
+    "(4) optionally extract for structured rows, (5) reportFindings to finish.",
+    "Prefer snapshot's links list over guessing selectors. Do not invent data.",
+  ].join(" "),
+  stopWhen: [stepCountIs(15), hasToolCall("reportFindings")],
+  tools: { openSession, navigate, snapshot, extract, reportFindings },
+  onStepFinish: async ({ stepNumber, toolCalls, usage }) => {
+    const names = toolCalls?.map((t: any) => t.toolName).join(", ") || "(text)";
+    console.log(`  step ${stepNumber}: ${names} | ${usage?.totalTokens ?? 0} tokens`);
+  },
+});
+```
+
+:::callout
+type: tip
+### Why add `snapshot` at all?
+Without it, the agent has to guess CSS selectors. Wrong guess → empty extract → retry → another model round-trip. `snapshot` returns the page's visible text + link list in one `page.evaluate` (<500ms), so the agent can decide whether `extract` is even necessary. For link-heavy sites (trending pages, news indexes, search results) the findings are already in the `links` list, and the agent skips `extract` entirely — saving a step.
+:::
+
+### Step 6: Run the agent and clean up
+
+The agent opens the Steel session itself during its first step. The final typed result is the `reportFindings` tool call's `input`, found in `result.steps`.
+
+```typescript Typescript -wcn -f index.ts
+async function main() {
+  try {
+    const result = await researchAgent.generate({
+      prompt: "Go to https://github.com/trending/python?since=daily and return the top 3 AI/ML repos. For each, give name, URL, stars, and description.",
+    });
+
+    const steps = (result as any).steps ?? [];
+    const reportCall = steps
+      .flatMap((s: any) => s.toolCalls ?? [])
+      .find((tc: any) => tc.toolName === "reportFindings");
+    const structured = reportCall?.input ?? { text: result.text };
+
+    console.log(JSON.stringify(structured, null, 2));
+  } finally {
+    if (browser) await browser.close().catch(() => {});
+    if (session) await steel.sessions.release(session.id).catch(() => {});
+  }
+}
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
+```
+
+#### Run It
+
+```bash Terminal -wc
+npm start
+```
+
+You'll see a live **session viewer URL** in the console — open it to watch the agent drive the browser in real time.
+
+### Phase-gate tools with prepareStep (optional)
+
+`prepareStep` runs before each step and can narrow the tool set per phase — preventing the agent from calling `openSession` twice, or from extracting before navigating.
+
+```typescript
+prepareStep: async ({ stepNumber, steps }) => {
+  if (stepNumber === 0) return { activeTools: ["openSession"] };
+  return { activeTools: ["navigate", "extract"] };
+},
+```
+
+### Swap the model
+
+The default is Claude Haiku 4.5 — fast and cheap, which matters because the agent round-trips through the model 3-5 times per run. Swap up when the task needs stronger reasoning:
+
+```typescript
+import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
+
+// model: anthropic("claude-sonnet-4-6"), // smarter, slower
+// model: openai("gpt-5"),
+// model: google("gemini-2.5-pro"),
+```
+
+Or use the [AI Gateway](https://vercel.com/docs/ai-gateway) string form (e.g. `"anthropic/claude-haiku-4-5"`) to route through Vercel.
+
+### Full Example
+
+Complete `index.ts` you can paste and run:
+
+```typescript Typescript -wcn -f index.ts
+/*
+ * Build an AI browser agent with Vercel AI SDK v6 (ToolLoopAgent) and Steel.
+ * https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-ai-sdk-starter
+ */
+
+import * as dotenv from "dotenv";
+import Steel from "steel-sdk";
+import { anthropic } from "@ai-sdk/anthropic";
+import { ToolLoopAgent, tool, stepCountIs, hasToolCall } from "ai";
+import { chromium, type Browser, type Page } from "playwright";
+import { z } from "zod";
+
+dotenv.config();
+
+const STEEL_API_KEY = process.env.STEEL_API_KEY || "your-steel-api-key-here";
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "your-anthropic-api-key-here";
+
+const steel = new Steel({ steelAPIKey: STEEL_API_KEY });
+
+let session: Awaited<ReturnType<typeof steel.sessions.create>> | null = null;
+let browser: Browser | null = null;
+let page: Page | null = null;
+
+const openSession = tool({
+  description: "Open a Steel cloud browser session. Call exactly once, first.",
+  inputSchema: z.object({}),
+  execute: async () => {
+    session = await steel.sessions.create({});
+    browser = await chromium.connectOverCDP(
+      `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`
+    );
+    const ctx = browser.contexts()[0];
+    page = ctx.pages()[0] ?? (await ctx.newPage());
+    return { sessionId: session.id, liveViewUrl: session.sessionViewerUrl };
+  },
+});
+
+const navigate = tool({
+  description: "Navigate the open session to a URL.",
+  inputSchema: z.object({ url: z.string().url() }),
+  execute: async ({ url }) => {
+    if (!page) throw new Error("openSession must be called first.");
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45_000 });
+    return { url: page.url(), title: await page.title() };
+  },
+});
+
+const snapshot = tool({
+  description:
+    "Return a readable snapshot of the current page: title, URL, visible text (capped), and a list of links. Call this BEFORE extract so you never have to guess CSS selectors.",
+  inputSchema: z.object({
+    maxChars: z.number().int().positive().max(10_000).default(4_000),
+    maxLinks: z.number().int().positive().max(200).default(50),
+  }),
+  execute: async ({ maxChars, maxLinks }) => {
+    if (!page) throw new Error("openSession must be called first.");
+    return (await page.evaluate(
+      ({ maxChars, maxLinks }: { maxChars: number; maxLinks: number }) => {
+        const text = (document.body.innerText || "").slice(0, maxChars);
+        const links = Array.from(document.querySelectorAll("a[href]"))
+          .slice(0, maxLinks)
+          .map((a) => {
+            const anchor = a as HTMLAnchorElement;
+            const t = (anchor.innerText || anchor.textContent || "").trim().slice(0, 120);
+            return { text: t, href: anchor.href };
+          })
+          .filter((l) => l.text && l.href);
+        return { url: location.href, title: document.title, text, links };
+      },
+      { maxChars, maxLinks }
+    )) as { url: string; title: string; text: string; links: { text: string; href: string }[] };
+  },
+});
+
+const extract = tool({
+  description: "Extract structured data from the current page using CSS selectors.",
+  inputSchema: z.object({
+    rowSelector: z.string(),
+    fields: z.array(z.object({
+      name: z.string(),
+      selector: z.string(),
+      attr: z.string().optional(),
+    })).min(1).max(10),
+    limit: z.number().int().positive().max(20).default(10),
+  }),
+  execute: async ({ rowSelector, fields, limit }) => {
+    if (!page) throw new Error("openSession must be called first.");
+    const items = (await page.evaluate(
+      ({ rowSelector, fields, limit }: {
+        rowSelector: string;
+        fields: { name: string; selector: string; attr?: string }[];
+        limit: number;
+      }) => {
+        const rows = Array.from(
+          document.querySelectorAll(rowSelector)
+        ).slice(0, limit);
+        return rows.map((row) => {
+          const item: Record<string, string> = {};
+          for (const f of fields) {
+            const el = f.selector
+              ? (row.querySelector(f.selector) as Element | null)
+              : row;
+            if (!el) { item[f.name] = ""; continue; }
+            item[f.name] = f.attr
+              ? (el.getAttribute(f.attr) ?? "").trim()
+              : (((el as HTMLElement).innerText ?? el.textContent ?? "")).trim();
+          }
+          return item;
+        });
+      },
+      { rowSelector, fields, limit }
+    )) as Record<string, string>[];
+    return { count: items.length, items };
+  },
+});
+
+const reportFindings = tool({
+  description:
+    "Call this LAST with your final findings. Calling this ends the research.",
+  inputSchema: z.object({
+    summary: z.string(),
+    repos: z.array(z.object({
+      name: z.string(),
+      url: z.string(),
+      stars: z.string().optional(),
+      description: z.string().optional(),
+    })).min(1).max(5),
+  }),
+  // intentionally no execute: lacking execute makes v6 stop the loop
+});
+
+const researchAgent = new ToolLoopAgent({
+  model: anthropic("claude-haiku-4-5"),
+  instructions: [
+    "You operate a Steel cloud browser via tools.",
+    "Workflow: (1) openSession, (2) navigate, (3) snapshot to see the page,",
+    "(4) optionally extract for structured rows, (5) reportFindings to finish.",
+    "Prefer snapshot's links list over guessing selectors. Do not invent data.",
+  ].join(" "),
+  stopWhen: [stepCountIs(15), hasToolCall("reportFindings")],
+  tools: { openSession, navigate, snapshot, extract, reportFindings },
+  onStepFinish: async ({ stepNumber, toolCalls, usage }) => {
+    const names = toolCalls?.map((t: any) => t.toolName).join(", ") || "(text)";
+    console.log(`  step ${stepNumber}: ${names} | ${usage?.totalTokens ?? 0} tokens`);
+  },
+});
+
+async function main() {
+  try {
+    const result = await researchAgent.generate({
+      prompt: "Go to https://github.com/trending/python?since=daily and return the top 3 AI/ML repos. For each, give name, URL, stars, and description.",
+    });
+
+    const steps = (result as any).steps ?? [];
+    const reportCall = steps
+      .flatMap((s: any) => s.toolCalls ?? [])
+      .find((tc: any) => tc.toolName === "reportFindings");
+    const structured = reportCall?.input ?? { text: result.text };
+
+    console.log(JSON.stringify(structured, null, 2));
+  } finally {
+    if (browser) await browser.close().catch(() => {});
+    if (session) await steel.sessions.release(session.id).catch(() => {});
+  }
+}
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
+```
+
+### Next Steps
+
+*   **Vercel AI SDK — Agents**: [https://ai-sdk.dev/docs/agents/overview](https://ai-sdk.dev/docs/agents/overview)
+
+*   **ToolLoopAgent reference**: [https://ai-sdk.dev/docs/agents/building-agents](https://ai-sdk.dev/docs/agents/building-agents)
+
+*   **Loop control (`stopWhen`, `prepareStep`)**: [https://ai-sdk.dev/docs/agents/loop-control](https://ai-sdk.dev/docs/agents/loop-control)
+
+*   **Steel Sessions API**: [/overview/sessions-api/overview](/overview/sessions-api/overview)
+
+*   **Steel Node SDK**: [https://github.com/steel-dev/steel-node](https://github.com/steel-dev/steel-node)
+
+*   **This Example on GitHub**: [https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-ai-sdk-starter](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-ai-sdk-starter)

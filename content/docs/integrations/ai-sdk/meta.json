@@ -1,0 +1,5 @@
+{
+  "title": "Vercel AI SDK",
+  "root": false,
+  "pages": ["quickstart", "nextjs"]
+}
