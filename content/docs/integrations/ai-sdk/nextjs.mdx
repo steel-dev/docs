@@ -5,7 +5,7 @@ description: Build a Next.js App Router chat app where a Vercel AI SDK v6 agent 
 llm: true
 ---
 
-This guide builds a Next.js chat UI on top of the v6 quickstart. The server route uses `streamText` with Steel tools; the client uses `useChat` and pulls the Steel **Live View** URL out of the `openSession` tool's output part to render a live iframe of the browser.
+This guide builds a Next.js chat UI on top of the v6 quickstart. The server route uses `streamText` with Steel tools; the client uses `useChat` and pulls the Steel **live view** out of the `openSession` tool's output part — specifically `session.debugUrl`, the interactive embed -- to render a live iframe of the browser next to the chat.
 
 For a server-only agent (`ToolLoopAgent.generate`), see the [Quickstart](/integrations/ai-sdk/quickstart).
 
@@ -93,7 +93,11 @@ export async function POST(req: Request) {
           );
           const ctx = browser.contexts()[0];
           page = ctx.pages()[0] ?? (await ctx.newPage());
-          return { sessionId: session.id, liveViewUrl: session.sessionViewerUrl };
+          return {
+            sessionId: session.id,
+            liveViewUrl: session.sessionViewerUrl,
+            debugUrl: session.debugUrl,
+          };
         },
       }),
       navigate: tool({
@@ -215,7 +219,7 @@ export async function POST(req: Request) {
 
 ### Step 4: Client page
 
-`useChat` handles the streaming protocol. We walk `message.parts` to find the `tool-openSession` output, which contains the Live View URL.
+`useChat` handles the streaming protocol. We walk `message.parts` to find the `tool-openSession` output, which contains both `debugUrl` (the interactive embed we render in the iframe) and `liveViewUrl` (the shareable viewer link).
 
 ```tsx Typescript -wcn -f app/page.tsx
 "use client";
@@ -226,15 +230,18 @@ export default function Page() {
   const { messages, sendMessage, status } = useChat();
   const [input, setInput] = useState("");
 
-  const liveViewUrl = useMemo(() => {
+  const { debugUrl, liveViewUrl } = useMemo(() => {
     for (const m of messages) {
       for (const part of (m.parts ?? []) as any[]) {
-        if (part?.type === "tool-openSession" && part?.output?.liveViewUrl) {
-          return part.output.liveViewUrl as string;
+        if (part?.type === "tool-openSession" && part?.output) {
+          return {
+            debugUrl: (part.output.debugUrl ?? null) as string | null,
+            liveViewUrl: (part.output.liveViewUrl ?? null) as string | null,
+          };
         }
       }
     }
-    return null;
+    return { debugUrl: null, liveViewUrl: null };
   }, [messages]);
 
   return (
@@ -268,8 +275,15 @@ export default function Page() {
         </form>
       </section>
       <aside>
-        {liveViewUrl ? (
-          <iframe src={liveViewUrl} style={{ width: "100%", height: "100%", border: 0 }} />
+        {liveViewUrl && (
+          <a href={liveViewUrl} target="_blank" rel="noreferrer">open in new tab ↗</a>
+        )}
+        {debugUrl ? (
+          <iframe
+            src={debugUrl}
+            sandbox="allow-same-origin allow-scripts"
+            style={{ width: "100%", height: "100%", border: 0 }}
+          />
         ) : (
           <div>Live View appears once the agent opens a session.</div>
         )}
@@ -278,6 +292,12 @@ export default function Page() {
   );
 }
 ```
+
+:::callout
+type: tip
+### `debugUrl` vs `sessionViewerUrl`
+`session.debugUrl` is the **interactive** embed — it streams WebRTC video at 25 fps and, by default (`?interactive=true`), accepts mouse/keyboard input so a user can take over the session. See [Live Sessions](/overview/sessions-api/embed-sessions/live-sessions) for supported query params. `session.sessionViewerUrl` is the shareable viewer page.
+:::
 
 ### Step 5: Run
 
