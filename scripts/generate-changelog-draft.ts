@@ -1,15 +1,16 @@
 #!/usr/bin/env bun
 
+import { execFileSync } from 'node:child_process';
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { execFileSync } from 'node:child_process';
 import {
   CHANGELOG_CONTEXT_FILES,
   CHANGELOG_PLACEHOLDER_IMAGE,
   CHANGELOG_PROMPT_FILE,
   CHANGELOG_REPOSITORIES,
   CHANGELOG_TIMEZONE,
+  type ChangelogRepository,
   COMMIT_BODY_CHAR_LIMIT,
   DEFAULT_LOOKBACK_DAYS,
   DEFAULT_OPENAI_MODEL,
@@ -17,7 +18,6 @@ import {
   PROMPT_CONTEXT_CHAR_LIMIT,
   RECENT_CHANGELOG_EXAMPLE_COUNT,
   SKIP_AUTHORS,
-  type ChangelogRepository,
 } from './changelog/config';
 
 interface GitHubCommitAuthor {
@@ -285,7 +285,10 @@ function truncateText(value: string, limit: number): string {
   return `${value.slice(0, limit).trimEnd()}\n...[truncated]`;
 }
 
-function normalizeCommit(repoConfig: ChangelogRepository, commit: GitHubListCommit): CommitCandidate {
+function normalizeCommit(
+  repoConfig: ChangelogRepository,
+  commit: GitHubListCommit,
+): CommitCandidate {
   const lines = commit.commit.message.split('\n');
   const subject = lines[0]?.trim() || commit.sha;
   const body = truncateText(lines.slice(1).join('\n').trim(), COMMIT_BODY_CHAR_LIMIT);
@@ -416,7 +419,9 @@ function formatCommitForPrompt(commit: CommitCandidate): string {
 }
 
 function formatRepoListForPrBody(): string {
-  return CHANGELOG_REPOSITORIES.map((repo) => `- \`${repo.owner}/${repo.repo}@${repo.branch}\``).join('\n');
+  return CHANGELOG_REPOSITORIES.map(
+    (repo) => `- \`${repo.owner}/${repo.repo}@${repo.branch}\``,
+  ).join('\n');
 }
 
 function getUniqueReferences(references: DraftReference[]): DraftReference[] {
@@ -567,7 +572,10 @@ function buildPrBody(
 
 function extractJsonObject(content: string): string {
   const trimmed = content.trim();
-  const withoutFence = trimmed.replace(/^```json\s*/i, '').replace(/```$/i, '').trim();
+  const withoutFence = trimmed
+    .replace(/^```json\s*/i, '')
+    .replace(/```$/i, '')
+    .trim();
   const firstBrace = withoutFence.indexOf('{');
   const lastBrace = withoutFence.lastIndexOf('}');
 
@@ -847,7 +855,9 @@ async function main() {
       commits.push(...repoCommits);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      warnings.push(`Failed to fetch commits for ${repoConfig.owner}/${repoConfig.repo}: ${message}`);
+      warnings.push(
+        `Failed to fetch commits for ${repoConfig.owner}/${repoConfig.repo}: ${message}`,
+      );
     }
   }
 

@@ -29,11 +29,7 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
   { owner: 'steel-dev', repo: 'docs', branch: 'main' },
 ];
 
-export const SKIP_AUTHORS = [
-  'github-actions[bot]',
-  'dependabot[bot]',
-  'renovate[bot]',
-];
+export const SKIP_AUTHORS = ['github-actions[bot]', 'dependabot[bot]', 'renovate[bot]'];
 
 export const CHANGELOG_PLACEHOLDER_IMAGE: PlaceholderImageConfig = {
   src: '/images/changelog-placeholder-white.jpeg',
