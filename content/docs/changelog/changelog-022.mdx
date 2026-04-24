@@ -1,0 +1,46 @@
+---
+title: "Changelog #022"
+sidebarTitle: "Changelog #022"
+llm: true
+image: "/images/changelog-placeholder-white.jpeg"
+imageAlt: "White placeholder image for changelog drafts"
+imageWidth: 400
+imageHeight: 300
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog-placeholder-white.jpeg"
+  alt="White placeholder image for changelog drafts"
+  width={400}
+  height={300}
+/>
+Hey everyone — this week we focused on agent onboarding, broader coding-agent support in the CLI, and a handful of reliability and platform updates behind the scenes.
+
+### ⭐ New
+
+#### Coding agent integrations
+
+Steel CLI now supports Codex, OpenCode, and Pi coding agent workflows, with updated integration docs covering agent setup and usage.
+
+### 🐛 Bug Fixes
+
+*   Fixed session metering so billed duration is clamped to the configured timeout.
+
+*   Fixed the `forge` command in Steel CLI.
+
+### 🔧 Improvements
+
+*   Updated Steel Cloud onboarding with a more agent-native setup flow and refreshed first-run guidance.
+
+*   Steel CLI now simplifies `--agent` mode and always prints the agent guide when that mode is used.
+
+*   Expanded docs and cookbook examples for computer-use and agent workflows, and enabled more Sessions API and integrations pages for LLM-friendly markdown sharing.
+
+*   Improved browser infrastructure reliability with updated fleet-controller probe and resource tuning, browser VM density changes, and additional monitoring coverage.
+
+*   Added support for additional proxy provider secrets in infrastructure configuration.
+
+### 🏡 Housekeeping
+
+*   Added `llms.steel.dev` infrastructure and related DNS configuration.
