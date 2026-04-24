@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import matter from 'gray-matter';
 import { source } from '../lib/source';
 
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
@@ -24,6 +25,21 @@ interface PageMetadata {
   section: string[];
 }
 
+// Frontmatter accessors. When this script runs under Next.js the fumadocs-mdx
+// loader populates `page.data.title` etc., but under plain Bun the MDX loader
+// is not active — `page.data.content` holds the raw file (including
+// frontmatter), so parse it ourselves as a fallback.
+function getFrontmatter(page: any): Record<string, unknown> {
+  if (page.data?.title || page.data?.description) return page.data;
+  const raw: string | undefined = page.data?.content;
+  if (!raw) return page.data ?? {};
+  try {
+    return { ...page.data, ...matter(raw).data };
+  } catch {
+    return page.data ?? {};
+  }
+}
+
 // Get all pages from source
 function getAllPages(): PageMetadata[] {
   const sourcePages = source.getPages();
@@ -43,11 +59,13 @@ function getAllPages(): PageMetadata[] {
           cleanUrl = '/' + urlParts.slice(1).join('/');
         }
 
+        const frontmatter = getFrontmatter(page);
+
         // Build a disambiguated title: if the title is generic (e.g. "Overview",
         // "Quickstart"), prepend the parent section for clarity.
         const toTitleCase = (s: string) =>
           s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-        const dataTitle: string | undefined = (page.data as any)?.title;
+        const dataTitle = (frontmatter as any)?.title as string | undefined;
         const rawTitle: string = dataTitle || toTitleCase(page.file.name);
         const GENERIC_TITLES = [
           'overview',
@@ -68,7 +86,7 @@ function getAllPages(): PageMetadata[] {
 
         return {
           title,
-          description: (page.data as any)?.description || '',
+          description: ((frontmatter as any)?.description as string | undefined) || '',
           url: page.url, // Keep original URL for file path generation
           cleanUrl: cleanUrl, // Add clean URL for content links
           section: section,

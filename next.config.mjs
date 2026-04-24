@@ -64,72 +64,35 @@ const config = {
         destination: "https://www.val.town/x/steel/steel_puppeteer_starter",
         permanent: true,
       },
-      {
-        source: "/cookbook/stagehand-py",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-stagehand-python-starter",
-        permanent: true,
-      },
-      {
-        source: "/cookbook/stagehand-ts",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-stagehand-node-starter",
-        permanent: true,
-      },
-      {
-        source: "/cookbook/playwright",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-playwright-starter",
-        permanent: true,
-      },
+      // Legacy cookbook URLs. Keep to avoid breaking external links.
+      { source: "/cookbook/playwright", destination: "/cookbook/playwright-ts", permanent: true },
       {
         source: "/cookbook/playwright-python",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-playwright-python-starter",
+        destination: "/cookbook/playwright-py",
         permanent: true,
       },
-      {
-        source: "/cookbook/puppeteer",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-puppeteer-starter",
-        permanent: true,
-      },
-      {
-        source: "/cookbook/selenium",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-selenium-starter",
-        permanent: true,
-      },
+      { source: "/cookbook/puppeteer", destination: "/cookbook/puppeteer-ts", permanent: true },
       {
         source: "/cookbook/steel-browser-use-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-browser-use-starter",
+        destination: "/cookbook/browser-use",
         permanent: true,
       },
       {
         source: "/cookbook/credentials-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-credentials-starter",
+        destination: "/cookbook/credentials",
         permanent: true,
       },
       {
         source: "/cookbook/auth-context-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-auth-context-starter",
+        destination: "/cookbook/auth-context",
         permanent: true,
       },
       {
         source: "/cookbook/extensions-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-extensions-starter",
+        destination: "/cookbook/extensions",
         permanent: true,
       },
-      {
-        source: "/cookbook/files-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-files-api-starter",
-        permanent: true,
-      },
+      { source: "/cookbook/files-starter", destination: "/cookbook/files-api", permanent: true },
     ];
   },
   async headers() {

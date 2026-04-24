@@ -1,0 +1,81 @@
+name: Bump cookbook
+
+on:
+  schedule:
+    - cron: "0 9 * * *" # Daily at 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+          # A PAT (or GitHub App token) is required for the created PR to
+          # trigger CI and be eligible for auto-merge. Without it, we fall
+          # back to GITHUB_TOKEN which will create the PR but skip workflows.
+          token: ${{ secrets.COOKBOOK_SYNC_PAT || github.token }}
+
+      - name: Update cookbook submodule
+        id: update
+        run: |
+          OLD_SHA=$(git -C external/cookbook rev-parse HEAD)
+          git submodule update --remote external/cookbook
+          NEW_SHA=$(git -C external/cookbook rev-parse HEAD)
+
+          if [ "$OLD_SHA" = "$NEW_SHA" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No cookbook changes, skipping."
+            exit 0
+          fi
+
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "old=$OLD_SHA" >> "$GITHUB_OUTPUT"
+          echo "new=$NEW_SHA" >> "$GITHUB_OUTPUT"
+          echo "old_short=${OLD_SHA:0:7}" >> "$GITHUB_OUTPUT"
+          echo "new_short=${NEW_SHA:0:7}" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "log<<EOF"
+            git -C external/cookbook log --oneline --no-decorate "$OLD_SHA..$NEW_SHA"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create pull request
+        id: cpr
+        if: steps.update.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.COOKBOOK_SYNC_PAT || github.token }}
+          branch: chore/bump-cookbook
+          title: "chore: bump cookbook ${{ steps.update.outputs.old_short }} -> ${{ steps.update.outputs.new_short }}"
+          commit-message: "chore: bump cookbook ${{ steps.update.outputs.old_short }} -> ${{ steps.update.outputs.new_short }}"
+          labels: cookbook-sync,automated
+          delete-branch: true
+          body: |
+            Automated cookbook submodule bump.
+
+            | | |
+            | --- | --- |
+            | Old | [`${{ steps.update.outputs.old_short }}`](https://github.com/steel-dev/steel-cookbook/commit/${{ steps.update.outputs.old }}) |
+            | New | [`${{ steps.update.outputs.new_short }}`](https://github.com/steel-dev/steel-cookbook/commit/${{ steps.update.outputs.new }}) |
+
+            ## Cookbook commits
+
+            ```
+            ${{ steps.update.outputs.log }}
+            ```
+
+            MDX output regenerates on deploy via `bun run sync-cookbook`.
+
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ secrets.COOKBOOK_SYNC_PAT || github.token }}
+        run: gh pr merge --auto --squash "${{ steps.cpr.outputs.pull-request-number }}"
