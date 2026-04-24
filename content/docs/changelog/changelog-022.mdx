@@ -1,0 +1,52 @@
+---
+title: "Changelog #022"
+sidebarTitle: "Changelog #022"
+llm: true
+image: "/images/changelog-placeholder-white.jpeg"
+imageAlt: "White placeholder image for changelog drafts"
+imageWidth: 400
+imageHeight: 300
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog-placeholder-white.jpeg"
+  alt="White placeholder image for changelog drafts"
+  width={400}
+  height={300}
+/>
+Hey everyone — this week was mostly about making Steel easier to use from agent tooling and tightening up reliability across the platform. We also expanded the docs and examples around newer agent integrations, onboarding, and paid session flows.
+
+### ⭐ New
+
+#### Broader coding agent support in the Steel CLI
+
+Steel CLI now supports Codex, OpenCode, and Pi coding agents, with a simplified `--agent` flow for installing and using Steel agent skills.
+
+*   Added documentation for Steel's x402 pay-per-use browser sessions endpoint, including protocol flow, pricing, and supported payment networks.
+
+*   Added new integrations and examples for AI SDK and OpenAI Agents across the docs and cookbook.
+
+### 🐛 Bug Fixes
+
+*   Fixed session metering so billed duration is clamped to the configured session timeout.
+
+*   Fixed the `forge` command in Steel CLI.
+
+*   Resolved several docs issues, including incorrect JSX, sidebar problems, and broken links.
+
+### 🔧 Improvements
+
+*   Updated Steel Cloud onboarding with a more agent-native setup flow and clearer API key guidance.
+
+*   Added shell completion to Steel CLI.
+
+*   Expanded integration docs for coding agents and enabled more Sessions API and integrations pages for `llms.txt` and copy-as-markdown sharing.
+
+*   Refreshed computer-use and agent examples across the docs and cookbook, including updates to the Next.js integration example.
+
+*   Updated docs for API key authentication, install command consistency, and current supported regions.
+
+*   Improved internal admin console navigation and added quick links and copy actions for organization, Clerk, and Stripe identifiers.
+
+*   Infrastructure updates improved rollout safety, browser VM sizing, fleet-controller tuning, and support for additional proxy and machine configurations.
