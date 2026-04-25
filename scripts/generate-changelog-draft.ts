@@ -93,6 +93,13 @@ interface WindowSelection {
 
 const CHANGELOG_DIR = path.join(process.cwd(), 'content/docs/changelog');
 const CHANGELOG_META_PATH = path.join(CHANGELOG_DIR, 'meta.json');
+const CHANGELOG_LLMS_PATH = path.join(process.cwd(), 'public/changelog/llms.txt');
+const DRAFT_SECTION_ORDER: DraftSection['heading'][] = [
+  '⭐ New',
+  '🔧 Improvements',
+  '🐛 Bug Fixes',
+  '🏡 Housekeeping',
+];
 
 function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {};
@@ -117,6 +124,17 @@ function parseArgs(argv: string[]): CliOptions {
 
 function formatChangelogNumber(number: number): string {
   return String(number).padStart(3, '0');
+}
+
+function buildChangelogLlmsContent(changelogNumbers: number[]): string {
+  const lines = ['# Documentation', '', '## Pages', ''];
+
+  for (const number of changelogNumbers) {
+    const slug = `changelog-${formatChangelogNumber(number)}`;
+    lines.push(`- [${slug}](https://docs.steel.dev/changelog/${slug})`);
+  }
+
+  return `${lines.join('\n')}\n`;
 }
 
 async function getExistingChangelogNumbers(): Promise<number[]> {
@@ -450,10 +468,20 @@ function renderReferenceLinks(references: DraftReference[]): string {
   return uniqueReferences.map((reference) => `[${reference.label}](${reference.url})`).join(' ');
 }
 
+function getOrderedDraftSections(draft: DraftResult): DraftSection[] {
+  return [...draft.sections].sort((left, right) => {
+    const leftIndex = DRAFT_SECTION_ORDER.indexOf(left.heading);
+    const rightIndex = DRAFT_SECTION_ORDER.indexOf(right.heading);
+
+    return leftIndex - rightIndex;
+  });
+}
+
 function renderDraftBody(draft: DraftResult): string {
   const blocks: string[] = [draft.introduction.trim()];
+  const orderedSections = getOrderedDraftSections(draft);
 
-  for (const section of draft.sections) {
+  for (const section of orderedSections) {
     if (section.entries.length === 0) {
       continue;
     }
@@ -477,21 +505,20 @@ function renderDraftBody(draft: DraftResult): string {
 
 function buildMdxDocument(number: number, draft: DraftResult): string {
   const numberLabel = formatChangelogNumber(number);
+  const imageAlt = `Announcing Changelog #${numberLabel}`;
   const frontmatter = [
     '---',
     `title: "Changelog #${numberLabel}"`,
     `sidebarTitle: "Changelog #${numberLabel}"`,
     'llm: true',
     `image: "${CHANGELOG_PLACEHOLDER_IMAGE.src}"`,
-    `imageAlt: "${CHANGELOG_PLACEHOLDER_IMAGE.alt}"`,
-    `imageWidth: ${CHANGELOG_PLACEHOLDER_IMAGE.width}`,
-    `imageHeight: ${CHANGELOG_PLACEHOLDER_IMAGE.height}`,
+    `imageAlt: "${imageAlt}"`,
     '---',
     "import Image from 'next/image';",
     '',
     '<Image',
     `  src="${CHANGELOG_PLACEHOLDER_IMAGE.src}"`,
-    `  alt="${CHANGELOG_PLACEHOLDER_IMAGE.alt}"`,
+    `  alt="${imageAlt}"`,
     `  width={${CHANGELOG_PLACEHOLDER_IMAGE.width}}`,
     `  height={${CHANGELOG_PLACEHOLDER_IMAGE.height}}`,
     '/>',
@@ -534,10 +561,11 @@ function buildPrBody(
     '',
     formatRepoListForPrBody(),
   ];
+  const orderedSections = getOrderedDraftSections(draft);
 
-  if (draft.sections.length > 0) {
+  if (orderedSections.length > 0) {
     sections.push('', '## Included items', '');
-    for (const section of draft.sections) {
+    for (const section of orderedSections) {
       if (section.entries.length === 0) {
         continue;
       }
@@ -815,6 +843,12 @@ async function updateChangelogMeta(slug: string) {
   await fs.writeFile(CHANGELOG_META_PATH, `${JSON.stringify(current, null, 2)}\n`);
 }
 
+async function updateChangelogLlms() {
+  const changelogNumbers = await getExistingChangelogNumbers();
+  const content = buildChangelogLlmsContent(changelogNumbers);
+  await fs.writeFile(CHANGELOG_LLMS_PATH, content);
+}
+
 async function appendGithubOutput(key: string, value: string) {
   const outputFile = process.env.GITHUB_OUTPUT;
 
@@ -883,6 +917,7 @@ async function main() {
   const mdx = buildMdxDocument(nextNumber, draft);
   await fs.writeFile(path.join(process.cwd(), draftPath), mdx);
   await updateChangelogMeta(slug);
+  await updateChangelogLlms();
 
   const prBody = buildPrBody(
     nextNumber,
