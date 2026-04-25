@@ -21,8 +21,8 @@ The file wrapper is handled outside the model. You are only writing the changelo
 - The introduction should feel slightly conversational like recent Steel changelogs, but still direct and factual.
 - Use these sections when needed:
   - `⭐ New`
-  - `🐛 Bug Fixes`
   - `🔧 Improvements`
+  - `🐛 Bug Fixes`
   - `🏡 Housekeeping`
 - Omit empty sections.
 - Do not force every meaningful change into a `####` subsection. Use subsections only for the strongest standalone launches.
@@ -58,8 +58,8 @@ The file wrapper is handled outside the model. You are only writing the changelo
 ## Section guidance
 
 - `⭐ New`: reserve this for genuinely net-new user-facing capabilities, launches, integrations, APIs, or supported workflows. A change should usually land here only if a user could reasonably describe it as "Steel can now do X."
-- `🐛 Bug Fixes`: fixes for broken behavior, regressions, crashes, incorrect behavior, or compatibility issues.
 - `🔧 Improvements`: upgrades to existing features, quality-of-life changes, reliability improvements, performance improvements, new examples, docs expansions, support for more usage paths, and smaller enhancements that do not rise to the level of `⭐ New`.
+- `🐛 Bug Fixes`: fixes for broken behavior, regressions, crashes, incorrect behavior, or compatibility issues.
 - `🏡 Housekeeping`: notable internal or infrastructure work worth mentioning publicly, but only if it gives useful product or company context.
 
 ### Additional classification rules

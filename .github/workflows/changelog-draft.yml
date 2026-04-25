@@ -105,3 +105,4 @@ jobs:
           draft: true
           add-paths: |
             content/docs/changelog/**
+            public/changelog/llms.txt

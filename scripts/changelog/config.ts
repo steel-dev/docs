@@ -11,7 +11,6 @@ export interface PromptContextFile {
 
 export interface PlaceholderImageConfig {
   src: string;
-  alt: string;
   width: number;
   height: number;
 }
@@ -33,9 +32,8 @@ export const SKIP_AUTHORS = ['github-actions[bot]', 'dependabot[bot]', 'renovate
 
 export const CHANGELOG_PLACEHOLDER_IMAGE: PlaceholderImageConfig = {
   src: '/images/changelog-placeholder-white.jpeg',
-  alt: 'White placeholder image for changelog drafts',
-  width: 400,
-  height: 300,
+  width: 800,
+  height: 400,
 };
 
 export const CHANGELOG_PROMPT_FILE = 'scripts/changelog/prompt.md';
