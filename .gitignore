@@ -20,7 +20,3 @@ tmp
 # Generated files
 public/**/*.txt
 /generated
-
-# Synced from external/cookbook submodule (see scripts/sync-cookbook.ts)
-content/docs/cookbook/*.mdx
-content/docs/cookbook/meta.json

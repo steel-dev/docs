@@ -1,0 +1,14 @@
+{
+  "title": "Cookbook",
+  "root": true,
+  "pages": [
+    "index",
+    "---Topics---",
+    "topics/browser-automation",
+    "topics/agents",
+    "topics/computer-use",
+    "topics/steel-apis",
+    "---Contribute---",
+    "[Cookbook on GitHub](https://github.com/steel-dev/steel-cookbook)"
+  ]
+}

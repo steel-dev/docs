@@ -1,0 +1,331 @@
+---
+title: Drive a browser with OpenAI Computer Use
+description: "Connect OpenAI's Computer Use Assistant to a Steel browser session for autonomous web interactions."
+---
+
+<Tabs items={['TypeScript', 'Python']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
+
+<Tab id="typescript" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/openai-computer-use-ts" path="examples/openai-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
+
+OpenAI's computer-use model ships as a single tool declaration: `{ type: "computer" }`. No display dimensions, no capability flags, no schema. You hand it to the Responses API, send a screenshot, and the model returns `computer_call` items with actions like `click`, `type`, `keypress`, `scroll`. Your job is to execute them against a real browser, capture the next screenshot, and feed it back. That's the loop in `index.ts`, and the browser is a Steel session.
+
+## The loop
+
+The Responses API threads conversation state server-side, so each turn carries only the new tool outputs plus a `previous_response_id`. That's the shape of `Agent.executeTask`:
+
+```typescript
+const response = await createResponse({
+  model: this.model,
+  instructions: this.systemPrompt,
+  input: nextInput,
+  tools: this.tools,
+  previous_response_id: previousResponseId,
+  reasoning: { effort: "medium" },
+  truncation: "auto",
+});
+```
+
+First turn: `nextInput` is `[{ role: "user", content: task }]`. Subsequent turns: `nextInput` is just the array of tool outputs generated in the previous iteration. The model remembers the rest. `truncation: "auto"` lets OpenAI drop old screenshots from context when the window fills.
+
+The response's `output` array mixes three item types, and the loop walks them:
+
+- `message`: a plain text reply. The final message (when the model stops calling tools) becomes the return value.
+- `reasoning`: the model's own summary of what it's thinking. Printed as plain text; not fed back as input (the Responses API handles that via `previous_response_id`).
+- `computer_call`: one or more actions to execute. Each call has a `call_id` that must be echoed back in the matching `computer_call_output`.
+
+When a turn produces zero tool outputs, the loop exits.
+
+## Actions in, screenshots out
+
+`executeComputerAction` is the translation layer. OpenAI's action vocabulary (`click`, `type`, `keypress`, `scroll`, `drag`, `screenshot`, `wait`) doesn't line up with Steel's Input API (`click_mouse`, `type_text`, `press_key`, `scroll`, `drag_mouse`, `take_screenshot`, `wait`). A switch statement maps one to the other:
+
+```typescript
+case "click": {
+  const coords = this.toCoords(actionArgs.x, actionArgs.y);
+  const button = this.mapButton(actionArgs.button);
+  const clicks = this.toNumber(actionArgs.num_clicks, 1);
+  body = {
+    action: "click_mouse",
+    button,
+    coordinates: coords,
+    ...(clicks > 1 ? { num_clicks: clicks } : {}),
+    screenshot: true,
+  };
+  break;
+}
+```
+
+Every mapped action sets `screenshot: true`, so Steel returns a fresh base64 PNG after the interaction. That PNG goes back as a `computer_call_output`, matched to the original call by `call_id`:
+
+```typescript
+toolOutputs.push({
+  type: "computer_call_output",
+  call_id: item.call_id,
+  acknowledged_safety_checks: pendingChecks,
+  output: {
+    type: "computer_screenshot",
+    image_url: `data:image/png;base64,${screenshotBase64}`,
+  },
+});
+```
+
+Note the `image_url` data URI. OpenAI's computer tool expects a URL (or data URI), not a raw base64 payload in a `source` field. This is one of the concrete shape differences from Anthropic's tool.
+
+A few translation details are worth knowing:
+
+- **`keypress` takes a list.** OpenAI emits `{ action: "keypress", keys: ["Control", "a"] }` for chords; `normalizeKey` rewrites synonyms (`CTRL` to `Control`, `CMD` to `Meta`, `ENTER` to `Enter`) before Steel sees them.
+- **`scroll` is delta-based.** OpenAI sends `scroll_x`/`scroll_y` in pixels with an optional anchor. Steel's `scroll` takes `delta_x`/`delta_y` directly, so it's almost a passthrough.
+- **`drag` gives a path.** OpenAI provides the full point list in `path`; Steel's `drag_mouse` wants the same shape. If the path is shorter than 2 points, the code prepends viewport center as a safe default.
+- **Unknown actions fall through to `take_screenshot`.** The model occasionally emits an action type the switch doesn't handle; returning a fresh frame is the cheapest recovery.
+
+## Safety checks
+
+OpenAI's computer tool can attach `pending_safety_checks` to a `computer_call` when the planned action looks sensitive (exfiltration, prompt injection, irreversible state). The call won't take effect until you echo those check IDs back in `acknowledged_safety_checks`:
+
+```typescript
+const pendingChecks = item.pending_safety_checks ?? [];
+for (const check of pendingChecks) {
+  if (this.autoAcknowledgeSafety) {
+    console.log(`Auto-acknowledging safety check: ${check.message}`);
+  } else {
+    throw new Error(`Safety check failed: ${check.message}`);
+  }
+}
+```
+
+The starter auto-acknowledges everything because the task is user-supplied and the browser runs in a throwaway Steel VM. For production, flip `autoAcknowledgeSafety` to `false` and gate each check on a human approval.
+
+## Stop conditions
+
+The loop has two exits:
+
+- **No tool outputs.** The model produced only `message` and/or `reasoning`. Task complete.
+- **Iteration cap.** 50 turns by default. Hitting it returns the last text the model produced.
+
+The `finally` block in `main` always calls `agent.cleanup()`, which releases the Steel session. Forgetting this keeps the browser billed until the 15-minute `timeout` set in `initialize()`.
+
+## Run it
+
+```bash
+cd examples/openai-computer-use-ts
+cp .env.example .env          # set STEEL_API_KEY and OPENAI_API_KEY
+npm install
+npm start
+```
+
+Get keys from [app.steel.dev](https://app.steel.dev/settings/api-keys) and [platform.openai.com](https://platform.openai.com/api-keys). Override the task inline:
+
+```bash
+TASK="Find the current weather in New York City" npm start
+```
+
+A session viewer URL prints as the script starts. Open it in another tab to watch the model pilot the browser. Your output varies, but the structure looks like this:
+
+```text
+Steel Session created successfully!
+View live session at: https://app.steel.dev/sessions/ab12cd34...
+
+Executing task: Go to Steel.dev and find the latest news
+============================================================
+I'll navigate to steel.dev and scan the landing page.
+click({"x":720,"y":48})
+type({"text":"https://steel.dev"})
+keypress({"keys":["Enter"]})
+scroll({"x":720,"y":450,"scroll_y":600})
+Steel's latest release adds ...
+
+============================================================
+TASK EXECUTION COMPLETED
+============================================================
+Duration: 71.4 seconds
+```
+
+Expect roughly 60-120 seconds and 15-40 turns for a simple browsing task. Cost is Steel session time plus OpenAI tokens, dominated by the screenshots (each turn sends one back).
+
+## Make it yours
+
+- **Change the viewport.** `viewportWidth` and `viewportHeight` in the `Agent` constructor set the Steel session `dimensions`. Unlike Anthropic's tool, OpenAI's computer declaration takes no display size, so the model infers resolution from each screenshot. Resize freely.
+- **Tune reasoning effort.** `reasoning: { effort: "medium" }` in `createResponse` trades latency for planning quality. `"low"` is faster and cheaper; `"high"` is slower and more deliberate on ambiguous pages.
+- **Rewrite the system prompt.** `BROWSER_SYSTEM_PROMPT` holds the browsing conventions: today's date injection, clear-input-before-typing, black-screen recovery. Edit it to match your site or workflow.
+- **Hand off auth.** Computer use can act on any page the browser is already logged into. Pair this recipe with Steel's [credentials](/cookbook/credentials) or [auth contexts](/cookbook/auth-context) to start the session authenticated.
+
+## Related
+
+[Computer use guide](https://platform.openai.com/docs/guides/tools-computer-use) · [Python version](/cookbook/openai-computer-use) · [Anthropic equivalent](/cookbook/claude-computer-use)
+
+</Tab>
+
+<Tab id="python" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/openai-computer-use-py" path="examples/openai-computer-use-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
+
+OpenAI's Computer Use models expose one tool (`{"type": "computer"}`) and emit `computer_call` items containing an `action` the model wants performed on a screen. You execute the action, return a screenshot as a `computer_call_output`, and the next turn the model sees the result. Unlike a typical tool call, you don't name the function or define its arguments: the action vocabulary (`click`, `type`, `keypress`, `scroll`, `drag`, `wait`, `screenshot`) is fixed by OpenAI.
+
+Steel provides the screen. A Steel session is a headful Chromium in a VM, and `sessions.computer(session_id, action=...)` accepts mouse / keyboard actions and returns a base64 PNG in the same response. One round-trip per OpenAI action.
+
+This recipe also uses OpenAI's **Responses API**, not Chat Completions. Responses keeps conversation state on OpenAI's side via `previous_response_id`, so each turn only sends the new tool outputs rather than the full screenshot history.
+
+## The loop
+
+Everything hangs off `Agent.execute_task` in `main.py`. Seed the first turn with the task, then on every iteration:
+
+```python
+params = {
+    "model": self.model,
+    "instructions": self.system_prompt,
+    "input": next_input,
+    "tools": self.tools,
+    "reasoning": {"effort": "medium"},
+    "truncation": "auto",
+}
+if previous_response_id:
+    params["previous_response_id"] = previous_response_id
+
+response = create_response(**params)
+previous_response_id = response.get("id")
+```
+
+`create_response` is a thin `requests.post` against `https://api.openai.com/v1/responses`; the official SDK works too, but hitting the endpoint directly makes the wire format obvious. `instructions` is the system prompt, `tools` is `[{"type": "computer"}]` (no name, no schema), and `previous_response_id` chains turns without resending context.
+
+Each `response["output"]` is a list of items, each with its own `type`. The loop walks them:
+
+```python
+for item in response["output"]:
+    item_type = item.get("type")
+
+    if item_type == "reasoning":
+        # summary blocks, printed as thought bubbles
+        ...
+    if item_type == "message":
+        # final text, captured as the task result
+        ...
+    if item_type == "computer_call":
+        # one or more actions to execute on the browser
+        ...
+```
+
+`reasoning` items carry the model's internal thinking as `summary` blocks: printed but never echoed back to the API (the chain preserves them via `previous_response_id`). `message` items are terminal prose; the agent stores the last one as the final result. `computer_call` is where the work happens.
+
+## Executing a computer call
+
+`execute_computer_action` maps OpenAI's action vocabulary onto Steel's Input API. Each branch builds a Steel request body and sends it through `self.steel.sessions.computer(...)` with `screenshot: True` attached, so one call does the action and returns the frame:
+
+```python
+elif action_type in ("click",):
+    coords = self.to_coords(action_args.get("x"), action_args.get("y"))
+    button = self.map_button(action_args.get("button"))
+    num_clicks = int(self.to_number(action_args.get("num_clicks"), 1))
+    payload = {
+        "action": "click_mouse",
+        "button": button,
+        "coordinates": [coords[0], coords[1]],
+        "screenshot": True,
+    }
+    if num_clicks > 1:
+        payload["num_clicks"] = num_clicks
+    body = payload
+```
+
+Two bits of normalization earn their keep. `keypress` arrives with OpenAI names (`CTRL`, `ENTER`, `ESC`, `UP`); `normalize_key` rewrites them into the Steel / DOM vocabulary Steel expects (`Control`, `Enter`, `Escape`, `ArrowUp`). And coordinate values sometimes come in as strings; `to_coords` coerces them and falls back to the viewport center when the model omits them entirely.
+
+After the action returns, the screenshot goes back as a `computer_call_output`:
+
+```python
+tool_outputs.append({
+    "type": "computer_call_output",
+    "call_id": item["call_id"],
+    "acknowledged_safety_checks": pending_checks,
+    "output": {
+        "type": "computer_screenshot",
+        "image_url": f"data:image/png;base64,{screenshot_base64}",
+    },
+})
+```
+
+`call_id` pairs the frame with the originating `computer_call`. When the next iteration's `input=next_input` ships these outputs, OpenAI stitches them onto the response identified by `previous_response_id`.
+
+## Safety checks
+
+Computer use is the one place OpenAI inserts a gate you have to clear. A `computer_call` can include `pending_safety_checks` (warnings about things like navigating to an unfamiliar URL, typing credentials, or triggering irreversible actions). You must echo them back in `acknowledged_safety_checks` on the next turn, or the model stalls. The default here is `auto_acknowledge_safety = True`, which suits a starter but is not what you want in production. Flip it to `False` and surface the check to a human before proceeding.
+
+## The loop ends, or it doesn't
+
+`execute_task` exits when an iteration produces no `tool_outputs`, meaning the response contained only `message` / `reasoning` and the model considers the task done. `max_iterations=50` is the hard ceiling. Unlike chatty text models, a stuck computer-use loop usually manifests as the same `keypress` or `click` repeated forever; the `BROWSER_SYSTEM_PROMPT` includes an explicit "don't repeat the same action sequence" rule to keep that rare.
+
+## The system prompt matters
+
+`BROWSER_SYSTEM_PROMPT` is tuned for this viewport and setup:
+
+- **Clear before typing.** `Ctrl+A` then `Delete`, otherwise typed text concatenates onto whatever was already in the field.
+- **One Enter, then wait.** After submitting a form, wait 1-2s and take a single screenshot; don't re-press Enter speculatively.
+- **Prefer `Ctrl+L` over clicking the address bar.** Reliable focus, one round-trip.
+- **Today's date** is injected at startup (`format_today()`) so the model doesn't browse as if it were 18 months ago.
+
+These rules exist because the model will happily rage-click the same input six times if left to its own devices. Edit them when you add site-specific knowledge, don't delete them.
+
+## Run it
+
+```bash
+cd examples/openai-computer-use-py
+cp .env.example .env          # set STEEL_API_KEY and OPENAI_API_KEY
+pip install -r requirements.txt
+python main.py
+```
+
+Get keys from [app.steel.dev](https://app.steel.dev/settings/api-keys) and [platform.openai.com](https://platform.openai.com/api-keys). The script prints a session viewer URL as soon as the Steel session is up. Open it in another tab to watch the browser run live. Every reasoning summary and action also prints in the terminal so you can follow along.
+
+Override the task per run:
+
+```bash
+TASK="Find the current weather in New York City" python main.py
+```
+
+Your output varies. Structure looks like this:
+
+```text
+Starting Steel session...
+Steel Session created successfully!
+View live session at: https://app.steel.dev/sessions/ab12cd34…
+
+Executing task: Go to Steel.dev and find the latest news
+============================================================
+I'll open steel.dev and check the blog.
+keypress({"keys": ["CTRL", "L"]})
+type({"text": "https://steel.dev"})
+keypress({"keys": ["ENTER"]})
+wait({"ms": 1500})
+…
+Steel's latest release notes mention …
+
+TASK EXECUTION COMPLETED
+Duration: 62.8 seconds
+```
+
+A run typically takes 60-180 seconds and 10-30 iterations, depending on the task. You pay for Steel session-minutes and for OpenAI tokens: screenshots are cached between turns via `previous_response_id`, so per-turn input cost stays roughly flat even on long loops. The `finally` block in `main()` calls `sessions.release()`; leaving it out keeps the session alive until Steel's 15-minute default timeout.
+
+## Make it yours
+
+- **Change the task.** Edit `TASK` in `.env` or pass it inline. The agent takes one natural-language instruction and runs to completion; no follow-up turn.
+- **Swap the model.** The default is `gpt-5.5`. Any Responses-API computer-use model works; update `self.model` in `Agent.__init__`.
+- **Tune the viewport.** `viewport_width` / `viewport_height` in `Agent.__init__` flow into `sessions.create(dimensions=...)`. OpenAI's computer tool doesn't take a size hint: the model infers it from screenshots, so matching the Steel dimensions is enough.
+- **Turn off auto-ack.** Flip `auto_acknowledge_safety = False` to make pending safety checks raise instead of being silently accepted. Useful when wiring this into a human-in-the-loop setup.
+- **Persist a login.** Pass `session_context` to `sessions.create` to resume with cookies and local storage from a previous run; the model skips the login flow. See [credentials](/cookbook/credentials) for the pattern.
+- **Adjust reasoning.** `"effort": "medium"` trades latency for deeper plans. Drop to `"low"` for fast lookups, raise to `"high"` for multi-step research.
+
+## Related
+
+[TypeScript version](/cookbook/openai-computer-use) · [Claude version](/cookbook/claude-computer-use) · [OpenAI Computer Use guide](https://platform.openai.com/docs/guides/tools-computer-use) · [Responses API reference](https://platform.openai.com/docs/api-reference/responses)
+
+</Tab>
+
+</Tabs>
+
+## Related recipes
+
+<RecipeGrid>
+<RecipeCard slug="gemini-computer-use" title={"Drive a browser with Gemini Computer Use"} description={"Connect Google's Gemini Computer Use to a Steel browser session for autonomous web interactions."} topics={['Computer use']} date="2025-11-25" />
+<RecipeCard slug="claude-computer-use-mobile" title={"Drive a mobile browser with Claude Computer Use"} description={"Claude Computer Use with Steel for autonomous task execution in mobile browser environments."} topics={['Computer use', 'Mobile']} date="2025-10-14" />
+<RecipeCard slug="claude-computer-use" title={"Drive a browser with Claude Computer Use"} description={"Connect Claude to a Steel browser session for autonomous web interactions."} topics={['Computer use']} date="2025-07-16" />
+</RecipeGrid>

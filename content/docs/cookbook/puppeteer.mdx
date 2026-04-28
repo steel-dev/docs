@@ -1,0 +1,78 @@
+---
+title: Automate a cloud browser with Puppeteer
+description: Use Steel with Puppeteer in TypeScript for cloud browser automation.
+---
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/puppeteer-ts" path="examples/puppeteer-ts" authors={[{"handle":"hussufo","name":"Hussein Hussein","avatar":"https://github.com/hussufo.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+
+Puppeteer ships a `connect()` call that attaches to any Chrome exposing a DevTools websocket. Steel sessions expose one. Point Puppeteer at it and the rest of the script is plain Puppeteer: `page.goto`, `page.evaluate`, `page.waitForSelector`, the whole surface area. Stealth, proxies, and the live session viewer come from Steel without extra wiring.
+
+```typescript
+session = await client.sessions.create();
+
+browser = await puppeteer.connect({
+  browserWSEndpoint: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+});
+
+const page = await browser.newPage();
+```
+
+Two notes on the shape here. First, the package is `puppeteer-core`, not `puppeteer`. There's no Chromium to download because the browser lives on Steel. Second, `browser.newPage()` opens a fresh tab in the Steel session; the session viewer starts blank until you navigate.
+
+## Run it
+
+```bash
+cd examples/puppeteer-ts
+cp .env.example .env          # set STEEL_API_KEY
+npm install
+npm start
+```
+
+Get a key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). The script prints a session viewer URL as it starts. Open it in another tab to watch the browser run live.
+
+Your output varies. Structure looks like this:
+
+```text
+Creating Steel session...
+Steel Session created!
+View session at https://app.steel.dev/sessions/ab12cd34…
+
+Connected to browser via Puppeteer
+Navigating to Hacker News...
+
+Top 5 Hacker News Stories:
+
+1. Claude 4.7 Opus released today
+   Link: https://news.ycombinator.com/item?id=43218921
+   Points: 892
+
+2. Show HN: A browser extension for reading on slow connections
+   Link: https://github.com/user/project
+   Points: 401
+
+…
+
+Releasing session...
+Session released
+Done!
+```
+
+A run costs a few cents of browser time. Steel bills per session-minute, so the `finally` block that calls `client.sessions.release()` isn't optional. Forgetting it keeps the browser running until the default 5-minute timeout.
+
+## Make it yours
+
+- **Swap the target.** Replace the `page.goto` URL and the `page.evaluate` body in `main()`. Session setup, connect, and cleanup stay the same.
+- **Turn on stealth.** Uncomment `useProxy`, `solveCaptcha`, or `sessionTimeout` in the `sessions.create()` call for sites with anti-bot.
+- **Persist login.** Reuse cookies and local storage across runs via [credentials](/cookbook/credentials).
+
+## Related
+
+[Puppeteer docs](https://pptr.dev)
+
+## Related recipes
+
+<RecipeGrid>
+<RecipeCard slug="stagehand" title={"Automate browsing with natural-language instructions using Stagehand"} description={"Use Steel with Stagehand for natural-language-driven AI browser automation."} topics={['Browser automation']} date="2025-07-16" />
+<RecipeCard slug="playwright" title={"Automate a cloud browser with Playwright"} description={"Use Steel with Playwright in TypeScript for cloud browser automation."} topics={['Browser automation', 'Playwright']} date="2024-11-19" />
+<RecipeCard slug="selenium" title={"Automate a cloud browser with Selenium"} description={"Use Steel with Selenium in Python for cloud browser automation."} topics={['Browser automation']} date="2024-11-19" />
+</RecipeGrid>
