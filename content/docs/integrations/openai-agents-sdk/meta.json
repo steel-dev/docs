@@ -1,5 +1,0 @@
-{
-  "title": "OpenAI Agents SDK",
-  "root": false,
-  "pages": ["---OpenAI Agents SDK---", "quickstart-node", "quickstart-python"]
-}

@@ -1,0 +1,45 @@
+---
+title: Gemini Computer Use
+sidebarTitle: Gemini Computer Use
+description: Wire Gemini 3's computer-use tool into a Steel browser session.
+llm: true
+---
+
+The Gemini Computer Use integration runs Gemini 3's vision-based agent loop on a Steel browser session. Gemini takes screenshots through Steel, decides the next action (click, type, scroll), and Steel executes it, so you can automate complex web tasks without writing custom selectors.
+
+It pairs well with Steel's anti-bot capabilities, proxy support, and sandboxed environments.
+
+### Requirements
+
+*   **Gemini API Key**: A Gemini 3 model with computer use
+*   **Steel API Key**: Active Steel subscription
+*   **Runtime**: Python 3.10+ or Node.js 20+
+
+### Connect Steel to Gemini
+
+Steel's `sessions.computer` API takes screenshots and executes actions; pair it with Gemini 3's built-in computer use:
+
+```typescript Typescript -wc
+import { Steel } from "steel-sdk";
+
+const steel = new Steel({ steelAPIKey: STEEL_API_KEY });
+const session = await steel.sessions.create({
+  dimensions: { width: 1280, height: 800 },
+});
+
+// Take a screenshot via Steel
+const { base64_image } = await steel.sessions.computer(session.id, {
+  action: "take_screenshot",
+});
+
+// Send to Gemini with the computer-use tool, then route Gemini's
+// returned actions back through `steel.sessions.computer({ action: ... })`.
+```
+
+Full runnable starter: [Steel + Gemini Computer Use recipe →](/cookbook/gemini-computer-use)
+
+### Resources
+
+*   [Gemini Computer Use documentation](https://ai.google.dev/gemini-api/docs/computer-use) – Official documentation from Google
+*   [Steel Sessions API reference](/api-reference) – Technical details for managing Steel browser sessions
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

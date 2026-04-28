@@ -551,9 +551,20 @@ export const source = loader({
 
       // Fumadocs' source loader doesn't set `$id` on external-link nodes
       // (the `[Label](url)` meta.json syntax), which makes React flag the
-      // sidebar for missing keys. Derive a stable id from the url.
+      // sidebar for missing keys. Derive a stable id from the url, prefixed
+      // with the section so the sidebar's section filter (which prefix-matches
+      // `$id`) can keep external links scoped to the section that declared
+      // them. The section is inferred from the meta.json file path that
+      // declared this external node, falling back to a known-URL heuristic.
       if (node.type === 'page' && (node as any).external === true && !(processedNode as any).$id) {
-        (processedNode as any).$id = `external:${(node as any).url}`;
+        const filePath: string = (file as any)?.file?.path ?? '';
+        const url: string = (node as any).url ?? '';
+        let section = filePath.replace(/^content\/docs\//, '').split('/')[0];
+        if (!section || section.endsWith('.json') || section.endsWith('.mdx')) {
+          if (url.includes('steel-cookbook')) section = 'cookbook';
+          else section = 'external';
+        }
+        (processedNode as any).$id = `${section}/external:${url}`;
       }
 
       if (node.type === 'page') {

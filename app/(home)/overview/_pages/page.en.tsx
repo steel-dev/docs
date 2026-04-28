@@ -104,37 +104,37 @@ export default function HomePage() {
             <Cards className="xl:!grid-cols-3">
               <SmallCard
                 icon={<GeminiIcon />}
-                href="/integrations/gemini-computer-use/overview"
+                href="/integrations/gemini-computer-use"
                 title="Gemini Computer Use"
                 description="Use Gemini Computer Use with Steel Browser."
               />
               <SmallCard
                 icon={<ClaudeIcon />}
-                href="/integrations/claude-computer-use/integrations-overview"
+                href="/integrations/claude-computer-use"
                 title="Claude Computer Use"
                 description="Use Claude Computer Use with Steel Browser."
               />
               <SmallCard
                 icon={<OpenAIIcon />}
-                href="/integrations/openai-computer-use/overview"
+                href="/integrations/openai-computer-use"
                 title="OpenAI Computer Use"
                 description="Use OpenAI Computer Use with Steel Browser."
               />
               <SmallCard
                 icon={<BrowserUseIcon />}
-                href="/integrations/browser-use/integrations-overview"
+                href="/integrations/browser-use"
                 title="Browser-Use"
                 description="Use Browser-Use to interact with a Steel browser."
               />
               <SmallCard
                 icon={<Container />}
-                href="/integrations/magnitude/quickstart"
+                href="/integrations/magnitude"
                 title="Magnitude"
                 description="Use Magnitude with Steel Browser."
               />
               <SmallCard
                 icon={<Cloud />}
-                href="/integrations/crewai/integrations-overview"
+                href="/integrations/crewai"
                 title="CrewAI"
                 description="Learn how to use CrewAI with Steel Browser."
               />

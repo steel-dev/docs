@@ -1,0 +1,45 @@
+---
+title: Magnitude
+sidebarTitle: Magnitude
+description: Turn natural-language prompts into typed browser actions and structured outputs.
+llm: true
+---
+
+Magnitude is a TypeScript browser-agent framework that turns natural-language prompts into typed actions. The Steel integration runs Magnitude's planning loop on a Steel cloud browser, so you can drive a real session from prompts and end with structured outputs validated against a schema.
+
+Good fit for research-style flows that mix navigation and extraction.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Anthropic API Key**: Magnitude's default planning model
+*   **Node.js**: v20+
+
+### Connect Steel to Magnitude
+
+Pass Steel's CDP URL into Magnitude's `startBrowserAgent` config:
+
+```typescript Typescript -wc
+import { startBrowserAgent } from "magnitude-core";
+import { Steel } from "steel-sdk";
+
+const client = new Steel({ steelAPIKey: STEEL_API_KEY });
+const session = await client.sessions.create({});
+
+const agent = await startBrowserAgent({
+  url: "https://github.com/steel-dev/leaderboard",
+  llm: {
+    provider: "anthropic",
+    options: { model: "claude-sonnet-4-6", apiKey: ANTHROPIC_API_KEY },
+  },
+  browser: { cdp: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}` },
+});
+```
+
+Full runnable starter: [Steel + Magnitude recipe →](/cookbook/magnitude)
+
+### Resources
+
+*   [Magnitude documentation](https://docs.magnitude.run/) – Concepts, agent APIs, and examples
+*   [Steel Sessions API reference](/api-reference) – Programmatic session control for Steel browsers
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

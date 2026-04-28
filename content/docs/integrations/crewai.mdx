@@ -1,0 +1,46 @@
+---
+title: CrewAI
+sidebarTitle: CrewAI
+description: Orchestrate multi-agent Python crews with shared memory and human-in-the-loop reviews.
+llm: true
+---
+
+CrewAI is a Python framework for orchestrating multi-agent workflows with autonomous teams (crews) and event-driven flows. The Steel integration exposes a Steel browser as a CrewAI tool, so your crew can search, navigate, fill forms, extract data, and validate results across collaborating agents.
+
+You can mix autonomy with precise control, share memory across steps, return structured outputs, and add human-in-the-loop checkpoints for sensitive actions.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **LLM API key**: OpenAI or any CrewAI-supported provider
+*   **Python**: 3.10–3.13
+
+### Connect Steel to CrewAI
+
+Expose Steel as a CrewAI `BaseTool` your agents can call:
+
+```python Python -wc
+import os
+from crewai.tools import BaseTool
+from steel import Steel
+
+class SteelScrapeTool(BaseTool):
+    name: str = "Steel web scrape"
+    description: str = "Scrape webpages with Steel and return markdown"
+
+    def __init__(self):
+        super().__init__()
+        self._steel = Steel(steel_api_key=os.environ["STEEL_API_KEY"])
+
+    def _run(self, url: str):
+        return self._steel.scrape(url=url, format=["markdown"])
+```
+
+Full runnable starter: [Steel + CrewAI recipe →](/cookbook/crewai)
+
+### Resources
+
+*   [CrewAI documentation](https://docs.crewai.com/) – Concepts for Crews, Flows, agents, and processes
+*   [CrewAI examples repo](https://github.com/crewAIInc/crewAI-examples) – Real-world starter crews (trip planner, stock analysis, job posts)
+*   [Steel Sessions API reference](/api-reference) – Programmatically manage Steel browser sessions
+*   [Steel Discord](https://discord.gg/steel-dev) – Share recipes and get help

@@ -188,6 +188,23 @@ export function Sidebar() {
     const filterCriteria = ['overview', 'integrations', 'cookbook', 'changelog'];
 
     const shouldFilterItem = (item: PageTree.Node): boolean => {
+      // External link nodes (e.g. `[Cookbook on GitHub](url)` in
+      // cookbook/meta.json) don't carry a section prefix in `$id`, so the
+      // generic prefix-based filter below can't tell which section they
+      // belong to and they leak into every other section. Map them to a
+      // section by URL and filter out unless we're on that section.
+      if (item.type === 'page' && (item as any).external === true) {
+        const url = ((item as any).url ?? '') as string;
+        let externalSection: string | undefined;
+        if (url.includes('steel-cookbook')) externalSection = 'cookbook';
+        if (externalSection) {
+          const onOwningSection =
+            pathname?.includes(`/${externalSection}/`) ||
+            pathname === `/${externalSection}`;
+          return !onOwningSection;
+        }
+      }
+
       const isCurrentSection = filterCriteria.some(
         (criteria) => pathname?.includes(`/${criteria}/`) || pathname === `/${criteria}`,
       );

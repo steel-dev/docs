@@ -1,0 +1,45 @@
+---
+title: AgentKit
+sidebarTitle: AgentKit
+description: Build multi-agent networks in TypeScript with routing, shared state, and MCP tools.
+llm: true
+---
+
+AgentKit is Inngest's TypeScript framework for building agent networks: single agents or coordinated teams that share state and route work through code or model-driven routers. The Steel integration runs each agent's browser actions on a Steel cloud session, so AgentKit handles the orchestration and Steel handles the browser.
+
+You can also expose MCP servers as tools and stream tokens and tool steps to a UI as the agent runs.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Node.js**: v20+
+*   **Packages**: `@inngest/agent-kit`, `inngest`
+*   **Model provider key**: OpenAI, Anthropic, Google Gemini, or any OpenAI-compatible endpoint
+
+### Connect Steel to AgentKit
+
+Inside an AgentKit tool handler, create a Steel session and hand a Playwright `page` to your agent:
+
+```typescript Typescript -wc
+import { chromium } from "playwright";
+import Steel from "steel-sdk";
+
+const steel = new Steel({ steelAPIKey: process.env.STEEL_API_KEY! });
+const session = await steel.sessions.create({});
+const browser = await chromium.connectOverCDP(
+  `${session.websocketUrl}&apiKey=${process.env.STEEL_API_KEY}`,
+);
+const page = browser.contexts()[0].pages()[0];
+// `page` is your Steel browser. Call it from AgentKit tool handlers
+```
+
+Full runnable starter: [Steel + AgentKit recipe →](/cookbook/agentkit)
+
+### Resources
+
+*   [AgentKit documentation](https://agentkit.inngest.com/overview) – Concepts for Agents, Networks, State, and Routers
+*   [Examples gallery](https://agentkit.inngest.com/examples/overview) – Starter projects (support agent, SWE-bench, coding agent, web search)
+*   [LLMs docs bundle](https://agentkit.inngest.com/llms-full.txt) – Markdown doc set for IDEs/LLMs
+*   [Inngest Dev Server](https://agentkit.inngest.com/getting-started/local-development) – Live traces and I/O logs
+*   [Steel Sessions API reference](/api-reference) – Programmatic session control
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

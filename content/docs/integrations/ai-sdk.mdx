@@ -1,0 +1,53 @@
+---
+title: Vercel AI SDK
+sidebarTitle: Vercel AI SDK
+description: Build typed browser agents with streaming across any model provider, in TypeScript.
+llm: true
+---
+
+The Vercel AI SDK is a TypeScript toolkit for building AI applications with typed tools, streaming, and a unified provider model. The Steel integration runs each tool against a Steel cloud session (open, navigate, snapshot, extract, return typed results), so you can stand up a typed browser agent in a few hundred lines.
+
+Pair the agent with a Next.js chat UI and embed Steel's Live View iframe alongside the chat to watch the browser as the agent runs.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Node.js**: v20+
+*   **Packages**: `ai`, a provider package (e.g., `@ai-sdk/anthropic`), `steel-sdk`, `playwright`, `zod`
+*   **Model provider key**: Anthropic, OpenAI, or any AI SDK-supported provider
+
+### Connect Steel to the Vercel AI SDK
+
+Open a Steel session inside a typed AI SDK `tool()`:
+
+```typescript Typescript -wc
+import { tool } from "ai";
+import { chromium } from "playwright";
+import Steel from "steel-sdk";
+import { z } from "zod";
+
+const steel = new Steel({ steelAPIKey: process.env.STEEL_API_KEY! });
+
+const openSession = tool({
+  description: "Open a Steel cloud browser session.",
+  inputSchema: z.object({}),
+  execute: async () => {
+    const session = await steel.sessions.create({});
+    const browser = await chromium.connectOverCDP(
+      `${session.websocketUrl}&apiKey=${process.env.STEEL_API_KEY}`,
+    );
+    return { sessionId: session.id, liveViewUrl: session.sessionViewerUrl };
+  },
+});
+```
+
+Full runnable starters:
+
+*   Server-only typed agent with `ToolLoopAgent`: [Steel + Vercel AI SDK recipe →](/cookbook/vercel-ai-sdk)
+*   Next.js chat UI with embedded Steel Live View: [Steel + Vercel AI SDK + Next.js recipe →](/cookbook/vercel-ai-sdk-nextjs)
+
+### Resources
+
+*   [Vercel AI SDK documentation](https://ai-sdk.dev/) – Tools, agents, streaming, and providers
+*   [Steel Sessions API reference](/api-reference) – Programmatic session control for Steel browsers
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

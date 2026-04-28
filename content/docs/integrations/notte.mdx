@@ -1,0 +1,44 @@
+---
+title: Notte
+sidebarTitle: Notte
+description: Reliable Python web-agent framework focused on stable navigation and structured outputs.
+llm: true
+---
+
+Notte is a Python framework for building reliable web agents with stable navigation and structured outputs. The Steel integration connects a Notte session to a Steel browser, so Notte handles the agent loop and Steel handles the cloud browser plumbing.
+
+Use it for tasks where reliable navigation and typed outputs matter more than autonomy.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Gemini API Key** (or another supported provider): Notte's default model is Gemini
+*   **Python**: 3.11+
+
+### Connect Steel to Notte
+
+Pass Steel's CDP URL into a `notte.Session`:
+
+```python Python -wc
+import notte
+from steel import Steel
+
+client = Steel(steel_api_key=STEEL_API_KEY)
+session = client.sessions.create()
+cdp_url = f"{session.websocket_url}&apiKey={STEEL_API_KEY}"
+
+with notte.Session(cdp_url=cdp_url) as notte_session:
+    agent = notte.Agent(
+        session=notte_session,
+        reasoning_model="gemini/gemini-2.5-flash",
+    )
+    response = agent.run(task="Go to Wikipedia and search for machine learning")
+```
+
+Full runnable starter: [Steel + Notte recipe →](/cookbook/notte)
+
+### Resources
+
+*   [Notte documentation](https://docs.notte.cc/intro/what-is-notte) – Concepts, agent APIs, and examples
+*   [Steel Sessions API reference](/api-reference) – Programmatic session control for Steel browsers
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

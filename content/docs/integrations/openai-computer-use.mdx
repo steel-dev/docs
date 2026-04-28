@@ -1,0 +1,45 @@
+---
+title: OpenAI Computer Use
+sidebarTitle: OpenAI Computer Use
+description: Wire OpenAI's computer-use tool into a Steel browser session.
+llm: true
+---
+
+The OpenAI Computer Use integration runs OpenAI's vision-based agent loop on a Steel browser session. The model takes screenshots through Steel, decides the next action (click, type, scroll), and Steel executes it, so you can automate complex web tasks without writing custom selectors.
+
+It pairs well with Steel's anti-bot capabilities, proxy support, and sandboxed environments.
+
+### Requirements
+
+*   **OpenAI API Key**: An OpenAI model with computer use
+*   **Steel API Key**: Active Steel subscription
+*   **Runtime**: Python 3.10+ or Node.js 20+
+
+### Connect Steel to OpenAI
+
+Steel's `sessions.computer` API takes screenshots and executes actions; pair it with OpenAI's Responses API computer-use tool:
+
+```typescript Typescript -wc
+import { Steel } from "steel-sdk";
+
+const steel = new Steel({ steelAPIKey: STEEL_API_KEY });
+const session = await steel.sessions.create({
+  dimensions: { width: 1024, height: 768 },
+});
+
+// Take a screenshot via Steel
+const { base64_image } = await steel.sessions.computer(session.id, {
+  action: "take_screenshot",
+});
+
+// Send to OpenAI's Responses API with computer-use, then route returned
+// actions back through `steel.sessions.computer({ action: ... })`.
+```
+
+Full runnable starter: [Steel + OpenAI Computer Use recipe →](/cookbook/openai-computer-use)
+
+### Resources
+
+*   [OpenAI Computer Use documentation](https://platform.openai.com/docs/guides/tools-computer-use) – Official documentation from OpenAI
+*   [Steel Sessions API reference](/api-reference) – Technical details for managing Steel browser sessions
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

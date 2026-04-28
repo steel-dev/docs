@@ -1,0 +1,50 @@
+---
+title: OpenAI Agents SDK
+sidebarTitle: OpenAI Agents SDK
+description: Build typed browser agents with handoffs, guardrails, and tracing.
+llm: true
+---
+
+The OpenAI Agents SDK is OpenAI's official toolkit for building agents with typed tools, handoffs, guardrails, and tracing. The Steel integration runs each tool against a Steel cloud session, so you can stand up a typed browser agent that opens a session, navigates, extracts data, and returns a validated final report.
+
+Available in TypeScript and Python.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **OpenAI API Key**: A model supported by the Agents SDK
+*   **Runtime**: Node.js 20+ or Python 3.10+
+
+### Connect Steel to the OpenAI Agents SDK
+
+Open a Steel session inside a typed Agents SDK `tool()`:
+
+```typescript Typescript -wc
+import { tool } from "@openai/agents";
+import { chromium } from "playwright";
+import Steel from "steel-sdk";
+import { z } from "zod";
+
+const steel = new Steel({ steelAPIKey: STEEL_API_KEY });
+
+const openSession = tool({
+  name: "open_session",
+  description: "Open a Steel cloud browser session.",
+  parameters: z.object({}),
+  execute: async () => {
+    const session = await steel.sessions.create({});
+    const browser = await chromium.connectOverCDP(
+      `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+    );
+    return { sessionId: session.id, liveViewUrl: session.sessionViewerUrl };
+  },
+});
+```
+
+Full runnable starter: [Steel + OpenAI Agents SDK recipe →](/cookbook/openai-agents)
+
+### Resources
+
+*   [OpenAI Agents SDK documentation](https://openai.github.io/openai-agents-js/) – Agents, tools, handoffs, tracing
+*   [Steel Sessions API reference](/api-reference) – Programmatic session control for Steel browsers
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

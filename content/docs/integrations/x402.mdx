@@ -1,0 +1,37 @@
+---
+title: x402
+sidebarTitle: x402
+description: Pay-per-use Steel sessions with USDC on Base and Solana. No API key, no account.
+llm: true
+---
+
+The x402 integration enables pay-per-use Steel browser sessions powered by cryptocurrency. Built on the [x402 protocol](https://www.x402.org/), it lets you create and manage Steel sessions by paying with USDC on Base or Solana, with no API keys or accounts required.
+
+**Endpoint:** `https://x402.steel.dev`
+
+### How it works
+
+1.  **Send a request** to the x402 endpoint. The server responds with a `402 Payment Required`.
+2.  **Sign a payment authorization** for the requested amount with your wallet.
+3.  **Resend the request** with the signed payment header. You receive your data with a `200 OK` response.
+
+### Pricing
+
+Rate: **$0.10/hour**
+
+### Requirements
+
+*   **Wallet**: Base or Solana wallet with USDC
+
+### Supported tokens and networks
+
+| Network                | USDC Contract Address                             |
+|------------------------|---------------------------------------------------|
+| Base (mainnet)         | **0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913**    |
+| Solana (mainnet)       | **EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v**  |
+
+### Resources
+
+*   [x402 protocol](https://www.x402.org/) – Learn more about the x402 protocol
+*   [Steel Sessions API reference](/api-reference) – Programmatic session management
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share your implementations
