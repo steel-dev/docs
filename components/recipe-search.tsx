@@ -53,7 +53,7 @@ export function RecipeSearch({ recipes }: Props) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={`Filter ${recipes.length} recipes by name, topic, or framework...`}
+          placeholder={`Filter recipes by name, topic, or framework...`}
           className="w-full rounded-md border border-border bg-card py-2 pl-9 pr-4 text-sm placeholder:text-muted-foreground focus:border-muted-foreground focus:outline-none"
           autoComplete="off"
           spellCheck={false}
