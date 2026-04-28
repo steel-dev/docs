@@ -32,8 +32,8 @@ function getChangelogEntries() {
 export default function ChangelogPage() {
   const changelogs = getChangelogEntries();
   return (
-    <main className="my-6 space-y-10">
-      <div className="px-4 md:px-[var(--nav-offset)]">
+    <main className="space-y-10 max-w-[1024px] w-full mx-auto">
+      <div className="px-8 py-[56px]">
         <div className="space-y-10">
           <div className="space-y-1">
             <h3 className="text-3xl">Changelog</h3>
