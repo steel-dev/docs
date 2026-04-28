@@ -257,38 +257,55 @@ export function Cloud(props: SVGProps<SVGSVGElement>): JSX.Element {
   );
 }
 
+// Language badges for the cookbook sidebar. The sidebar forces every SVG to
+// `size-3` (12px), so the viewBox is sized to match the display and the glyphs
+// are filled (not stroked) so they stay legible after the scale-down.
 export function Js(props: SVGProps<SVGSVGElement>): JSX.Element {
   return (
     <svg
-      width="22"
-      height="23"
-      viewBox="0 0 22 23"
-      fill="none"
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <path d="M1.92111 2.81079V21.3582" stroke="currentColor" strokeWidth="1.14856" />
-      <path d="M19.4024 2.81079L19.4024 17.734" stroke="currentColor" strokeWidth="1.14856" />
-      <path d="M17.6972 1.53198L3.62672 1.53198" stroke="currentColor" strokeWidth="1.14856" />
-      <path d="M17.6972 18.1609H5.33223" stroke="currentColor" strokeWidth="1.14856" />
-      <path
-        d="M3.83958 21.7849H19.4023V20.0793"
-        stroke="currentColor"
-        strokeWidth="1.14856"
-        strokeLinejoin="bevel"
-      />
-      <path
-        d="M16.845 10.6275V9.19556H13.5356V12.0595H16.845V14.9234H13.5355V13.9687"
-        stroke="currentColor"
-        strokeWidth="1.14856"
-        strokeLinejoin="bevel"
-      />
-      <path
-        d="M11.3553 8.71826V13.7301L10.6394 15.162H8.49143L7.77545 14.4461"
-        stroke="currentColor"
-        strokeWidth="1.14856"
-        strokeLinejoin="bevel"
-      />
+      <text
+        x="6"
+        y="9.5"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="900"
+        fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
+        letterSpacing="-0.5"
+      >
+        JS
+      </text>
+    </svg>
+  );
+}
+
+export function Py(props: SVGProps<SVGSVGElement>): JSX.Element {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <text
+        x="6"
+        y="9.5"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="900"
+        fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
+        letterSpacing="-0.5"
+      >
+        PY
+      </text>
     </svg>
   );
 }

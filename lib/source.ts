@@ -6,13 +6,14 @@ import { attachFile, createOpenAPI } from 'fumadocs-openapi/server';
 import { icons as lucideIcons } from 'lucide-react';
 import type { ThemeRegistrationResolved } from 'shiki';
 import { docs } from '@/.source';
-import { API, create, Js } from '@/components/ui/icon';
+import { API, create, Js, Py } from '@/components/ui/icon';
 import { extractTagsAndLabels } from './utils/frontmatter-parser';
 import type { FilterablePage } from './utils/tag-filtering';
 
 const customIcons = {
   API,
   Js,
+  Py,
 };
 
 const icons = { ...lucideIcons, ...customIcons } as any;
@@ -547,6 +548,13 @@ export const source = loader({
   pageTree: {
     attachFile: (node, file) => {
       let processedNode = attachFile(node, file);
+
+      // Fumadocs' source loader doesn't set `$id` on external-link nodes
+      // (the `[Label](url)` meta.json syntax), which makes React flag the
+      // sidebar for missing keys. Derive a stable id from the url.
+      if (node.type === 'page' && (node as any).external === true && !(processedNode as any).$id) {
+        (processedNode as any).$id = `external:${(node as any).url}`;
+      }
 
       if (node.type === 'page') {
         const fileData = (file as any)?.data?.data;

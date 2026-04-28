@@ -15,7 +15,8 @@
     "generate-openapi": "bun run ./scripts/fetch-openapi-specs.mts",
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
     "sync-cookbook": "bun run ./scripts/sync-cookbook.ts",
-    "generate": "bun run generate-openapi && bun run sync-cookbook && bun run generate-llms"
+    "bump-cookbook": "git submodule update --remote external/cookbook && bun run sync-cookbook",
+    "generate": "bun run generate-openapi && bun run generate-llms"
   },
   "overrides": {
     "@shikijs/core": "3.3.0",
