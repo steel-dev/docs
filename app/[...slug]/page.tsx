@@ -303,6 +303,8 @@ export async function generateMetadata(props: {
   if (!page) notFound();
 
   const canonicalPath = page.url.replace(/^\/en(\/|$)/, '/');
+  const ogSlug = slug[0] === 'en' ? slug.slice(1) : slug;
+  const ogImageUrl = `/og/${ogSlug.join('/')}`;
 
   return {
     title: page.data.title,
@@ -316,11 +318,13 @@ export async function generateMetadata(props: {
       url: canonicalPath,
       siteName: 'Steel Docs',
       type: 'article',
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: page.data.title }],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: page.data.title,
       description: page.data.description,
+      images: [ogImageUrl],
     },
   };
 }
