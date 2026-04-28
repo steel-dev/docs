@@ -25,7 +25,7 @@ Run `npx create-steel-app` to spin up a full project based on any of the recipes
 We shipped support for multiple tabs via the debug URL. This comes with support for embedding specific pages as well as a full browser view that displays all tabs with full interactivity. Essentially a fully embeddable browser UI can now exist right in your app. Light/dark mode supported ;)
 <Image src="/images/8LAdzG-x1Li9Nf3Q6VB4P.png" alt="Image" width={500} height={500} />
 
-[Documentation Link](https://docs.steel.dev/overview/guides/view-and-embed-live-sessions)
+[Documentation Link](https://docs.steel.dev/overview/sessions-api/embed-sessions/live-sessions)
 
 #### Embed and view session recordings
 
@@ -56,21 +56,21 @@ const player = new rrwebPlayer({
 });
 ```
 
-[Documentation Link](https://docs.steel.dev/overview/guides/embed-session-recordings)
+[Documentation Link](https://docs.steel.dev/overview/sessions-api/embed-sessions/past-sessions)
 
 #### CUA x Steel
 
 OpenAI’s Computer-use agent just dropped and it’s awesome! We’ve added a whole bunch of resources across the Steel universe to demo how the CUA agent can control a Steel browser!
 
-*   [Cookbook: Simple CUA Loop (Python)](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-oai-computer-use-python-starter)
-*   [Cookbook: Simple CUA Loop (Node)](https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-oai-computer-use-node-starter)
+*   [Cookbook: Simple CUA Loop (Python)](https://github.com/steel-dev/steel-cookbook/tree/main/examples/openai-computer-use-py)
+*   [Cookbook: Simple CUA Loop (Node)](https://github.com/steel-dev/steel-cookbook/tree/main/examples/openai-computer-use-ts)
 *   Coming soon to [Surf.new](http://surf.new/) 🌊
 
 ### 🔧 Bugfixes/Improvements
 
 *   Python/Node SDKs are out of beta and official starting on version `0.0.1` 🥂 This update comes with all the afore mentioned capabilities incorporated into the SDKs.
 *   Lots of improvements and fixes to the Surf UI
-*   Added guide to docs on how to re-use contexts between sessions for carrying over things like authenticated state ([docs](https://docs.steel.dev/overview/guides/reusing-contexts-auth))
+*   Added guide to docs on how to re-use contexts between sessions for carrying over things like authenticated state ([docs](https://docs.steel.dev/overview/sessions-api/reusing-auth-context))
 *   Patches some source of memory leak errors causing slower session times
 
 ### 🏡 Housekeeping
