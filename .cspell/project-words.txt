@@ -25,6 +25,7 @@ cspell
 livestream
 
 # Integrations / frameworks
+logfire
 playwright
 puppeteer
 selenium
