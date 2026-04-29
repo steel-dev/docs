@@ -1,0 +1,108 @@
+name: Changelog Draft
+
+on:
+  schedule:
+    - cron: '0 13 * * 5'
+    - cron: '0 14 * * 5'
+  workflow_dispatch:
+    inputs:
+      since:
+        description: Optional ISO timestamp/date lower bound
+        required: false
+        type: string
+      until:
+        description: Optional ISO timestamp/date upper bound
+        required: false
+        type: string
+      bootstrap_since:
+        description: Optional lower bound used to cap automatic lookback
+        required: false
+        type: string
+      open_pr:
+        description: Open a draft PR after generating the changelog
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Gate scheduled run to 9 AM Toronto
+        id: gate
+        shell: bash
+        run: |
+          should_run=true
+
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            toronto_hour="$(TZ=America/Toronto date +%H)"
+            toronto_weekday="$(TZ=America/Toronto date +%u)"
+
+            if [ "$toronto_hour" != "09" ] || [ "$toronto_weekday" != "5" ]; then
+              should_run=false
+            fi
+          fi
+
+          echo "should_run=$should_run" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout code
+        if: steps.gate.outputs.should_run == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bun
+        if: steps.gate.outputs.should_run == 'true'
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        if: steps.gate.outputs.should_run == 'true'
+        run: bun install --frozen-lockfile
+
+      - name: Generate changelog draft
+        if: steps.gate.outputs.should_run == 'true'
+        id: generate
+        env:
+          CHANGELOG_GITHUB_TOKEN: ${{ secrets.CHANGELOG_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CHANGELOG_SINCE: ${{ inputs.since }}
+          CHANGELOG_UNTIL: ${{ inputs.until }}
+          CHANGELOG_BOOTSTRAP_SINCE: ${{ inputs.bootstrap_since || vars.CHANGELOG_BOOTSTRAP_SINCE }}
+        run: bun run generate-changelog-draft
+
+      - name: Run link validation
+        if: steps.gate.outputs.should_run == 'true' && steps.generate.outputs.has_changes == 'true'
+        run: bun run validate-links
+
+      - name: Upload generated draft artifacts
+        if: steps.gate.outputs.should_run == 'true' && steps.generate.outputs.has_changes == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: changelog-draft-${{ github.run_id }}
+          path: |
+            ${{ steps.generate.outputs.draft_path }}
+            ${{ steps.generate.outputs.pr_body_path }}
+
+      - name: Create draft pull request
+        if: steps.gate.outputs.should_run == 'true' && steps.generate.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.open_pr)
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.CHANGELOG_GITHUB_TOKEN != '' && secrets.CHANGELOG_GITHUB_TOKEN || github.token }}
+          base: main
+          branch: ${{ steps.generate.outputs.branch_name }}
+          delete-branch: true
+          title: ${{ steps.generate.outputs.pr_title }}
+          commit-message: ${{ steps.generate.outputs.commit_message }}
+          body-path: ${{ steps.generate.outputs.pr_body_path }}
+          draft: true
+          add-paths: |
+            content/docs/changelog/**
+            public/changelog/llms.txt

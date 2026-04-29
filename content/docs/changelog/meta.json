@@ -3,6 +3,7 @@
   "root": true,
   "pages": [
     "---Changelog---",
+    "changelog-022",
     "changelog-021",
     "changelog-020",
     "changelog-019",

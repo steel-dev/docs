@@ -655,6 +655,18 @@ export const source = loader({
         if (frontmatter?.isSeperator) {
           dataToAdd.isSeperator = frontmatter.isSeperator;
         }
+        if (frontmatter?.image) {
+          dataToAdd.image = frontmatter.image;
+        }
+        if (frontmatter?.imageAlt) {
+          dataToAdd.imageAlt = frontmatter.imageAlt;
+        }
+        if (frontmatter?.imageWidth) {
+          dataToAdd.imageWidth = frontmatter.imageWidth;
+        }
+        if (frontmatter?.imageHeight) {
+          dataToAdd.imageHeight = frontmatter.imageHeight;
+        }
 
         // if it's an API page, extract OpenAPI operations ourselves
         // if (node.url?.includes("/apis/") && fileData?.content) {
