@@ -110,7 +110,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
 
             {/* Desktop layout */}
             <div className="hidden xl:flex flex-row items-center gap-4 w-full h-full">
-              <div className="flex flex-row items-center gap-4 flex-shrink-0">
+              <div className="flex flex-row items-center gap-4 shrink-0">
                 {/* <NavbarSidebarTrigger /> */}
                 <Link href="/" className="mr-6 flex items-center space-x-2">
                   <DocsLogo />
@@ -136,7 +136,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                 />
               </div>
 
-              <div className="flex flex-shrink-0 items-center justify-end space-x-1 xl:space-x-2 2xl:space-x-3">
+              <div className="flex shrink-0 items-center justify-end space-x-1 xl:space-x-2 2xl:space-x-3">
                 <Link href="https://discord.gg/steel-dev">
                   <Discord fill="#A1A09A" width="16" />
                 </Link>
@@ -152,7 +152,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                 <SearchToggle />
                 <Button
                   asChild
-                  className="bg-yellow-300 font-mono text-neutral-900 flex items-baseline gap-0.5 px-2 xl:px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden xl:flex flex-shrink-0"
+                  className="bg-yellow-300 font-mono text-neutral-900 flex items-baseline gap-0.5 px-2 xl:px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden xl:flex shrink-0"
                 >
                   <Link href="https://app.steel.dev" target="_blank">
                     Sign in
@@ -187,16 +187,23 @@ export function Sidebar() {
   const children = useMemo(() => {
     const filterCriteria = ['overview', 'integrations', 'cookbook', 'changelog'];
 
-    const shouldFilterItem = (item: PageTree.Node): boolean => {
-      // External link nodes (e.g. `[Cookbook on GitHub](url)` in
-      // cookbook/meta.json) don't carry a section prefix in `$id`, so the
-      // generic prefix-based filter below can't tell which section they
-      // belong to and they leak into every other section. Map them to a
-      // section by URL and filter out unless we're on that section.
-      if (item.type === 'page' && (item as any).external === true) {
+    const shouldFilterItem = (item: PageTree.Node, owningSection?: string): boolean => {
+      // Link nodes from meta.json `[Label](url)` syntax — both external
+      // (https://...) and internal (`/path`) — don't have a backing MDX
+      // file, so fumadocs leaves them without a `$ref.file` and without a
+      // section prefix in `$id`. `lib/source.ts`'s `attachFolder` tags them
+      // with a `<section>/link:<url>` `$id` derived from the declaring meta
+      // folder. Use that section first, then fall back to the recursion's
+      // owning-section context, then to URL pattern matching.
+      const isLinkNode = item.type === 'page' && !(item as any).$ref?.file;
+      if (isLinkNode) {
         const url = ((item as any).url ?? '') as string;
+        const id = ((item as any).$id ?? '') as string;
         let externalSection: string | undefined;
-        if (url.includes('steel-cookbook')) externalSection = 'cookbook';
+        const linkPrefixMatch = id.match(/^([^/]+)\/(?:link|external):/);
+        if (linkPrefixMatch) externalSection = linkPrefixMatch[1];
+        if (!externalSection) externalSection = owningSection;
+        if (!externalSection && url.includes('steel-cookbook')) externalSection = 'cookbook';
         if (externalSection) {
           const onOwningSection =
             pathname?.includes(`/${externalSection}/`) ||
@@ -246,23 +253,32 @@ export function Sidebar() {
       });
     };
 
-    function renderItems(items: PageTree.Node[]) {
-      const filteredItems = items.filter((item) => !shouldFilterItem(item));
+    function renderItems(items: PageTree.Node[], owningSection?: string) {
+      const filteredItems = items.filter((item) => !shouldFilterItem(item, owningSection));
       const numItems = filteredItems.length;
 
       return filteredItems.map((item, idx, arr) => {
         const isSeperator = (item as any).data?.isSeperator === true;
         const prevIsSeperator = idx > 0 && (arr[idx - 1] as any).data?.isSeperator === true;
         const isFirstSeperatorInRun = isSeperator && !prevIsSeperator;
+        const key = item.$id ?? (item as any).url ?? `${item.type}-${idx}`;
+
+        let childSection = owningSection;
+        if (item.type === 'folder') {
+          const topSegment = (item.$id ?? '').split('/')[0];
+          if (filterCriteria.includes(topSegment)) {
+            childSection = topSegment;
+          }
+        }
 
         return (
           <SidebarItem
-            key={item.$id}
+            key={key}
             item={item}
             numItems={numItems}
             isFirstSeperatorInRun={isFirstSeperatorInRun}
           >
-            {item.type === 'folder' ? renderItems(item.children) : null}
+            {item.type === 'folder' ? renderItems(item.children, childSection) : null}
           </SidebarItem>
         );
       });

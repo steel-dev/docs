@@ -11,6 +11,9 @@ import {
   KeyIcon,
   MagicIcon,
   OpenAIIcon,
+  PlaywrightIcon,
+  PuppeteerIcon,
+  SeleniumIcon,
 } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import { source } from '@/lib/source';
@@ -37,7 +40,10 @@ const INTEGRATION_META: Record<string, IntegrationMeta> = {
   'openai-computer-use': { icon: <OpenAIIcon />, tag: 'Computer Use' },
   openclaw: { icon: <BashIcon />, tag: 'Coding Agent' },
   'pi-agent': { icon: <BashIcon />, tag: 'Coding Agent' },
+  playwright: { icon: <PlaywrightIcon />, tag: 'Browser Library' },
+  puppeteer: { icon: <PuppeteerIcon />, tag: 'Browser Library' },
   replit: { icon: <Cloud />, tag: 'Platform' },
+  selenium: { icon: <SeleniumIcon />, tag: 'Browser Library' },
   'stackblitz-bolt.new': { icon: <Cloud />, tag: 'Platform' },
   stagehand: { icon: <MagicIcon />, tag: 'Browser Agent' },
   x402: { icon: <KeyIcon />, tag: 'Protocol' },
@@ -68,7 +74,7 @@ export function IntegrationGrid() {
           >
             <div className="flex items-start gap-4">
               {meta?.icon && (
-                <div className="flex-shrink-0 w-fit rounded-md bg-neutral-150 dark:bg-neutral-700 group-hover:bg-white dark:group-hover:bg-neutral-950 p-2.5 text-muted-foreground transition-colors duration-200 [&_svg]:size-5">
+                <div className="shrink-0 w-fit rounded-md bg-neutral-150 dark:bg-neutral-700 group-hover:bg-white dark:group-hover:bg-neutral-950 p-2.5 text-muted-foreground transition-colors duration-200 [&_svg]:size-5">
                   {meta.icon}
                 </div>
               )}

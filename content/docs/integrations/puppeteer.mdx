@@ -1,0 +1,41 @@
+---
+title: Puppeteer
+sidebarTitle: Puppeteer
+description: Drive a Steel cloud browser from Puppeteer over CDP in TypeScript.
+llm: true
+---
+
+Puppeteer is Chrome's reference Node.js automation library. The Steel integration attaches Puppeteer to a Steel cloud session through `puppeteer.connect()`, so `page.goto`, `page.evaluate`, `page.waitForSelector`, and the rest of the surface drive a remote browser. Stealth, proxies, and the live session viewer come from Steel without extra wiring.
+
+The package is `puppeteer-core` — there's no Chromium to download because the browser lives on Steel.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Runtime**: Node.js 20+
+*   **Package**: `puppeteer-core`
+
+### Connect Steel to Puppeteer
+
+Pass Steel's CDP URL into `puppeteer.connect()` as `browserWSEndpoint`. Open a fresh tab with `browser.newPage()`:
+
+```typescript Typescript -wc
+import puppeteer from "puppeteer-core";
+import Steel from "steel-sdk";
+
+const client = new Steel({ steelAPIKey: STEEL_API_KEY });
+const session = await client.sessions.create();
+
+const browser = await puppeteer.connect({
+  browserWSEndpoint: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+});
+const page = await browser.newPage();
+```
+
+Full runnable starter: [Steel + Puppeteer recipe →](/cookbook/puppeteer)
+
+### Resources
+
+*   [Puppeteer documentation](https://pptr.dev) – Official Puppeteer API reference
+*   [Steel Sessions API reference](/api-reference#tag/sessions) – Technical details for managing Steel browser sessions
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

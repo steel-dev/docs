@@ -3,6 +3,10 @@
   "root": true,
   "pages": [
     "index",
+    "---Browser libraries---",
+    "playwright",
+    "puppeteer",
+    "selenium",
     "---Frameworks---",
     "agentkit",
     "agno",

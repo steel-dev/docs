@@ -546,6 +546,30 @@ export const steelThemeDark: ThemeRegistrationResolved = {
 // See https://fumadocs.vercel.app/docs/headless/source-api for more info
 export const source = loader({
   pageTree: {
+    attachFolder: (node, folder, _meta) => {
+      // Link nodes from meta.json `[Label](url)` syntax don't get a `$id`
+      // assigned by fumadocs (they have no backing file). When `...folder`
+      // extraction flattens them into a parent section's tree the original
+      // declaring folder is lost, so the sidebar can't tell which section
+      // owns them and they leak into every section. We tag them here with
+      // an `$id` prefixed by the declaring folder's top-level section so
+      // the sidebar's prefix-based section filter scopes them correctly.
+      const folderPath = (folder as any)?.file?.path ?? '';
+      const section = folderPath.split('/')[0];
+      if (section && Array.isArray((node as any).children)) {
+        for (const child of (node as any).children) {
+          if (
+            child?.type === 'page' &&
+            !child.$ref?.file &&
+            !child.$id &&
+            typeof child.url === 'string'
+          ) {
+            child.$id = `${section}/link:${child.url}`;
+          }
+        }
+      }
+      return node;
+    },
     attachFile: (node, file) => {
       let processedNode = attachFile(node, file);
 

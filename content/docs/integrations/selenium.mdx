@@ -1,0 +1,60 @@
+---
+title: Selenium
+sidebarTitle: Selenium
+description: Drive a Steel cloud browser from Selenium over the W3C WebDriver protocol in Python.
+llm: true
+---
+
+Selenium speaks the W3C WebDriver protocol over HTTP, not CDP. Steel runs a WebDriver endpoint at `http://connect.steelbrowser.com/selenium`. Point `webdriver.Remote` at it, attach the Steel API key and session ID as headers on every request, and the rest is plain Selenium 4.
+
+Sessions for Selenium need `is_selenium=True` on creation — that flag provisions a WebDriver-compatible node. Without it you get a CDP browser that Selenium cannot drive.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Runtime**: Python 3.10+
+*   **Package**: `selenium` 4+
+
+### Connect Steel to Selenium
+
+Subclass `RemoteConnection` to inject `steel-api-key` and `session-id` headers on every WebDriver request, then point `webdriver.Remote` at Steel's WebDriver endpoint:
+
+```python Python -wc
+import os
+from selenium import webdriver
+from selenium.webdriver.remote.remote_connection import RemoteConnection
+from steel import Steel
+
+class SteelRemoteConnection(RemoteConnection):
+    def __init__(self, remote_server_addr: str, session_id: str):
+        super().__init__(remote_server_addr)
+        self._session_id = session_id
+
+    def get_remote_connection_headers(self, parsed_url, keep_alive=False):
+        headers = super().get_remote_connection_headers(parsed_url, keep_alive)
+        headers["steel-api-key"] = os.environ["STEEL_API_KEY"]
+        headers["session-id"] = self._session_id
+        return headers
+
+client = Steel(steel_api_key=STEEL_API_KEY)
+session = client.sessions.create(is_selenium=True)
+
+driver = webdriver.Remote(
+    command_executor=SteelRemoteConnection(
+        remote_server_addr="http://connect.steelbrowser.com/selenium",
+        session_id=session.id,
+    ),
+    options=webdriver.ChromeOptions(),
+)
+```
+
+Each command is an HTTP round-trip, so prefer `WebDriverWait` with `expected_conditions` over blind `time.sleep` to avoid compounding latency.
+
+Full runnable starter: [Steel + Selenium recipe →](/cookbook/selenium)
+
+### Resources
+
+*   [Selenium Python documentation](https://selenium-python.readthedocs.io) – Official Python bindings reference
+*   [WebDriver protocol](https://w3c.github.io/webdriver/) – W3C specification
+*   [Steel Sessions API reference](/api-reference#tag/sessions) – Technical details for managing Steel browser sessions
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

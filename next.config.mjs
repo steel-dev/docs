@@ -160,6 +160,28 @@ const config = {
         permanent: true,
       },
       { source: "/cookbook/files-starter", destination: "/cookbook/files", permanent: true },
+      // Legacy /overview/guides/* pages were merged into the integration and
+      // cookbook sections.
+      {
+        source: "/overview/guides/playwright-node",
+        destination: "/cookbook/playwright#typescript",
+        permanent: true,
+      },
+      {
+        source: "/overview/guides/playwright-python",
+        destination: "/cookbook/playwright#python",
+        permanent: true,
+      },
+      {
+        source: "/overview/guides/puppeteer",
+        destination: "/cookbook/puppeteer",
+        permanent: true,
+      },
+      {
+        source: "/overview/guides/selenium",
+        destination: "/cookbook/selenium",
+        permanent: true,
+      },
     ];
   },
   async headers() {

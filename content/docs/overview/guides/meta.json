@@ -2,11 +2,11 @@
   "title": "Guides",
   "root": true,
   "pages": [
-    "---Guides---",
-    "human-in-the-loop",
-    "playwright-node",
-    "playwright-python",
-    "puppeteer",
-    "selenium"
+    "---Featured---",
+    "[Claude Code with Steel](/integrations/claude-code)",
+    "[Auto-solve captchas](/cookbook/browser-use-captcha-auto)",
+    "[OpenAI Agents SDK](/integrations/openai-agents-sdk)",
+    "[Build a chat-driven scraper](/cookbook/vercel-ai-sdk-nextjs)",
+    "[Browser-Use](/integrations/browser-use)"
   ]
 }
