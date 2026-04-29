@@ -7,7 +7,7 @@ description: Use Steel with the OpenAI Agents SDK for TypeScript to build typed,
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/openai-agents-ts" path="examples/openai-agents-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/5c0d75e0131394a3336223fd96eeefc19a1804cb/examples/openai-agents-ts" path="examples/openai-agents-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 The [OpenAI Agents SDK](https://openai.github.io/openai-agents-js/) (`@openai/agents`) is a small runtime for agentic loops. You define an `Agent` with `instructions`, a `model`, `tools`, and an `outputType`. You call `run(agent, prompt)`. The SDK handles "pick a tool, call it, feed the result back, repeat" and validates the final message against your schema. It also ships handoffs (one agent calls another), guardrails (pre/post checks), and traces out of the box.
 
@@ -133,7 +133,7 @@ The `finally` block calls `steel.sessions.release()`. Skip it and the session ru
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/openai-agents-py" path="examples/openai-agents-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/5c0d75e0131394a3336223fd96eeefc19a1804cb/examples/openai-agents-py" path="examples/openai-agents-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 The [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) runs the tool-call loop so you don't have to. You declare an `Agent` with tools, a model, and (optionally) a Pydantic `output_type`. You call `Runner.run(agent, input=...)` once. The SDK handles every model turn, every tool dispatch, and every schema check until the agent returns a typed final answer. That shape is distinct from OpenAI's Computer Use, where you own the message loop.
 
@@ -286,6 +286,6 @@ If you want to chain runs without replaying history, pass a `session` (e.g. `SQL
 
 <RecipeGrid>
 <RecipeCard slug="pydantic-ai" title={"Build a typed browser agent with Pydantic AI"} description={"Use Steel with Pydantic AI to build typed, provider-agnostic browser agents with dependency injection."} topics={['Agents', 'Typed output']} date="2026-04-29" />
+<RecipeCard slug="mastra" title={"Build a typed browser agent with Mastra"} description={"Use Steel with Mastra to build a typed browser agent with the Mastra Model Router and Studio playground."} topics={['Agents', 'Typed output']} date="2026-04-29" />
 <RecipeCard slug="vercel-ai-sdk" title={"Build a typed browser agent with the Vercel AI SDK"} description={"Use Steel with the Vercel AI SDK v6 ToolLoopAgent for typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
-<RecipeCard slug="vercel-ai-sdk-nextjs" title={"Stream a browser agent into a Next.js chat app"} description={"A Next.js App Router chat app where a Vercel AI SDK agent drives a Steel cloud browser with embedded Live View."} topics={['Agents', 'Typed output', 'Next.js']} date="2026-04-23" />
 </RecipeGrid>

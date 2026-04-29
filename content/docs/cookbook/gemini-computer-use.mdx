@@ -7,7 +7,7 @@ description: "Connect Google's Gemini Computer Use to a Steel browser session fo
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/gemini-computer-use-ts" path="examples/gemini-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/5c0d75e0131394a3336223fd96eeefc19a1804cb/examples/gemini-computer-use-ts" path="examples/gemini-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 Gemini exposes computer use as a built-in tool type, not a hand-written schema. You set `config.tools = [{ computerUse: { environment: Environment.ENVIRONMENT_BROWSER } }]` on a `generateContent` call and the model plans against a fixed action vocabulary (`click_at`, `type_text_at`, `navigate`, `scroll_document`, `search`, `drag_and_drop`, `key_combination`, ...) with coordinates in a normalized 0-1000 grid. You never declare the viewport to Gemini. You do have to denormalize its coordinates to pixels, fan a few of its compound actions into several Steel calls, and return each screenshot as `inlineData`. That's the translator in `index.ts`, wrapped around a Steel session.
 
@@ -143,7 +143,7 @@ Expect roughly 60-120 seconds and 15-40 turns for a simple browsing task. Cost i
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/gemini-computer-use-py" path="examples/gemini-computer-use-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/5c0d75e0131394a3336223fd96eeefc19a1804cb/examples/gemini-computer-use-py" path="examples/gemini-computer-use-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 Gemini's computer use ships through `google.genai` as a single built-in tool: `Tool(computer_use=ComputerUse(environment=ENVIRONMENT_BROWSER))`. You never write the schema. Setting `ENVIRONMENT_BROWSER` unlocks a fixed vocabulary of browser function calls (`click_at`, `type_text_at`, `scroll_document`, `scroll_at`, `navigate`, `search`, `key_combination`, `drag_and_drop`, `hover_at`, `go_back`, `go_forward`, `open_web_browser`, `wait_5_seconds`). Each one arrives as a `FunctionCall` with named arguments. You run it, send back a `FunctionResponse` plus a screenshot `Blob`, and the next turn sees the new frame.
 

@@ -3,9 +3,9 @@ title: Build a typed browser agent with Pydantic AI
 description: Use Steel with Pydantic AI to build typed, provider-agnostic browser agents with dependency injection.
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/pydantic-ai" path="examples/pydantic-ai" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/5c0d75e0131394a3336223fd96eeefc19a1804cb/examples/pydantic-ai" path="examples/pydantic-ai" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
 
-[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's agent framework. The model identifier is a string (`'openai:gpt-5-mini'`, `'anthropic:claude-sonnet-4-6'`, `'google-gla:gemini-2.5-flash'`), tools are plain async functions, and `output_type=` validates the final answer with the same Pydantic you'd already use to validate API responses. No new schema layer to learn.
+[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's agent framework. It's provider-agnostic and reuses the Pydantic models you'd already validate API I/O with for tool arguments and final outputs, so an agent slots into a typed Python codebase without a parallel schema layer.
 
 This starter wires a Steel browser into Pydantic AI's dependency-injection pattern and points the agent at GitHub Trending.
 
@@ -146,7 +146,7 @@ A run takes ~20 to 40 seconds and 5 to 10 agent turns on GitHub Trending. Cost i
 ## Related recipes
 
 <RecipeGrid>
+<RecipeCard slug="mastra" title={"Build a typed browser agent with Mastra"} description={"Use Steel with Mastra to build a typed browser agent with the Mastra Model Router and Studio playground."} topics={['Agents', 'Typed output']} date="2026-04-29" />
 <RecipeCard slug="openai-agents" title={"Build a typed browser agent with the OpenAI Agents SDK"} description={"Use Steel with the OpenAI Agents SDK for TypeScript to build typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
 <RecipeCard slug="vercel-ai-sdk" title={"Build a typed browser agent with the Vercel AI SDK"} description={"Use Steel with the Vercel AI SDK v6 ToolLoopAgent for typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
-<RecipeCard slug="vercel-ai-sdk-nextjs" title={"Stream a browser agent into a Next.js chat app"} description={"A Next.js App Router chat app where a Vercel AI SDK agent drives a Steel cloud browser with embedded Live View."} topics={['Agents', 'Typed output', 'Next.js']} date="2026-04-23" />
 </RecipeGrid>
