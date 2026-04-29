@@ -3,7 +3,7 @@ title: Build a multi-agent browser workflow with CrewAI
 description: Integrate Steel with the CrewAI multi-agent framework.
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/5c0d75e0131394a3336223fd96eeefc19a1804cb/examples/crewai" path="examples/crewai" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/crewai" path="examples/crewai" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 CrewAI composes LLM work out of three primitives: an `Agent` (role, goal, tools), a `Task` (description + expected output), and a `Crew` that runs them in order. This recipe wires two agents, a `researcher` and a `reporting_analyst`, to a single custom tool that calls Steel's scrape API. The researcher gathers sources; the analyst turns them into `report.md`.
 
@@ -116,5 +116,5 @@ A run takes ~60-90 seconds: a few OpenAI tokens per agent turn plus one Steel sc
 <RecipeGrid>
 <RecipeCard slug="claude-agent-sdk" title={"Build a browser agent with the Claude Agent SDK"} description={"Use Steel with the Claude Agent SDK (TypeScript) to build a tool-using browser agent on Anthropic's first-party agent loop."} topics={['Agents']} date="2026-04-29" />
 <RecipeCard slug="pydantic-ai" title={"Build a typed browser agent with Pydantic AI"} description={"Use Steel with Pydantic AI to build typed, provider-agnostic browser agents with dependency injection."} topics={['Agents', 'Typed output']} date="2026-04-29" />
-<RecipeCard slug="mastra" title={"Build a typed browser agent with Mastra"} description={"Use Steel with Mastra to build a typed browser agent with the Mastra Model Router and Studio playground."} topics={['Agents', 'Typed output']} date="2026-04-29" />
+<RecipeCard slug="langgraph" title={"Build a typed browser agent with LangGraph"} description={"Use Steel with LangGraph to build a typed browser agent with an explicit state-machine loop and a structured-output formatter node."} topics={['Agents', 'Typed output']} date="2026-04-29" />
 </RecipeGrid>

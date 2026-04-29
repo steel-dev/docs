@@ -3,7 +3,7 @@ title: Solve reCAPTCHA v2 manually with Browser Use
 description: "Manually solve reCAPTCHA v2 using Steel's CAPTCHA API with the browser-use framework."
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/5c0d75e0131394a3336223fd96eeefc19a1804cb/examples/browser-use-captcha-manual" path="examples/browser-use-captcha-manual" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/browser-use-captcha-manual" path="examples/browser-use-captcha-manual" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
 
 Steel can solve CAPTCHAs for you in the background, or it can hand you the status API and let you drive. This recipe picks the second path. The session is created with auto-solving explicitly off, a custom Browser Use tool polls `client.sessions.captchas.status()`, and it calls `client.sessions.captchas.solve()` only for the CAPTCHA type you care about. Every state transition (detected, solving, validating, solved) is yours to read and react to.
 

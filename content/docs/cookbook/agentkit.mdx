@@ -3,7 +3,7 @@ title: Build a browser agent with Inngest AgentKit
 description: "Integrate Steel with Inngest's AgentKit framework."
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/5c0d75e0131394a3336223fd96eeefc19a1804cb/examples/agentkit" path="examples/agentkit" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/agentkit" path="examples/agentkit" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 Agent Kit is Inngest's framework for multi-agent systems: a **tool** is a typed function the model can call, an **agent** bundles a system prompt with a tool set, and a **network** groups agents so they can collaborate on a task. Agent Kit handles the routing between them and wraps each call in Inngest's `step.run` checkpoint, so a network that crashes mid-flight resumes from the last finished step instead of starting over.
 
@@ -126,5 +126,5 @@ A run lands in the ~20-40 second range. Steel session startup dominates; the `gp
 <RecipeGrid>
 <RecipeCard slug="claude-agent-sdk" title={"Build a browser agent with the Claude Agent SDK"} description={"Use Steel with the Claude Agent SDK (TypeScript) to build a tool-using browser agent on Anthropic's first-party agent loop."} topics={['Agents']} date="2026-04-29" />
 <RecipeCard slug="pydantic-ai" title={"Build a typed browser agent with Pydantic AI"} description={"Use Steel with Pydantic AI to build typed, provider-agnostic browser agents with dependency injection."} topics={['Agents', 'Typed output']} date="2026-04-29" />
-<RecipeCard slug="mastra" title={"Build a typed browser agent with Mastra"} description={"Use Steel with Mastra to build a typed browser agent with the Mastra Model Router and Studio playground."} topics={['Agents', 'Typed output']} date="2026-04-29" />
+<RecipeCard slug="langgraph" title={"Build a typed browser agent with LangGraph"} description={"Use Steel with LangGraph to build a typed browser agent with an explicit state-machine loop and a structured-output formatter node."} topics={['Agents', 'Typed output']} date="2026-04-29" />
 </RecipeGrid>
