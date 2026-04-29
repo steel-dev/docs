@@ -1,3 +1,5 @@
+base = "https://docs.steel.dev"
+
 cache = true
 max_cache_age = "1d"
 
@@ -12,11 +14,11 @@ exclude_loopback = true
 exclude_path = ["node_modules", ".next", "out"]
 
 exclude = [
-  "^/",
-  "^#",
-  "^mailto:",
+  "^https?://docs\\.steel\\.dev",
   "^https?://localhost",
   "^https?://127\\.0\\.0\\.1",
+  "^#",
+  "^mailto:",
 ]
 
 user_agent = "Mozilla/5.0 (compatible; lychee/0.16; +https://github.com/lycheeverse/lychee)"

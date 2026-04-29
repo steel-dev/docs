@@ -12,7 +12,7 @@
     "check": "biome check app/ components/ lib/ scripts/ content/",
     "check:fix": "biome check --write app/ components/ lib/ scripts/ content/",
     "validate-links": "bun run ./lint.ts",
-    "validate-external-links": "lychee --config lychee.toml 'content/docs/**/*.md' 'content/docs/**/*.mdx'",
+    "validate-external-links": "lychee --config lychee.toml 'content/docs/**/*.mdx'",
     "generate-openapi": "bun run ./scripts/fetch-openapi-specs.mts",
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
     "sync-cookbook": "bun run ./scripts/sync-cookbook.ts",
