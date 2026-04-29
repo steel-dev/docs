@@ -7,7 +7,7 @@ description: Use Steel with Stagehand for natural-language-driven AI browser aut
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/stagehand-ts" path="examples/stagehand-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/stagehand-ts" path="examples/stagehand-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 Stagehand replaces brittle selectors with two LLM-backed primitives:
 
@@ -101,7 +101,7 @@ A full run takes ~30 seconds and costs a few cents of Steel session time plus Op
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/stagehand-py" path="examples/stagehand-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/stagehand-py" path="examples/stagehand-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 Stagehand v3 ships two LLM-backed primitives that replace CSS selectors with natural language:
 
@@ -210,8 +210,7 @@ Phrase instructions the way you'd describe the action to a person: "click the 'A
 ```bash
 cd examples/stagehand-py
 cp .env.example .env          # set STEEL_API_KEY and OPENAI_API_KEY
-pip install -r requirements.txt
-python main.py
+uv run main.py
 ```
 
 Get keys from [app.steel.dev](https://app.steel.dev/settings/api-keys) and [platform.openai.com](https://platform.openai.com/api-keys). The script prints a session viewer URL as it starts. Open it in another tab to watch Stagehand work.

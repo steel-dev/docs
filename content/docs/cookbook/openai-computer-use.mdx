@@ -7,7 +7,7 @@ description: "Connect OpenAI's Computer Use Assistant to a Steel browser session
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/openai-computer-use-ts" path="examples/openai-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/openai-computer-use-ts" path="examples/openai-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
 
 OpenAI's computer-use model ships as a single tool declaration: `{ type: "computer" }`. No display dimensions, no capability flags, no schema. You hand it to the Responses API, send a screenshot, and the model returns `computer_call` items with actions like `click`, `type`, `keypress`, `scroll`. Your job is to execute them against a real browser, capture the next screenshot, and feed it back. That's the loop in `index.ts`, and the browser is a Steel session.
 
@@ -147,9 +147,11 @@ Expect roughly 60-120 seconds and 15-40 turns for a simple browsing task. Cost i
 ## Make it yours
 
 - **Change the viewport.** `viewportWidth` and `viewportHeight` in the `Agent` constructor set the Steel session `dimensions`. Unlike Anthropic's tool, OpenAI's computer declaration takes no display size, so the model infers resolution from each screenshot. Resize freely.
+- **Swap the model.** The default is `gpt-5.5`. Any Responses-API computer-use model works; update `this.model` in the `Agent` constructor.
 - **Tune reasoning effort.** `reasoning: { effort: "medium" }` in `createResponse` trades latency for planning quality. `"low"` is faster and cheaper; `"high"` is slower and more deliberate on ambiguous pages.
 - **Rewrite the system prompt.** `BROWSER_SYSTEM_PROMPT` holds the browsing conventions: today's date injection, clear-input-before-typing, black-screen recovery. Edit it to match your site or workflow.
-- **Hand off auth.** Computer use can act on any page the browser is already logged into. Pair this recipe with Steel's [credentials](/cookbook/credentials) or [auth contexts](/cookbook/auth-context) to start the session authenticated.
+- **Persist a login.** Pass `sessionContext` to `sessions.create` to resume with cookies and local storage from a previous run; the model skips the login flow. See [credentials](/cookbook/credentials) and [auth-context](/cookbook/auth-context) for the pattern.
+- **Turn off auto-ack.** Flip `autoAcknowledgeSafety` to `false` to make pending safety checks raise instead of being silently accepted. Useful when wiring this into a human-in-the-loop setup.
 
 ## Related
 
@@ -159,7 +161,7 @@ Expect roughly 60-120 seconds and 15-40 turns for a simple browsing task. Cost i
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/openai-computer-use-py" path="examples/openai-computer-use-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/openai-computer-use-py" path="examples/openai-computer-use-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
 
 OpenAI's Computer Use models expose one tool (`{"type": "computer"}`) and emit `computer_call` items containing an `action` the model wants performed on a screen. You execute the action, return a screenshot as a `computer_call_output`, and the next turn the model sees the result. Unlike a typical tool call, you don't name the function or define its arguments: the action vocabulary (`click`, `type`, `keypress`, `scroll`, `drag`, `wait`, `screenshot`) is fixed by OpenAI.
 
@@ -270,8 +272,7 @@ These rules exist because the model will happily rage-click the same input six t
 ```bash
 cd examples/openai-computer-use-py
 cp .env.example .env          # set STEEL_API_KEY and OPENAI_API_KEY
-pip install -r requirements.txt
-python main.py
+uv run main.py
 ```
 
 Get keys from [app.steel.dev](https://app.steel.dev/settings/api-keys) and [platform.openai.com](https://platform.openai.com/api-keys). The script prints a session viewer URL as soon as the Steel session is up. Open it in another tab to watch the browser run live. Every reasoning summary and action also prints in the terminal so you can follow along.
@@ -303,7 +304,7 @@ TASK EXECUTION COMPLETED
 Duration: 62.8 seconds
 ```
 
-A run typically takes 60-180 seconds and 10-30 iterations, depending on the task. You pay for Steel session-minutes and for OpenAI tokens: screenshots are cached between turns via `previous_response_id`, so per-turn input cost stays roughly flat even on long loops. The `finally` block in `main()` calls `sessions.release()`; leaving it out keeps the session alive until Steel's 15-minute default timeout.
+A run typically takes 60-180 seconds and 10-30 iterations, depending on the task. You pay for Steel session-minutes and for OpenAI tokens: screenshots are cached between turns via `previous_response_id`, so per-turn input cost stays roughly flat even on long loops. The `finally` block in `main()` calls `sessions.release()`; leaving it out keeps the session alive until the 15-minute `api_timeout` set on `sessions.create` (Steel's default is 5 minutes, but this recipe extends it to give long browsing tasks room to finish).
 
 ## Make it yours
 

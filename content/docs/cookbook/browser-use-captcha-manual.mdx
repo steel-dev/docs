@@ -3,7 +3,7 @@ title: Solve reCAPTCHA v2 manually with Browser Use
 description: "Manually solve reCAPTCHA v2 using Steel's CAPTCHA API with the browser-use framework."
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/browser-use-captcha-manual" path="examples/browser-use-captcha-manual" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/browser-use-captcha-manual" path="examples/browser-use-captcha-manual" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
 
 Steel can solve CAPTCHAs for you in the background, or it can hand you the status API and let you drive. This recipe picks the second path. The session is created with auto-solving explicitly off, a custom Browser Use tool polls `client.sessions.captchas.status()`, and it calls `client.sessions.captchas.solve()` only for the CAPTCHA type you care about. Every state transition (detected, solving, validating, solved) is yours to read and react to.
 
@@ -71,8 +71,7 @@ The tool tracks reCAPTCHA v2 task IDs in `detected_recaptcha_v2`, then for each 
 ```bash
 cd examples/browser-use-captcha-manual
 cp .env.example .env          # set STEEL_API_KEY and OPENAI_API_KEY
-pip install -r requirements.txt
-python main.py
+uv run main.py
 ```
 
 Keys from [app.steel.dev](https://app.steel.dev/settings/api-keys) and [platform.openai.com](https://platform.openai.com/api-keys). The session viewer URL prints as the script starts. Open it in another tab to watch the reCAPTCHA checkbox tick over in real time.

@@ -3,7 +3,7 @@ title: Upload and run browser extensions
 description: Use the Steel Extensions API with Playwright to upload and run browser extensions.
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/extensions" path="examples/extensions" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/extensions" path="examples/extensions" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 Steel sessions launch a clean Chrome with nothing installed. The Extensions API lets you upload a Chrome extension once, get back an ID, and attach it to any future session via `extensionIds` on `sessions.create()`. Content scripts and background workers load before your first `page.goto`, so the extension has already rewritten the DOM by the time Playwright observes it.
 
@@ -43,7 +43,7 @@ Steel + Extensions API Starter
 ============================================================
 
 Checking extension...
-Extension exists: undefined
+No existing extension found
 
 Uploading extension...
 Extension uploaded: { id: 'ext_...', name: 'Github_Isometric_Contribu', ... }
@@ -85,7 +85,7 @@ A run takes ~20 seconds and costs a few cents of session time. First run uploads
 
 ## Related
 
-[Credentials](/cookbook/credentials) for persisting cookies across runs, [auth-context](/cookbook/auth-context) for seeding logged-in state, [profiles](/cookbook/profiles) for reusing a full browser profile. [Playwright docs](https://playwright.dev).
+[Credentials](/cookbook/credentials) (persist cookies across runs) · [auth-context](/cookbook/auth-context) (seed logged-in state) · [profiles](/cookbook/profiles) (reuse a full browser profile) · [Playwright docs](https://playwright.dev)
 
 ## Related recipes
 

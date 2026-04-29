@@ -15,7 +15,7 @@
     "generate-openapi": "bun run ./scripts/fetch-openapi-specs.mts",
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
     "sync-cookbook": "bun run ./scripts/sync-cookbook.ts",
-    "bump-cookbook": "git submodule update --remote external/cookbook && bun run sync-cookbook",
+    "bump-cookbook": "bun run ./scripts/bump-cookbook.ts",
     "generate": "bun run generate-openapi && bun run generate-llms"
   },
   "overrides": {

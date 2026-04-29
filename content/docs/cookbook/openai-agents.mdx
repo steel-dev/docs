@@ -7,7 +7,7 @@ description: Use Steel with the OpenAI Agents SDK for TypeScript to build typed,
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/openai-agents-ts" path="examples/openai-agents-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/openai-agents-ts" path="examples/openai-agents-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 The [OpenAI Agents SDK](https://openai.github.io/openai-agents-js/) (`@openai/agents`) is a small runtime for agentic loops. You define an `Agent` with `instructions`, a `model`, `tools`, and an `outputType`. You call `run(agent, prompt)`. The SDK handles "pick a tool, call it, feed the result back, repeat" and validates the final message against your schema. It also ships handoffs (one agent calls another), guardrails (pre/post checks), and traces out of the box.
 
@@ -133,7 +133,7 @@ The `finally` block calls `steel.sessions.release()`. Skip it and the session ru
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/openai-agents-py" path="examples/openai-agents-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/openai-agents-py" path="examples/openai-agents-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 The [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) runs the tool-call loop so you don't have to. You declare an `Agent` with tools, a model, and (optionally) a Pydantic `output_type`. You call `Runner.run(agent, input=...)` once. The SDK handles every model turn, every tool dispatch, and every schema check until the agent returns a typed final answer. That shape is distinct from OpenAI's Computer Use, where you own the message loop.
 
@@ -219,9 +219,8 @@ Some providers force JSON-only mode when you request structured output. OpenAI l
 ```bash
 cd examples/openai-agents-py
 cp .env.example .env          # set STEEL_API_KEY and OPENAI_API_KEY
-pip install -r requirements.txt
-playwright install chromium
-python main.py
+uv run playwright install chromium
+uv run main.py
 ```
 
 Get keys from [app.steel.dev](https://app.steel.dev/settings/api-keys) and [platform.openai.com](https://platform.openai.com/api-keys). Each tool call prints its latency so you can see where time is going.
@@ -271,13 +270,13 @@ If you want to chain runs without replaying history, pass a `session` (e.g. `SQL
 - **Add a tool.** Write an async function, decorate with `@function_tool`, add it to `tools=[...]`. A useful fifth tool is `click(selector: str)` that calls `page.click` and waits for navigation.
 - **Hand off to a specialist.** The SDK supports [handoffs](https://openai.github.io/openai-agents-python/handoffs/): define a second `Agent` (say, a `Summarizer` with no tools) and list it in `handoffs=[...]` on the research agent. The browser agent transfers control once it has data.
 - **Add a guardrail.** Attach an [input or output guardrail](https://openai.github.io/openai-agents-python/guardrails/) to reject off-topic requests or validate the `FinalReport` before it returns.
-- **Swap the model.** `model="gpt-5"` for harder reasoning, `"gpt-5-mini"` (default) for speed and cost, `"gpt-4.1"` for a non-reasoning baseline.
+- **Swap the model.** `model="gpt-5"` for harder reasoning, `"gpt-5-mini"` (default) for speed and cost.
 - **Raise `max_turns`.** 15 is plenty for single-page extraction. Multi-page flows (login, then extract, then paginate) want 25 to 40.
 - **Use `context`.** Replace module globals with a dataclass passed to `Runner.run(agent, input=..., context=my_ctx)`. Each tool reads it via `RunContextWrapper`. Needed for concurrent runs.
 
 ## Related
 
-[TypeScript version](/cookbook/openai-agents) . [OpenAI Computer Use (Python)](/cookbook/openai-computer-use) for the raw message loop . [OpenAI Agents SDK docs](https://openai.github.io/openai-agents-python/)
+[TypeScript version](/cookbook/openai-agents) · [OpenAI Computer Use (Python)](/cookbook/openai-computer-use) for the raw message loop · [OpenAI Agents SDK docs](https://openai.github.io/openai-agents-python/)
 
 </Tab>
 

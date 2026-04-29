@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const COOKBOOK_DIR = path.join(ROOT, 'external/cookbook');
+const LOCK_FILE = path.join(ROOT, 'cookbook.lock.json');
+const CACHE_ROOT = path.join(ROOT, '.cache/cookbook');
 const OUTPUT_DIR = path.join(ROOT, 'content/docs/cookbook');
 const TOPICS_DIR = path.join(OUTPUT_DIR, 'topics');
 
@@ -39,21 +40,62 @@ const TOPIC_DESCRIPTIONS: Record<string, string> = {
 // listed fall back to the end in insertion order.
 const LANGUAGE_ORDER: string[] = ['TypeScript', 'Python', 'Next.js'];
 
-const COOKBOOK_GITHUB_URL = 'https://github.com/steel-dev/steel-cookbook';
+interface CookbookLock {
+  repo: string; // "owner/name" on GitHub
+  ref: string; // human-readable branch/tag — only used by bump-cookbook
+  sha: string; // pinned commit SHA the docs site is built against
+}
 
-// Branch that the submodule tracks (from .gitmodules). Used to build
-// GitHub links that match whatever the docs site currently ships — so
-// readers land on the same code as the rendered recipe, even while the
-// cookbook reorg lives on a non-main branch.
-async function readSubmoduleBranch(): Promise<string> {
-  try {
-    const raw = await fs.readFile(path.join(ROOT, '.gitmodules'), 'utf8');
-    const m = raw.match(/branch\s*=\s*(\S+)/);
-    if (m) return m[1];
-  } catch {
-    // fall through
+async function readLock(): Promise<CookbookLock> {
+  const raw = await fs.readFile(LOCK_FILE, 'utf8');
+  const parsed = JSON.parse(raw);
+  if (!parsed?.repo || !parsed?.sha) {
+    throw new Error(`${LOCK_FILE} must contain { repo, ref, sha }`);
   }
-  return 'main';
+  return parsed as CookbookLock;
+}
+
+function cookbookGithubUrl(repo: string): string {
+  return `https://github.com/${repo}`;
+}
+
+async function pathExists(p: string): Promise<boolean> {
+  try {
+    await fs.access(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Fetches the cookbook tarball at a pinned SHA into .cache/cookbook/<sha>.
+// Cache hit is keyed on SHA, so re-running with the same lock is a no-op
+// after the first fetch and `bun bump-cookbook` naturally invalidates the
+// cache by writing a new SHA into the lockfile.
+async function fetchCookbook(lock: CookbookLock): Promise<string> {
+  const dest = path.join(CACHE_ROOT, lock.sha);
+  if (await pathExists(path.join(dest, 'registry.yaml'))) return dest;
+
+  await fs.rm(dest, { recursive: true, force: true });
+  await fs.mkdir(dest, { recursive: true });
+
+  const url = `https://codeload.github.com/${lock.repo}/tar.gz/${lock.sha}`;
+  console.log(`Fetching ${lock.repo}@${lock.sha.slice(0, 12)}...`);
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
+  }
+
+  const tarball = path.join(CACHE_ROOT, `${lock.sha}.tar.gz`);
+  await Bun.write(tarball, await res.arrayBuffer());
+  const proc = Bun.spawn(['tar', '-xz', '--strip-components=1', '-C', dest, '-f', tarball], {
+    stdout: 'inherit',
+    stderr: 'inherit',
+  });
+  const code = await proc.exited;
+  await fs.unlink(tarball).catch(() => {});
+  if (code !== 0) throw new Error(`tar exited ${code}`);
+  return dest;
 }
 
 interface Recipe {
@@ -82,8 +124,8 @@ interface AuthorEntry {
 }
 type AuthorMap = Record<string, AuthorEntry>;
 
-async function readRegistry(): Promise<Recipe[]> {
-  const raw = await fs.readFile(path.join(COOKBOOK_DIR, 'registry.yaml'), 'utf8');
+async function readRegistry(cookbookDir: string): Promise<Recipe[]> {
+  const raw = await fs.readFile(path.join(cookbookDir, 'registry.yaml'), 'utf8');
   const parsed = yaml.load(raw);
   if (!Array.isArray(parsed)) {
     throw new Error('registry.yaml must be an array');
@@ -91,9 +133,9 @@ async function readRegistry(): Promise<Recipe[]> {
   return parsed as Recipe[];
 }
 
-async function readAuthors(): Promise<AuthorMap> {
+async function readAuthors(cookbookDir: string): Promise<AuthorMap> {
   try {
-    const raw = await fs.readFile(path.join(COOKBOOK_DIR, 'authors.yaml'), 'utf8');
+    const raw = await fs.readFile(path.join(cookbookDir, 'authors.yaml'), 'utf8');
     return (yaml.load(raw) as AuthorMap) ?? {};
   } catch {
     return {};
@@ -200,8 +242,12 @@ function rewriteSiblingLinks(body: string, pathToSlug: Map<string, string>): str
   });
 }
 
-async function readRecipeBody(recipe: Recipe, pathToSlug: Map<string, string>): Promise<string> {
-  const raw = await fs.readFile(path.join(COOKBOOK_DIR, recipe.path, 'README.md'), 'utf8');
+async function readRecipeBody(
+  cookbookDir: string,
+  recipe: Recipe,
+  pathToSlug: Map<string, string>,
+): Promise<string> {
+  const raw = await fs.readFile(path.join(cookbookDir, recipe.path, 'README.md'), 'utf8');
   const stripped = stripLeadingH1(raw);
   return rewriteSiblingLinks(stripped, pathToSlug).trim();
 }
@@ -228,8 +274,8 @@ function renderRecipeGrid(concepts: Concept[]): string {
   return `<RecipeGrid>\n${cards}\n</RecipeGrid>`;
 }
 
-function sourceUrl(recipe: Recipe, branch: string): string {
-  return `${COOKBOOK_GITHUB_URL}/tree/${branch}/${recipe.path}`;
+function sourceUrl(recipe: Recipe, repo: string, sha: string): string {
+  return `${cookbookGithubUrl(repo)}/tree/${sha}/${recipe.path}`;
 }
 
 // Author display metadata for a single handle. Avatar resolves to the
@@ -245,17 +291,23 @@ function authorMeta(
   return { handle, name, avatar };
 }
 
-function renderRecipeMeta(recipe: Recipe, branch: string, authors: AuthorMap): string {
+function renderRecipeMeta(
+  recipe: Recipe,
+  repo: string,
+  sha: string,
+  authors: AuthorMap,
+): string {
   const metas = (recipe.authors ?? []).map((h) => authorMeta(h, authors));
   const metasLiteral = `[${metas.map((m) => JSON.stringify(m)).join(', ')}]`;
   const dateAttr = recipe.updated ? ` updated="${recipe.updated}"` : '';
-  return `<RecipeMeta href="${sourceUrl(recipe, branch)}" path="${recipe.path}" authors={${metasLiteral}}${dateAttr} />`;
+  return `<RecipeMeta href="${sourceUrl(recipe, repo, sha)}" path="${recipe.path}" authors={${metasLiteral}}${dateAttr} />`;
 }
 
 function renderTabs(
   concept: Concept,
   bodies: string[],
-  branch: string,
+  repo: string,
+  sha: string,
   authors: AuthorMap,
 ): string {
   // Fumadocs Tabs "simple mode": items drives the visible tab bar and Tab
@@ -270,7 +322,7 @@ function renderTabs(
   const tabs = concept.entries
     .map((entry, i) => {
       const v = variant(entry);
-      const meta = renderRecipeMeta(entry, branch, authors);
+      const meta = renderRecipeMeta(entry, repo, sha, authors);
       return `<Tab id="${v.id}" className="cookbook-concept-tab">\n\n${meta}\n\n${bodies[i]}\n\n</Tab>`;
     })
     .join('\n\n');
@@ -298,19 +350,23 @@ function relatedConcepts(concept: Concept, all: Concept[]): Concept[] {
 }
 
 async function emitConcept(
+  cookbookDir: string,
   concept: Concept,
   pathToSlug: Map<string, string>,
-  branch: string,
+  repo: string,
+  sha: string,
   authors: AuthorMap,
   allConcepts: Concept[],
 ): Promise<void> {
-  const bodies = await Promise.all(concept.entries.map((e) => readRecipeBody(e, pathToSlug)));
+  const bodies = await Promise.all(
+    concept.entries.map((e) => readRecipeBody(cookbookDir, e, pathToSlug)),
+  );
   let body: string;
   if (concept.entries.length === 1) {
-    const meta = renderRecipeMeta(concept.entries[0], branch, authors);
+    const meta = renderRecipeMeta(concept.entries[0], repo, sha, authors);
     body = `${meta}\n\n${bodies[0]}`;
   } else {
-    body = renderTabs(concept, bodies, branch, authors);
+    body = renderTabs(concept, bodies, repo, sha, authors);
   }
 
   const related = relatedConcepts(concept, allConcepts);
@@ -356,7 +412,7 @@ async function emitTopicPage(topic: string, concepts: Concept[]): Promise<void> 
   await fs.writeFile(path.join(TOPICS_DIR, `${slug}.mdx`), `${fm}\n\n${body}\n`);
 }
 
-async function writeMainMeta(): Promise<void> {
+async function writeMainMeta(repo: string): Promise<void> {
   // Sidebar: Home, separator, curated Topics (as topic pages), separator,
   // external GitHub link. Recipe pages and non-curated topic pages exist
   // but aren't surfaced in the sidebar (reachable via cards and
@@ -369,7 +425,7 @@ async function writeMainMeta(): Promise<void> {
       '---Topics---',
       ...CURATED_TOPICS.map((t) => `topics/${topicSlug(t)}`),
       '---Contribute---',
-      `[Cookbook on GitHub](${COOKBOOK_GITHUB_URL})`,
+      `[Cookbook on GitHub](${cookbookGithubUrl(repo)})`,
     ],
   };
   await fs.writeFile(path.join(OUTPUT_DIR, 'meta.json'), `${JSON.stringify(meta, null, 2)}\n`);
@@ -426,7 +482,10 @@ async function main(): Promise<void> {
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
   await fs.mkdir(TOPICS_DIR, { recursive: true });
 
-  const recipes = await readRegistry();
+  const lock = await readLock();
+  const cookbookDir = await fetchCookbook(lock);
+
+  const recipes = await readRegistry(cookbookDir);
   const concepts = groupConcepts(recipes);
 
   const pathToSlug = new Map<string, string>();
@@ -445,14 +504,13 @@ async function main(): Promise<void> {
     }
   }
 
-  const branch = await readSubmoduleBranch();
-  const authors = await readAuthors();
+  const authors = await readAuthors(cookbookDir);
   console.log(
-    `Syncing ${concepts.length} concepts, ${allTopics.length} topics (source branch: ${branch})...`,
+    `Syncing ${concepts.length} concepts, ${allTopics.length} topics from ${lock.repo}@${lock.sha.slice(0, 12)} (${lock.ref})...`,
   );
 
   for (const concept of concepts) {
-    await emitConcept(concept, pathToSlug, branch, authors, concepts);
+    await emitConcept(cookbookDir, concept, pathToSlug, lock.repo, lock.sha, authors, concepts);
     const variants = concept.entries.length > 1 ? ` (${concept.entries.length} variants)` : '';
     console.log(`  + ${concept.slug}${variants}`);
   }
@@ -467,7 +525,7 @@ async function main(): Promise<void> {
   }
 
   await cleanStaleMdx(concepts, allTopics.map(topicSlug));
-  await writeMainMeta();
+  await writeMainMeta(lock.repo);
   await writeTopicsMeta(allTopics);
 
   const rel = path.relative(ROOT, OUTPUT_DIR);

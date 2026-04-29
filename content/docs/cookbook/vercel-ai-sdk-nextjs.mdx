@@ -3,7 +3,7 @@ title: Stream a browser agent into a Next.js chat app
 description: A Next.js App Router chat app where a Vercel AI SDK agent drives a Steel cloud browser with embedded Live View.
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/vercel-ai-sdk-nextjs" path="examples/vercel-ai-sdk-nextjs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/vercel-ai-sdk-nextjs" path="examples/vercel-ai-sdk-nextjs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 A Next.js chat app where an AI SDK v6 agent drives a Steel cloud browser server-side and streams every tool call back into the UI. `useChat` on the client posts to `/api/chat`; that route calls `streamText` with four Steel-backed tools (`openSession`, `navigate`, `snapshot`, `extract`). Each tool call surfaces as a typed `tool-*` part on the message stream, and a Live View iframe on the right lights up the moment the agent opens a session.
 

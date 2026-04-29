@@ -3,7 +3,7 @@ title: Move files between your machine and a cloud browser
 description: Use the Steel Files API with Playwright to automate file uploads and downloads in the cloud.
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/rework/examples/files-api" path="examples/files-api" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/files-api" path="examples/files-api" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 Every Steel session ships with a scoped filesystem inside the session VM. `client.sessions.files` exposes methods to move bytes across the boundary between your machine and that sandbox. This recipe uses `upload` to push a local CSV into the session, hands the resulting path to a remote `<input type="file">` over CDP, and lets the browser render a chart against it.
 
