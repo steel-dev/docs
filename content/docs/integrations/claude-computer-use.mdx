@@ -1,0 +1,49 @@
+---
+title: Claude Computer Use
+sidebarTitle: Claude Computer Use
+description: Wire Claude's computer-use tool into a Steel browser session.
+llm: true
+---
+
+The Claude Computer Use integration runs Anthropic's vision-based agent loop on a Steel browser session. Claude takes screenshots through Steel, decides the next action (click, type, scroll), and Steel executes it, so you can automate complex web tasks without writing custom selectors.
+
+It pairs well with Steel's anti-bot capabilities, proxy support, and sandboxed environments.
+
+### Requirements
+
+*   **Anthropic API Key**: A Claude 4 model with computer use
+*   **Steel API Key**: Active Steel subscription
+*   **Runtime**: Python 3.10+ or Node.js 20+
+*   **Note**: Anthropic's computer-use tool is in beta
+
+### Connect Steel to Claude
+
+Steel's `sessions.computer` API takes screenshots and executes actions; pair it with Claude's `computer_20250124` tool:
+
+```typescript Typescript -wc
+import { Steel } from "steel-sdk";
+
+const steel = new Steel({ steelAPIKey: STEEL_API_KEY });
+const session = await steel.sessions.create({
+  dimensions: { width: 1024, height: 768 },
+});
+
+// Take a screenshot via Steel
+const { base64_image } = await steel.sessions.computer(session.id, {
+  action: "take_screenshot",
+});
+
+// Send to Claude with the computer-use tool, then route Claude's
+// returned actions back through `steel.sessions.computer({ action: ... })`.
+```
+
+Full runnable starters:
+
+*   Build a Claude Computer Use loop on Steel: [Steel + Claude Computer Use recipe →](/cookbook/claude-computer-use)
+*   Drive a mobile-viewport Steel session with Claude: [Mobile recipe →](/cookbook/claude-computer-use-mobile)
+
+### Resources
+
+*   [Anthropic Computer Use documentation](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) – Official documentation from Anthropic
+*   [Steel Sessions API reference](/api-reference) – Technical details for managing Steel browser sessions
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

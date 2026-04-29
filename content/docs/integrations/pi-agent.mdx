@@ -1,0 +1,83 @@
+---
+title: Pi Agent
+sidebarTitle: Pi Agent
+description: Drop-in extension that gives Pi a real cloud browser and structured extract.
+llm: true
+---
+
+:::callout
+This integration is part of Steel's experiments effort. Defaults can change without notice, and stability is not guaranteed.
+:::
+
+[Pi](https://pi.dev/) is a minimal, extension-first coding agent that ships with no built-in browser; capabilities arrive through `pi install`. The Pi integration installs as a native Pi extension that gives Pi a Steel cloud browser, so Pi can navigate, scrape rendered pages, extract structured data, capture screenshots and PDFs, and fill forms across prompts.
+
+### Requirements
+
+*   **Node.js**: Version 18 or higher
+*   **Pi**: Installed locally
+*   **Steel API Key**: Active Steel account
+
+### Setup
+
+#### Step 1: Install the extension
+
+```bash Terminal
+pi install npm:@steel-experiments/pi-steel
+```
+
+Pi picks up the extension on the next run and the Steel browser tools become available automatically.
+
+#### Step 2: Authenticate
+
+Set `STEEL_API_KEY` in your environment.
+
+Grab a free API key at [app.steel.dev](https://app.steel.dev) if you do not have one yet.
+
+### Available tools
+
+Once the extension is installed, Pi has access to a full browser toolset:
+
+*   `steel_navigate` and `steel_scrape` for fetching pages as text, markdown, or HTML
+*   `steel_extract` for structured data from a JSON schema
+*   `steel_fill_form` for submitting forms
+*   Playwright-backed computer actions (click, scroll, type) for pages that scraping cannot reach
+*   Screenshot and PDF capture, returned as Pi artifacts
+*   `steel_pin_session` to keep a browser alive across prompts, or `STEEL_SESSION_MODE=session` for persistent mode
+
+CAPTCHA handling is built in, so most bot-protected pages work without extra configuration.
+
+### Example workflow
+
+Pi works well on research tasks that span multiple pages and require both scraping and interaction. A prompt like:
+
+```
+Visit apple.com and compare all recent MacBook models.
+```
+
+Pi will navigate the Mac lineup, follow links into each model page, and fall back to computer actions and screenshots when sticky navigation or viewport-dependent sections block plain scraping.
+
+For bot-protected docs:
+
+```
+Visit OpenAI docs and tell us how we can use the latest model.
+```
+
+Steel handles the bot-protection layer so Pi sees a normal webpage, reads the current API reference, and returns an up-to-date code example rather than a stale one from training data.
+
+### Structured extraction
+
+When you would otherwise parse markdown for prices, specs, or listings, `steel_extract` with a JSON schema is usually the better call. Pi gets typed output directly, which is easier to reason about across multi-step workflows.
+
+### Constraints
+
+*   **Command approvals depend on your Pi settings.** Extension tools may require approval depending on your configuration.
+*   **First runs are usually the roughest.** Dynamic web apps often need a few retries before the workflow is stable.
+*   **Authenticated sites work best with prepared Steel auth state.** Reusing profiles or auth context is generally more reliable than repeated interactive logins.
+
+### Resources
+
+*   [pi-steel: we gave Pi a real browser in one command](https://steel.dev/blog/pi-agent-steel-browser) – Blog post on the extension and example runs
+*   [`@steel-experiments/pi-steel` on GitHub](https://github.com/steel-experiments/pi-steel) – Source and issues
+*   [`@steel-experiments/pi-steel` on npm](https://www.npmjs.com/package/@steel-experiments/pi-steel) – Package page
+*   [Steel CLI docs](/overview/steel-cli) – Full command reference and workflows
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

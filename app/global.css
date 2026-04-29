@@ -319,3 +319,26 @@
   opacity: 0;
   transition: opacity 0.2s;
 }
+
+/* Cookbook concept pages: unbox Fumadocs Tabs so the tab bar is a slim
+ * header and content flows with the rest of the page. Default Fumadocs
+ * styling wraps Tabs in a bordered card and TabsContent in a second padded
+ * card, which feels cramped when the entire recipe lives inside. */
+.cookbook-concept-tabs {
+  border: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  margin-top: 0 !important;
+}
+.cookbook-concept-tabs > [role="tablist"] {
+  padding-inline: 0 !important;
+  background: transparent !important;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 1rem;
+}
+.cookbook-concept-tab {
+  padding: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}

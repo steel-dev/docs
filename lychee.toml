@@ -1,0 +1,24 @@
+base_url = "https://docs.steel.dev"
+
+cache = true
+max_cache_age = "1d"
+
+timeout = 20
+max_retries = 2
+retry_wait_time = 2
+max_concurrency = 8
+
+accept = [200, 204, 206, 301, 302, 304, 308, 403, 429]
+
+exclude_loopback = true
+exclude_path = ["node_modules", ".next", "out"]
+
+exclude = [
+  "^https?://docs\\.steel\\.dev",
+  "^https?://localhost",
+  "^https?://127\\.0\\.0\\.1",
+  "^#",
+  "^mailto:",
+]
+
+user_agent = "Mozilla/5.0 (compatible; lychee/0.16; +https://github.com/lycheeverse/lychee)"

@@ -1,5 +1,0 @@
-{
-  "title": "Stagehand",
-  "root": false,
-  "pages": ["---Stagehand---", "overview", "quickstart-py", "quickstart-ts"]
-}

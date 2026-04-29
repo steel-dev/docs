@@ -1,0 +1,48 @@
+---
+title: Browser Use
+sidebarTitle: Browser Use
+description: Open-source Python agent that lets LLMs navigate, fill forms, and extract from the web.
+llm: true
+---
+
+The Browser Use integration connects Steel's browser infrastructure with the Browser Use agent framework, enabling AI models to perform complex web interactions. Agents can navigate websites, fill forms, click buttons, extract data, and complete multi-step tasks – all while leveraging Steel's reliable cloud browsers for execution. This integration bridges the gap between AI capabilities and real-world web applications without requiring custom API development.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Python**: 3.11+
+*   **Supported models**: vision-capable models like GPT-5, Claude Sonnet 4, or Gemini 3 Pro
+
+### Connect Steel to Browser Use
+
+Pass Steel's CDP URL into a Browser Use `BrowserSession`:
+
+```python Python -wc
+from browser_use import Agent, BrowserSession
+from browser_use.llm import ChatOpenAI
+from steel import Steel
+
+client = Steel(steel_api_key=STEEL_API_KEY)
+session = client.sessions.create()
+cdp_url = f"{session.websocket_url}&apiKey={STEEL_API_KEY}"
+
+agent = Agent(
+    task="Find the latest news on Steel.dev",
+    llm=ChatOpenAI(model="gpt-5", api_key=OPENAI_API_KEY),
+    browser_session=BrowserSession(cdp_url=cdp_url),
+)
+result = await agent.run()
+```
+
+Full runnable starters:
+
+*   Connect Browser Use to a Steel cloud browser: [Steel + Browser Use recipe →](/cookbook/browser-use)
+*   Auto-solve captchas with Steel + Browser Use: [Captcha auto recipe →](/cookbook/browser-use-captcha-auto)
+*   Hand off captchas to a human via Steel Live View: [Manual captcha recipe →](/cookbook/browser-use-captcha-manual)
+
+### Resources
+
+*   [Browser Use documentation](https://docs.browser-use.com/) – Comprehensive guide to the browser-use library
+*   [Browser Use examples](https://github.com/browser-use/browser-use/tree/main/examples) – Working example implementations
+*   [Browser Use Discord](https://link.browser-use.com/discord) – Join discussions and get support
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

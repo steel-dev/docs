@@ -1,0 +1,95 @@
+---
+title: OpenClaw
+sidebarTitle: OpenClaw
+description: Give OpenClaw a real cloud browser for form-heavy workflows from the terminal.
+llm: true
+---
+
+The OpenClaw integration gives OpenClaw a real cloud browser through the Steel CLI. Once Steel CLI is on your `PATH`, OpenClaw can run multi-step web tasks, scrape rendered pages, watch live browser state, and work through forms and dynamic pages without writing custom integration code.
+
+Good fit for application forms, operational workflows, and browser-driven research.
+
+### Requirements
+
+*   **Node.js**: Version 18 or higher
+*   **OpenClaw**: Installed locally
+*   **Steel CLI**: Installed locally
+*   **Steel API Key**: Active Steel account
+
+### Setup
+
+#### Step 1: Install Steel CLI
+
+```bash Terminal
+curl -LsSf https://setup.steel.dev | sh
+```
+
+#### Step 2: Log in
+
+```bash Terminal
+steel login
+```
+
+#### Step 3: Install the browser skill (recommended)
+
+The `steel-browser` skill gives OpenClaw better command discovery and more reliable browser workflows.
+
+```bash Terminal
+npx skills add github:steel-dev/cli/skills/steel-browser
+```
+
+Restart OpenClaw after installing so it can discover the skill.
+
+### Example workflow
+
+OpenClaw works well on browser tasks that need real interaction. One example is filling out a conference CFP form: finding the right page, inspecting the fields, drafting responses, and working through the submission flow.
+
+You can start with a prompt like:
+
+```
+I would like to submit an application for the call for speakers for AI Engineer World's Fair. Could you figure out what the fields are, what we need, and how I can apply to become a speaker?
+```
+
+From there, OpenClaw can start a Steel session, navigate the form, inspect fields with snapshots, and work through the page step by step.
+
+### Watching the session
+
+Steel sessions return a viewer URL so you can watch the browser while the agent works. This is useful on form-heavy flows, especially when the page changes dynamically, a modal blocks progress, or the agent needs a second attempt to recover from a mistake.
+
+For longer workflows, Steel also keeps the full session history so you can inspect what happened after the fact.
+
+### Where OpenClaw works best
+
+OpenClaw is a strong fit for:
+
+*   Standard web forms
+*   Multi-step browser workflows
+*   Pages that need JavaScript rendering before the agent can reason about them
+
+For tasks that only need page content, `steel scrape` is often the faster option:
+
+```bash Terminal
+steel scrape https://example.com
+```
+
+### Authenticated workflows
+
+For sites behind login, prepare reusable auth state in Steel ahead of time rather than asking the agent to log in from scratch every time.
+
+See:
+
+*   [Profiles API](/overview/profiles-api/overview)
+*   [Reusing Auth Context](/overview/sessions-api/reusing-auth-context)
+
+### Constraints
+
+*   **Command approvals depend on your OpenClaw settings.** Shell access may require approval depending on your configuration.
+*   **Form-heavy workflows can still take time.** Dynamic fields, validation errors, and bot checks add retries and extra browser steps.
+*   **Authenticated sites work best with prepared Steel auth state.** Reusing profiles or auth context is generally more reliable than repeated interactive logins.
+
+### Resources
+
+*   [OpenClaw + Steel blog post](https://steel.dev/blog/openclaw-steel-browser-let-your-ai-agent-fill-the-forms) – Case study using OpenClaw to work through a CFP submission flow
+*   [Steel CLI docs](/overview/steel-cli) – Full command reference and workflows
+*   [Steel browser skill](https://github.com/steel-dev/cli/tree/main/skills/steel-browser) – Skill package for coding agents
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

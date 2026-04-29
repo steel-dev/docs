@@ -6,13 +6,14 @@ import { attachFile, createOpenAPI } from 'fumadocs-openapi/server';
 import { icons as lucideIcons } from 'lucide-react';
 import type { ThemeRegistrationResolved } from 'shiki';
 import { docs } from '@/.source';
-import { API, create, Js } from '@/components/ui/icon';
+import { API, create, Js, Py } from '@/components/ui/icon';
 import { extractTagsAndLabels } from './utils/frontmatter-parser';
 import type { FilterablePage } from './utils/tag-filtering';
 
 const customIcons = {
   API,
   Js,
+  Py,
 };
 
 const icons = { ...lucideIcons, ...customIcons } as any;
@@ -545,8 +546,50 @@ export const steelThemeDark: ThemeRegistrationResolved = {
 // See https://fumadocs.vercel.app/docs/headless/source-api for more info
 export const source = loader({
   pageTree: {
+    attachFolder: (node, folder, _meta) => {
+      // Link nodes from meta.json `[Label](url)` syntax don't get a `$id`
+      // assigned by fumadocs (they have no backing file). When `...folder`
+      // extraction flattens them into a parent section's tree the original
+      // declaring folder is lost, so the sidebar can't tell which section
+      // owns them and they leak into every section. We tag them here with
+      // an `$id` prefixed by the declaring folder's top-level section so
+      // the sidebar's prefix-based section filter scopes them correctly.
+      const folderPath = (folder as any)?.file?.path ?? '';
+      const section = folderPath.split('/')[0];
+      if (section && Array.isArray((node as any).children)) {
+        for (const child of (node as any).children) {
+          if (
+            child?.type === 'page' &&
+            !child.$ref?.file &&
+            !child.$id &&
+            typeof child.url === 'string'
+          ) {
+            child.$id = `${section}/link:${child.url}`;
+          }
+        }
+      }
+      return node;
+    },
     attachFile: (node, file) => {
       let processedNode = attachFile(node, file);
+
+      // Fumadocs' source loader doesn't set `$id` on external-link nodes
+      // (the `[Label](url)` meta.json syntax), which makes React flag the
+      // sidebar for missing keys. Derive a stable id from the url, prefixed
+      // with the section so the sidebar's section filter (which prefix-matches
+      // `$id`) can keep external links scoped to the section that declared
+      // them. The section is inferred from the meta.json file path that
+      // declared this external node, falling back to a known-URL heuristic.
+      if (node.type === 'page' && (node as any).external === true && !(processedNode as any).$id) {
+        const filePath: string = (file as any)?.file?.path ?? '';
+        const url: string = (node as any).url ?? '';
+        let section = filePath.replace(/^content\/docs\//, '').split('/')[0];
+        if (!section || section.endsWith('.json') || section.endsWith('.mdx')) {
+          if (url.includes('steel-cookbook')) section = 'cookbook';
+          else section = 'external';
+        }
+        (processedNode as any).$id = `${section}/external:${url}`;
+      }
 
       if (node.type === 'page') {
         const fileData = (file as any)?.data?.data;

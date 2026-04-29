@@ -64,70 +64,122 @@ const config = {
         destination: "https://www.val.town/x/steel/steel_puppeteer_starter",
         permanent: true,
       },
+      // Legacy cookbook URLs. Concept pages now merge language variants via
+      // a hash-driven Fumadocs Tabs component, so old language-suffixed
+      // slugs redirect to `/cookbook/<concept>#<lang>`.
       {
-        source: "/cookbook/stagehand-py",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-stagehand-python-starter",
+        source: "/cookbook/playwright-ts",
+        destination: "/cookbook/playwright#typescript",
         permanent: true,
       },
       {
-        source: "/cookbook/stagehand-ts",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-stagehand-node-starter",
-        permanent: true,
-      },
-      {
-        source: "/cookbook/playwright",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-playwright-starter",
+        source: "/cookbook/playwright-py",
+        destination: "/cookbook/playwright#python",
         permanent: true,
       },
       {
         source: "/cookbook/playwright-python",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-playwright-python-starter",
+        destination: "/cookbook/playwright#python",
+        permanent: true,
+      },
+      { source: "/cookbook/puppeteer-ts", destination: "/cookbook/puppeteer", permanent: true },
+      {
+        source: "/cookbook/stagehand-ts",
+        destination: "/cookbook/stagehand#typescript",
         permanent: true,
       },
       {
-        source: "/cookbook/puppeteer",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-puppeteer-starter",
+        source: "/cookbook/stagehand-py",
+        destination: "/cookbook/stagehand#python",
         permanent: true,
       },
       {
-        source: "/cookbook/selenium",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-selenium-starter",
+        source: "/cookbook/claude-computer-use-ts",
+        destination: "/cookbook/claude-computer-use#typescript",
         permanent: true,
       },
+      {
+        source: "/cookbook/claude-computer-use-py",
+        destination: "/cookbook/claude-computer-use#python",
+        permanent: true,
+      },
+      {
+        source: "/cookbook/openai-computer-use-ts",
+        destination: "/cookbook/openai-computer-use#typescript",
+        permanent: true,
+      },
+      {
+        source: "/cookbook/openai-computer-use-py",
+        destination: "/cookbook/openai-computer-use#python",
+        permanent: true,
+      },
+      {
+        source: "/cookbook/gemini-computer-use-ts",
+        destination: "/cookbook/gemini-computer-use#typescript",
+        permanent: true,
+      },
+      {
+        source: "/cookbook/gemini-computer-use-py",
+        destination: "/cookbook/gemini-computer-use#python",
+        permanent: true,
+      },
+      {
+        source: "/cookbook/openai-agents-ts",
+        destination: "/cookbook/openai-agents#typescript",
+        permanent: true,
+      },
+      {
+        source: "/cookbook/openai-agents-py",
+        destination: "/cookbook/openai-agents#python",
+        permanent: true,
+      },
+      {
+        source: "/cookbook/vercel-ai-sdk-ts",
+        destination: "/cookbook/vercel-ai-sdk",
+        permanent: true,
+      },
+      { source: "/cookbook/files-api", destination: "/cookbook/files", permanent: true },
       {
         source: "/cookbook/steel-browser-use-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-browser-use-starter",
+        destination: "/cookbook/browser-use",
         permanent: true,
       },
       {
         source: "/cookbook/credentials-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-credentials-starter",
+        destination: "/cookbook/credentials",
         permanent: true,
       },
       {
         source: "/cookbook/auth-context-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-auth-context-starter",
+        destination: "/cookbook/auth-context",
         permanent: true,
       },
       {
         source: "/cookbook/extensions-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-extensions-starter",
+        destination: "/cookbook/extensions",
+        permanent: true,
+      },
+      { source: "/cookbook/files-starter", destination: "/cookbook/files", permanent: true },
+      // Legacy /overview/guides/* pages were merged into the integration and
+      // cookbook sections.
+      {
+        source: "/overview/guides/playwright-node",
+        destination: "/cookbook/playwright#typescript",
         permanent: true,
       },
       {
-        source: "/cookbook/files-starter",
-        destination:
-          "https://github.com/steel-dev/steel-cookbook/tree/main/examples/steel-files-api-starter",
+        source: "/overview/guides/playwright-python",
+        destination: "/cookbook/playwright#python",
+        permanent: true,
+      },
+      {
+        source: "/overview/guides/puppeteer",
+        destination: "/cookbook/puppeteer",
+        permanent: true,
+      },
+      {
+        source: "/overview/guides/selenium",
+        destination: "/cookbook/selenium",
         permanent: true,
       },
     ];
@@ -146,7 +198,7 @@ const config = {
     ];
   },
   images: {
-    domains: ["cdn.openai.com"],
+    domains: ["cdn.openai.com", "github.com", "avatars.githubusercontent.com"],
   },
 };
 

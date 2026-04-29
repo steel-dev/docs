@@ -303,45 +303,28 @@ export async function generateMetadata(props: {
   if (!page) notFound();
 
   const canonicalPath = page.url.replace(/^\/en(\/|$)/, '/');
-  const pageData = page.data as Record<string, unknown>;
-  const pageTitle = typeof pageData.title === 'string' ? pageData.title : page.file.name;
-  const pageDescription =
-    typeof pageData.description === 'string' ? pageData.description : undefined;
-  const image = typeof pageData.image === 'string' ? pageData.image : null;
-  const imageAlt =
-    typeof pageData.imageAlt === 'string' ? pageData.imageAlt : `${pageTitle} social preview`;
-  const imageWidth = typeof pageData.imageWidth === 'number' ? pageData.imageWidth : undefined;
-  const imageHeight = typeof pageData.imageHeight === 'number' ? pageData.imageHeight : undefined;
-  const socialImages = image
-    ? [
-        {
-          url: image,
-          width: imageWidth,
-          height: imageHeight,
-          alt: imageAlt,
-        },
-      ]
-    : undefined;
+  const ogSlug = slug[0] === 'en' ? slug.slice(1) : slug;
+  const ogImageUrl = `/og/${ogSlug.join('/')}`;
 
   return {
-    title: pageTitle,
-    description: pageDescription,
+    title: page.data.title,
+    description: page.data.description,
     alternates: {
       canonical: canonicalPath,
     },
     openGraph: {
-      title: pageTitle,
-      description: pageDescription,
+      title: page.data.title,
+      description: page.data.description,
       url: canonicalPath,
       siteName: 'Steel Docs',
       type: 'article',
-      images: socialImages,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: page.data.title }],
     },
     twitter: {
-      card: image ? 'summary_large_image' : 'summary',
-      title: pageTitle,
-      description: pageDescription,
-      images: image ? [image] : undefined,
+      card: 'summary_large_image',
+      title: page.data.title,
+      description: page.data.description,
+      images: [ogImageUrl],
     },
   };
 }

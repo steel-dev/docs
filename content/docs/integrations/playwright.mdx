@@ -1,0 +1,55 @@
+---
+title: Playwright
+sidebarTitle: Playwright
+description: Drive a Steel cloud browser from Playwright over CDP in TypeScript or Python.
+llm: true
+---
+
+Playwright is Microsoft's cross-browser automation library. The Steel integration attaches Playwright to a Steel cloud session over the Chrome DevTools Protocol, so the rest of your script — `page.goto`, locators, `expect`, tracing — drives a remote browser with stealth, proxies, and a live viewer instead of a local Chromium.
+
+No `playwright install`, no headful display, no Chrome on your machine.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Runtime**: Node.js 20+ or Python 3.10+
+*   **Package**: `playwright` (TypeScript) or `playwright` (Python)
+
+### Connect Steel to Playwright
+
+Pass Steel's CDP URL into `chromium.connectOverCDP()`. Steel returns a context with a page already open, so reuse `browser.contexts()[0]` instead of creating a new one:
+
+```typescript Typescript -wc
+import { chromium } from "playwright";
+import Steel from "steel-sdk";
+
+const client = new Steel({ steelAPIKey: STEEL_API_KEY });
+const session = await client.sessions.create();
+
+const browser = await chromium.connectOverCDP(
+  `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+);
+const page = browser.contexts()[0].pages()[0];
+```
+
+```python Python -wc
+from playwright.sync_api import sync_playwright
+from steel import Steel
+
+client = Steel(steel_api_key=STEEL_API_KEY)
+session = client.sessions.create()
+
+playwright = sync_playwright().start()
+browser = playwright.chromium.connect_over_cdp(
+    f"{session.websocket_url}&apiKey={STEEL_API_KEY}"
+)
+page = browser.contexts[0].new_page()
+```
+
+Full runnable starter: [Steel + Playwright recipe →](/cookbook/playwright)
+
+### Resources
+
+*   [Playwright documentation](https://playwright.dev) – Official Playwright docs for TypeScript and Python
+*   [Steel Sessions API reference](/api-reference#tag/sessions) – Technical details for managing Steel browser sessions
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

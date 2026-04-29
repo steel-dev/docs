@@ -1,0 +1,45 @@
+---
+title: Stagehand
+sidebarTitle: Stagehand
+description: Write browser automations in natural language with act, extract, and observe.
+llm: true
+---
+
+Stagehand is an open-source library for writing browser automations in natural language using `act`, `extract`, and `observe` calls. The Steel integration drives Stagehand against a Steel cloud session, so you can replace fragile selectors with instructions like "click the login button" or "extract the top 3 stories". Same API in TypeScript or Python.
+
+Good fit for research, scraping, and form workflows.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **OpenAI API Key**: Stagehand's default model provider
+*   **Runtime**: Node.js 20+ or Python 3.10+
+
+### Connect Steel to Stagehand
+
+Pass Steel's CDP URL as `localBrowserLaunchOptions.cdpUrl`:
+
+```typescript Typescript -wc
+import { Stagehand } from "@browserbasehq/stagehand";
+import Steel from "steel-sdk";
+
+const client = new Steel({ steelAPIKey: STEEL_API_KEY });
+const session = await client.sessions.create({});
+
+const stagehand = new Stagehand({
+  env: "LOCAL",
+  localBrowserLaunchOptions: {
+    cdpUrl: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+  },
+  model: { modelName: "openai/gpt-5", apiKey: OPENAI_API_KEY },
+});
+await stagehand.init();
+```
+
+Full runnable starter: [Steel + Stagehand recipe →](/cookbook/stagehand)
+
+### Resources
+
+*   [Stagehand documentation](https://docs.stagehand.dev/first-steps/introduction) – Official documentation for Stagehand
+*   [Steel Sessions API reference](/api-reference#tag/sessions) – Technical details for managing Steel browser sessions
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

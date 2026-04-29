@@ -1,0 +1,44 @@
+---
+title: Agno
+sidebarTitle: Agno
+description: Build Python agent teams with shared memory, reasoning, and RAG.
+llm: true
+---
+
+Agno is a Python framework for building multi-agent systems with shared memory, knowledge, and reasoning. The Steel integration wraps a Steel browser as an Agno toolkit, so Agno agents can navigate, fill forms, extract data, and combine browsing with retrieval-augmented reasoning.
+
+Agno is model-agnostic and natively multi-modal, which pairs well with Steel's reliable, sandboxed cloud browsers.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Model provider key**: OpenAI, Anthropic, or any Agno-supported provider
+*   **Python**: 3.10+
+
+### Connect Steel to Agno
+
+Wrap a Steel-backed Playwright `page` in an Agno `Toolkit`:
+
+```python Python -wc
+import os
+from playwright.sync_api import sync_playwright
+from steel import Steel
+
+steel = Steel(steel_api_key=os.environ["STEEL_API_KEY"])
+session = steel.sessions.create()
+
+playwright = sync_playwright().start()
+browser = playwright.chromium.connect_over_cdp(
+    f"{session.websocket_url}&apiKey={os.environ['STEEL_API_KEY']}"
+)
+page = browser.contexts[0].pages[0]
+# `page` is your Steel browser. Wrap it in an Agno Toolkit
+```
+
+Full runnable starter: [Steel + Agno recipe →](/cookbook/agno)
+
+### Resources
+
+*   [Agno documentation](https://docs.agno.com/) – Concepts, APIs, and examples for agents, teams, memory, and reasoning
+*   [Steel Sessions API reference](/api-reference) – Manage Steel browser sessions programmatically
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help, share recipes, and discuss best practices
