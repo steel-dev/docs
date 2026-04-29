@@ -1,0 +1,145 @@
+# Steel-specific project vocabulary.
+# Add words below (one per line). cspell is case-insensitive by default.
+#
+# Categories: Steel terms, integration names, framework/lib terms,
+# people/GitHub handles, demo sites, abbreviations, and unique IDs
+# that appear in code samples.
+
+# Steel & SDK
+steeldev
+steelbrowser
+steelapikey
+steeldotdev
+sessionid
+sessionsapi
+fumadocs
+codehike
+remarkdirective
+mdx
+shiki
+turbopack
+biomejs
+lychee
+lefthook
+cspell
+livestream
+
+# Integrations / frameworks
+playwright
+puppeteer
+selenium
+stagehand
+agno
+agentkit
+crewai
+notte
+magnitude
+openclaw
+hermes
+codex
+replit
+stackblitz
+x402
+inngest
+rrweb
+patchright
+ollama
+deepseek
+tongyi
+genai
+aistudio
+
+# Tech / web automation terms
+automations
+antibot
+apikey
+autosolving
+backgrounded
+catchable
+convo
+creds
+denormalizer
+docstrings
+domcontentloaded
+exfiltration
+headful
+interactable
+llms
+multitab
+mpegurl
+networkidle
+passthroughs
+readback
+resends
+screencasting
+shoutout
+totp
+usecase
+videocard
+winget
+behaviour
+seperator
+
+# Abbreviations / acronyms (project-specific)
+payg
+byop
+
+# Demo / test sites referenced in cookbook
+altoro
+csvplot
+demowebshop
+expandtesting
+toscrape
+tricentis
+solana
+
+# GitHub handles and contributor names
+aspectrr
+athing
+browserbasehq
+codeyou
+danew
+hakzarov
+hussufo
+jagadeshjai
+jagadesh
+junhsss
+krichprollsch
+marclave
+mislavjc
+mislav
+nibzard
+raymelon
+robbwdoering
+shivamkhatri
+hussien
+hyoung
+nikola
+balic
+brightling
+carti
+pfeifer
+envek
+
+# Misc strings appearing in examples
+amet
+letmein
+woah
+wooooooooooooo
+akarray
+
+# Random IDs / tokens that appear verbatim in code samples
+akyf
+arrowup
+dpehpk
+iqaa
+jbswy
+pjpx
+ygkv
+
+# Word-fragment false positives from PascalCase / URL-slug splitting
+accountlink
+ount
+contribu
+huuuge
+blocklists

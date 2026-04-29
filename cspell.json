@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en,en-US",
+  "dictionaries": [
+    "en_us",
+    "softwareTerms",
+    "node",
+    "typescript",
+    "python",
+    "filetypes",
+    "html",
+    "css",
+    "bash",
+    "fonts",
+    "misc",
+    "fullstack",
+    "npm",
+    "companies",
+    "project-words"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "project-words",
+      "path": "./.cspell/project-words.txt",
+      "addWords": true
+    }
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    ".next/**",
+    ".source/**",
+    "openapi/**",
+    "public/**",
+    "generated/**",
+    "bun.lockb",
+    "*.lock",
+    "package-lock.json",
+    "yarn.lock",
+    "*.svg",
+    "*.png",
+    "*.jpg",
+    "*.ico"
+  ],
+  "ignoreRegExpList": [
+    "Email",
+    "Urls",
+    "HexValues",
+    "Base64",
+    "/0x[0-9a-fA-F]+/g",
+    "/c[a-z0-9]{20,}/g",
+    "/[A-Za-z0-9]{20,}/g",
+    "/sk_[A-Za-z0-9_-]{10,}/g"
+  ],
+  "files": [
+    "content/**/*.{md,mdx}"
+  ]
+}

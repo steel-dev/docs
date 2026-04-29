@@ -26,6 +26,9 @@ jobs:
       - name: Run Biome checks
         run: bun run biome check app/ components/ lib/ scripts/ content/ --error-on-warnings
 
+      - name: Run cspell
+        run: bun run spell
+
       - name: Generate llms.txt files
         run: bun run generate-llms
         env:
