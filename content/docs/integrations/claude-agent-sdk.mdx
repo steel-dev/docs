@@ -1,0 +1,62 @@
+---
+title: Claude Agent SDK
+sidebarTitle: Claude Agent SDK
+description: Build browser agents on Anthropic's first-party agent loop with in-process MCP tools.
+llm: true
+---
+
+The Claude Agent SDK is the engine behind Claude Code, exposed as a Python and TypeScript library. You hand `query()` a prompt and an options object and iterate the typed messages it streams back. The Steel integration exposes a cloud browser as in-process MCP tools, so the SDK runs the agent loop and Steel handles the browser.
+
+Available in TypeScript and Python.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Anthropic API Key**: Access to a Claude 4 model
+*   **Runtime**: Node.js 20+ or Python 3.10+
+*   **Packages**: `@anthropic-ai/claude-agent-sdk` or `claude-agent-sdk`, plus `steel-sdk` and `playwright`
+
+### Connect Steel to the Claude Agent SDK
+
+Wrap a Steel session in a `tool()` and bundle it into an in-process MCP server:
+
+```typescript Typescript -wc
+import { createSdkMcpServer, query, tool } from "@anthropic-ai/claude-agent-sdk";
+import { chromium } from "playwright";
+import Steel from "steel-sdk";
+
+const steel = new Steel({ steelAPIKey: STEEL_API_KEY });
+
+const openSession = tool(
+  "open_session",
+  "Open a Steel cloud browser session.",
+  {},
+  async () => {
+    const session = await steel.sessions.create({});
+    const browser = await chromium.connectOverCDP(
+      `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+    );
+    return {
+      content: [
+        { type: "text", text: JSON.stringify({ sessionId: session.id }) },
+      ],
+    };
+  },
+);
+
+const steelServer = createSdkMcpServer({
+  name: "steel",
+  version: "1.0.0",
+  tools: [openSession],
+});
+```
+
+Pass the server into `query()` via `mcpServers` and pre-approve calls with `allowedTools: ["mcp__steel__*"]`. Drop the SDK's built-in tools with `tools: []` so the agent only sees Steel.
+
+Full runnable starter: [Steel + Claude Agent SDK recipe →](/cookbook/claude-agent-sdk)
+
+### Resources
+
+*   [Claude Agent SDK documentation](https://platform.claude.com/docs/en/agent-sdk/overview) – Agent loop, custom MCP tools, hooks, subagents
+*   [Steel Sessions API reference](/api-reference) – Programmatic session control for Steel browsers
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

@@ -12,6 +12,7 @@
     "---Frameworks---",
     "ai-sdk",
     "openai-agents-sdk",
+    "claude-agent-sdk",
     "browser-use",
     "stagehand",
     "magnitude",

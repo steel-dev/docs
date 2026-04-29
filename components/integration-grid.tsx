@@ -28,6 +28,7 @@ const INTEGRATION_META: Record<string, IntegrationMeta> = {
   agno: { icon: <Container />, tag: 'Agent Framework' },
   'ai-sdk': { icon: <Container />, tag: 'Agent Framework' },
   'browser-use': { icon: <BrowserUseIcon />, tag: 'Browser Agent' },
+  'claude-agent-sdk': { icon: <ClaudeIcon />, tag: 'Agent Framework' },
   'claude-code': { icon: <ClaudeIcon />, tag: 'Coding Agent' },
   'claude-computer-use': { icon: <ClaudeIcon />, tag: 'Computer Use' },
   codex: { icon: <OpenAIIcon />, tag: 'Coding Agent' },
