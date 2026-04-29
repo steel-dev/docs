@@ -33,3 +33,9 @@ jobs:
 
       - name: Run link validation
         run: bun run validate-links
+
+      - name: Validate external links (lychee)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --config lychee.toml 'content/docs/**/*.{md,mdx}'
+          fail: true
