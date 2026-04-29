@@ -89,11 +89,11 @@ export function LLMShare({ content }: LLMShareProps) {
   };
 
   return (
-    <div className="hidden md:inline-flex rounded-md border border-border">
+    <div className="hidden md:inline-flex shrink-0 rounded-md border border-border">
       <button
         onClick={handleCopy}
         type="button"
-        className="cursor-pointer relative inline-flex items-center gap-2 rounded-l-md rounded-r-none px-2 py-1.5 text-sm font-mono focus:z-10 border-0 shadow-none transition-all duration-150 hover:bg-neutral-150 dark:hover:bg-neutral-700"
+        className="cursor-pointer relative inline-flex items-center gap-2 whitespace-nowrap rounded-l-md rounded-r-none px-2 py-1.5 text-sm font-mono focus:z-10 border-0 shadow-none transition-all duration-150 hover:bg-neutral-150 dark:hover:bg-neutral-700"
         aria-label="Copy markdown"
       >
         <span
