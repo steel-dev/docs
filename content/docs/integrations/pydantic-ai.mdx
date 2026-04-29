@@ -5,7 +5,7 @@ description: Build provider-agnostic, typed Python browser agents with dependenc
 llm: true
 ---
 
-[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's agent framework. Models are addressed by string (`'openai:gpt-5-mini'`, `'anthropic:claude-sonnet-4-6'`, `'google-gla:gemini-2.5-flash'`), tools are plain async functions, and `output_type=` validates the final answer with the same Pydantic you'd already use to validate API responses. The Steel integration passes a Playwright `Page` through `RunContext.deps`, so every tool sees the same browser without module globals.
+[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's agent framework. It's provider-agnostic and reuses the Pydantic models you'd already validate API I/O with for tool arguments and final outputs, so adding an agent to a typed Python codebase doesn't introduce a parallel schema layer. The Steel integration passes a Playwright `Page` through `RunContext.deps`, so every tool in an agent run sees the same cloud browser without module globals.
 
 ### Requirements
 
