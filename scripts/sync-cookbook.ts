@@ -291,12 +291,7 @@ function authorMeta(
   return { handle, name, avatar };
 }
 
-function renderRecipeMeta(
-  recipe: Recipe,
-  repo: string,
-  sha: string,
-  authors: AuthorMap,
-): string {
+function renderRecipeMeta(recipe: Recipe, repo: string, sha: string, authors: AuthorMap): string {
   const metas = (recipe.authors ?? []).map((h) => authorMeta(h, authors));
   const metasLiteral = `[${metas.map((m) => JSON.stringify(m)).join(', ')}]`;
   const dateAttr = recipe.updated ? ` updated="${recipe.updated}"` : '';

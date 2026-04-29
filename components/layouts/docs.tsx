@@ -206,8 +206,7 @@ export function Sidebar() {
         if (!externalSection && url.includes('steel-cookbook')) externalSection = 'cookbook';
         if (externalSection) {
           const onOwningSection =
-            pathname?.includes(`/${externalSection}/`) ||
-            pathname === `/${externalSection}`;
+            pathname?.includes(`/${externalSection}/`) || pathname === `/${externalSection}`;
           return !onOwningSection;
         }
       }
