@@ -4,9 +4,8 @@
 // generated MDX matches. Run this whenever you want the docs site to pick
 // up new recipes from the upstream cookbook.
 //
-// Pass --ref <name> to switch the tracked branch/tag (e.g. swap from
-// `rework` back to `main` once the reorg merges). Set GITHUB_TOKEN to lift
-// the unauthenticated rate limit if you bump frequently.
+// Pass --ref <name> to switch the tracked branch/tag. Set GITHUB_TOKEN
+// to lift the unauthenticated rate limit if you bump frequently.
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
