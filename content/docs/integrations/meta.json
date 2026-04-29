@@ -13,6 +13,7 @@
     "ai-sdk",
     "openai-agents-sdk",
     "claude-agent-sdk",
+    "pydantic-ai",
     "browser-use",
     "stagehand",
     "magnitude",

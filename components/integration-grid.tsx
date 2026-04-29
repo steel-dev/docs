@@ -43,6 +43,7 @@ const INTEGRATION_META: Record<string, IntegrationMeta> = {
   'pi-agent': { icon: <BashIcon />, tag: 'Coding Agent' },
   playwright: { icon: <PlaywrightIcon />, tag: 'Browser Library' },
   puppeteer: { icon: <PuppeteerIcon />, tag: 'Browser Library' },
+  'pydantic-ai': { icon: <Container />, tag: 'Agent Framework' },
   replit: { icon: <Cloud />, tag: 'Platform' },
   selenium: { icon: <SeleniumIcon />, tag: 'Browser Library' },
   'stackblitz-bolt.new': { icon: <Cloud />, tag: 'Platform' },
