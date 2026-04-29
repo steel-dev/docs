@@ -76,6 +76,10 @@
         "tailwindcss": "^4.0.12",
         "typescript": "^5.8.2",
       },
+      "optionalDependencies": {
+        "lightningcss-linux-x64-gnu": "1.30.2",
+        "lightningcss-linux-x64-musl": "1.30.2",
+      },
     },
   },
   "overrides": {
