@@ -1,4 +1,12 @@
 #!/usr/bin/env bun
+// Syncs the cookbook repo into generated MDX pages.
+//
+// Default behaviour: resolve the latest SHA for the configured ref (bump the
+// lockfile) then generate MDX. Pass --no-bump to skip the SHA resolution and
+// use whatever is already in cookbook.lock.json.
+//
+// Pass --ref <name> to switch the tracked branch/tag.
+// Set GITHUB_TOKEN to lift the unauthenticated rate limit.
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -42,8 +50,20 @@ const LANGUAGE_ORDER: string[] = ['TypeScript', 'Python', 'Next.js'];
 
 interface CookbookLock {
   repo: string; // "owner/name" on GitHub
-  ref: string; // human-readable branch/tag — only used by bump-cookbook
+  ref: string; // human-readable branch/tag
   sha: string; // pinned commit SHA the docs site is built against
+}
+
+function parseArgs(argv: string[]): { ref?: string; noBump: boolean } {
+  const out: { ref?: string; noBump: boolean } = { noBump: false };
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--ref' && argv[i + 1]) {
+      out.ref = argv[++i];
+    } else if (argv[i] === '--no-bump') {
+      out.noBump = true;
+    }
+  }
+  return out;
 }
 
 async function readLock(): Promise<CookbookLock> {
@@ -53,6 +73,28 @@ async function readLock(): Promise<CookbookLock> {
     throw new Error(`${LOCK_FILE} must contain { repo, ref, sha }`);
   }
   return parsed as CookbookLock;
+}
+
+async function writeLock(lock: CookbookLock): Promise<void> {
+  await fs.writeFile(LOCK_FILE, `${JSON.stringify(lock, null, 2)}\n`);
+}
+
+async function resolveSha(repo: string, ref: string): Promise<string> {
+  const url = `https://api.github.com/repos/${repo}/commits/${ref}`;
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  };
+  if (process.env.GITHUB_TOKEN) {
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
+  const res = await fetch(url, { headers });
+  if (!res.ok) {
+    throw new Error(`Failed to resolve ${repo}@${ref}: ${res.status} ${res.statusText}`);
+  }
+  const data = (await res.json()) as { sha?: string };
+  if (!data.sha) throw new Error(`No sha in response for ${repo}@${ref}`);
+  return data.sha;
 }
 
 function cookbookGithubUrl(repo: string): string {
@@ -477,7 +519,24 @@ async function main(): Promise<void> {
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
   await fs.mkdir(TOPICS_DIR, { recursive: true });
 
+  const args = parseArgs(process.argv.slice(2));
   const lock = await readLock();
+
+  if (!args.noBump) {
+    const ref = args.ref ?? lock.ref;
+    const sha = await resolveSha(lock.repo, ref);
+    if (sha === lock.sha && ref === lock.ref) {
+      console.log(`Already at ${sha.slice(0, 12)} (${lock.repo}@${ref}).`);
+    } else {
+      console.log(
+        `Bumping ${lock.repo}: ${lock.sha.slice(0, 12)} (${lock.ref}) → ${sha.slice(0, 12)} (${ref})`,
+      );
+      lock.ref = ref;
+      lock.sha = sha;
+      await writeLock(lock);
+    }
+  }
+
   const cookbookDir = await fetchCookbook(lock);
 
   const recipes = await readRegistry(cookbookDir);

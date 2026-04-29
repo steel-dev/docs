@@ -18,7 +18,6 @@
     "generate-openapi": "bun run ./scripts/fetch-openapi-specs.mts",
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
     "sync-cookbook": "bun run ./scripts/sync-cookbook.ts",
-    "bump-cookbook": "bun run ./scripts/bump-cookbook.ts",
     "generate-changelog-draft": "bun run ./scripts/generate-changelog-draft.ts",
     "generate": "bun run generate-openapi && bun run generate-llms"
   },
