@@ -1,4 +1,4 @@
-base = "https://docs.steel.dev"
+base_url = "https://docs.steel.dev"
 
 cache = true
 max_cache_age = "1d"
