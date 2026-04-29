@@ -35,6 +35,7 @@ const INTEGRATION_META: Record<string, IntegrationMeta> = {
   crewai: { icon: <Cloud />, tag: 'Multi-Agent' },
   'gemini-computer-use': { icon: <GeminiIcon />, tag: 'Computer Use' },
   'hermes-agent': { icon: <BashIcon />, tag: 'Coding Agent' },
+  langgraph: { icon: <Container />, tag: 'Agent Framework' },
   magnitude: { icon: <Container />, tag: 'Browser Agent' },
   notte: { icon: <Container />, tag: 'Browser Agent' },
   'openai-agents-sdk': { icon: <OpenAIIcon />, tag: 'Agent Framework' },

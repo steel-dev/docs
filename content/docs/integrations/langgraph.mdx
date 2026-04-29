@@ -1,0 +1,69 @@
+---
+title: LangGraph
+sidebarTitle: LangGraph
+description: Build Python browser agents as explicit state machines with LangGraph nodes, edges, and structured output.
+llm: true
+---
+
+[LangGraph](https://langchain-ai.github.io/langgraph/) builds agents as state machines: nodes do work, edges route control, and the agent loop is something you compose explicitly rather than something the framework hides for you. LangChain ships the model wrappers and `@tool` decorator; LangGraph ships the runtime, plus prebuilt `ToolNode` and `tools_condition` helpers that turn three nodes and four edges into a tool-calling agent. The Steel integration runs each `@tool` against a Steel cloud session, so the agent loop drives a real browser.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Model provider key**: Anthropic, OpenAI, or any other LangChain-supported provider
+*   **Python**: 3.10+
+*   **Packages**: `langgraph`, `langchain-anthropic` (or another `langchain-*` provider), `steel-sdk`, `playwright`
+
+### Connect Steel to LangGraph
+
+Define `@tool` functions that drive a Steel-backed Playwright `page`, build a `StateGraph` with `agent` and `tools` nodes, and wire `tools_condition` between them:
+
+```python Python -wc
+from langchain_anthropic import ChatAnthropic
+from langchain_core.tools import tool
+from langgraph.graph import END, START, MessagesState, StateGraph
+from langgraph.prebuilt import ToolNode, tools_condition
+from playwright.async_api import async_playwright
+from steel import Steel
+
+steel = Steel(steel_api_key=STEEL_API_KEY)
+
+@tool
+async def open_session() -> dict:
+    """Open a Steel cloud browser session."""
+    global _page
+    session = steel.sessions.create()
+    playwright = await async_playwright().start()
+    browser = await playwright.chromium.connect_over_cdp(
+        f"{session.websocket_url}&apiKey={STEEL_API_KEY}"
+    )
+    _page = browser.contexts[0].pages[0]
+    return {"session_id": session.id, "live_view_url": session.session_viewer_url}
+
+tools = [open_session]
+model = ChatAnthropic(model="claude-haiku-4-5").bind_tools(tools)
+
+async def agent_node(state: MessagesState) -> dict:
+    return {"messages": [await model.ainvoke(state["messages"])]}
+
+graph = StateGraph(MessagesState)
+graph.add_node("agent", agent_node)
+graph.add_node("tools", ToolNode(tools))
+graph.add_edge(START, "agent")
+graph.add_conditional_edges("agent", tools_condition)
+graph.add_edge("tools", "agent")
+
+app = graph.compile()
+```
+
+`tools_condition` routes to `"tools"` when the assistant message has tool calls and to `END` when it doesn't. The `tools -> agent` edge is what makes it a loop. For a typed final answer, add a `format` node that runs `model.with_structured_output(Schema)` on the conversation; for one-line wiring, swap the explicit graph for `langgraph.prebuilt.create_react_agent(model, tools, response_format=Schema)`.
+
+Full runnable starter: [Steel + LangGraph recipe →](/cookbook/langgraph)
+
+### Resources
+
+*   [LangGraph documentation](https://langchain-ai.github.io/langgraph/) – State graphs, prebuilts, checkpointing, and streaming
+*   [LangChain `@tool` reference](https://python.langchain.com/docs/concepts/tools/) – Tool definitions and Pydantic schemas
+*   [LangSmith](https://smith.langchain.com) – Tracing for every node and tool call
+*   [Steel Sessions API reference](/api-reference) – Programmatic session control for Steel browsers
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build
