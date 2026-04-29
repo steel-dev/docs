@@ -18,7 +18,7 @@ function getChangelogEntries() {
       const number = numMatch ? parseInt(numMatch[1], 10) : 0;
       return {
         title: match[1],
-        href: match[2],
+        href: new URL(match[2]).pathname,
         number,
       };
     })
