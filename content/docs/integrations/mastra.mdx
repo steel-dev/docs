@@ -1,0 +1,69 @@
+---
+title: Mastra
+sidebarTitle: Mastra
+description: Build typed TypeScript browser agents with Mastra's Model Router, registry, and Studio playground.
+llm: true
+---
+
+[Mastra](https://mastra.ai/) is a TypeScript framework that wraps the Vercel AI SDK with its own primitives: typed `createTool` definitions with input *and* output schemas, a top-level `Mastra` registry that wires agents into storage and observability, a Model Router that turns `'anthropic/claude-haiku-4-5'` into a working client without a provider package install, and a built-in Studio playground (`mastra dev`) for chatting with your agents and replaying traces. The Steel integration runs each tool against a Steel cloud session, so the agent's tool surface is "drive a real browser" without leaving the Mastra primitives.
+
+### Requirements
+
+*   **Steel API Key**: Active Steel subscription
+*   **Node.js**: v22.13+
+*   **Packages**: `@mastra/core`, `steel-sdk`, `playwright`, `zod`
+*   **Model provider key**: Anthropic, OpenAI, Google, or any other provider supported by the Mastra Model Router
+
+### Connect Steel to Mastra
+
+Define a `createTool` that opens a Steel session, register it on an `Agent`, and attach the agent to a top-level `Mastra` registry:
+
+```typescript Typescript -wc
+import { Mastra } from "@mastra/core";
+import { Agent } from "@mastra/core/agent";
+import { createTool } from "@mastra/core/tools";
+import { chromium } from "playwright";
+import Steel from "steel-sdk";
+import { z } from "zod";
+
+const steel = new Steel({ steelAPIKey: process.env.STEEL_API_KEY! });
+
+const openSession = createTool({
+  id: "open-session",
+  description: "Open a Steel cloud browser session.",
+  inputSchema: z.object({}),
+  outputSchema: z.object({
+    sessionId: z.string(),
+    liveViewUrl: z.string(),
+  }),
+  execute: async () => {
+    const session = await steel.sessions.create({});
+    const browser = await chromium.connectOverCDP(
+      `${session.websocketUrl}&apiKey=${process.env.STEEL_API_KEY}`,
+    );
+    return { sessionId: session.id, liveViewUrl: session.sessionViewerUrl };
+  },
+});
+
+const researchAgent = new Agent({
+  id: "research-agent",
+  name: "Steel Research",
+  instructions: "You operate a Steel cloud browser via tools. ...",
+  model: "anthropic/claude-haiku-4-5",
+  tools: { openSession },
+});
+
+export const mastra = new Mastra({ agents: { researchAgent } });
+```
+
+Tools are passed as a record (not an array): the keys are what the model sees as tool names. With the registry wired up, `npx mastra dev` opens Studio at `http://localhost:4111` so you can chat with `research-agent` and inspect its tool calls live.
+
+Full runnable starter: [Steel + Mastra recipe →](/cookbook/mastra)
+
+### Resources
+
+*   [Mastra documentation](https://mastra.ai/docs) – Agents, tools, workflows, memory, and Studio
+*   [Mastra Model Router](https://mastra.ai/blog/model-router) – Provider-agnostic model strings
+*   [Mastra Studio](https://mastra.ai/docs/studio/overview) – Local playground for agents and workflows
+*   [Steel Sessions API reference](/api-reference) – Programmatic session control for Steel browsers
+*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build

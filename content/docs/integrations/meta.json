@@ -17,6 +17,7 @@
     "stagehand",
     "pydantic-ai",
     "magnitude",
+    "mastra",
     "agno",
     "agentkit",
     "crewai",
