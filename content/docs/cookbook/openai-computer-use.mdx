@@ -7,7 +7,7 @@ description: "Connect OpenAI's Computer Use Assistant to a Steel browser session
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/7ac7c6f07cfc564a4f3d41fd79abbbb8837b820c/examples/openai-computer-use-ts" path="examples/openai-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/openai-computer-use-ts" path="examples/openai-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
 
 OpenAI's computer-use model ships as a single tool declaration: `{ type: "computer" }`. No display dimensions, no capability flags, no schema. You hand it to the Responses API, send a screenshot, and the model returns `computer_call` items with actions like `click`, `type`, `keypress`, `scroll`. Your job is to execute them against a real browser, capture the next screenshot, and feed it back. That's the loop in `index.ts`, and the browser is a Steel session.
 
@@ -161,7 +161,7 @@ Expect roughly 60-120 seconds and 15-40 turns for a simple browsing task. Cost i
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/7ac7c6f07cfc564a4f3d41fd79abbbb8837b820c/examples/openai-computer-use-py" path="examples/openai-computer-use-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/openai-computer-use-py" path="examples/openai-computer-use-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
 
 OpenAI's Computer Use models expose one tool (`{"type": "computer"}`) and emit `computer_call` items containing an `action` the model wants performed on a screen. You execute the action, return a screenshot as a `computer_call_output`, and the next turn the model sees the result. Unlike a typical tool call, you don't name the function or define its arguments: the action vocabulary (`click`, `type`, `keypress`, `scroll`, `drag`, `wait`, `screenshot`) is fixed by OpenAI.
 

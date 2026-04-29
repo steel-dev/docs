@@ -7,7 +7,7 @@ description: "Use Steel with the Claude Agent SDK (TypeScript) to build a tool-u
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/7ac7c6f07cfc564a4f3d41fd79abbbb8837b820c/examples/claude-agent-sdk-ts" path="examples/claude-agent-sdk-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/claude-agent-sdk-ts" path="examples/claude-agent-sdk-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
 
 `@anthropic-ai/claude-agent-sdk` is the engine behind the Claude Code CLI, exposed as a Node library. The package bundles a native Claude Code binary as an optional dependency, so `npm install` is the entire setup. You get the CLI's agent loop, hooks, subagents, MCP support, and built-in tool catalog (`Read`, `Edit`, `Bash`, `Grep`, ...) without spawning the CLI yourself.
 
@@ -154,7 +154,7 @@ The `finally` block calls `steel.sessions.release()`. Without it the cloud brows
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/7ac7c6f07cfc564a4f3d41fd79abbbb8837b820c/examples/claude-agent-sdk-py" path="examples/claude-agent-sdk-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/claude-agent-sdk-py" path="examples/claude-agent-sdk-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
 
 The Claude Agent SDK is the agent loop that powers Claude Code, packaged as a library. You hand `query()` a prompt and a set of options; it streams typed messages back. Tools are async functions decorated with `@tool`, bundled into an in-process MCP server with `create_sdk_mcp_server`, and registered through the `mcp_servers` option. No subprocess, no separate MCP host.
 
@@ -300,7 +300,7 @@ The `finally` block closes Playwright and calls `steel.sessions.release()`. Skip
 ## Related recipes
 
 <RecipeGrid>
+<RecipeCard slug="pydantic-ai" title={"Build a typed browser agent with Pydantic AI"} description={"Use Steel with Pydantic AI to build typed, provider-agnostic browser agents with dependency injection."} topics={['Agents', 'Typed output']} date="2026-04-29" />
 <RecipeCard slug="openai-agents" title={"Build a typed browser agent with the OpenAI Agents SDK"} description={"Use Steel with the OpenAI Agents SDK for TypeScript to build typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
 <RecipeCard slug="vercel-ai-sdk" title={"Build a typed browser agent with the Vercel AI SDK"} description={"Use Steel with the Vercel AI SDK v6 ToolLoopAgent for typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
-<RecipeCard slug="vercel-ai-sdk-nextjs" title={"Stream a browser agent into a Next.js chat app"} description={"A Next.js App Router chat app where a Vercel AI SDK agent drives a Steel cloud browser with embedded Live View."} topics={['Agents', 'Typed output', 'Next.js']} date="2026-04-23" />
 </RecipeGrid>

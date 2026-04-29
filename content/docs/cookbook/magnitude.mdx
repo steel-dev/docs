@@ -3,7 +3,7 @@ title: Build an AI browser agent with Magnitude
 description: Use Steel with Magnitude for AI-powered browser automation.
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/7ac7c6f07cfc564a4f3d41fd79abbbb8837b820c/examples/magnitude" path="examples/magnitude" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/cc45c08ddd05b87a6eadb62d76e737e7ce085750/examples/magnitude" path="examples/magnitude" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 Magnitude grew out of end-to-end testing and kept the bias: an agent loop that narrates each turn, a CDP-level browser hookup, and LLM-backed primitives designed to intermix navigation, action, and typed readback. `startBrowserAgent()` hands you a `BrowserAgent` with a small surface this recipe exercises:
 
@@ -123,6 +123,6 @@ The `finally` block stops the agent first, then releases the session. Reverse th
 
 <RecipeGrid>
 <RecipeCard slug="claude-agent-sdk" title={"Build a browser agent with the Claude Agent SDK"} description={"Use Steel with the Claude Agent SDK (TypeScript) to build a tool-using browser agent on Anthropic's first-party agent loop."} topics={['Agents']} date="2026-04-29" />
+<RecipeCard slug="pydantic-ai" title={"Build a typed browser agent with Pydantic AI"} description={"Use Steel with Pydantic AI to build typed, provider-agnostic browser agents with dependency injection."} topics={['Agents', 'Typed output']} date="2026-04-29" />
 <RecipeCard slug="openai-agents" title={"Build a typed browser agent with the OpenAI Agents SDK"} description={"Use Steel with the OpenAI Agents SDK for TypeScript to build typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
-<RecipeCard slug="vercel-ai-sdk" title={"Build a typed browser agent with the Vercel AI SDK"} description={"Use Steel with the Vercel AI SDK v6 ToolLoopAgent for typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
 </RecipeGrid>
