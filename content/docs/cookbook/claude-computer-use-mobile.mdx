@@ -3,7 +3,7 @@ title: Drive a mobile browser with Claude Computer Use
 description: Claude Computer Use with Steel for autonomous task execution in mobile browser environments.
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/claude-computer-use-mobile" path="examples/claude-computer-use-mobile" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/7ac7c6f07cfc564a4f3d41fd79abbbb8837b820c/examples/claude-computer-use-mobile" path="examples/claude-computer-use-mobile" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 Mobile-emulated Chrome, driven by Claude's computer-use tool. The agent loop is the same as the [Desktop TS](/cookbook/claude-computer-use) recipe (screenshot in, coordinate out, next screenshot back), but three things change when the surface is a phone: Steel allocates the viewport instead of you, Playwright drives the page over CDP instead of Steel's Input API, and every coordinate is clamped before it touches the browser. Those differences are what this recipe walks through. If you want the loop mechanics and tool-definition details, read the desktop README first.
 

@@ -3,7 +3,7 @@ title: Stream a browser agent into a Next.js chat app
 description: A Next.js App Router chat app where a Vercel AI SDK agent drives a Steel cloud browser with embedded Live View.
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/vercel-ai-sdk-nextjs" path="examples/vercel-ai-sdk-nextjs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/7ac7c6f07cfc564a4f3d41fd79abbbb8837b820c/examples/vercel-ai-sdk-nextjs" path="examples/vercel-ai-sdk-nextjs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 A Next.js chat app where an AI SDK v6 agent drives a Steel cloud browser server-side and streams every tool call back into the UI. `useChat` on the client posts to `/api/chat`; that route calls `streamText` with four Steel-backed tools (`openSession`, `navigate`, `snapshot`, `extract`). Each tool call surfaces as a typed `tool-*` part on the message stream, and a Live View iframe on the right lights up the moment the agent opens a session.
 
@@ -96,7 +96,7 @@ npx playwright install chromium
 npm run dev
 ```
 
-Get keys at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys) and [console.anthropic.com](https://console.anthropic.com/). Open [`http://localhost:3000`](http://localhost:3000) and try one of the seeded prompts:
+Get keys at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys) and [console.anthropic.com](https://console.anthropic.com/). Open [http://localhost:3000](http://localhost:3000) and try one of the seeded prompts:
 
 > Go to https://github.com/trending/python and tell me the top 3 AI/ML repos.
 
@@ -137,5 +137,5 @@ The `/api/chat` route already declares `maxDuration = 120` and `runtime = "nodej
 <RecipeGrid>
 <RecipeCard slug="openai-agents" title={"Build a typed browser agent with the OpenAI Agents SDK"} description={"Use Steel with the OpenAI Agents SDK for TypeScript to build typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
 <RecipeCard slug="vercel-ai-sdk" title={"Build a typed browser agent with the Vercel AI SDK"} description={"Use Steel with the Vercel AI SDK v6 ToolLoopAgent for typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
-<RecipeCard slug="browser-use-captcha-manual" title={"Solve reCAPTCHA v2 manually with Browser Use"} description={"Manually solve reCAPTCHA v2 using Steel's CAPTCHA API with the browser-use framework."} topics={['Agents', 'Browser Use', 'Captchas']} date="2026-02-10" />
+<RecipeCard slug="claude-agent-sdk" title={"Build a browser agent with the Claude Agent SDK"} description={"Use Steel with the Claude Agent SDK (TypeScript) to build a tool-using browser agent on Anthropic's first-party agent loop."} topics={['Agents']} date="2026-04-29" />
 </RecipeGrid>

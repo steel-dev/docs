@@ -3,7 +3,7 @@ title: Build a multi-agent browser workflow with CrewAI
 description: Integrate Steel with the CrewAI multi-agent framework.
 ---
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/3312a27bde50b050c163b3a379f6b7c4219834a3/examples/crewai" path="examples/crewai" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/7ac7c6f07cfc564a4f3d41fd79abbbb8837b820c/examples/crewai" path="examples/crewai" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 CrewAI composes LLM work out of three primitives: an `Agent` (role, goal, tools), a `Task` (description + expected output), and a `Crew` that runs them in order. This recipe wires two agents, a `researcher` and a `reporting_analyst`, to a single custom tool that calls Steel's scrape API. The researcher gathers sources; the analyst turns them into `report.md`.
 
@@ -114,7 +114,7 @@ A run takes ~60-90 seconds: a few OpenAI tokens per agent turn plus one Steel sc
 ## Related recipes
 
 <RecipeGrid>
+<RecipeCard slug="claude-agent-sdk" title={"Build a browser agent with the Claude Agent SDK"} description={"Use Steel with the Claude Agent SDK (TypeScript) to build a tool-using browser agent on Anthropic's first-party agent loop."} topics={['Agents']} date="2026-04-29" />
 <RecipeCard slug="openai-agents" title={"Build a typed browser agent with the OpenAI Agents SDK"} description={"Use Steel with the OpenAI Agents SDK for TypeScript to build typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
 <RecipeCard slug="vercel-ai-sdk" title={"Build a typed browser agent with the Vercel AI SDK"} description={"Use Steel with the Vercel AI SDK v6 ToolLoopAgent for typed, tool-using browser agents."} topics={['Agents', 'Typed output']} date="2026-04-23" />
-<RecipeCard slug="vercel-ai-sdk-nextjs" title={"Stream a browser agent into a Next.js chat app"} description={"A Next.js App Router chat app where a Vercel AI SDK agent drives a Steel cloud browser with embedded Live View."} topics={['Agents', 'Typed output', 'Next.js']} date="2026-04-23" />
 </RecipeGrid>
