@@ -62,7 +62,7 @@ file_path = "./steel.png"
 
 with open(file_path, "rb") as f:
     response = requests.post(
-        f"https://api.steel.dev/v1/sessions/{session_id}/files/upload",
+        f"https://api.steel.dev/v1/sessions/{session_id}/files",
         headers={"steel-api-key": api_key},
         files={"file": f}
     )
@@ -76,8 +76,8 @@ print(response.json())
 <CodeTabs storage="languageSwitcher">
 
 ```typescript !! Typescript -wcn
-const files = await client.session.files.list(sessionId);
-files.forEach(file => {
+const files = await client.sessions.files.list(sessionId);
+files.data.forEach((file) => {
   console.log(`${file.path} | Size: ${file.size} | Last Modified: ${file.lastModified}`);
 });
 ```
@@ -92,13 +92,15 @@ response = requests.get(
     f"https://api.steel.dev/v1/sessions/{session_id}/files",
     headers={"steel-api-key": api_key}
 )
-for file in response.json():
+for file in response.json()["data"]:
     print(f"{file['path']} | Size: {file['size']} | Last Modified: {file['lastModified']}")
 ```
 </CodeTabs>
 
 
 #### Download Files from Session File System
+
+For raw HTTP requests, the `{path}` parameter is relative. Session file responses currently come back in a `/files/...` form, so strip that prefix before interpolating the value into the URL.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -128,7 +130,7 @@ with open("downloaded_file", "wb") as f:
 
 # Download all files as zip archive
 archive_resp = requests.get(
-    f"https://api.steel.dev/v1/sessions/{session_id}/files/archive",
+    f"https://api.steel.dev/v1/sessions/{session_id}/files.zip",
     headers={"steel-api-key": api_key}
 )
 with open("session_files.zip", "wb") as f:
@@ -138,6 +140,8 @@ with open("session_files.zip", "wb") as f:
 
 
 #### Delete Files from Sessions File System
+
+The raw HTTP delete endpoint also expects the relative path segment rather than the `/files/...` form returned by session file responses.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -202,7 +206,7 @@ file_path = "./dataset.csv"
 
 with open(file_path, "rb") as f:
     response = requests.post(
-        "https://api.steel.dev/v1/files/upload",
+        "https://api.steel.dev/v1/files",
         headers={"steel-api-key": api_key},
         files={"file": f}
     )
@@ -218,7 +222,7 @@ print(response.json())
 
 ```typescript !! Typescript -wcn
 const files = await client.files.list();
-files.forEach(file => {
+files.data.forEach((file) => {
   console.log(`${file.path} | Size: ${file.size} | Last Modified: ${file.lastModified}`);
 });
 ```
@@ -232,13 +236,15 @@ response = requests.get(
     "https://api.steel.dev/v1/files",
     headers={"steel-api-key": api_key}
 )
-for file in response.json():
+for file in response.json()["data"]:
     print(f"{file['path']} | Size: {file['size']} | Last Modified: {file['lastModified']}")
 ```
 </CodeTabs>
 
 
 #### Download Global File
+
+For raw HTTP requests, pass a relative `{path}` value here as well.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -264,6 +270,8 @@ with open(file_path, "wb") as f:
 
 
 #### Delete Global File
+
+The raw HTTP delete endpoint expects the same relative `{path}` format used by the download endpoint.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -402,7 +410,7 @@ async function main() {
     );
 
     const globalFile = await client.files.upload({ file: datasetFile });
-    console.log(`Dataset uploaded to global storage: ${globalFile.id}`);
+    console.log(`Dataset uploaded to global storage: ${globalFile.path}`);
 
     // Create session and mount global file
     session = await client.sessions.create();
@@ -421,7 +429,7 @@ async function main() {
     const page = currentContext.pages()[0];
 
     // Navigate to data visualization tool
-    await page.goto("<https://www.csvplot.com/>");
+    await page.goto('https://www.csvplot.com/');
 
     // Upload file to web application using CDP
     const cdpSession = await currentContext.newCDPSession(page);
@@ -440,7 +448,7 @@ async function main() {
     await page.waitForSelector("svg.main-svg");
 
     // Download all session files (original upload + any generated files)
-    const archiveResponse = await client.sessions.files.download.archive(session.id);
+    const archiveResponse = await client.sessions.files.downloadArchive(session.id);
     const zipBlob = await archiveResponse.blob();
 
     // Files are automatically available in global storage after session ends
@@ -453,7 +461,7 @@ async function main() {
 
     // List all available files in global storage
     const allFiles = await client.files.list();
-    console.log(`Total files in storage: ${allFiles.length}`);
+    console.log(`Total files in storage: ${allFiles.data.length}`);
   }
 }
 
