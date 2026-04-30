@@ -9,6 +9,8 @@ description: "Use Steel with the Claude Agent SDK (TypeScript) to build a tool-u
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/claude-agent-sdk-ts" path="examples/claude-agent-sdk-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
 
+<RecipeQuickstart slug="claude-agent-sdk-ts" />
+
 `@anthropic-ai/claude-agent-sdk` is the engine behind the Claude Code CLI, exposed as a Node library. The package bundles a native Claude Code binary as an optional dependency, so `npm install` is the entire setup. You get the CLI's agent loop, hooks, subagents, MCP support, and built-in tool catalog (`Read`, `Edit`, `Bash`, `Grep`, ...) without spawning the CLI yourself.
 
 This recipe disables those built-ins and attaches a Steel cloud browser instead. Four MCP tools (`openSession`, `navigate`, `snapshot`, `extract`) sit in front of Playwright; the agent calls them by name and streams back typed messages.
@@ -155,6 +157,8 @@ The `finally` block calls `steel.sessions.release()`. Without it the cloud brows
 <Tab id="python" className="cookbook-concept-tab">
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/claude-agent-sdk-py" path="examples/claude-agent-sdk-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
+
+<RecipeQuickstart slug="claude-agent-sdk-py" />
 
 The Claude Agent SDK is the agent loop that powers Claude Code, packaged as a library. You hand `query()` a prompt and a set of options; it streams typed messages back. Tools are async functions decorated with `@tool`, bundled into an in-process MCP server with `create_sdk_mcp_server`, and registered through the `mcp_servers` option. No subprocess, no separate MCP host.
 

@@ -9,6 +9,8 @@ description: Connect Claude to a Steel browser session for autonomous web intera
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/claude-computer-use-ts" path="examples/claude-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
+<RecipeQuickstart slug="claude-computer-use-ts" />
+
 Computer use is Anthropic's primitive, not a wrapper. Claude sees the screen as an image and returns concrete actions at pixel coordinates: `left_click [640, 412]`, `type "claude 4.7 opus"`, `scroll down 3`. Something has to execute those actions against a real browser and send the next screenshot back. That "something" is the agent loop in `index.ts`, and the browser is a Steel session.
 
 ## The loop
@@ -136,6 +138,8 @@ Expect ~60-120 seconds and on the order of 15-40 iterations for a simple browsin
 <Tab id="python" className="cookbook-concept-tab">
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/claude-computer-use-py" path="examples/claude-computer-use-py" authors={[{"handle":"hussufo","name":"Hussien Hussien","avatar":"https://github.com/hussufo.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+
+<RecipeQuickstart slug="claude-computer-use-py" />
 
 Computer use is Anthropic's primitive for giving Claude direct control of a screen. You declare a `computer` tool with a viewport size; Claude replies with actions like `left_click` at `(x, y)`, `type` with text, `scroll`, `key`. You execute each one and hand back a screenshot. The model sees what it just did and decides what to do next. That's the whole interface. No DOM, no selectors, no scaffolding.
 

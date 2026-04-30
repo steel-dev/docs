@@ -5,6 +5,8 @@ description: Use Steel with LangGraph to build a typed browser agent with an exp
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/langgraph" path="examples/langgraph" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
 
+<RecipeQuickstart slug="langgraph" />
+
 [LangGraph](https://langchain-ai.github.io/langgraph/) builds agents as state machines: nodes do work, edges route control, and the agent loop is something you compose explicitly rather than something the framework hides for you. LangChain ships the model wrapper (`ChatAnthropic`) and the `@tool` decorator; LangGraph ships the graph runtime, plus prebuilt `ToolNode` and `tools_condition` helpers that turn three nodes and four edges into a tool-calling agent.
 
 This recipe is a four-tool browser agent: `open_session`, `navigate`, `snapshot`, `extract`. Each tool drives a Steel cloud session over Playwright. The graph has three nodes (`agent`, `tools`, `format`) and runs against `github.com/trending/python`, returning a Pydantic-validated `FinalReport`.

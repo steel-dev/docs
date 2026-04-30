@@ -340,6 +340,19 @@ function renderRecipeMeta(recipe: Recipe, repo: string, sha: string, authors: Au
   return `<RecipeMeta href="${sourceUrl(recipe, repo, sha)}" path="${recipe.path}" authors={${metasLiteral}}${dateAttr} />`;
 }
 
+// `examples/playwright-ts` -> `playwright-ts`. Mirrors the cli's
+// `cli_slug` helper (cli/src/commands/forge.rs); cookbook's
+// verify_registry.py enforces basename uniqueness so this is also the
+// CLI-facing identifier passed to `steel forge`.
+function cliSlug(recipePath: string): string {
+  const base = path.basename(recipePath);
+  return base.length > 0 ? base : recipePath;
+}
+
+function renderRecipeQuickstart(recipe: Recipe): string {
+  return `<RecipeQuickstart slug="${cliSlug(recipe.path)}" />`;
+}
+
 function renderTabs(
   concept: Concept,
   bodies: string[],
@@ -360,7 +373,8 @@ function renderTabs(
     .map((entry, i) => {
       const v = variant(entry);
       const meta = renderRecipeMeta(entry, repo, sha, authors);
-      return `<Tab id="${v.id}" className="cookbook-concept-tab">\n\n${meta}\n\n${bodies[i]}\n\n</Tab>`;
+      const quickstart = renderRecipeQuickstart(entry);
+      return `<Tab id="${v.id}" className="cookbook-concept-tab">\n\n${meta}\n\n${quickstart}\n\n${bodies[i]}\n\n</Tab>`;
     })
     .join('\n\n');
   return `<Tabs items={${items}} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">\n\n${tabs}\n\n</Tabs>`;
@@ -401,7 +415,8 @@ async function emitConcept(
   let body: string;
   if (concept.entries.length === 1) {
     const meta = renderRecipeMeta(concept.entries[0], repo, sha, authors);
-    body = `${meta}\n\n${bodies[0]}`;
+    const quickstart = renderRecipeQuickstart(concept.entries[0]);
+    body = `${meta}\n\n${quickstart}\n\n${bodies[0]}`;
   } else {
     body = renderTabs(concept, bodies, repo, sha, authors);
   }

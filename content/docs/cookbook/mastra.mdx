@@ -5,6 +5,8 @@ description: Use Steel with Mastra to build a typed browser agent with the Mastr
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/mastra" path="examples/mastra" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
 
+<RecipeQuickstart slug="mastra" />
+
 [Mastra](https://mastra.ai/) is a TypeScript framework that wraps the Vercel AI SDK with its own primitives: typed tools with input _and_ output schemas, a top-level `Mastra` registry that wires agents into storage and observability, a model router that turns `'anthropic/claude-haiku-4-5'` into a working client without a provider package install, and a built-in Studio playground for chatting with your agents and inspecting traces.
 
 This recipe is a four-tool browser agent: `open-session`, `navigate`, `snapshot`, `extract`. Each tool drives a Steel cloud session over Playwright. The agent runs against `github.com/trending/python` and returns a Zod-validated `FinalReport`.

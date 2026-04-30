@@ -5,6 +5,8 @@ description: "Control browsers with AI using Steel's infrastructure and Notte's 
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/notte" path="examples/notte" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
+<RecipeQuickstart slug="notte" />
+
 Notte builds its agent on top of a perception layer instead of raw pixels. Each step, `notte.Session` flattens the live DOM into a compact action space (labeled interactive elements, form fields, section headings) and hands that structured view to the reasoning model. The model picks an action by id, Notte translates it back into a browser command, the loop repeats. Shorter prompts per step, no invented selectors.
 
 This recipe points that loop at a Steel session instead of a locally-launched browser. Perception and reasoning stay on your machine; Chrome runs on Steel's cloud with stealth, proxies, and a live viewer attached.

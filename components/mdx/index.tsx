@@ -12,6 +12,7 @@ import { IntegrationGrid } from '@/components/integration-grid';
 import { OrderedList, UnorderedList } from '@/components/lists';
 import { RecipeCard, RecipeGrid } from '@/components/recipe-card';
 import { RecipeMeta } from '@/components/recipe-meta';
+import { RecipeQuickstart } from '@/components/recipe-quickstart';
 import { RecipeSearch } from '@/components/recipe-search';
 import { SourceLink } from '@/components/source-link';
 import { CustomTable as Table, type TableProps } from '@/components/table';
@@ -43,6 +44,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     RecipeCard,
     RecipeGrid,
     RecipeMeta,
+    RecipeQuickstart,
     RecipeSearch,
     SourceLink,
     img: (props) => (

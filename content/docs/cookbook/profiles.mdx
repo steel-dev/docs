@@ -5,6 +5,8 @@ description: Maintain authenticated sessions across Steel browser instances usin
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/profiles" path="examples/profiles" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
 
+<RecipeQuickstart slug="profiles" />
+
 A Steel profile is a named, long-lived browser identity. It holds everything a real Chrome user profile accumulates over time: cookies, localStorage, IndexedDB, history, installed extensions, autofill, site permissions. Every session you attach to the profile starts where the last one left off, and writes the user data directory back on release.
 
 Two options on `sessions.create` wire it up. On the first run, mint a fresh profile:

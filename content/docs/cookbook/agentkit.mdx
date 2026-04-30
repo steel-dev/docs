@@ -5,6 +5,8 @@ description: "Integrate Steel with Inngest's AgentKit framework."
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/agentkit" path="examples/agentkit" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
+<RecipeQuickstart slug="agentkit" />
+
 Agent Kit is Inngest's framework for multi-agent systems: a **tool** is a typed function the model can call, an **agent** bundles a system prompt with a tool set, and a **network** groups agents so they can collaborate on a task. Agent Kit handles the routing between them and wraps each call in Inngest's `step.run` checkpoint, so a network that crashes mid-flight resumes from the last finished step instead of starting over.
 
 This starter wires Agent Kit to Steel through a single tool, `browse_hacker_news`, that opens a Steel session, drives it with Playwright over CDP, and returns structured rows. The agent never sees the browser. It sees typed arguments going in and JSON coming out.

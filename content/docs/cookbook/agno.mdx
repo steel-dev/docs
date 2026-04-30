@@ -5,6 +5,8 @@ description: Integrate Steel with the Agno agent framework.
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/agno" path="examples/agno" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
+<RecipeQuickstart slug="agno" />
+
 Agno's primitive is `Agent(model=..., tools=[...])`. Tools are typed Python methods grouped into a `Toolkit` subclass; docstrings and type hints become the JSON schema the model sees. No manual function-calling boilerplate, no separate tool-registration step.
 
 This recipe wraps a Steel browser in a `SteelTools` toolkit, hands it to an Agent, and lets the model drive the session by picking which method to call and filling in arguments on its own.

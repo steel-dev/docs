@@ -5,6 +5,8 @@ description: Use Steel with Puppeteer in TypeScript for cloud browser automation
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/puppeteer-ts" path="examples/puppeteer-ts" authors={[{"handle":"hussufo","name":"Hussien Hussien","avatar":"https://github.com/hussufo.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
+<RecipeQuickstart slug="puppeteer-ts" />
+
 Puppeteer ships a `connect()` call that attaches to any Chrome exposing a DevTools websocket. Steel sessions expose one. Point Puppeteer at it and the rest of the script is plain Puppeteer: `page.goto`, `page.evaluate`, `page.waitForSelector`, the whole surface area. Stealth, proxies, and the live session viewer come from Steel without extra wiring.
 
 ```typescript

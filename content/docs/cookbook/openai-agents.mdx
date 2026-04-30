@@ -9,6 +9,8 @@ description: Use Steel with the OpenAI Agents SDK for TypeScript to build typed,
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/openai-agents-ts" path="examples/openai-agents-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
+<RecipeQuickstart slug="openai-agents-ts" />
+
 The [OpenAI Agents SDK](https://openai.github.io/openai-agents-js/) (`@openai/agents`) is a small runtime for agentic loops. You define an `Agent` with `instructions`, a `model`, `tools`, and an `outputType`. You call `run(agent, prompt)`. The SDK handles "pick a tool, call it, feed the result back, repeat" and validates the final message against your schema. It also ships handoffs (one agent calls another), guardrails (pre/post checks), and traces out of the box.
 
 This recipe turns the tool layer into a Steel cloud browser. Four `tool()` wrappers in `index.ts` (`openSession`, `navigate`, `snapshot`, `extract`) shuttle CDP calls between the agent and Playwright. The agent only sees typed arguments in and structured JSON out. Demo task: scan `github.com/trending/python` and return the top 3 AI/ML repos as a validated `FinalReport`.
@@ -134,6 +136,8 @@ The `finally` block calls `steel.sessions.release()`. Skip it and the session ru
 <Tab id="python" className="cookbook-concept-tab">
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/openai-agents-py" path="examples/openai-agents-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+
+<RecipeQuickstart slug="openai-agents-py" />
 
 The [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) runs the tool-call loop so you don't have to. You declare an `Agent` with tools, a model, and (optionally) a Pydantic `output_type`. You call `Runner.run(agent, input=...)` once. The SDK handles every model turn, every tool dispatch, and every schema check until the agent returns a typed final answer. That shape is distinct from OpenAI's Computer Use, where you own the message loop.
 

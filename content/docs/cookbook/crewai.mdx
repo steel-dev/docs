@@ -5,6 +5,8 @@ description: Integrate Steel with the CrewAI multi-agent framework.
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/crewai" path="examples/crewai" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
+<RecipeQuickstart slug="crewai" />
+
 CrewAI composes LLM work out of three primitives: an `Agent` (role, goal, tools), a `Task` (description + expected output), and a `Crew` that runs them in order. This recipe wires two agents, a `researcher` and a `reporting_analyst`, to a single custom tool that calls Steel's scrape API. The researcher gathers sources; the analyst turns them into `report.md`.
 
 ```python

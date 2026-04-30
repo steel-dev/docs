@@ -5,6 +5,8 @@ description: Use the Steel Extensions API with Playwright to upload and run brow
 
 <RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/f658197a4da35d8607960852ecbb88caebfd2c79/examples/extensions" path="examples/extensions" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
+<RecipeQuickstart slug="extensions" />
+
 Steel sessions launch a clean Chrome with nothing installed. The Extensions API lets you upload a Chrome extension once, get back an ID, and attach it to any future session via `extensionIds` on `sessions.create()`. Content scripts and background workers load before your first `page.goto`, so the extension has already rewritten the DOM by the time Playwright observes it.
 
 ```typescript
