@@ -24,10 +24,16 @@ export function RecipeQuickstart({ slug }: Props) {
   const command = `steel forge ${slug}`;
   const [copied, setCopied] = useState(false);
 
-  const onCopy = () => {
-    void navigator.clipboard.writeText(command);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard unavailable (insecure context, denied permission, ...).
+      // The command text stays selectable, so users can still copy by hand.
+      // Don't flip the state — that would lie about success.
+    }
   };
 
   return (
@@ -45,9 +51,9 @@ export function RecipeQuickstart({ slug }: Props) {
           type="button"
           onClick={onCopy}
           aria-label={copied ? 'Copied' : 'Copy command'}
-          className="group flex cursor-pointer items-center justify-between gap-4 rounded-md bg-neutral-100 px-4 py-3 text-left font-mono transition-colors hover:bg-neutral-200 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+          className="group flex cursor-pointer items-center justify-between gap-4 rounded-md bg-neutral-100 px-4 py-3 text-left font-mono transition-colors hover:bg-neutral-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none dark:bg-neutral-700 dark:hover:bg-neutral-600"
         >
-          <span className="text-sm text-foreground">
+          <span className="min-w-0 truncate text-sm text-foreground">
             <span className="mr-2 text-muted-foreground">$</span>
             {command}
           </span>
@@ -60,6 +66,9 @@ export function RecipeQuickstart({ slug }: Props) {
               // copy glyph has its front square on the bottom-LEFT.
               <Copy className="h-4 w-4 -scale-x-100" />
             )}
+          </span>
+          <span aria-live="polite" className="sr-only">
+            {copied ? 'Copied' : ''}
           </span>
         </button>
         <p className="text-xs text-muted-foreground">
