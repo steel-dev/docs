@@ -18,7 +18,7 @@ export function MobileMenuButton({ tree }: MobileMenuButtonProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 md:hidden"
+        className="h-8 w-8 xl:hidden"
         onClick={open}
         aria-label="Open navigation menu"
         aria-expanded={isOpen}
