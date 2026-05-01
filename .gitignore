@@ -20,3 +20,4 @@ tmp
 # Generated files
 public/**/*.txt
 /generated
+tsconfig.tsbuildinfo
