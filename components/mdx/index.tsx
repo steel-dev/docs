@@ -5,6 +5,7 @@ import * as TabsComponents from 'fumadocs-ui/components/tabs';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import * as icons from 'lucide-react';
 import type { MDXComponents } from 'mdx/types';
+import { AuthorProfile } from '@/components/author-profile';
 import { Callout } from '@/components/callout';
 import * as CardComponents from '@/components/card';
 import { docskit } from '@/components/docskit/components';
@@ -34,6 +35,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     AccordionItem,
     AccordionTrigger,
     AccordionContent,
+    AuthorProfile,
     Badge,
     Callout,
     ...CardComponents,

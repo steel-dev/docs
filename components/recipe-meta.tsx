@@ -50,18 +50,33 @@ export function RecipeMeta({ href, path, authors, updated }: Props) {
             <span className="sr-only">Contributors: </span>
             <span className="flex -space-x-1.5">
               {authors.map((author) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Link
                   key={author.handle}
-                  src={author.avatar}
-                  alt=""
-                  width={20}
-                  height={20}
-                  className="h-5 w-5 rounded-full border-2 border-background bg-card"
-                />
+                  href={`/cookbook/authors/${author.handle}`}
+                  aria-label={author.name}
+                  className="rounded-full transition-opacity hover:opacity-80"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={author.avatar}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 rounded-full border-2 border-background bg-card"
+                  />
+                </Link>
               ))}
             </span>
-            <span>{authors.map((a) => a.name).join(', ')}</span>
+            <span>
+              {authors.map((author, i) => (
+                <span key={author.handle}>
+                  {i > 0 && ', '}
+                  <Link href={`/cookbook/authors/${author.handle}`} className="hover:text-primary">
+                    {author.name}
+                  </Link>
+                </span>
+              ))}
+            </span>
           </span>
         )}
         {updated && (

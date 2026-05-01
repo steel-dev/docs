@@ -17,6 +17,7 @@ const LOCK_FILE = path.join(ROOT, 'cookbook.lock.json');
 const CACHE_ROOT = path.join(ROOT, '.cache/cookbook');
 const OUTPUT_DIR = path.join(ROOT, 'content/docs/cookbook');
 const TOPICS_DIR = path.join(OUTPUT_DIR, 'topics');
+const AUTHORS_DIR = path.join(OUTPUT_DIR, 'authors');
 
 // Topics promoted to the sidebar "Topics" section. Every other topic still
 // gets a /cookbook/topics/<slug> page but does not appear in the sidebar.
@@ -464,6 +465,37 @@ async function emitTopicPage(topic: string, concepts: Concept[]): Promise<void> 
   await fs.writeFile(path.join(TOPICS_DIR, `${slug}.mdx`), `${fm}\n\n${body}\n`);
 }
 
+// Concepts the author has at least one variant in. Sorted newest-first
+// just like the home and topic grids, so each author page reads as a
+// reverse-chronological feed of their contributions.
+function conceptsByAuthor(handle: string, concepts: Concept[]): Concept[] {
+  const matching = concepts.filter((c) =>
+    c.entries.some((e) => (e.authors ?? []).includes(handle)),
+  );
+  return sortByCreatedDesc(matching);
+}
+
+function renderAuthorProfile(handle: string, authors: AuthorMap): string {
+  const meta = authorMeta(handle, authors);
+  const website = authors[handle]?.website?.trim();
+  const websiteAttr = website ? ` website="${website.replace(/"/g, '&quot;')}"` : '';
+  return `<AuthorProfile handle="${meta.handle}" name={${JSON.stringify(meta.name)}} avatar="${meta.avatar}"${websiteAttr} />`;
+}
+
+async function emitAuthorPage(
+  handle: string,
+  authors: AuthorMap,
+  concepts: Concept[],
+): Promise<void> {
+  const matching = conceptsByAuthor(handle, concepts);
+  const meta = authorMeta(handle, authors);
+  const count = matching.length;
+  const description = `${count} recipe${count === 1 ? '' : 's'} contributed to the Steel Cookbook by ${meta.name}.`;
+  const fm = frontmatter({ title: meta.name, description });
+  const body = `${renderAuthorProfile(handle, authors)}\n\n${renderRecipeGrid(matching)}`;
+  await fs.writeFile(path.join(AUTHORS_DIR, `${handle}.mdx`), `${fm}\n\n${body}\n`);
+}
+
 async function writeMainMeta(repo: string): Promise<void> {
   // Sidebar: Home, separator, curated Topics (as topic pages), separator,
   // external GitHub link. Recipe pages and non-curated topic pages exist
@@ -491,7 +523,22 @@ async function writeTopicsMeta(topics: string[]): Promise<void> {
   await fs.writeFile(path.join(TOPICS_DIR, 'meta.json'), `${JSON.stringify(meta, null, 2)}\n`);
 }
 
-async function cleanStaleMdx(concepts: Concept[], topicSlugs: string[]): Promise<void> {
+// Authors don't appear in the sidebar, so meta.json just exists to keep
+// Fumadocs happy with the directory and to give the section a stable title
+// for breadcrumbs.
+async function writeAuthorsMeta(handles: string[]): Promise<void> {
+  const meta = {
+    title: 'Authors',
+    pages: [...handles].sort(),
+  };
+  await fs.writeFile(path.join(AUTHORS_DIR, 'meta.json'), `${JSON.stringify(meta, null, 2)}\n`);
+}
+
+async function cleanStaleMdx(
+  concepts: Concept[],
+  topicSlugs: string[],
+  authorHandles: string[],
+): Promise<void> {
   const rootWant = new Set<string>(['index.mdx', 'meta.json']);
   for (const c of concepts) rootWant.add(`${c.slug}.mdx`);
   const rootEntries = await fs.readdir(OUTPUT_DIR);
@@ -516,6 +563,20 @@ async function cleanStaleMdx(concepts: Concept[], topicSlugs: string[]): Promise
     // topics/ may not exist on first run
   }
 
+  const authorWant = new Set<string>(['meta.json']);
+  for (const handle of authorHandles) authorWant.add(`${handle}.mdx`);
+  try {
+    const authorEntries = await fs.readdir(AUTHORS_DIR);
+    for (const entry of authorEntries) {
+      if (entry.endsWith('.mdx') && !authorWant.has(entry)) {
+        await fs.unlink(path.join(AUTHORS_DIR, entry));
+        console.log(`  - removed stale authors/${entry}`);
+      }
+    }
+  } catch {
+    // authors/ may not exist on first run
+  }
+
   // Remove legacy tags/ dir if it exists from an earlier iteration.
   try {
     const legacyDir = path.join(OUTPUT_DIR, 'tags');
@@ -533,6 +594,7 @@ async function cleanStaleMdx(concepts: Concept[], topicSlugs: string[]): Promise
 async function main(): Promise<void> {
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
   await fs.mkdir(TOPICS_DIR, { recursive: true });
+  await fs.mkdir(AUTHORS_DIR, { recursive: true });
 
   const args = parseArgs(process.argv.slice(2));
   const lock = await readLock();
@@ -574,8 +636,24 @@ async function main(): Promise<void> {
   }
 
   const authors = await readAuthors(cookbookDir);
+
+  // Authors get a page if they're credited on at least one recipe variant.
+  // Authors listed in authors.yaml but never referenced are skipped, and
+  // recipe handles missing from authors.yaml still get a page (authorMeta
+  // falls back to the handle and the GitHub avatar).
+  const authorSeen = new Set<string>();
+  const allAuthorHandles: string[] = [];
+  for (const r of recipes) {
+    for (const h of r.authors ?? []) {
+      if (!authorSeen.has(h)) {
+        authorSeen.add(h);
+        allAuthorHandles.push(h);
+      }
+    }
+  }
+
   console.log(
-    `Syncing ${concepts.length} concepts, ${allTopics.length} topics from ${lock.repo}@${lock.sha.slice(0, 12)} (${lock.ref})...`,
+    `Syncing ${concepts.length} concepts, ${allTopics.length} topics, ${allAuthorHandles.length} authors from ${lock.repo}@${lock.sha.slice(0, 12)} (${lock.ref})...`,
   );
 
   for (const concept of concepts) {
@@ -593,13 +671,19 @@ async function main(): Promise<void> {
     console.log(`  + topics/${topicSlug(topic)}${inSidebar}`);
   }
 
-  await cleanStaleMdx(concepts, allTopics.map(topicSlug));
+  for (const handle of allAuthorHandles) {
+    await emitAuthorPage(handle, authors, concepts);
+    console.log(`  + authors/${handle}`);
+  }
+
+  await cleanStaleMdx(concepts, allTopics.map(topicSlug), allAuthorHandles);
   await writeMainMeta(lock.repo);
   await writeTopicsMeta(allTopics);
+  await writeAuthorsMeta(allAuthorHandles);
 
   const rel = path.relative(ROOT, OUTPUT_DIR);
   console.log(
-    `Wrote ${concepts.length} concepts + Home + ${allTopics.length} topic pages to ${rel}`,
+    `Wrote ${concepts.length} concepts + Home + ${allTopics.length} topic pages + ${allAuthorHandles.length} author pages to ${rel}`,
   );
 }
 
