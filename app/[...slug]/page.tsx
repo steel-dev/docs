@@ -305,6 +305,7 @@ export async function generateMetadata(props: {
   const canonicalPath = page.url.replace(/^\/en(\/|$)/, '/');
   const ogSlug = slug[0] === 'en' ? slug.slice(1) : slug;
   const ogImageUrl = `/og/${ogSlug.join('/')}`;
+  const isChangelogEntry = /^\/changelog\/.+/.test(canonicalPath);
 
   return {
     title: page.data.title,
@@ -312,6 +313,7 @@ export async function generateMetadata(props: {
     alternates: {
       canonical: canonicalPath,
     },
+    ...(isChangelogEntry && { robots: { index: false, follow: true } }),
     openGraph: {
       title: page.data.title,
       description: page.data.description,

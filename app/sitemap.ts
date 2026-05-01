@@ -33,7 +33,7 @@ async function getLastModified(absPath: string | undefined): Promise<Date | unde
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const pages = source.getPages();
+  const pages = source.getPages().filter((page) => !/^\/(en\/)?changelog\/.+/.test(page.url));
 
   return Promise.all(
     pages.map(async (page) => {
