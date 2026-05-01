@@ -53,6 +53,7 @@ export function RecipeMeta({ href, path, authors, updated }: Props) {
                 <Link
                   key={author.handle}
                   href={`/cookbook/authors/${author.handle}`}
+                  rel="author"
                   aria-label={author.name}
                   className="rounded-full transition-opacity hover:opacity-80"
                 >
@@ -71,7 +72,11 @@ export function RecipeMeta({ href, path, authors, updated }: Props) {
               {authors.map((author, i) => (
                 <span key={author.handle}>
                   {i > 0 && ', '}
-                  <Link href={`/cookbook/authors/${author.handle}`} className="hover:text-primary">
+                  <Link
+                    href={`/cookbook/authors/${author.handle}`}
+                    rel="author"
+                    className="hover:text-primary"
+                  >
                     {author.name}
                   </Link>
                 </span>

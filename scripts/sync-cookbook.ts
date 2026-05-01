@@ -234,6 +234,37 @@ function conceptCreatedDate(concept: Concept): string {
   return earliest;
 }
 
+// Latest meaningful-edit date across a concept's variants. Used as
+// dateModified in the recipe page JSON-LD so Search sees the freshest
+// signal across language ports.
+function conceptUpdatedDate(concept: Concept): string {
+  let latest = '';
+  for (const entry of concept.entries) {
+    if (entry.updated && entry.updated > latest) {
+      latest = entry.updated;
+    }
+  }
+  return latest;
+}
+
+// Unique author handles across a concept's variants, preserving the
+// order they first appear (which matches the registry's variant order
+// after groupConcepts sort). Used to build the author[] array in
+// recipe-page JSON-LD.
+function conceptAuthorHandles(concept: Concept): string[] {
+  const seen = new Set<string>();
+  const ordered: string[] = [];
+  for (const entry of concept.entries) {
+    for (const handle of entry.authors ?? []) {
+      if (!seen.has(handle)) {
+        seen.add(handle);
+        ordered.push(handle);
+      }
+    }
+  }
+  return ordered;
+}
+
 // Sort a list of concepts by created date, newest first. Ties preserve
 // registry order (stable sort).
 function sortByCreatedDesc(concepts: Concept[]): Concept[] {
@@ -354,6 +385,29 @@ function renderRecipeQuickstart(recipe: Recipe): string {
   return `<RecipeQuickstart slug="${cliSlug(recipe.path)}" />`;
 }
 
+function renderRecipeJsonLd(
+  concept: Concept,
+  authors: AuthorMap,
+  repo: string,
+  sha: string,
+): string {
+  const authorRefs = conceptAuthorHandles(concept).map((h) => {
+    const meta = authorMeta(h, authors);
+    return { handle: meta.handle, name: meta.name };
+  });
+  const authorsLiteral = `[${authorRefs.map((a) => JSON.stringify(a)).join(', ')}]`;
+  const created = conceptCreatedDate(concept);
+  const updated = conceptUpdatedDate(concept);
+  const datePublished = created ? ` datePublished="${created}"` : '';
+  const dateModified = updated ? ` dateModified="${updated}"` : '';
+  // Use the first variant's path as a representative source link. Most
+  // concepts only have one path (per language); for multi-variant ones
+  // this picks the highest-ranked language (TypeScript first).
+  const primary = concept.entries[0];
+  const sourceAttr = primary ? ` sourceUrl="${sourceUrl(primary, repo, sha)}"` : '';
+  return `<RecipeJsonLd slug="${concept.slug}" title={${JSON.stringify(concept.title)}} description={${JSON.stringify(concept.description)}} authors={${authorsLiteral}}${datePublished}${dateModified}${sourceAttr} />`;
+}
+
 function renderTabs(
   concept: Concept,
   bodies: string[],
@@ -413,13 +467,14 @@ async function emitConcept(
   const bodies = await Promise.all(
     concept.entries.map((e) => readRecipeBody(cookbookDir, e, pathToSlug)),
   );
+  const jsonLd = renderRecipeJsonLd(concept, authors, repo, sha);
   let body: string;
   if (concept.entries.length === 1) {
     const meta = renderRecipeMeta(concept.entries[0], repo, sha, authors);
     const quickstart = renderRecipeQuickstart(concept.entries[0]);
-    body = `${meta}\n\n${quickstart}\n\n${bodies[0]}`;
+    body = `${jsonLd}\n\n${meta}\n\n${quickstart}\n\n${bodies[0]}`;
   } else {
-    body = renderTabs(concept, bodies, repo, sha, authors);
+    body = `${jsonLd}\n\n${renderTabs(concept, bodies, repo, sha, authors)}`;
   }
 
   const related = relatedConcepts(concept, allConcepts);

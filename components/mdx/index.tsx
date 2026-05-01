@@ -12,6 +12,7 @@ import { docskit } from '@/components/docskit/components';
 import { IntegrationGrid } from '@/components/integration-grid';
 import { OrderedList, UnorderedList } from '@/components/lists';
 import { RecipeCard, RecipeGrid } from '@/components/recipe-card';
+import { RecipeJsonLd } from '@/components/recipe-jsonld';
 import { RecipeMeta } from '@/components/recipe-meta';
 import { RecipeQuickstart } from '@/components/recipe-quickstart';
 import { RecipeSearch } from '@/components/recipe-search';
@@ -45,6 +46,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     IntegrationGrid,
     RecipeCard,
     RecipeGrid,
+    RecipeJsonLd,
     RecipeMeta,
     RecipeQuickstart,
     RecipeSearch,
