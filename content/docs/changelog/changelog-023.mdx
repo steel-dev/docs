@@ -1,0 +1,40 @@
+---
+title: "Changelog #023"
+sidebarTitle: "Changelog #023"
+llm: true
+image: "/images/changelog-placeholder-white.jpeg"
+imageAlt: "Announcing Changelog #023"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog-placeholder-white.jpeg"
+  alt="Announcing Changelog #023"
+  width={800}
+  height={400}
+/>
+Hey everyone — this week was mostly about expanding Steel’s agent integrations and examples, with a few CLI and browser updates to make common workflows more reliable.
+
+### ⭐ New
+
+*   Added new docs and cookbook integrations for Claude Agent SDK, PydanticAI, Mastra, and LangGraph.
+
+### 🔧 Improvements
+
+*   Steel CLI reworked `forge` with embedded templates, template listing, safer builds, zip-based fetching, and an online fallback path.
+
+*   The docs site now has a cookbook-backed guides flow with featured guides, a recipe quickstart, and a refreshed cookbook integration across navigation and content.
+
+*   Added deep research examples to the cookbook and expanded the example set with updated agent workflows.
+
+*   steel-browser now supports newer Chrome builds and restores extension loading through command-line extension flags.
+
+*   Managed browser infrastructure now uses a more secure environment variable delivery path with encrypted, versioned bundles fetched at VM boot.
+
+### 🐛 Bug Fixes
+
+*   Fixed the Steel CLI zsh installer to avoid adding duplicate `compinit` setup.
+
+*   Resolved several docs issues, including broken links, changelog path handling, and cookbook example polish.
+
+*   Fixed infrastructure issues affecting Nomad data directory setup and internal DNS resolution for Go services.
