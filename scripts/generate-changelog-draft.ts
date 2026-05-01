@@ -846,6 +846,7 @@ async function updateChangelogMeta(slug: string) {
 async function updateChangelogLlms() {
   const changelogNumbers = await getExistingChangelogNumbers();
   const content = buildChangelogLlmsContent(changelogNumbers);
+  await fs.mkdir(path.dirname(CHANGELOG_LLMS_PATH), { recursive: true });
   await fs.writeFile(CHANGELOG_LLMS_PATH, content);
 }
 
