@@ -13,12 +13,16 @@ import Image from 'next/image';
   width={800}
   height={400}
 />
-Hey everyone — this was a lighter week on shipped product changes, with a small ecosystem update and some infrastructure work behind the scenes.
+Hey everyone — this week brings new deep research examples to the cookbook, an ecosystem addition, and a round of corrections to the Files API docs.
+
+### ⭐ New
+
+*   Added deep research examples to the cookbook with updated agent workflows.
 
 ### 🔧 Improvements
 
 *   Added Hermesforge Screenshot API to awesome-web-agents.
 
-### 🏡 Housekeeping
+### 🐛 Bug Fixes
 
-*   Updated DNS configuration for internal infrastructure, including blade and live subdomain records.
+*   Corrected the Files API docs: upload endpoints are `POST /v1/sessions/{id}/files` and `POST /v1/files` (no `/upload` suffix), the session archive endpoint is `GET /v1/sessions/{id}/files.zip`, list responses now use a `{ data: [...] }` envelope, the SDK exposes `client.sessions.files.downloadArchive(...)`, and global file uploads return `path` rather than `id`.
