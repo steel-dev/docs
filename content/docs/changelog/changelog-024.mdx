@@ -1,0 +1,30 @@
+---
+title: "Changelog #024"
+sidebarTitle: "Changelog #024"
+llm: true
+image: "/images/changelog/24.png"
+imageAlt: "Announcing Changelog #024"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/24.png"
+  alt="Announcing Changelog #024"
+  width={800}
+  height={400}
+/>
+Hey everyone! Quiet week. Two things landed worth flagging.
+
+We added [deep research examples](/cookbook/deep-research) to the cookbook — full agent workflows you can fork and run. And the Files API docs got a long-overdue scrub: a few of the example endpoints and SDK calls were just wrong.
+
+### ⭐ New
+
+*   [Deep research with Claude Agent SDK subagents](/cookbook/deep-research) in the cookbook — a lead orchestrator dispatches parallel researcher subagents, each driving its own Steel browser, and synthesizes findings into a cited Markdown report. Source on GitHub: [TS](https://github.com/steel-dev/steel-cookbook/tree/main/examples/deep-research-ts) · [Python](https://github.com/steel-dev/steel-cookbook/tree/main/examples/deep-research-py).
+
+### 🔧 Improvements
+
+*   Hermesforge Screenshot API added to [awesome-web-agents](https://github.com/steel-dev/awesome-web-agents).
+
+### 🐛 Bug Fixes
+
+*   Files API docs corrections. Upload endpoints don't have a `/upload` suffix — it's `POST /v1/sessions/{id}/files` and `POST /v1/files`. Session archive is `GET /v1/sessions/{id}/files.zip`. List responses come back as `{ data: [...] }`. The SDK method is `client.sessions.files.downloadArchive(...)`, and global file uploads return `path`, not `id`. If the old examples sent you to a 404, sorry about that.
