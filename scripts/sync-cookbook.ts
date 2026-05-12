@@ -24,7 +24,8 @@ const AUTHORS_DIR = path.join(OUTPUT_DIR, 'authors');
 const CURATED_TOPICS: string[] = ['Browser automation', 'Agents', 'Computer use', 'Steel APIs'];
 
 // Editorial blurb shown under the topic title on /cookbook/topics/<slug>
-// pages. Topics missing here fall back to a generic count line.
+// pages. Topics missing here fall back to a generic count line and the
+// sync logs a warning so we notice and write a real blurb.
 const TOPIC_DESCRIPTIONS: Record<string, string> = {
   'Browser automation':
     'Drive a cloud browser with familiar automation libraries: Playwright, Puppeteer, Selenium, Stagehand.',
@@ -43,6 +44,11 @@ const TOPIC_DESCRIPTIONS: Record<string, string> = {
   Captchas: "Recipes that handle CAPTCHA challenges using Steel's CAPTCHA API.",
   Mobile: "Recipes targeting Steel's mobile browser environment.",
   'Next.js': 'Recipes that integrate Steel into a Next.js application.',
+  Search:
+    'Recipes that pair a search API with a Steel browser to keep the agent on the cheap path and only open a session when interaction is required.',
+  Subagents:
+    'Multi-agent recipes where a lead orchestrator dispatches parallel subagents, each driving its own Steel browser.',
+  Convex: 'Recipes that run Steel from a Convex backend.',
 };
 
 // Display order for language tabs in merged concept pages. Entries not
@@ -705,6 +711,13 @@ async function main(): Promise<void> {
         allAuthorHandles.push(h);
       }
     }
+  }
+
+  const topicsMissingBlurb = allTopics.filter((t) => !(t in TOPIC_DESCRIPTIONS));
+  if (topicsMissingBlurb.length > 0) {
+    console.warn(
+      `  ! topics without an editorial blurb in TOPIC_DESCRIPTIONS (using generic fallback): ${topicsMissingBlurb.join(', ')}`,
+    );
   }
 
   console.log(
