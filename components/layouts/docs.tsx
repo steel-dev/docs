@@ -24,9 +24,14 @@ import { renderNavItem } from './links';
 export interface DocsLayoutProps {
   tree: PageTree.Root;
   children: ReactNode;
+  stars: number;
 }
 
-export function DocsLayout({ tree, children }: DocsLayoutProps) {
+function formatStars(count: number): string {
+  return `${(Math.round(count / 100) / 10).toFixed(1)}k`;
+}
+
+export function DocsLayout({ tree, children, stars }: DocsLayoutProps) {
   const [isScrolled, setIsScrolled] = React.useState(false);
   // const { registerShortcut } = useKeyboardShortcuts();
   const { collapsed } = useSidebar();
@@ -43,7 +48,6 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
     width: 0,
     visible: false,
   });
-  const [stars, setStars] = React.useState<number>(5.5);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -81,12 +85,6 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
       window.clearTimeout(id);
     };
   }, [pathname, localizedLinks]);
-
-  React.useEffect(() => {
-    fetch(`https://api.github.com/repos/steel-dev/steel-browser`)
-      .then((res) => res.json())
-      .then((data) => setStars((Math.round(data.stargazers_count / 100) * 100) / 1000));
-  }, []);
 
   return (
     <MobileMenuProvider>
@@ -145,7 +143,7 @@ export function DocsLayout({ tree, children }: DocsLayoutProps) {
                   className="text-xs font-mono flex items-center gap-2 transition-colors"
                   color="#A1A0A7"
                 >
-                  <Github fill="#A1A0A7" width="16" /> {stars}k
+                  <Github fill="#A1A0A7" width="16" /> {formatStars(stars)}
                 </Link>
                 <div className="w-px h-6 bg-zinc-700"></div>
                 {/*<CopyLLMSButton />*/}
