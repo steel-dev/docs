@@ -37,6 +37,7 @@ notte
 magnitude
 openclaw
 hermes
+hermesforge
 codex
 replit
 stackblitz
@@ -49,6 +50,11 @@ deepseek
 tongyi
 genai
 aistudio
+langgraph
+jina
+libsql
+trafilatura
+youcom
 
 # Tech / web automation terms
 automations
@@ -80,6 +86,15 @@ videocard
 winget
 behaviour
 seperator
+ainvoke
+astream
+checkpointer
+checkpointing
+prebuilts
+compinit
+paywalled
+hostable
+sess
 
 # Abbreviations / acronyms (project-specific)
 payg
@@ -97,6 +112,7 @@ solana
 # GitHub handles and contributor names
 aspectrr
 athing
+bsparker
 browserbasehq
 codeyou
 danew
