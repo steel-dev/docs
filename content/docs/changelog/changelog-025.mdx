@@ -1,0 +1,40 @@
+---
+title: "Changelog #025"
+sidebarTitle: "Changelog #025"
+llm: true
+image: "/images/changelog-placeholder-white.jpeg"
+imageAlt: "Announcing Changelog #025"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog-placeholder-white.jpeg"
+  alt="Announcing Changelog #025"
+  width={800}
+  height={400}
+/>
+Hey everyone — this week was mostly about expanding supported agent workflows in the cookbook and tightening up session and viewer behavior. We also shipped a few browser infrastructure changes that should make managed sessions more flexible and easier to operate.
+
+### ⭐ New
+
+*   Added new cookbook examples for Convex, Microsoft Agent Framework, and a You.com search-then-act workflow.
+
+### 🔧 Improvements
+
+*   Sessions now support launching managed browsers in fullscreen mode.
+
+*   Session player configuration now supports hiding the interaction dialog and starting directly in recording playback mode.
+
+*   Steel Cloud now has organization-level feature flag controls.
+
+*   Docs navigation now includes topic descriptions, and cookbook topics are no longer limited to a hardcoded allowlist.
+
+*   Managed browser infrastructure was updated with new proxy and CAPTCHA solver secret handling, higher browser baseline capacity, adjusted production host density, and burstable CPU support.
+
+### 🐛 Bug Fixes
+
+*   Fixed session error handling and status codes, including follow-up fixes to session status filtering defaults.
+
+*   Fixed live viewer and WebRTC playback issues that caused transient replay and WHEP connection failures.
+
+*   Fixed the docs GitHub star count so it renders server-side and no longer shows invalid values when GitHub rate-limits requests.
