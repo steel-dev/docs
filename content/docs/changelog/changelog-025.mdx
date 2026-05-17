@@ -1,0 +1,32 @@
+---
+title: "Changelog #025"
+sidebarTitle: "Changelog #025"
+llm: true
+image: "/images/changelog/25.png"
+imageAlt: "Announcing Changelog #025"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/25.png"
+  alt="Announcing Changelog #025"
+  width={800}
+  height={400}
+/>
+Hey everyone — this week we gave showed some more love to our docs/cookbook and tightened up session and viewer behavior. We also shipped a few browser infrastructure changes that should make managed sessions more flexible, more observable, and easier to operate.
+
+### 🔧 Improvements
+
+*   Sessions now support launching browsers in fullscreen mode.
+
+*   Added new cookbook examples for Convex, Microsoft Agent Framework, and a You.com search-then-act workflow.
+
+*   Session viewer behaviour now defaults to a click-to-interact overlay on hover, meaning no more accidentally derailing your agents when viewing a live session. Fully-configurable.
+
+*   Docs navigation now includes topic descriptions, and cookbook topics are now navigational to make it easier to find what you're looking for quickly.
+
+### 🐛 Bug Fixes
+
+*   Fixed session error handling and status codes, including follow-up fixes to session status filtering defaults.
+
+*   Fixed live viewer and WebRTC playback issues that caused transient replay and WHEP connection failures.
