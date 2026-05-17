@@ -12,6 +12,7 @@ node_modules
 tmp
 .cursor/
 .claude/
+.agents/
 
 # Local workflow files
 /tasks/**
