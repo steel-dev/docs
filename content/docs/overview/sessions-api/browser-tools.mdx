@@ -151,7 +151,7 @@ fs.writeFileSync("page.png", buffer);
 
 ### PDF
 
-`POST /v1/pdf` renders the page and returns a hosted PDF URL. Same shape as screenshot — one URL in, one URL out.
+`POST /v1/pdf` renders the page and returns a hosted PDF URL. Same shape as screenshot: one URL in, one URL out.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -231,7 +231,7 @@ Browser Tools are stateless. Each call opens a fresh browser, performs the actio
 - Pin a proxy to a specific country (`useProxy: { geolocation: { country } }`)
 - Reuse an authenticated profile or extension
 
-You can still scrape, screenshot, or generate a PDF from inside a session — the Browser Tools endpoints are just the shortcut when you don't need the rest.
+You can still scrape, screenshot, or generate a PDF from inside a session. The Browser Tools endpoints are just the shortcut when you don't need the rest.
 
 
 :::callout
