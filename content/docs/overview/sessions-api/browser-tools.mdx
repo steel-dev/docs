@@ -1,0 +1,241 @@
+---
+title: Browser Tools
+sidebarTitle: Browser Tools
+description: One-shot endpoints for scraping pages, capturing screenshots, and generating PDFs without managing a session yourself.
+llm: true
+---
+
+### Overview
+
+Browser Tools are stateless, single-call endpoints that spin up a managed browser, perform one action against a URL, and return the result. They are the fastest way to pull content off a page when you do not need to drive a long-running session.
+
+| Endpoint          | What it does                                                          |
+| ----------------- | --------------------------------------------------------------------- |
+| `POST /v1/scrape` | Loads a URL and returns HTML, cleaned HTML, Markdown, or Readability. |
+| `POST /v1/screenshot` | Loads a URL and returns a hosted PNG of the page.                 |
+| `POST /v1/pdf`    | Loads a URL and returns a hosted PDF of the page.                     |
+
+Each call counts as 1 credit and is rate limited to 20 requests per minute per organization. Reach for [Sessions](/overview/sessions-api/overview) instead when you need cookies, multi-step navigation, or extension state.
+
+
+### Scrape
+
+`POST /v1/scrape` extracts the contents of a single page. The response always includes `content`, `metadata`, and `links`; pass `format` to control which content variants come back.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from "steel-sdk";
+
+const client = new Steel();
+
+const result = await client.scrape({
+  url: "https://docs.steel.dev",
+  format: ["markdown", "readability"],
+});
+
+console.log(result.content.markdown);
+console.log(result.metadata.title);
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+client = Steel()
+
+result = client.scrape(
+    url="https://docs.steel.dev",
+    format=["markdown", "readability"],
+)
+
+print(result.content.markdown)
+print(result.metadata.title)
+```
+</CodeTabs>
+
+The supported formats map to fields on `content`:
+
+| Format         | Field                  | Use when                                                  |
+| -------------- | ---------------------- | --------------------------------------------------------- |
+| `html`         | `content.html`         | You want the raw DOM after JS execution. Default if `format` is omitted. |
+| `cleaned_html` | `content.cleaned_html` | You want stripped-down HTML without scripts, styles, ads. |
+| `markdown`     | `content.markdown`     | You're feeding the page into an LLM.                      |
+| `readability`  | `content.readability`  | You want Mozilla Readability's article extraction object. |
+
+`metadata` carries the usual SEO fields (`title`, `description`, `canonical`, Open Graph tags, JSON-LD, `statusCode`, etc.) and `links` is a flat array of every anchor on the page.
+
+```json !! JSON -wcn
+{
+  "content": {
+    "markdown": "# Steel Docs\n\n..."
+  },
+  "metadata": {
+    "title": "Steel Docs",
+    "description": "...",
+    "statusCode": 200,
+    "ogImage": "https://docs.steel.dev/og.png"
+  },
+  "links": [
+    { "url": "https://docs.steel.dev/cookbook", "text": "Cookbook" }
+  ]
+}
+```
+
+#### Bundle a screenshot or PDF
+
+Set `screenshot: true` or `pdf: true` on a scrape call to capture both content and a hosted file in a single request. The screenshot and PDF come back as hosted URLs alongside the scraped content.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const result = await client.scrape({
+  url: "https://docs.steel.dev",
+  format: ["markdown"],
+  screenshot: true,
+  pdf: true,
+});
+
+console.log(result.screenshot?.url);
+console.log(result.pdf?.url);
+```
+
+```python !! Python -wcn
+result = client.scrape(
+    url="https://docs.steel.dev",
+    format=["markdown"],
+    screenshot=True,
+    pdf=True,
+)
+
+print(result.screenshot.url if result.screenshot else None)
+print(result.pdf.url if result.pdf else None)
+```
+</CodeTabs>
+
+
+### Screenshot
+
+`POST /v1/screenshot` returns a hosted PNG. Use `fullPage: true` to capture the entire scrollable page instead of just the viewport.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const result = await client.screenshot({
+  url: "https://docs.steel.dev",
+  fullPage: true,
+});
+
+console.log(result.url); // https://files.steel.dev/v1/static/<id>.png
+```
+
+```python !! Python -wcn
+result = client.screenshot(
+    url="https://docs.steel.dev",
+    full_page=True,
+)
+
+print(result.url)
+```
+</CodeTabs>
+
+The hosted URL is public and durable. Download it like any other PNG:
+
+```typescript !! Typescript -wcn
+import fs from "node:fs";
+
+const response = await fetch(result.url);
+const buffer = Buffer.from(await response.arrayBuffer());
+fs.writeFileSync("page.png", buffer);
+```
+
+
+### PDF
+
+`POST /v1/pdf` renders the page and returns a hosted PDF URL. Same shape as screenshot — one URL in, one URL out.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const result = await client.pdf({
+  url: "https://docs.steel.dev",
+});
+
+console.log(result.url); // https://files.steel.dev/v1/static/<id>.pdf
+```
+
+```python !! Python -wcn
+result = client.pdf(
+    url="https://docs.steel.dev",
+)
+
+print(result.url)
+```
+</CodeTabs>
+
+
+### Shared options
+
+All three endpoints accept the same handful of options for controlling how the page is loaded.
+
+| Option     | Type      | What it does                                                                       |
+| ---------- | --------- | ---------------------------------------------------------------------------------- |
+| `useProxy` | `boolean` | Route the request through a Steel-managed residential proxy. Paid plans only.      |
+| `delay`    | `number`  | Milliseconds to wait after navigation before capturing. Useful for hydrated sites. |
+
+A common pattern for client-rendered pages is to combine `delay` with a residential proxy:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const result = await client.scrape({
+  url: "https://example.com/pricing",
+  format: ["markdown"],
+  delay: 5000,
+  useProxy: true,
+});
+```
+
+```python !! Python -wcn
+result = client.scrape(
+    url="https://example.com/pricing",
+    format=["markdown"],
+    delay=5000,
+    use_proxy=True,
+)
+```
+</CodeTabs>
+
+:::callout
+type: warn
+### Hobby plans cannot use Steel proxies on Browser Tools
+`useProxy: true` returns `402 Payment Required` on the hobby plan. Upgrade, or pass your own proxy by opening a [Session](/overview/sessions-api/overview) and scraping through it.
+:::
+
+
+### Errors
+
+| Status | Meaning                                                          |
+| ------ | ---------------------------------------------------------------- |
+| 402    | `useProxy: true` requested on a plan that does not allow it.     |
+| 408    | The browser timed out before completing the action.              |
+| 429    | Concurrent session limit for your plan reached, or 20 RPM hit.   |
+| 503    | No browser capacity available right now. Safe to retry.          |
+
+
+### When to use Sessions instead
+
+Browser Tools are stateless. Each call opens a fresh browser, performs the action, and tears down. Reach for a [Session](/overview/sessions-api/overview) when you need to:
+
+- Persist cookies or local storage across navigations
+- Submit forms, click through flows, or interact with the page
+- Pin a proxy to a specific country (`useProxy: { geolocation: { country } }`)
+- Reuse an authenticated profile or extension
+
+You can still scrape, screenshot, or generate a PDF from inside a session — the Browser Tools endpoints are just the shortcut when you don't need the rest.
+
+
+:::callout
+type: help
+### Need help with Browser Tools?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::
