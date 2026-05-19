@@ -16,6 +16,7 @@
     "...captchas-api",
     "...profiles-api",
     "...self-hosting",
+    "...browser-tools",
     "...stealth",
     "llms-full.txt",
     "legal"
