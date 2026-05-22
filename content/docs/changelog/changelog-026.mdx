@@ -2,13 +2,13 @@
 title: "Changelog #026"
 sidebarTitle: "Changelog #026"
 llm: true
-image: "/images/changelog-placeholder-white.jpeg"
+image: "/images/changelog/26.png"
 imageAlt: "Announcing Changelog #026"
 ---
 import Image from 'next/image';
 
 <Image
-  src="/images/changelog-placeholder-white.jpeg"
+  src="/images/changelog/26.png"
   alt="Announcing Changelog #026"
   width={800}
   height={400}
@@ -21,19 +21,7 @@ Hey everyone — this week was mostly about observability and browser behavior. 
 
 The session viewer now includes agent traces, with browser interaction markers and a synced log timeline for reviewing what an agent did during a run.
 
-### 🔧 Improvements
-
-*   Sessions now support dynamic user agents in session configuration.
-
-*   Steel API now accepts API keys in the Authorization bearer header, with stricter token validation and clearer auth errors.
-
-*   Usage and billing now support browser metering in seconds, and the usage page was updated to reflect the new billing display.
-
-*   Managed browsers now have broader fingerprinting and stealth coverage, including improved plugins and mimeTypes spoofing, fuller userAgentData spoofing, and better worker and service worker protection.
-
-*   Docs now include a dedicated browser tools section.
-
-*   Browser infrastructure tuning updated VM CPU allocation and density.
+Check out our [blog post](https://steel.dev/blog/agent-traces) on it.
 
 ### 🐛 Bug Fixes
 
@@ -42,3 +30,15 @@ The session viewer now includes agent traces, with browser interaction markers a
 *   Improved session release handling to make session shutdown more durable, resilient, and lower-latency.
 
 *   Corrected Puppeteer's default viewport handling in CDP connections.
+
+### 🔧 Improvements
+
+*   Steel API now accepts API keys in the Authorization bearer header, with stricter token validation and clearer auth errors.
+
+*   Managed browsers now have broader fingerprinting and stealth coverage, including improved plugins and mimeTypes spoofing, fuller userAgentData spoofing, and better worker and service worker protection.
+
+*   Docs now include a dedicated browser tools section (`/scrape`, `/screenshot` and `/pdf`).
+
+*   Browser infrastructure tuning updated VM CPU allocation and density.
+
+
