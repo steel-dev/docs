@@ -6,7 +6,7 @@ llm: true
 publishedAt: "2026-05-22"
 ---
 
-The Agent Traces tab lives in the session viewer console, next to Console Logs and Network. It's available on every session — open one from the dashboard and switch tabs.
+The Agent Traces tab lives in the session viewer console, next to Console Logs and Network. Open a session from the dashboard and switch tabs.
 
 {/* TODO: screenshot placeholder — close-up of the timeline column with rows */}
 ![Timeline column in the session viewer](/images/agent-traces/timeline.png)
@@ -18,8 +18,8 @@ Each row is one coalesced activity. From left to right:
 | Element | What it shows |
 | ------- | ------------- |
 | **Icon + verb** | `click`, `double-click`, `typed`, `key press`, `navigate`, `scroll`, `drag`, `submit`, or `error`. Color-coded for scanning. |
-| **Target label** | The most human-readable name we can derive — accessible name → ARIA label → placeholder → visible text → test-id → tag summary. So you see `Sign in`, not `<button class="x-3f9a">`. |
-| **Page context** | The URL the activity happened on. Consecutive rows on the same page are grouped so a stretch reads as a chapter. |
+| **Target label** | The most readable name available for the element: accessible name, then ARIA label, placeholder, visible text, test-id, or tag summary. So you see `Sign in`, not `<button class="x-3f9a">`. |
+| **Page context** | The URL the activity happened on. Consecutive rows on the same page are grouped, so a stretch of activity reads as one section. |
 | **Timestamp** | Wall clock plus an offset from session start (e.g. `0:02.345`) for cross-referencing with the video. |
 
 Rows read like sentences: `click on Sign in`, `input(len=17) on Email field`, `navigate to /home`.
@@ -36,31 +36,30 @@ The timeline collapses noisy interaction bursts into the unit you'd actually des
 | Reloading the same URL twice | One `navigate` row |
 | More than 10 seconds with no activity | An `idle 23s` divider between the surrounding rows |
 
-The idle dividers are especially useful for telling thinking apart from acting in long agent runs.
+The idle dividers help separate thinking from acting in long agent runs.
 
 ### Video sync
 
-The timeline and the video are two views of the same thing.
+The timeline and the video are linked. Clicking a row seeks the video to that exact frame. The seek uses HLS program-date-time, so it's frame-accurate, not estimated from row index.
 
-- **Click a row** → the video seeks to that exact frame. The seek uses HLS program-date-time, so it's frame-accurate, not estimated from row index.
-- **Markers on the scrubber** — every activity gets a small color-coded tick on the video progress bar, matching the timeline icon colors. You can see at a glance where the dense bursts of work were and where the agent was idle.
-- **Hover the scrubber** — the bar expands and shows a thumbnail preview at that timestamp. Drag along it to scrub.
-- **Active highlight** — as the video plays, the marker nearest the current frame lights up and the matching row highlights in the timeline. Hover a marker on the bar and the row scrolls into view.
+Every activity also gets a small color-coded tick on the video progress bar, matching the timeline icon colors. You can see at a glance where the dense bursts of work were and where the agent was idle. Hovering the scrubber expands it and shows a thumbnail preview at that timestamp. Drag along the bar to scrub.
+
+As the video plays, the marker nearest the current frame lights up and the matching row highlights in the timeline. Hover a marker on the bar and the row scrolls into view.
 
 {/* TODO: screenshot placeholder — scrubber with color-coded markers and hover thumbnail */}
 ![Scrubber markers synced with the timeline](/images/agent-traces/scrubber.png)
 
 ### The detail drawer
 
-Click anywhere on a row (not just the icon) and it expands inline.
+Click anywhere on a row (not just the icon) and it expands inline. The drawer contains:
 
-- **Element details** — tag, role, accessible name, every attribute that was on the element (`id`, `class`, `name`, `aria-*`, `href`, `data-testid`, `type`, `placeholder`…) and a bounding box.
-- **Selectors** — a prioritized list of how to find this element again: `testId → id → aria → name → CSS → XPath`. This is the same priority Steel uses internally to pick the canonical selector for an element.
-- **Pointer or keyboard details** — exact `x`/`y`, button, click count, key code, modifiers, when relevant.
-- **Page URL** at the moment the activity happened.
-- **Raw JSON** of the underlying event, with a copy button.
-- **Thumbnail** of the video frame at that instant. Click it for a full-size preview.
-- **Duration** — for coalesced runs (the typing burst, the rapid click sequence) the drawer shows how long the run took.
+- Element details: tag, role, accessible name, every attribute that was on the element (`id`, `class`, `name`, `aria-*`, `href`, `data-testid`, `type`, `placeholder`...), and a bounding box.
+- A prioritized list of selectors for finding the element again: `testId`, `id`, `aria`, `name`, `CSS`, `XPath`. This is the same priority Steel uses internally to pick the canonical selector for an element.
+- Pointer or keyboard details when relevant: exact `x` and `y`, button, click count, key code, modifiers.
+- The page URL at the moment the activity happened.
+- Raw JSON of the underlying event, with a copy button.
+- A thumbnail of the video frame at that instant. Click it for a full-size preview.
+- For coalesced runs (a typing burst, a rapid click sequence), the duration of the run.
 
 For `navigate` rows there's also an **Open** button that opens the URL in a new tab.
 
@@ -69,7 +68,7 @@ For `navigate` rows there's also an **Open** button that opens the URL in a new 
 
 ### Live updates
 
-For sessions that are currently running, the timeline streams in real time over a WebSocket. New activities arrive incrementally, get deduplicated against what's already on screen, sorted into place, and re-collapsed. Watching a live run feels like watching the agent think out loud, action by action.
+For sessions that are currently running, the timeline streams in real time over a WebSocket. New activities arrive incrementally, get deduplicated against what's already on screen, sorted into place, and re-collapsed.
 
 When the session ends, the same data is available statically via [the REST endpoint](/overview/agent-traces/api).
 
@@ -85,7 +84,7 @@ Three export formats, all reachable from the Agent Traces tab on a finished sess
 
 #### Copy as markdown
 
-This is the export designed for AI agents. The output reads like a recipe an automation agent could re-execute — and that's the explicit intent.
+This is the export built for AI agents. The output reads like a recipe an automation agent could re-execute.
 
 The format includes:
 
@@ -105,7 +104,7 @@ A trimmed example:
 
 This document is an exported timeline of a recorded browser session.
 Each step is one activity the agent took. Selectors are listed in
-priority order (testId → id → aria → name → CSS → XPath).
+priority order (testId, id, aria, name, CSS, XPath).
 
 ## https://example.com/login
 
@@ -131,15 +130,15 @@ priority order (testId → id → aria → name → CSS → XPath).
 6. **navigate** to `https://example.com/home` *(0:18.120)*
 ```
 
-Paste it into Claude Code, Codex, OpenCode, or Cursor with `write me a Steel script that reproduces this run` — the selectors, step structure, and timing are designed for exactly that.
+Paste it into Claude Code, Codex, OpenCode, or Cursor with `write me a Steel script that reproduces this run`. The selectors, step structure, and timing are already in the right shape for that.
 
 #### Download JSON
 
-The JSON export matches the [API response shape](/overview/agent-traces/api) — `{ events, total, hasMore }` with one `AgentActivity` per row. Use it when you want to filter, diff, or feed the run into your own tooling rather than another LLM.
+The JSON export matches the [API response shape](/overview/agent-traces/api): `{ events, total, hasMore }` with one `AgentActivity` per row. Use it when you want to filter, diff, or feed the run into your own tooling rather than another LLM.
 
 #### Download ZIP
 
-The ZIP bundles the markdown document with screenshots of each page state taken at the moment the agent first landed there. The screenshots are referenced inline from the markdown, so unzipping and opening the `.md` gives you a faithful, portable transcript. Good for sharing a run outside the dashboard — bug reports, customer support tickets, post-mortems.
+The ZIP bundles the markdown document with screenshots of each page state, taken at the moment the agent first landed there. The screenshots are referenced inline from the markdown, so unzipping and opening the `.md` gives you a portable transcript. Good for sharing a run outside the dashboard: bug reports, customer support tickets, post-mortems.
 
 :::callout
 type: tip

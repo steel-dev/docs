@@ -1,12 +1,12 @@
 ---
 title: Agent Traces
 sidebarTitle: Overview
-description: Every recorded session is a readable timeline of what the agent did — synced frame-by-frame to the video and exportable as a prompt for the next agent.
+description: Every recorded session becomes a readable timeline of what the agent did, synced frame-by-frame with the video and exportable as a prompt for the next agent.
 llm: true
 publishedAt: "2026-05-22"
 ---
 
-Open any recorded session in the dashboard and you'll find an **Agent Traces** tab next to Console Logs and Network. It turns the whole run into a timeline of semantic activities — clicks, typing, scrolling, navigations, drags, errors — each one tied to the exact frame in the session recording.
+Open any recorded session in the dashboard and you'll find an **Agent Traces** tab next to Console Logs and Network. It turns the whole run into a timeline of semantic activities (clicks, typing, scrolling, navigations, drags, errors), each tied to the exact frame in the session recording.
 
 {/* TODO: screenshot placeholder — full session viewer with Agent Traces tab active */}
 ![Agent Traces tab in the session viewer](/images/agent-traces/overview.png)
@@ -16,23 +16,23 @@ Open any recorded session in the dashboard and you'll find an **Agent Traces** t
 | Capability | What it does |
 | ---------- | ------------ |
 | **Timeline** | One row per coalesced activity, with a verb, human-readable target label, page URL, and timestamp. |
-| **Video sync** | Click a row → the video seeks to that frame. Markers on the scrubber show where the action was. |
+| **Video sync** | Click a row, the video seeks to that frame. Markers on the scrubber show where the action was. |
 | **Detail drawer** | Expand any row for element attributes, selector priority, pointer/keyboard details, and raw JSON. |
 | **Live updates** | While a session is running, new activities stream over a WebSocket. |
 | **Exports** | Copy the whole run as markdown (built for pasting into another agent), download JSON, or grab a ZIP with markdown plus screenshots. |
 
 ### How it works
 
-Three layers, same data:
+**Capture.** Steel injects an in-page script that listens to real DOM events and emits records carrying full element metadata: tag, role, accessible name, every attribute that was on the element, and a bounding box. Sessions recorded before this layer existed fall back to raw CDP input events. The timeline still renders, but without selectors or labels.
 
-- **Capture** — Steel injects an in-page script that listens to real DOM events and emits records with full element metadata (tag, role, accessible name, attributes, bounding box). Sessions recorded before this layer existed fall back to raw CDP input events — same timeline shape, but without selectors or labels.
-- **Normalize** — noisy streams collapse into meaningful units. 10 keypresses become one `input(len=10)`, two clicks within 500ms become a `double-click`, a redirect chain becomes one `navigate` per distinct URL. Selectors are sorted into priority order (`testId → id → aria → name → CSS → XPath`) — this is what makes the markdown export replayable, not just readable. Stretches of inactivity longer than 10 seconds become `idle Xs` dividers.
-- **Present** — the same activities surface in the session viewer (live or replay), through the REST endpoint, over a WebSocket while the session is running, and as the markdown / JSON / ZIP exports.
+**Normalize.** Noisy streams collapse into meaningful units. 10 keypresses become one `input(len=10)`. Two clicks within 500ms become a `double-click`. A redirect chain becomes one `navigate` per distinct URL. Selectors are sorted into priority order (`testId`, `id`, `aria`, `name`, `CSS`, `XPath`), which is what makes the markdown export replayable rather than just readable. Stretches of inactivity longer than 10 seconds become `idle Xs` dividers.
+
+**Present.** The same activities surface in the session viewer (live or replay), through the REST endpoint, over a WebSocket while the session is running, and as the markdown, JSON, and ZIP exports.
 
 :::callout
 type: info
-### Captured by the browser, not the agent
-Activities are emitted by an in-page script reading real browser DOM events — they record what the browser observed, not what the agent reported. So `target.label` reflects the page as it actually rendered, which makes the trace usable as an independent record of what an agent saw at any moment.
+### Where the data comes from
+Activities are emitted by an in-page script reading real DOM events. They record what the browser observed, not what the agent reported. So `target.label` reflects what the page actually rendered, which makes the trace usable as an independent record of what an agent saw at any moment.
 :::
 
 ### Quick look at the API
@@ -67,21 +67,24 @@ curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
 
 See the [API reference](/overview/agent-traces/api) for the full event shape and the live WebSocket channel.
 
-### What this unlocks
+### Use cases
 
-- **Debug without scrubbing video** — find the error row in the timeline, click it. The video seeks to the failure, the drawer shows the element the agent was interacting with and the error message. Two clicks instead of ten minutes of scrubbing.
-- **Reproduce a run as code** — paste the markdown export into Claude Code, Codex, or Cursor with "write me a Steel script that reproduces this." Selector priority is already done — the export is shaped so an LLM can re-execute it.
-- **Evaluate agent versions** — replay the same task against different models or prompts, then diff the traces. Did the new version pick a better selector, take fewer steps, or spend less time idle?
-- **Audit what an agent actually did** — a timestamped, video-synced record of every interaction in one scrollable view. Useful for customer support investigations, trust and safety reviews, and post-mortems.
+**Debugging an agent run.** Find the error row in the timeline, click it. The video seeks to the failure and the drawer shows the element the agent was interacting with along with the error message. Two clicks instead of ten minutes of scrubbing.
 
-### Two endpoints, one rule
+**Reproducing a run as code.** Paste the markdown export into Claude Code, Codex, or Cursor with "write me a Steel script that reproduces this." Selectors are already in priority order, and the export is shaped so an LLM can re-execute it.
 
-Agent Traces is the **semantic** timeline. Steel injects an in-page script that listens to real DOM events and emits records with full target metadata — that's how a click becomes `click on Sign in` instead of `mouseDown at (412, 287)`.
+**Evaluating agent versions.** Replay the same task against different models or prompts, then diff the traces to see which version picked better selectors, took fewer steps, or spent less time idle.
+
+**Auditing what an agent actually did.** A timestamped, video-synced record of every interaction in one scrollable view. Useful for customer support investigations, safety reviews, and post-mortems.
+
+### Endpoints
+
+Two REST endpoints plus a WebSocket. Use `/agent-traces` unless you specifically need raw CDP data.
 
 | Endpoint | Use when |
 | -------- | -------- |
 | `GET /v1/sessions/:id/agent-traces` | **Default.** Semantic activities with selectors, labels, and bounding boxes. Empty array on sessions recorded before semantic capture existed. |
-| `GET /v1/sessions/:id/agent-logs` | Backward-compatible. Raw CDP-derived events (coordinates, key codes, URLs). Retained for legacy sessions. |
+| `GET /v1/sessions/:id/agent-logs` | Backward compatible. Raw CDP-derived events (coordinates, key codes, URLs). Retained for legacy sessions. |
 
 :::callout
 type: info

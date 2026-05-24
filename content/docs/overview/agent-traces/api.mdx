@@ -6,17 +6,17 @@ llm: true
 publishedAt: "2026-05-22"
 ---
 
-Agent Traces are available over the same API as the rest of Steel. Two authenticated endpoints plus a WebSocket channel.
+Agent Traces are available over the same API as the rest of Steel: two authenticated endpoints plus a WebSocket channel.
 
 | Endpoint | Purpose |
 | -------- | ------- |
 | `GET /v1/sessions/:id/agent-traces` | **Use this one.** Semantic timeline with selectors, target labels, and bounding boxes. |
-| `GET /v1/sessions/:id/agent-logs` | Backward-compatible. Raw CDP-derived events (coordinates, key codes, URLs). Lower-level. |
+| `GET /v1/sessions/:id/agent-logs` | Backward compatible. Raw CDP-derived events (coordinates, key codes, URLs). Lower level. |
 | `WS /v1/sessions/:id/agent-traces/stream` | Live stream of new activities while a session is running. |
 
 ### GET /v1/sessions/:id/agent-traces
 
-Returns the full semantic timeline for a finished or in-progress session. For sessions recorded before semantic capture existed the endpoint returns an empty `events` array — fall back to `/agent-logs` only if you specifically need to support legacy sessions.
+Returns the full semantic timeline for a finished or in-progress session. For sessions recorded before semantic capture existed the endpoint returns an empty `events` array. Fall back to `/agent-logs` only if you need to support legacy sessions.
 
 ```bash !! curl -wcn
 curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
@@ -79,7 +79,7 @@ The `target` object is the human-readable layer the UI displays:
 }
 ```
 
-Selectors are listed in priority order — `testId → id → aria → name → CSS → XPath`. The first non-null value is the canonical selector Steel uses internally.
+Selectors are listed in priority order: `testId`, `id`, `aria`, `name`, `CSS`, `XPath`. The first non-null value is the canonical selector Steel uses internally.
 
 #### Per-type fields
 
@@ -111,13 +111,13 @@ ws.addEventListener("message", (event) => {
 });
 ```
 
-Each message is one `AgentActivity` in the same shape as the REST response. New activities arrive incrementally and may supersede earlier ones — for example a second click within 500ms of the first arrives as a `double-click` that replaces both rows in the dashboard. If you're rendering your own UI, deduplicate on `(timestamp, type, target.selectors.css)` and re-collapse on receipt.
+Each message is one `AgentActivity` in the same shape as the REST response. New activities arrive incrementally and may supersede earlier ones. For example, a second click within 500ms of the first arrives as a `double-click` that replaces both rows in the dashboard. If you're rendering your own UI, deduplicate on `(timestamp, type, target.selectors.css)` and re-collapse on receipt.
 
 When the session ends the socket closes. The same activities are then available statically from the REST endpoint.
 
-### Backwards compatibility: /agent-logs
+### Legacy endpoint: /agent-logs
 
-`GET /v1/sessions/:id/agent-logs` returns raw CDP-derived events — coordinates, key codes, URLs — without semantic enrichment. It exists for legacy sessions recorded before semantic capture existed, and for callers that want the lower-level signal. New integrations should use `/agent-traces`.
+`GET /v1/sessions/:id/agent-logs` returns raw CDP-derived events (coordinates, key codes, URLs) without semantic enrichment. It exists for legacy sessions recorded before semantic capture existed, and for callers that want the lower-level signal. New integrations should use `/agent-traces`.
 
 ```bash !! curl -wcn
 curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-logs \
