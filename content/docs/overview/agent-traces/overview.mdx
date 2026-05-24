@@ -21,6 +21,20 @@ Open any recorded session in the dashboard and you'll find an **Agent Traces** t
 | **Live updates** | While a session is running, new activities stream over a WebSocket. |
 | **Exports** | Copy the whole run as markdown (built for pasting into another agent), download JSON, or grab a ZIP with markdown plus screenshots. |
 
+### How it works
+
+Three layers, same data:
+
+- **Capture** — Steel injects an in-page script that listens to real DOM events and emits records with full element metadata (tag, role, accessible name, attributes, bounding box). Sessions recorded before this layer existed fall back to raw CDP input events — same timeline shape, but without selectors or labels.
+- **Normalize** — noisy streams collapse into meaningful units. 10 keypresses become one `input(len=10)`, two clicks within 500ms become a `double-click`, a redirect chain becomes one `navigate` per distinct URL. Selectors are sorted into priority order (`testId → id → aria → name → CSS → XPath`) — this is what makes the markdown export replayable, not just readable. Stretches of inactivity longer than 10 seconds become `idle Xs` dividers.
+- **Present** — the same activities surface in the session viewer (live or replay), through the REST endpoint, over a WebSocket while the session is running, and as the markdown / JSON / ZIP exports.
+
+:::callout
+type: info
+### Captured by the browser, not the agent
+Activities are emitted by an in-page script reading real browser DOM events — they record what the browser observed, not what the agent reported. So `target.label` reflects the page as it actually rendered, which makes the trace usable as an independent record of what an agent saw at any moment.
+:::
+
 ### Quick look at the API
 
 For finished sessions, fetch the semantic timeline as JSON:
@@ -53,11 +67,12 @@ curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
 
 See the [API reference](/overview/agent-traces/api) for the full event shape and the live WebSocket channel.
 
-### Three things this unlocks
+### What this unlocks
 
-- **Debugging agent runs**: scroll the timeline, spot the error row, click it. The video jumps to the failure and the drawer shows the element and message. No more scrubbing video looking for the moment something broke.
-- **Reproducing a flow as code**: copy the run as markdown, paste it into Claude Code, Codex, or Cursor with "write me a Steel script that reproduces this." The selectors, step structure, and timing are already there.
-- **Auditing**: a human-readable record of every interaction, with timestamps, in one scrollable view. Useful for trust and safety reviews, customer support investigations, and post-mortems.
+- **Debug without scrubbing video** — find the error row in the timeline, click it. The video seeks to the failure, the drawer shows the element the agent was interacting with and the error message. Two clicks instead of ten minutes of scrubbing.
+- **Reproduce a run as code** — paste the markdown export into Claude Code, Codex, or Cursor with "write me a Steel script that reproduces this." Selector priority is already done — the export is shaped so an LLM can re-execute it.
+- **Evaluate agent versions** — replay the same task against different models or prompts, then diff the traces. Did the new version pick a better selector, take fewer steps, or spend less time idle?
+- **Audit what an agent actually did** — a timestamped, video-synced record of every interaction in one scrollable view. Useful for customer support investigations, trust and safety reviews, and post-mortems.
 
 ### Two endpoints, one rule
 
