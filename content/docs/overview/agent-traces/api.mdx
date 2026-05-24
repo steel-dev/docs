@@ -1,0 +1,140 @@
+---
+title: Agent Traces API
+sidebarTitle: API
+description: Fetch the semantic timeline of any session as JSON, or subscribe to live activities over a WebSocket as the agent runs.
+llm: true
+publishedAt: "2026-05-22"
+---
+
+Agent Traces are available over the same API as the rest of Steel. Two authenticated endpoints plus a WebSocket channel.
+
+| Endpoint | Purpose |
+| -------- | ------- |
+| `GET /v1/sessions/:id/agent-traces` | **Use this one.** Semantic timeline with selectors, target labels, and bounding boxes. |
+| `GET /v1/sessions/:id/agent-logs` | Backward-compatible. Raw CDP-derived events (coordinates, key codes, URLs). Lower-level. |
+| `WS /v1/sessions/:id/agent-traces/stream` | Live stream of new activities while a session is running. |
+
+### GET /v1/sessions/:id/agent-traces
+
+Returns the full semantic timeline for a finished or in-progress session. For sessions recorded before semantic capture existed the endpoint returns an empty `events` array — fall back to `/agent-logs` only if you specifically need to support legacy sessions.
+
+```bash !! curl -wcn
+curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
+  -H "steel-api-key: $STEEL_API_KEY"
+```
+
+```javascript !! fetch -wcn
+const response = await fetch(
+  `https://api.steel.dev/v1/sessions/${sessionId}/agent-traces`,
+  { headers: { "steel-api-key": process.env.STEEL_API_KEY } },
+);
+
+const { events, total, hasMore } = await response.json();
+```
+
+#### Response shape
+
+```json !! JSON -wcn
+{
+  "events": [ /* AgentActivity[] */ ],
+  "total": 42,
+  "hasMore": false
+}
+```
+
+Each `AgentActivity` shares a common envelope:
+
+| Field | Type | Notes |
+| ----- | ---- | ----- |
+| `type` | `"click" \| "input" \| "navigate" \| "scroll" \| "drag" \| "keyPress" \| "submit" \| "error"` | The verb shown in the timeline. |
+| `timestamp` | ISO 8601 string | Wall clock when the activity happened. |
+| `offsetMs` | number | Milliseconds from session start. Used for video sync. |
+| `url` | string | Page URL at the moment of the activity. |
+| `target` | object | Element metadata (see below). Absent on `navigate`. |
+| `duration` | number | Present on coalesced runs (typing bursts, rapid clicks). Milliseconds. |
+| `raw` | object | The underlying browser event. Shape varies by `type`. |
+
+The `target` object is the human-readable layer the UI displays:
+
+```json !! target -wcn
+{
+  "label": "Sign in",
+  "tag": "button",
+  "role": "button",
+  "accessibleName": "Sign in",
+  "boundingBox": { "x": 504, "y": 392, "width": 96, "height": 36 },
+  "attributes": {
+    "data-testid": "sign-in",
+    "type": "submit",
+    "class": "btn btn-primary"
+  },
+  "selectors": {
+    "testId": "[data-testid=sign-in]",
+    "id": null,
+    "aria": "[aria-label='Sign in']",
+    "name": null,
+    "css": "button[data-testid=sign-in]",
+    "xpath": "//button[@data-testid='sign-in']"
+  }
+}
+```
+
+Selectors are listed in priority order — `testId → id → aria → name → CSS → XPath`. The first non-null value is the canonical selector Steel uses internally.
+
+#### Per-type fields
+
+A handful of activity types carry extra fields beyond the common envelope.
+
+| Type | Extra fields |
+| ---- | ------------ |
+| `click`, `drag` | `x`, `y`, `button`, `clickCount`, `modifiers` |
+| `input` | `length` (number of characters), `redacted` (boolean), `value` (omitted if redacted) |
+| `keyPress` | `key`, `code`, `modifiers` |
+| `navigate` | `fromUrl`, `toUrl`, `reloaded` (boolean) |
+| `scroll` | `deltaX`, `deltaY`, `scrollTop` |
+| `submit` | `formSelectors`, `fields` (array of `{ name, length, redacted }`) |
+| `error` | `message`, `stack`, `source` (`"page" \| "browser"`) |
+
+### Live stream over WebSocket
+
+Subscribe to new activities as they happen.
+
+```javascript !! fetch -wcn
+const ws = new WebSocket(
+  `wss://api.steel.dev/v1/sessions/${sessionId}/agent-traces/stream`,
+  ["steel-api-key", process.env.STEEL_API_KEY],
+);
+
+ws.addEventListener("message", (event) => {
+  const activity = JSON.parse(event.data);
+  console.log(activity.type, activity.target?.label);
+});
+```
+
+Each message is one `AgentActivity` in the same shape as the REST response. New activities arrive incrementally and may supersede earlier ones — for example a second click within 500ms of the first arrives as a `double-click` that replaces both rows in the dashboard. If you're rendering your own UI, deduplicate on `(timestamp, type, target.selectors.css)` and re-collapse on receipt.
+
+When the session ends the socket closes. The same activities are then available statically from the REST endpoint.
+
+### Backwards compatibility: /agent-logs
+
+`GET /v1/sessions/:id/agent-logs` returns raw CDP-derived events — coordinates, key codes, URLs — without semantic enrichment. It exists for legacy sessions recorded before semantic capture existed, and for callers that want the lower-level signal. New integrations should use `/agent-traces`.
+
+```bash !! curl -wcn
+curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-logs \
+  -H "steel-api-key: $STEEL_API_KEY"
+```
+
+### Errors
+
+| Status | Meaning |
+| ------ | ------- |
+| 401 | Missing or invalid `steel-api-key`. |
+| 403 | The session belongs to a different organization. |
+| 404 | No session with that ID. |
+| 429 | Rate limit hit. Retry after the `Retry-After` header. |
+
+:::callout
+type: help
+### Need help with the Agent Traces API?
+Reach out on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::

@@ -1,0 +1,81 @@
+---
+title: Agent Traces
+sidebarTitle: Overview
+description: Every recorded session is a readable timeline of what the agent did — synced frame-by-frame to the video and exportable as a prompt for the next agent.
+llm: true
+publishedAt: "2026-05-22"
+---
+
+Open any recorded session in the dashboard and you'll find an **Agent Traces** tab next to Console Logs and Network. It turns the whole run into a timeline of semantic activities — clicks, typing, scrolling, navigations, drags, errors — each one tied to the exact frame in the session recording.
+
+{/* TODO: screenshot placeholder — full session viewer with Agent Traces tab active */}
+![Agent Traces tab in the session viewer](/images/agent-traces/overview.png)
+
+### What you get
+
+| Capability | What it does |
+| ---------- | ------------ |
+| **Timeline** | One row per coalesced activity, with a verb, human-readable target label, page URL, and timestamp. |
+| **Video sync** | Click a row → the video seeks to that frame. Markers on the scrubber show where the action was. |
+| **Detail drawer** | Expand any row for element attributes, selector priority, pointer/keyboard details, and raw JSON. |
+| **Live updates** | While a session is running, new activities stream over a WebSocket. |
+| **Exports** | Copy the whole run as markdown (built for pasting into another agent), download JSON, or grab a ZIP with markdown plus screenshots. |
+
+### Quick look at the API
+
+For finished sessions, fetch the semantic timeline as JSON:
+
+```bash !! curl -wcn
+curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
+  -H "steel-api-key: $STEEL_API_KEY"
+```
+
+```json !! Response -wcn
+{
+  "events": [
+    {
+      "type": "click",
+      "timestamp": "2026-05-22T18:03:21.345Z",
+      "offsetMs": 2345,
+      "url": "https://example.com/login",
+      "target": {
+        "label": "Sign in",
+        "tag": "button",
+        "role": "button",
+        "selectors": { "testId": "sign-in", "css": "button[data-testid=sign-in]" }
+      }
+    }
+  ],
+  "total": 1,
+  "hasMore": false
+}
+```
+
+See the [API reference](/overview/agent-traces/api) for the full event shape and the live WebSocket channel.
+
+### Three things this unlocks
+
+- **Debugging agent runs**: scroll the timeline, spot the error row, click it. The video jumps to the failure and the drawer shows the element and message. No more scrubbing video looking for the moment something broke.
+- **Reproducing a flow as code**: copy the run as markdown, paste it into Claude Code, Codex, or Cursor with "write me a Steel script that reproduces this." The selectors, step structure, and timing are already there.
+- **Auditing**: a human-readable record of every interaction, with timestamps, in one scrollable view. Useful for trust and safety reviews, customer support investigations, and post-mortems.
+
+### Two endpoints, one rule
+
+Agent Traces is the **semantic** timeline. Steel injects an in-page script that listens to real DOM events and emits records with full target metadata — that's how a click becomes `click on Sign in` instead of `mouseDown at (412, 287)`.
+
+| Endpoint | Use when |
+| -------- | -------- |
+| `GET /v1/sessions/:id/agent-traces` | **Default.** Semantic activities with selectors, labels, and bounding boxes. Empty array on sessions recorded before semantic capture existed. |
+| `GET /v1/sessions/:id/agent-logs` | Backward-compatible. Raw CDP-derived events (coordinates, key codes, URLs). Retained for legacy sessions. |
+
+:::callout
+type: info
+### Where to go next
+Read [Timeline and exports](/overview/agent-traces/timeline) for the dashboard UI and the markdown/JSON/ZIP export formats, or jump to the [API reference](/overview/agent-traces/api) for the event schema and live stream.
+:::
+
+:::callout
+type: help
+### Need help with Agent Traces?
+Reach out on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::

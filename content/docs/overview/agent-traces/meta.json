@@ -1,0 +1,5 @@
+{
+  "title": "Agent Traces",
+  "root": false,
+  "pages": ["---Agent Traces---", "overview", "timeline", "api"]
+}
