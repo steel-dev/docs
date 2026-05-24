@@ -8,9 +8,6 @@ publishedAt: "2026-05-22"
 
 Open any recorded session in the dashboard and you'll find an **Agent Traces** tab next to Console Logs and Network. It turns the whole run into a timeline of semantic activities (clicks, typing, scrolling, navigations, drags, errors), each tied to the exact frame in the session recording.
 
-{/* TODO: screenshot placeholder — full session viewer with Agent Traces tab active */}
-![Agent Traces tab in the session viewer](/images/agent-traces/overview.png)
-
 ### What you get
 
 | Capability | What it does |
@@ -25,7 +22,7 @@ Open any recorded session in the dashboard and you'll find an **Agent Traces** t
 
 **Capture.** Steel injects an in-page script that listens to real DOM events and emits records carrying full element metadata: tag, role, accessible name, every attribute that was on the element, and a bounding box. Sessions recorded before this layer existed fall back to raw CDP input events. The timeline still renders, but without selectors or labels.
 
-**Normalize.** Noisy streams collapse into meaningful units. 10 keypresses become one `input(len=10)`. Two clicks within 500ms become a `double-click`. A redirect chain becomes one `navigate` per distinct URL. Selectors are sorted into priority order (`testId`, `id`, `aria`, `name`, `CSS`, `XPath`), which is what makes the markdown export replayable rather than just readable. Stretches of inactivity longer than 10 seconds become `idle Xs` dividers.
+**Normalize.** Noisy streams collapse into meaningful units. 10 keypresses become one `input(len=10)`. Two clicks within 500ms become one `doubleClick` activity. A redirect chain becomes one `navigate` per distinct URL. Selectors are included as CSS and XPath when available, alongside stable attributes like `data-testid`, `id`, `name`, and `aria-*`, which is what makes the markdown export replayable rather than just readable. Stretches of inactivity longer than 10 seconds become `idle Xs` dividers.
 
 **Present.** The same activities surface in the session viewer (live or replay), through the REST endpoint, over a WebSocket while the session is running, and as the markdown, JSON, and ZIP exports.
 
@@ -50,13 +47,13 @@ curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
     {
       "type": "click",
       "timestamp": "2026-05-22T18:03:21.345Z",
-      "offsetMs": 2345,
-      "url": "https://example.com/login",
+      "page": { "url": "https://example.com/login" },
       "target": {
-        "label": "Sign in",
-        "tag": "button",
+        "tagName": "button",
         "role": "button",
-        "selectors": { "testId": "sign-in", "css": "button[data-testid=sign-in]" }
+        "accessibleName": "Sign in",
+        "attributes": { "data-testid": "sign-in" },
+        "selector": { "css": "button[data-testid=sign-in]" }
       }
     }
   ],
@@ -71,7 +68,7 @@ See the [API reference](/overview/agent-traces/api) for the full event shape and
 
 **Debugging an agent run.** Find the error row in the timeline, click it. The video seeks to the failure and the drawer shows the element the agent was interacting with along with the error message. Two clicks instead of ten minutes of scrubbing.
 
-**Reproducing a run as code.** Paste the markdown export into Claude Code, Codex, or Cursor with "write me a Steel script that reproduces this." Selectors are already in priority order, and the export is shaped so an LLM can re-execute it.
+**Reproducing a run as code.** Paste the markdown export into Claude Code, Codex, or Cursor with "write me a Steel script that reproduces this." Stable attributes and selectors are included, and the export is shaped so an LLM can re-execute it.
 
 **Evaluating agent versions.** Replay the same task against different models or prompts, then diff the traces to see which version picked better selectors, took fewer steps, or spent less time idle.
 
@@ -83,7 +80,7 @@ Two REST endpoints plus a WebSocket. Use `/agent-traces` unless you specifically
 
 | Endpoint | Use when |
 | -------- | -------- |
-| `GET /v1/sessions/:id/agent-traces` | **Default.** Semantic activities with selectors, labels, and bounding boxes. Empty array on sessions recorded before semantic capture existed. |
+| `GET /v1/sessions/:id/agent-traces` | **Default.** Semantic activities with selectors, labels, and bounding boxes. Falls back to lower-detail CDP-derived activities for older sessions when semantic capture is unavailable. |
 | `GET /v1/sessions/:id/agent-logs` | Backward compatible. Raw CDP-derived events (coordinates, key codes, URLs). Retained for legacy sessions. |
 
 :::callout

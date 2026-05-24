@@ -8,16 +8,13 @@ publishedAt: "2026-05-22"
 
 The Agent Traces tab lives in the session viewer console, next to Console Logs and Network. Open a session from the dashboard and switch tabs.
 
-{/* TODO: screenshot placeholder — close-up of the timeline column with rows */}
-![Timeline column in the session viewer](/images/agent-traces/timeline.png)
-
 ### Anatomy of a row
 
 Each row is one coalesced activity. From left to right:
 
 | Element | What it shows |
 | ------- | ------------- |
-| **Icon + verb** | `click`, `double-click`, `typed`, `key press`, `navigate`, `scroll`, `drag`, `submit`, or `error`. Color-coded for scanning. |
+| **Icon + verb** | `click`, `doubleClick`, `input`, `change`, `keyPress`, `navigate`, `scroll`, `drag`, `submit`, or `error`. Color-coded for scanning. |
 | **Target label** | The most readable name available for the element: accessible name, then ARIA label, placeholder, visible text, test-id, or tag summary. So you see `Sign in`, not `<button class="x-3f9a">`. |
 | **Page context** | The URL the activity happened on. Consecutive rows on the same page are grouped, so a stretch of activity reads as one section. |
 | **Timestamp** | Wall clock plus an offset from session start (e.g. `0:02.345`) for cross-referencing with the video. |
@@ -31,7 +28,7 @@ The timeline collapses noisy interaction bursts into the unit you'd actually des
 | Raw activity | Shown as |
 | ------------ | -------- |
 | Typing a 17-character email | One `input(len=17)` row, not 17 keystroke rows |
-| Two clicks on the same target within 500ms | One `double-click` row |
+| Two clicks on the same target within 500ms | One `doubleClick` row |
 | Redirect chain `/login → /auth → /home` | Three `navigate` rows (each step is meaningful) |
 | Reloading the same URL twice | One `navigate` row |
 | More than 10 seconds with no activity | An `idle 23s` divider between the surrounding rows |
@@ -46,15 +43,12 @@ Every activity also gets a small color-coded tick on the video progress bar, mat
 
 As the video plays, the marker nearest the current frame lights up and the matching row highlights in the timeline. Hover a marker on the bar and the row scrolls into view.
 
-{/* TODO: screenshot placeholder — scrubber with color-coded markers and hover thumbnail */}
-![Scrubber markers synced with the timeline](/images/agent-traces/scrubber.png)
-
 ### The detail drawer
 
 Click anywhere on a row (not just the icon) and it expands inline. The drawer contains:
 
 - Element details: tag, role, accessible name, every attribute that was on the element (`id`, `class`, `name`, `aria-*`, `href`, `data-testid`, `type`, `placeholder`...), and a bounding box.
-- A prioritized list of selectors for finding the element again: `testId`, `id`, `aria`, `name`, `CSS`, `XPath`. This is the same priority Steel uses internally to pick the canonical selector for an element.
+- Selectors for finding the element again, including CSS and XPath when available.
 - Pointer or keyboard details when relevant: exact `x` and `y`, button, click count, key code, modifiers.
 - The page URL at the moment the activity happened.
 - Raw JSON of the underlying event, with a copy button.
@@ -62,9 +56,6 @@ Click anywhere on a row (not just the icon) and it expands inline. The drawer co
 - For coalesced runs (a typing burst, a rapid click sequence), the duration of the run.
 
 For `navigate` rows there's also an **Open** button that opens the URL in a new tab.
-
-{/* TODO: screenshot placeholder — expanded drawer showing element details + selectors */}
-![Expanded detail drawer for a click activity](/images/agent-traces/drawer.png)
 
 ### Live updates
 
@@ -91,7 +82,7 @@ The format includes:
 - A built-in preamble that explains its own format, so the receiving agent knows what it's looking at without extra prompting.
 - `##` headings for each page visit.
 - Numbered steps for each activity, with the time offset.
-- Sub-bullets exposing stable identifiers and selectors for each element.
+- Sub-bullets exposing stable attributes and CSS/XPath selectors for each element.
 - `at (x, y)` pointer coordinates and bounding boxes.
 - `*(idle 23s)*` markers between steps.
 - Sensitive values (password fields, credit cards) replaced with `<redacted>`.
@@ -100,41 +91,36 @@ The format includes:
 A trimmed example:
 
 ```markdown !! agent-traces.md -wcn
-# Steel session a3f8...c21 — agent trace
+# Browser session
 
-This document is an exported timeline of a recorded browser session.
-Each step is one activity the agent took. Selectors are listed in
-priority order (testId, id, aria, name, CSS, XPath).
+Recording of a real user's interaction with a web app, structured for replay by an automation agent.
 
 ## https://example.com/login
 
-1. **navigate** to `https://example.com/login` *(0:00.000)*
-2. **click** on **Email** field *(0:02.345)*
-   - selector: `input[data-testid=email]`
-   - at (412, 287)
-3. **input(len=17)** on **Email** field *(0:03.110)*
-   - value: `user@example.com`
-   - selector: `input[data-testid=email]`
-4. **input(len=12)** on **Password** field *(0:04.802)*
-   - value: `<redacted>`
-   - selector: `input[name=password]`
+1. `0:02.345` **Click** textbox "Email" at (412, 287)
+   - testId: `email`
+   - CSS: `input[data-testid=email]`
+2. `0:03.110` **Type** "user@example.com" into textbox "Email"
+   - testId: `email`
+   - CSS: `input[data-testid=email]`
+3. `0:04.802` **Type** <redacted, 12 chars> into textbox "Password"
+   - name: `password`
+   - CSS: `input[name=password]`
 
 *(idle 12s)*
 
-5. **click** on **Sign in** button *(0:17.430)*
-   - selector: `button[data-testid=sign-in]`
-   - at (520, 410)
+4. `0:17.430` **Click** button "Sign in" at (520, 410)
+   - testId: `sign-in`
+   - CSS: `button[data-testid=sign-in]`
 
 ## https://example.com/home
-
-6. **navigate** to `https://example.com/home` *(0:18.120)*
 ```
 
 Paste it into Claude Code, Codex, OpenCode, or Cursor with `write me a Steel script that reproduces this run`. The selectors, step structure, and timing are already in the right shape for that.
 
 #### Download JSON
 
-The JSON export matches the [API response shape](/overview/agent-traces/api): `{ events, total, hasMore }` with one `AgentActivity` per row. Use it when you want to filter, diff, or feed the run into your own tooling rather than another LLM.
+The JSON export contains the session metadata plus one `AgentActivity` per row: `{ session, activities }`. The activity objects use the same event shape as the [API response](/overview/agent-traces/api). Use it when you want to filter, diff, or feed the run into your own tooling rather than another LLM.
 
 #### Download ZIP
 
