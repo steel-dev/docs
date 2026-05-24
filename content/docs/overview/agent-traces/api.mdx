@@ -46,7 +46,7 @@ Each `AgentActivity` shares a common envelope:
 
 | Field | Type | Notes |
 | ----- | ---- | ----- |
-| `type` | `"click" \| "doubleClick" \| "input" \| "change" \| "navigate" \| "scroll" \| "drag" \| "keyPress" \| "submit" \| "error"` | The activity type. |
+| `type` | string | One of `click`, `doubleClick`, `input`, `change`, `navigate`, `scroll`, `drag`, `keyPress`, `submit`, or `error`. |
 | `timestamp` | ISO 8601 string | Wall clock when the activity happened. |
 | `endTimestamp` | ISO 8601 string | Present on some coalesced runs, such as typing bursts or drags. |
 | `page` | object | Usually `{ url }`, when the page URL is known for the activity. |
