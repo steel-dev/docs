@@ -1,22 +1,16 @@
 ---
 title: Agent Traces API
 sidebarTitle: API
-description: Fetch the semantic timeline of any session as JSON, or subscribe to live activities over a WebSocket as the agent runs.
+description: Fetch the activity timeline for a Steel browser session as JSON.
 llm: true
 publishedAt: "2026-05-22"
 ---
 
-Agent Traces are available over the same API as the rest of Steel: two authenticated endpoints plus a WebSocket channel.
-
-| Endpoint | Purpose |
-| -------- | ------- |
-| `GET /v1/sessions/:id/agent-traces` | **Use this one.** Semantic timeline with selectors, target labels, and bounding boxes. |
-| `GET /v1/sessions/:id/agent-logs` | Backward compatible. Raw CDP-derived events (coordinates, key codes, URLs). Lower level. |
-| `WS /v1/sessions/:id/agent-traces` | Live stream of new activities while a session is running. |
+Use the Agent Traces API when you want the same activity timeline shown in the dashboard, but as JSON for analysis, replay, or internal tooling.
 
 ### GET /v1/sessions/:id/agent-traces
 
-Returns the full semantic timeline for a finished or in-progress session. For sessions recorded before semantic capture existed, the endpoint falls back to CDP-derived activities when available. Those fallback rows are useful for timing and coarse replay, but may not include target metadata like selectors, accessible names, or bounding boxes.
+Returns the trace timeline for a finished or in-progress session.
 
 ```bash !! curl -wcn
 curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
@@ -29,93 +23,83 @@ const response = await fetch(
   { headers: { "steel-api-key": process.env.STEEL_API_KEY } },
 );
 
-const { events, total, hasMore } = await response.json();
+const trace = await response.json();
 ```
 
-#### Response shape
+### Response
 
 ```json !! JSON -wcn
 {
-  "events": [ /* AgentActivity[] */ ],
-  "total": 42,
+  "events": [
+    {
+      "type": "click",
+      "timestamp": "2026-05-22T18:03:21.345Z",
+      "page": { "url": "https://example.com/login" },
+      "target": {
+        "role": "button",
+        "accessibleName": "Sign in",
+        "selector": { "css": "button[data-testid=sign-in]" }
+      },
+      "pointer": { "x": 520, "y": 410 }
+    }
+  ],
+  "total": 1,
   "hasMore": false
 }
 ```
 
-Each `AgentActivity` shares a common envelope:
+| Field | Type | Notes |
+| ----- | ---- | ----- |
+| `events` | array | Timeline activities in chronological order. |
+| `total` | number | Number of activities returned. |
+| `hasMore` | boolean | Whether more activity data is available. |
+
+Each activity includes a small common envelope:
 
 | Field | Type | Notes |
 | ----- | ---- | ----- |
-| `type` | string | One of `click`, `doubleClick`, `input`, `change`, `navigate`, `scroll`, `drag`, `keyPress`, `submit`, or `error`. |
-| `timestamp` | ISO 8601 string | Wall clock when the activity happened. |
-| `endTimestamp` | ISO 8601 string | Present on some coalesced runs, such as typing bursts or drags. |
-| `page` | object | Usually `{ url }`, when the page URL is known for the activity. |
-| `target` | object | Element metadata (see below). Absent on `navigate` and some fallback rows. |
+| `type` | string | Activity type, such as `click`, `input`, `navigate`, `scroll`, `drag`, or `error`. |
+| `timestamp` | ISO 8601 string | When the activity happened. |
+| `endTimestamp` | ISO 8601 string | Present when the activity spans a range of time. |
+| `page` | object | Page context, usually including `url`. |
+| `target` | object | Element context when available. |
 
-The `target` object is the human-readable layer the UI displays:
+Activity-specific details appear when relevant. For example, click activities can include `pointer`, typing activities can include `value`, keyboard activities can include `keyboard`, navigation activities can include `navigation`, and error activities can include `error`.
+
+### Target Details
+
+When Steel can identify the element involved in an activity, `target` can include readable labels and useful selectors:
 
 ```json !! target -wcn
 {
-  "tagName": "button",
   "role": "button",
   "accessibleName": "Sign in",
   "text": "Sign in",
-  "boundingBox": { "x": 504, "y": 392, "width": 96, "height": 36 },
   "attributes": {
     "data-testid": "sign-in",
-    "type": "submit",
-    "class": "btn btn-primary"
+    "type": "submit"
   },
   "selector": {
-    "css": "button[data-testid=sign-in]",
-    "xpath": "//button[@data-testid='sign-in']"
+    "css": "button[data-testid=sign-in]"
   }
 }
 ```
 
-Use `target.selector.css` first when it is present. `target.selector.xpath` is included as a fallback, and stable attributes such as `data-testid`, `id`, `name`, `href`, and `aria-*` are available under `target.attributes`.
+Use target details as hints for review or replay. Some activities, such as navigation or errors, may not include a target.
 
-#### Per-type fields
+### Filtering by Time
 
-A handful of activity types carry extra fields beyond the common envelope.
-
-| Type | Extra fields |
-| ---- | ------------ |
-| `click`, `doubleClick` | `pointer` with `x`, `y`, `button`, and `clickCount` |
-| `input`, `change` | `value` with `inputType`, `valueLength`, `text`, `redacted`, and `checked` when relevant |
-| `keyPress` | `keyboard` with `key`, `code`, and `text` |
-| `navigate` | `navigation` with `url` |
-| `scroll` | `pointer` with `x` and `y`, plus `delta` with `x` and `y` when available |
-| `drag` | `pointer` with `startX`, `startY`, `endX`, `endY`, and `button`, plus optional `endTarget` |
-| `error` | `error` with `kind` (`"page" \| "browser" \| "request" \| "other"`), `message`, `stack`, and `url` |
-
-### Live stream over WebSocket
-
-Subscribe to new activities as they happen.
-
-```javascript !! fetch -wcn
-const ws = new WebSocket(
-  `wss://api.steel.dev/v1/sessions/${sessionId}/agent-traces?token=${authToken}`,
-);
-
-ws.addEventListener("message", (event) => {
-  const activity = JSON.parse(event.data);
-  console.log(activity.type, activity.target?.label);
-});
-```
-
-Each message contains new log rows from the live session stream. The dashboard converts browser-interaction rows into `AgentActivity` objects and collapses them client-side. For example, a second click within 500ms of the first may become a `doubleClick` activity. If you're rendering your own UI, normalize incoming rows and merge them with the existing timeline before rendering.
-
-When the session ends the socket closes. The same activities are then available statically from the REST endpoint.
-
-### Legacy endpoint: /agent-logs
-
-`GET /v1/sessions/:id/agent-logs` returns raw CDP-derived events (coordinates, key codes, URLs) without semantic enrichment. It exists for legacy sessions recorded before semantic capture existed, and for callers that want the lower-level signal. New integrations should use `/agent-traces`.
+You can limit results to a time range:
 
 ```bash !! curl -wcn
-curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-logs \
+curl "https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces?startTime=2026-05-22T18:00:00.000Z&endTime=2026-05-22T18:10:00.000Z" \
   -H "steel-api-key: $STEEL_API_KEY"
 ```
+
+| Query param | Notes |
+| ----------- | ----- |
+| `startTime` | Include activities at or after this ISO timestamp. |
+| `endTime` | Include activities at or before this ISO timestamp. |
 
 ### Errors
 

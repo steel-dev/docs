@@ -1,7 +1,7 @@
 ---
 title: Timeline and exports
 sidebarTitle: Timeline & exports
-description: How to read the Agent Traces timeline in the session viewer, sync it with the video, expand the detail drawer, and export the run as markdown, JSON, or a ZIP bundle.
+description: How to read the Agent Traces timeline in the session viewer, sync it with the video, and export the run as markdown, JSON, or a ZIP bundle.
 llm: true
 publishedAt: "2026-05-22"
 ---
@@ -10,94 +10,75 @@ The Agent Traces tab lives in the session viewer console, next to Console Logs a
 
 ### Anatomy of a row
 
-Each row is one coalesced activity. From left to right:
+Each row summarizes one meaningful browser activity. From left to right:
 
 | Element | What it shows |
 | ------- | ------------- |
-| **Icon + verb** | `click`, `doubleClick`, `input`, `change`, `keyPress`, `navigate`, `scroll`, `drag`, `submit`, or `error`. Color-coded for scanning. |
-| **Target label** | The most readable name available for the element: accessible name, then ARIA label, placeholder, visible text, test-id, or tag summary. So you see `Sign in`, not `<button class="x-3f9a">`. |
-| **Page context** | The URL the activity happened on. Consecutive rows on the same page are grouped, so a stretch of activity reads as one section. |
-| **Timestamp** | Wall clock plus an offset from session start (e.g. `0:02.345`) for cross-referencing with the video. |
+| **Icon + verb** | The type of activity, such as `click`, `input`, `navigate`, `scroll`, `drag`, or `error`. |
+| **Target label** | A readable name for the element when one is available, such as `Sign in` or `Email field`. |
+| **Page context** | The URL the activity happened on. Consecutive rows on the same page are grouped together. |
+| **Timestamp** | Wall clock plus an offset from session start for cross-referencing with the video. |
 
-Rows read like sentences: `click on Sign in`, `input(len=17) on Email field`, `navigate to /home`.
+Rows read like sentences: `click on Sign in`, `type into Email field`, `navigate to /home`.
 
-### Coalescing rules
+### Activity grouping
 
-The timeline collapses noisy interaction bursts into the unit you'd actually describe.
+Agent Traces group noisy browser interactions into the units you would actually describe when reviewing a run. A burst of typing is shown as a single input activity, repeated navigation is easier to scan, and idle periods help separate thinking from acting in longer sessions.
 
-| Raw activity | Shown as |
-| ------------ | -------- |
-| Typing a 17-character email | One `input(len=17)` row, not 17 keystroke rows |
-| Two clicks on the same target within 500ms | One `doubleClick` row |
-| Redirect chain `/login → /auth → /home` | Three `navigate` rows (each step is meaningful) |
-| Reloading the same URL twice | One `navigate` row |
-| More than 10 seconds with no activity | An `idle 23s` divider between the surrounding rows |
-
-The idle dividers help separate thinking from acting in long agent runs.
+This makes the timeline useful for review without turning it into a raw event log.
 
 ### Video sync
 
-The timeline and the video are linked. Clicking a row seeks the video to that exact frame. The seek uses HLS program-date-time, so it's frame-accurate, not estimated from row index.
+The timeline and the video are linked. Clicking a row seeks the recording to the moment that activity happened.
 
-Every activity also gets a small color-coded tick on the video progress bar, matching the timeline icon colors. You can see at a glance where the dense bursts of work were and where the agent was idle. Hovering the scrubber expands it and shows a thumbnail preview at that timestamp. Drag along the bar to scrub.
+Activity markers appear on the video progress bar, so you can see where the run was dense with actions and where it slowed down. As the video plays, the matching timeline row highlights.
 
-As the video plays, the marker nearest the current frame lights up and the matching row highlights in the timeline. Hover a marker on the bar and the row scrolls into view.
+### Details
 
-### The detail drawer
+Click a row to expand it inline. Depending on the activity, details can include:
 
-Click anywhere on a row (not just the icon) and it expands inline. The drawer contains:
-
-- Element details: tag, role, accessible name, every attribute that was on the element (`id`, `class`, `name`, `aria-*`, `href`, `data-testid`, `type`, `placeholder`...), and a bounding box.
-- Selectors for finding the element again, including CSS and XPath when available.
-- Pointer or keyboard details when relevant: exact `x` and `y`, button, click count, key code, modifiers.
 - The page URL at the moment the activity happened.
-- Raw JSON of the underlying event, with a copy button.
-- A thumbnail of the video frame at that instant. Click it for a full-size preview.
-- For coalesced runs (a typing burst, a rapid click sequence), the duration of the run.
+- Element context such as role, accessible name, visible text, and useful attributes.
+- Selectors when available.
+- Pointer, keyboard, navigation, or error details.
+- A thumbnail from the recording near that moment.
 
-For `navigate` rows there's also an **Open** button that opens the URL in a new tab.
-
-### Live updates
-
-For sessions that are currently running, the timeline streams in real time over a WebSocket. New activities arrive incrementally, get deduplicated against what's already on screen, sorted into place, and re-collapsed.
-
-When the session ends, the same data is available statically via [the REST endpoint](/overview/agent-traces/api).
+For `navigate` rows, the **Open** button opens the URL in a new tab.
 
 ### Exports
 
-Three export formats, all reachable from the Agent Traces tab on a finished session.
+Three export formats are available from the Agent Traces tab on a finished session.
 
 | Export | What you get | Use when |
 | ------ | ------------ | -------- |
 | **Copy as markdown** | A single markdown document, built for pasting into another agent. | You want the next agent to read and reproduce the run. |
-| **Download JSON** | The full event array, same shape as the API response. | You want to drive analysis or replay programmatically. |
-| **Download ZIP** | The markdown document plus per-page-state screenshots, bundled in one archive. | You want a portable, self-contained record (e.g. for a bug report or audit). |
+| **Download JSON** | The activity data for the session. | You want to filter, diff, or analyze the run programmatically. |
+| **Download ZIP** | The markdown document plus screenshots, bundled in one archive. | You want a portable record for a bug report, support ticket, or audit. |
 
 #### Copy as markdown
 
-This is the export built for AI agents. The output reads like a recipe an automation agent could re-execute.
+This is the export built for AI agents. The output reads like a recipe an automation agent can follow.
 
 The format includes:
 
-- A built-in preamble that explains its own format, so the receiving agent knows what it's looking at without extra prompting.
+- A short preamble that explains the structure.
 - `##` headings for each page visit.
 - Numbered steps for each activity, with the time offset.
-- Sub-bullets exposing stable attributes and CSS/XPath selectors for each element.
-- `at (x, y)` pointer coordinates and bounding boxes.
-- `*(idle 23s)*` markers between steps.
-- Sensitive values (password fields, credit cards) replaced with `<redacted>`.
-- Optionally, inline screenshots of each page state.
+- Relevant element labels, identifiers, and selectors when available.
+- Idle markers between longer pauses.
+- Sensitive values, such as password fields and credit-card inputs, replaced with `<redacted>`.
+- Optional screenshots of page states.
 
 A trimmed example:
 
 ```markdown !! agent-traces.md -wcn
 # Browser session
 
-Recording of a real user's interaction with a web app, structured for replay by an automation agent.
+Recording of a real browser session, structured for review and replay by an automation agent.
 
 ## https://example.com/login
 
-1. `0:02.345` **Click** textbox "Email" at (412, 287)
+1. `0:02.345` **Click** textbox "Email"
    - testId: `email`
    - CSS: `input[data-testid=email]`
 2. `0:03.110` **Type** "user@example.com" into textbox "Email"
@@ -109,27 +90,27 @@ Recording of a real user's interaction with a web app, structured for replay by 
 
 *(idle 12s)*
 
-4. `0:17.430` **Click** button "Sign in" at (520, 410)
+4. `0:17.430` **Click** button "Sign in"
    - testId: `sign-in`
    - CSS: `button[data-testid=sign-in]`
 
 ## https://example.com/home
 ```
 
-Paste it into Claude Code, Codex, OpenCode, or Cursor with `write me a Steel script that reproduces this run`. The selectors, step structure, and timing are already in the right shape for that.
+Paste it into Claude Code, Codex, OpenCode, or Cursor with `write me a Steel script that reproduces this run`.
 
 #### Download JSON
 
-The JSON export contains the session metadata plus one `AgentActivity` per row: `{ session, activities }`. The activity objects use the same event shape as the [API response](/overview/agent-traces/api). Use it when you want to filter, diff, or feed the run into your own tooling rather than another LLM.
+The JSON export contains the session metadata and activity data. Use it when you want to filter, diff, or feed the run into your own tooling rather than another LLM.
 
 #### Download ZIP
 
-The ZIP bundles the markdown document with screenshots of each page state, taken at the moment the agent first landed there. The screenshots are referenced inline from the markdown, so unzipping and opening the `.md` gives you a portable transcript. Good for sharing a run outside the dashboard: bug reports, customer support tickets, post-mortems.
+The ZIP bundles the markdown document with screenshots of page states. The screenshots are referenced from the markdown, so unzipping and opening the `.md` gives you a portable transcript.
 
 :::callout
 type: tip
 ### Redaction is automatic for known-sensitive fields
-Password fields and credit-card inputs are replaced with `<redacted>` in both the markdown export and the ZIP. Other input values come through verbatim, so review before sharing if you ran the agent against real user data.
+Password fields and credit-card inputs are replaced with `<redacted>` in both the markdown export and the ZIP. Other input values can appear in exports, so review before sharing if you ran the agent against real user data.
 :::
 
 :::callout
