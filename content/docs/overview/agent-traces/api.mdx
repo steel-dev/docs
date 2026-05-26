@@ -1,0 +1,117 @@
+---
+title: Agent Traces API
+sidebarTitle: API
+description: Fetch the activity timeline for a Steel browser session as JSON.
+llm: true
+publishedAt: "2026-05-22"
+---
+
+Use the Agent Traces API when you want the same activity timeline shown in the dashboard, but as JSON for analysis, replay, or internal tooling.
+
+### GET /v1/sessions/:id/agent-traces
+
+Returns the trace timeline for a finished or in-progress session.
+
+```bash !! curl -wcn
+curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
+  -H "steel-api-key: $STEEL_API_KEY"
+```
+
+```javascript !! fetch -wcn
+const response = await fetch(
+  `https://api.steel.dev/v1/sessions/${sessionId}/agent-traces`,
+  { headers: { "steel-api-key": process.env.STEEL_API_KEY } },
+);
+
+const trace = await response.json();
+```
+
+### Response
+
+```json !! JSON -wcn
+{
+  "events": [
+    {
+      "type": "click",
+      "timestamp": "2026-05-22T18:03:21.345Z",
+      "page": { "url": "https://example.com/login" },
+      "target": {
+        "role": "button",
+        "accessibleName": "Sign in",
+        "selector": { "css": "button[data-testid=sign-in]" }
+      },
+      "pointer": { "x": 520, "y": 410 }
+    }
+  ],
+  "total": 1,
+  "hasMore": false
+}
+```
+
+| Field | Type | Notes |
+| ----- | ---- | ----- |
+| `events` | array | Timeline activities in chronological order. |
+| `total` | number | Number of activities returned. |
+| `hasMore` | boolean | Whether more activity data is available. |
+
+Each activity includes a small common envelope:
+
+| Field | Type | Notes |
+| ----- | ---- | ----- |
+| `type` | string | Activity type, such as `click`, `input`, `navigate`, `scroll`, `drag`, or `error`. |
+| `timestamp` | ISO 8601 string | When the activity happened. |
+| `endTimestamp` | ISO 8601 string | Present when the activity spans a range of time. |
+| `page` | object | Page context, usually including `url`. |
+| `target` | object | Element context when available. |
+
+Activity-specific details appear when relevant. For example, click activities can include `pointer`, typing activities can include `value`, keyboard activities can include `keyboard`, navigation activities can include `navigation`, and error activities can include `error`.
+
+### Target Details
+
+When Steel can identify the element involved in an activity, `target` can include readable labels and useful selectors:
+
+```json !! target -wcn
+{
+  "role": "button",
+  "accessibleName": "Sign in",
+  "text": "Sign in",
+  "attributes": {
+    "data-testid": "sign-in",
+    "type": "submit"
+  },
+  "selector": {
+    "css": "button[data-testid=sign-in]"
+  }
+}
+```
+
+Use target details as hints for review or replay. Some activities, such as navigation or errors, may not include a target.
+
+### Filtering by Time
+
+You can limit results to a time range:
+
+```bash !! curl -wcn
+curl "https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces?startTime=2026-05-22T18:00:00.000Z&endTime=2026-05-22T18:10:00.000Z" \
+  -H "steel-api-key: $STEEL_API_KEY"
+```
+
+| Query param | Notes |
+| ----------- | ----- |
+| `startTime` | Include activities at or after this ISO timestamp. |
+| `endTime` | Include activities at or before this ISO timestamp. |
+
+### Errors
+
+| Status | Meaning |
+| ------ | ------- |
+| 401 | Missing or invalid `steel-api-key`. |
+| 403 | The session belongs to a different organization. |
+| 404 | No session with that ID. |
+| 429 | Rate limit hit. Retry after the `Retry-After` header. |
+
+:::callout
+type: help
+### Need help with the Agent Traces API?
+Reach out on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::

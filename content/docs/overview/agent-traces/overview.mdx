@@ -1,0 +1,85 @@
+---
+title: Agent Traces
+sidebarTitle: Overview
+description: Review recorded browser sessions as a readable timeline of agent activity, synced with video and exportable for debugging, replay, and handoff.
+llm: true
+publishedAt: "2026-05-22"
+---
+
+Open any recorded session in the dashboard and you'll find an **Agent Traces** tab next to Console Logs and Network. It turns the run into a timeline of agent activity, so you can see what happened without scrubbing through the whole recording.
+
+### What you get
+
+| Capability | What it does |
+| ---------- | ------------ |
+| **Timeline** | One row per meaningful activity, with a verb, target label, page URL, and timestamp. |
+| **Video sync** | Click a row to jump the recording to the moment that activity happened. |
+| **Details** | Expand a row to inspect the relevant page, element, pointer, keyboard, or error details when available. |
+| **Exports** | Copy the run as markdown, download JSON, or grab a ZIP with markdown plus screenshots. |
+
+### How to use it
+
+**Review the run.** Start with the timeline to understand the path the agent took: where it navigated, what it clicked, what it typed, where it paused, and where errors happened.
+
+**Jump to the evidence.** Select any row to move the video to that point in the session. This makes it much faster to debug failures, unexpected navigation, or moments where the agent picked the wrong element.
+
+**Hand off context.** Export the trace as markdown when you want another agent or teammate to understand and reproduce the run. Use JSON when you want to analyze the activity data programmatically.
+
+:::callout
+type: info
+### Built from the browser session
+Agent Traces are based on what happened in the browser session, not on what the agent claimed it did. When page context is available, traces include readable target labels and element details to make the run easier to inspect or reproduce.
+:::
+
+### Quick look at the API
+
+Fetch the trace timeline for a session as JSON:
+
+```bash !! curl -wcn
+curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
+  -H "steel-api-key: $STEEL_API_KEY"
+```
+
+```json !! Response -wcn
+{
+  "events": [
+    {
+      "type": "click",
+      "timestamp": "2026-05-22T18:03:21.345Z",
+      "page": { "url": "https://example.com/login" },
+      "target": {
+        "role": "button",
+        "accessibleName": "Sign in",
+        "selector": { "css": "button[data-testid=sign-in]" }
+      }
+    }
+  ],
+  "total": 1,
+  "hasMore": false
+}
+```
+
+See the [API reference](/overview/agent-traces/api) for the response shape and examples.
+
+### Use cases
+
+**Debugging an agent run.** Find the error or unexpected action in the timeline, click it, and the video jumps to the right moment. Two clicks instead of ten minutes of scrubbing.
+
+**Reproducing a run as code.** Paste the markdown export into Claude Code, Codex, or Cursor with "write me a Steel script that reproduces this." The export is structured so an agent can follow the same path.
+
+**Evaluating agent versions.** Replay the same task against different models or prompts, then compare traces to see which version took fewer steps or handled the page more reliably.
+
+**Auditing what an agent actually did.** A timestamped, video-synced record of every interaction in one scrollable view. Useful for customer support investigations, safety reviews, and post-mortems.
+
+:::callout
+type: info
+### Where to go next
+Read [Timeline and exports](/overview/agent-traces/timeline) for the dashboard UI and export formats, or jump to the [API reference](/overview/agent-traces/api) for the REST endpoint.
+:::
+
+:::callout
+type: help
+### Need help with Agent Traces?
+Reach out on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::
+

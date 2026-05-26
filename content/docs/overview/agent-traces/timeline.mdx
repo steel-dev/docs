@@ -1,0 +1,120 @@
+---
+title: Timeline and exports
+sidebarTitle: Timeline & exports
+description: How to read the Agent Traces timeline in the session viewer, sync it with the video, and export the run as markdown, JSON, or a ZIP bundle.
+llm: true
+publishedAt: "2026-05-22"
+---
+
+The Agent Traces tab lives in the session viewer console, next to Console Logs and Network. Open a session from the dashboard and switch tabs.
+
+### Anatomy of a row
+
+Each row summarizes one meaningful browser activity. From left to right:
+
+| Element | What it shows |
+| ------- | ------------- |
+| **Icon + verb** | The type of activity, such as `click`, `input`, `navigate`, `scroll`, `drag`, or `error`. |
+| **Target label** | A readable name for the element when one is available, such as `Sign in` or `Email field`. |
+| **Page context** | The URL the activity happened on. Consecutive rows on the same page are grouped together. |
+| **Timestamp** | Wall clock plus an offset from session start for cross-referencing with the video. |
+
+Rows read like sentences: `click on Sign in`, `type into Email field`, `navigate to /home`.
+
+### Activity grouping
+
+Agent Traces group noisy browser interactions into the units you would actually describe when reviewing a run. A burst of typing is shown as a single input activity, repeated navigation is easier to scan, and idle periods help separate thinking from acting in longer sessions.
+
+This makes the timeline useful for review without turning it into a raw event log.
+
+### Video sync
+
+The timeline and the video are linked. Clicking a row seeks the recording to the moment that activity happened.
+
+Activity markers appear on the video progress bar, so you can see where the run was dense with actions and where it slowed down. As the video plays, the matching timeline row highlights.
+
+### Details
+
+Click a row to expand it inline. Depending on the activity, details can include:
+
+- The page URL at the moment the activity happened.
+- Element context such as role, accessible name, visible text, and useful attributes.
+- Selectors when available.
+- Pointer, keyboard, navigation, or error details.
+- A thumbnail from the recording near that moment.
+
+For `navigate` rows, the **Open** button opens the URL in a new tab.
+
+### Exports
+
+Three export formats are available from the Agent Traces tab on a finished session.
+
+| Export | What you get | Use when |
+| ------ | ------------ | -------- |
+| **Copy as markdown** | A single markdown document, built for pasting into another agent. | You want the next agent to read and reproduce the run. |
+| **Download JSON** | The activity data for the session. | You want to filter, diff, or analyze the run programmatically. |
+| **Download ZIP** | The markdown document plus screenshots, bundled in one archive. | You want a portable record for a bug report, support ticket, or audit. |
+
+#### Copy as markdown
+
+This is the export built for AI agents. The output reads like a recipe an automation agent can follow.
+
+The format includes:
+
+- A short preamble that explains the structure.
+- `##` headings for each page visit.
+- Numbered steps for each activity, with the time offset.
+- Relevant element labels, identifiers, and selectors when available.
+- Idle markers between longer pauses.
+- Sensitive values, such as password fields and credit-card inputs, replaced with `<redacted>`.
+- Optional screenshots of page states.
+
+A trimmed example:
+
+```markdown !! agent-traces.md -wcn
+# Browser session
+
+Recording of a real browser session, structured for review and replay by an automation agent.
+
+## https://example.com/login
+
+1. `0:02.345` **Click** textbox "Email"
+   - testId: `email`
+   - CSS: `input[data-testid=email]`
+2. `0:03.110` **Type** "user@example.com" into textbox "Email"
+   - testId: `email`
+   - CSS: `input[data-testid=email]`
+3. `0:04.802` **Type** <redacted, 12 chars> into textbox "Password"
+   - name: `password`
+   - CSS: `input[name=password]`
+
+*(idle 12s)*
+
+4. `0:17.430` **Click** button "Sign in"
+   - testId: `sign-in`
+   - CSS: `button[data-testid=sign-in]`
+
+## https://example.com/home
+```
+
+Paste it into Claude Code, Codex, OpenCode, or Cursor with `write me a Steel script that reproduces this run`.
+
+#### Download JSON
+
+The JSON export contains the session metadata and activity data. Use it when you want to filter, diff, or feed the run into your own tooling rather than another LLM.
+
+#### Download ZIP
+
+The ZIP bundles the markdown document with screenshots of page states. The screenshots are referenced from the markdown, so unzipping and opening the `.md` gives you a portable transcript.
+
+:::callout
+type: tip
+### Redaction is automatic for known-sensitive fields
+Password fields and credit-card inputs are replaced with `<redacted>` in both the markdown export and the ZIP. Other input values can appear in exports, so review before sharing if you ran the agent against real user data.
+:::
+
+:::callout
+type: help
+### Need help with Agent Traces?
+Reach out on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::

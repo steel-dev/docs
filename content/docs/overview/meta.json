@@ -10,6 +10,7 @@
     "pricinglimits",
     "...guides",
     "...sessions-api",
+    "...agent-traces",
     "...credentials-api",
     "...files-api",
     "...extensions-api",
