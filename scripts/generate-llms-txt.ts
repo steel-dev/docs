@@ -5,6 +5,7 @@ import matter from 'gray-matter';
 import { source } from '../lib/source';
 
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
+const LLMS_FILE_NAME = 'llms.txt';
 
 // Configuration for generation
 interface GenerationConfig {
@@ -40,12 +41,17 @@ function getFrontmatter(page: any): Record<string, unknown> {
   }
 }
 
+function shouldIncludePage(page: any): boolean {
+  return getFrontmatter(page).llm !== false;
+}
+
 // Get all pages from source
 function getAllPages(): PageMetadata[] {
   const sourcePages = source.getPages();
 
   return (
     sourcePages
+      .filter(shouldIncludePage)
       .map((page) => {
         // Extract section from URL (split by / and filter out empty strings)
         const urlParts = page.url.split('/').filter(Boolean);
@@ -215,6 +221,42 @@ async function ensureDir(dir: string) {
   }
 }
 
+async function cleanupGeneratedLLMsTxt(dir: string, removeEmptyDirs = false): Promise<boolean> {
+  let entries: Array<{ name: string; isDirectory: () => boolean; isFile: () => boolean }>;
+
+  try {
+    entries = await fs.readdir(dir, { withFileTypes: true });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false;
+    throw error;
+  }
+
+  let hasRemainingFiles = false;
+
+  for (const entry of entries) {
+    const entryPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      const childHasRemainingFiles = await cleanupGeneratedLLMsTxt(entryPath, true);
+      hasRemainingFiles ||= childHasRemainingFiles;
+      continue;
+    }
+
+    if (entry.isFile() && entry.name === LLMS_FILE_NAME) {
+      await fs.unlink(entryPath);
+      continue;
+    }
+
+    hasRemainingFiles = true;
+  }
+
+  if (removeEmptyDirs && !hasRemainingFiles) {
+    await fs.rmdir(dir);
+  }
+
+  return hasRemainingFiles;
+}
+
 const AGENT_INSTRUCTIONS = `# Steel Documentation
 
 > Steel is a cloud browser API for AI agents and developers.
@@ -284,12 +326,15 @@ const AGENT_INSTRUCTIONS = `# Steel Documentation
 async function generateAllLLMsTxt() {
   console.log('🚀 Starting documentation generation...');
 
+  await ensureDir(PUBLIC_DIR);
+  await cleanupGeneratedLLMsTxt(PUBLIC_DIR);
+
   const allPages = getAllPages();
   console.log(`📄 Found ${allPages.length} pages`);
 
   const rootContent = generateLLMsContent(allPages, 'Steel Documentation', []);
   const pageIndex = rootContent.replace(/^# Steel Documentation\n/, '');
-  await fs.writeFile(path.join(PUBLIC_DIR, 'llms.txt'), AGENT_INSTRUCTIONS + pageIndex);
+  await fs.writeFile(path.join(PUBLIC_DIR, LLMS_FILE_NAME), AGENT_INSTRUCTIONS + pageIndex);
   console.log('✔️  Generated root llms.txt');
 
   // Generate section-level llms.txt files
@@ -314,7 +359,7 @@ async function generateAllLLMsTxt() {
     const outputPath = path.join(PUBLIC_DIR, sectionPath);
 
     await ensureDir(outputPath);
-    await fs.writeFile(path.join(outputPath, 'llms.txt'), sectionContent);
+    await fs.writeFile(path.join(outputPath, LLMS_FILE_NAME), sectionContent);
   }
   console.log('✔️  Generated section llms.txt files');
 
