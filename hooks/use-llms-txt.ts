@@ -60,16 +60,10 @@ export function useCurrentPageMarkdown() {
       basePath = basePath.substring(5);
     }
 
-    // Construct the markdown path
-    let mdPath = basePath.startsWith("/") ? basePath : "/" + basePath;
+    const mdPath = basePath.startsWith("/") ? basePath : "/" + basePath;
 
-    if (mdPath === "/" || mdPath.endsWith("/")) {
-      mdPath = mdPath.endsWith("/") ? mdPath + "index" : "/index";
-    }
-
-    // Return the full URL with .md extension
     const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-    return `${baseUrl}${mdPath}.mdx`;
+    return `${baseUrl}/llms.mdx${mdPath === "/" ? "" : mdPath}`;
   };
 
   return getMarkdownUrl();

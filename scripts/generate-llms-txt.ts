@@ -318,7 +318,7 @@ const AGENT_INSTRUCTIONS = `# Steel Documentation
 - Do NOT use \`session.websocketUrl\` directly — construct the WSS URL as shown above
 - The Node SDK constructor param is \`steelAPIKey\` (not \`apiKey\`)
 - The Python SDK constructor param is \`steel_api_key\` (not \`api_key\`)
-- Individual doc pages are available as markdown via content negotiation (send \`Accept: text/markdown\`)
+- Individual doc pages are available as markdown at \`/llms.mdx/<page-path>\`
 
 `;
 
