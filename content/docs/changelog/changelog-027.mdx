@@ -1,0 +1,36 @@
+---
+title: "Changelog #027"
+sidebarTitle: "Changelog #027"
+llm: true
+image: "/images/changelog-placeholder-white.jpeg"
+imageAlt: "Announcing Changelog #027"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog-placeholder-white.jpeg"
+  alt="Announcing Changelog #027"
+  width={800}
+  height={400}
+/>
+Hey everyone — this week was mostly about docs and leaderboard usability. We expanded the new Agent Traces docs, cleaned up a couple of docs delivery issues, and shipped a broader refresh to benchmark pages and results discovery.
+
+### 🔧 Improvements
+
+*   Docs now include a dedicated Agent Traces section covering the product overview, timeline and exports, and API usage.
+
+*   The leaderboard site now has improved benchmark pages, a rebuilt filterable /results index across benchmarks, and markdown siblings for benchmark pages alongside dynamic llms.txt output.
+
+*   Leaderboard results now include additional benchmark entries and ongoing benchmark discovery tooling for sourcing new result candidates.
+
+### 🐛 Bug Fixes
+
+*   Fixed docs generation so stale pages are excluded from llms.txt output.
+
+*   Removed a markdown content negotiation rewrite that caused incorrect docs delivery behavior.
+
+*   Fixed leaderboard row note tooltips so they render above overflow containers instead of getting clipped.
+
+### 🏡 Housekeeping
+
+*   Infrastructure added browser-seconds metering and related billing configuration.
