@@ -11,6 +11,7 @@
     "format": "biome format --write app/ components/ lib/ scripts/ content/",
     "check": "biome check app/ components/ lib/ scripts/ content/",
     "check:fix": "biome check --write app/ components/ lib/ scripts/ content/",
+    "typecheck": "tsc --noEmit",
     "validate-links": "bun run ./lint.ts",
     "validate-external-links": "lychee --config lychee.toml 'content/docs/**/*.mdx'",
     "spell": "cspell --no-progress --no-summary 'content/**/*.{md,mdx}'",

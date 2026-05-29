@@ -31,6 +31,9 @@ jobs:
       - name: Run Biome checks
         run: bun run biome check app/ components/ lib/ scripts/ content/ --error-on-warnings
 
+      - name: Typecheck
+        run: bun run typecheck
+
       - name: Run cspell
         run: bun run spell
 

@@ -160,3 +160,8 @@ ount
 contribu
 huuuge
 blocklists
+
+# Technical terms and word fragments flagged in prose
+whep
+navigations
+mortems
