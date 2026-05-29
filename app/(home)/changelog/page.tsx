@@ -1,17 +1,25 @@
-export default async function ChangelogPage({ params }: { params: Promise<{ locale: string }> }) {
-  const EnglishPage = (await import('./_pages/page.en')).default;
-  return <EnglishPage />;
+import fs from 'node:fs';
+import path from 'node:path';
+import { redirect } from 'next/navigation';
 
-  // const { locale } = await params;
+// Resolve the highest-numbered changelog entry so /changelog always lands on the latest.
+function getLatestChangelogSlug() {
+  const dir = path.join(process.cwd(), 'content/docs/changelog');
+  const slugs = fs
+    .readdirSync(dir)
+    .filter((file) => /^changelog-\d+\.mdx$/.test(file))
+    .map((file) => file.replace(/\.mdx$/, ''));
 
-  // // Dynamically import the locale-specific page
-  // try {
-  //   const LocalePage = (await import(`./_pages/page.${locale}`)).default;
-  //   return <LocalePage />;
-  // } catch (error) {
-  //   // Fallback to English if locale file doesn't exist
-  //   console.log(`No ${locale} translation found for APIs page, falling back to English`);
-  //   const EnglishPage = (await import('./_pages/page.en')).default;
-  //   return <EnglishPage />;
-  // }
+  slugs.sort((a, b) => {
+    const numA = parseInt(a.match(/(\d+)$/)?.[1] ?? '0', 10);
+    const numB = parseInt(b.match(/(\d+)$/)?.[1] ?? '0', 10);
+    return numB - numA;
+  });
+
+  return slugs[0];
+}
+
+export default function ChangelogPage() {
+  const latest = getLatestChangelogSlug();
+  redirect(`/changelog/${latest}`);
 }
