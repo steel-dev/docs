@@ -1,5 +1,4 @@
 //@ts-nocheck
-import fs from 'node:fs/promises';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import matter from 'gray-matter';
 import * as lucideIcons from 'lucide-react';
@@ -44,8 +43,11 @@ export default async function Page(props: {
   }
 
   if (!page) notFound();
-  const fileContent = await fs.readFile(page.data._file.absolutePath, 'utf-8');
-  const { content: rawMarkdownContent } = matter(fileContent);
+  // Use the raw markdown bundled into page.data.content rather than reading the
+  // source file from disk at request time. The content/docs source files are not
+  // present in the serverless function sandbox, so a filesystem read throws and
+  // returns a 500 whenever the page renders outside the prerender cache.
+  const { content: rawMarkdownContent } = matter(page.data.content);
 
   const LLMContent = rawMarkdownContent
     .split('\n')
