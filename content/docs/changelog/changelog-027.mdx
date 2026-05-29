@@ -2,35 +2,35 @@
 title: "Changelog #027"
 sidebarTitle: "Changelog #027"
 llm: true
-image: "/images/changelog-placeholder-white.jpeg"
+image: "/images/changelog/27.png"
 imageAlt: "Announcing Changelog #027"
 ---
 import Image from 'next/image';
 
 <Image
-  src="/images/changelog-placeholder-white.jpeg"
+  src="/images/changelog/27.png"
   alt="Announcing Changelog #027"
   width={800}
   height={400}
 />
-Hey everyone — this week was mostly about docs and leaderboard usability. We expanded the new Agent Traces docs, cleaned up a couple of docs delivery issues, and shipped a broader refresh to benchmark pages and results discovery.
+Hey everyone, this week was mostly docs and leaderboard cleanup. We filled out the new Agent Traces docs, squashed a couple of docs-delivery bugs, and gave the leaderboard's benchmark pages and results browsing a real refresh.
 
 ### 🔧 Improvements
 
-*   Docs now include a dedicated Agent Traces section covering the product overview, timeline and exports, and API usage.
+*   The docs now have a dedicated Agent Traces section: product overview, the timeline and exports, and how to read traces from the API.
 
-*   The leaderboard site now has improved benchmark pages, a rebuilt filterable /results index across benchmarks, and markdown siblings for benchmark pages alongside dynamic llms.txt output.
+*   The leaderboard got a rebuilt `/results` index you can filter across benchmarks, cleaner benchmark pages, and a markdown version of each page that feeds its llms.txt.
 
-*   Leaderboard results now include additional benchmark entries and ongoing benchmark discovery tooling for sourcing new result candidates.
+*   We added more benchmark entries, plus tooling to help us find new results worth listing.
 
 ### 🐛 Bug Fixes
 
-*   Fixed docs generation so stale pages are excluded from llms.txt output.
+*   Stale pages no longer leak into the llms.txt output.
 
-*   Removed a markdown content negotiation rewrite that caused incorrect docs delivery behavior.
+*   Dropped a markdown content-negotiation rewrite that was serving the wrong docs.
 
-*   Fixed leaderboard row note tooltips so they render above overflow containers instead of getting clipped.
+*   Leaderboard row-note tooltips now sit above their container instead of getting clipped.
 
 ### 🏡 Housekeeping
 
-*   Infrastructure added browser-seconds metering and related billing configuration.
+*   Infra now meters browser-seconds, with the billing config to match.
