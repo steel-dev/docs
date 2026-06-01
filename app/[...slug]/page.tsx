@@ -309,9 +309,13 @@ export async function generateMetadata(props: {
   const ogImageUrl = `/og/${ogSlug.join('/')}`;
   const isChangelogEntry = /^\/changelog\/.+/.test(canonicalPath);
 
+  const publishedAt = (page.data as { publishedAt?: string }).publishedAt;
+  const publishedTime = publishedAt ? new Date(publishedAt).toISOString() : undefined;
+
   return {
     title: page.data.title,
     description: page.data.description,
+    authors: [{ name: 'Steel', url: 'https://steel.dev' }],
     alternates: {
       canonical: canonicalPath,
     },
@@ -322,6 +326,8 @@ export async function generateMetadata(props: {
       url: canonicalPath,
       siteName: 'Steel Docs',
       type: 'article',
+      authors: ['https://steel.dev'],
+      ...(publishedTime && { publishedTime }),
       images: [{ url: ogImageUrl, width: 1200, height: 630, alt: page.data.title }],
     },
     twitter: {

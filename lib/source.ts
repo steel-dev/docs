@@ -120,10 +120,9 @@ function isPageNew(filePath: string, frontmatter?: any): boolean {
     try {
       const publishDate = new Date(frontmatter.publishedAt);
       const isNewByDate = Date.now() - publishDate.getTime() < NEW_BADGE_DURATION;
-      console.log('Using publishedAt date, result:', isNewByDate);
       return isNewByDate;
     } catch {
-      console.log('Invalid publishedAt date, falling through');
+      // Invalid publishedAt date — fall through to other detection methods
     }
   }
 
@@ -654,6 +653,9 @@ export const source = loader({
         }
         if (frontmatter?.isSeperator) {
           dataToAdd.isSeperator = frontmatter.isSeperator;
+        }
+        if (frontmatter?.publishedAt) {
+          dataToAdd.publishedAt = frontmatter.publishedAt;
         }
         if (frontmatter?.image) {
           dataToAdd.image = frontmatter.image;
