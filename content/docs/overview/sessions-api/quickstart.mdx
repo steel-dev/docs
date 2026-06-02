@@ -99,6 +99,7 @@ const session = await client.sessions.create({
     useProxy: true,           // Use Steel's residential proxy network
     solveCaptcha: true,       // Enable automatic CAPTCHA solving
     timeout: 1800000,      // Set 30-minute timeout (default is 5 minutes)
+    inactivityTimeout: 300000, // Release after 5 minutes of inactivity
     userAgent: 'custom-ua'    // Set a custom user agent
 });
 ```

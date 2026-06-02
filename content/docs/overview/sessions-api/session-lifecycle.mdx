@@ -54,6 +54,43 @@ session = client.sessions.create(
 
 **Note:** Currently, Steel doesn’t support editing the timeout duration of a live session.
 
+### Inactivity Timeout
+
+By default a session runs until its `timeout` elapses, even when nothing is driving the browser. Set `inactivityTimeout` to release the session early once it stops seeing activity—any CDP command or remote input—so you don’t keep paying for an idle browser while waiting on an external step.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+// Release the session after 1 minute with no CDP or input activity,
+// capped at a 10-minute hard limit.
+const session = await client.sessions.create({
+  timeout: 600000,          // 10 minutes (hard cap)
+  inactivityTimeout: 60000, // release after 1 minute of inactivity
+});
+```
+
+
+```python !! Python -wcn
+import os
+from steel import Steel
+
+client = Steel()
+
+# Release the session after 1 minute with no CDP or input activity,
+# capped at a 10-minute hard limit.
+session = client.sessions.create(
+    api_timeout=600000,       # 10 minutes (hard cap)
+    inactivity_timeout=60000, # release after 1 minute of inactivity
+)
+```
+</CodeTabs>
+
+**Note:** `timeout` is always the hard cap on a session’s lifetime. If `inactivityTimeout` is greater than or equal to `timeout` it has no effect—`timeout` elapses first. Omit `inactivityTimeout` to disable inactivity-based release (the default).
+
 ### **Releasing a Session**
 
 When you're done with a session, it's best practice to release it explicitly rather than waiting for the timeout. You can release a session any time before the timeout is up by calling the `release` method.
