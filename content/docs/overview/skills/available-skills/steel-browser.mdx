@@ -1,0 +1,36 @@
+---
+title: Steel Browser Skill
+sidebarTitle: steel-browser
+description: Use Steel Browser when an agent should operate a live Steel browser now.
+llm: true
+---
+
+## Install
+
+```bash Terminal
+npx skills add steel-dev/skills --skill steel-browser
+```
+
+After adding the Steel Skills marketplace in Claude Code:
+
+```bash Terminal
+/plugin install steel-browser@steel-skills
+```
+
+## Use When
+
+- The agent should visit a page now.
+- WebFetch or curl is insufficient.
+- The task needs JavaScript, forms, login, screenshots, PDFs, or multi-step navigation.
+
+## Example Prompts
+
+- "Use Steel to open example.com and summarize the page."
+- "Fill out this form in a Steel browser and show me the result."
+- "Take a full-page screenshot of this dashboard."
+
+## Related Skills
+
+- Use `steel-developer` for reusable Steel code.
+- Use `steel-session-debugging` if a live session fails.
+- Use `steel-reliability` if evidence points to bot detection, CAPTCHA, proxy, or login reliability.

@@ -16,6 +16,7 @@ import { RecipeJsonLd } from '@/components/recipe-jsonld';
 import { RecipeMeta } from '@/components/recipe-meta';
 import { RecipeQuickstart } from '@/components/recipe-quickstart';
 import { RecipeSearch } from '@/components/recipe-search';
+import { SkillGrid } from '@/components/skill-grid';
 import { SourceLink } from '@/components/source-link';
 import { CustomTable as Table, type TableProps } from '@/components/table';
 import {
@@ -50,11 +51,12 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     RecipeMeta,
     RecipeQuickstart,
     RecipeSearch,
+    SkillGrid,
     SourceLink,
     img: (props) => (
       // <span className="block my-6 rounded-xl bg-gradient-to-br from-neutral-300 via-neutral-200 to-orange-200/30 dark:from-neutral-600 dark:via-neutral-700 dark:to-orange-900/20">
       //   <span className="block rounded-xl bg-white dark:bg-neutral-950 px-4 py-2">
-      <ImageZoom className="!h-auto !w-full mx-auto" {...(props as any)} />
+      <ImageZoom className="h-auto! w-full! mx-auto" {...(props as any)} />
       //   </span>
       // </span>
     ),

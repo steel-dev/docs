@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loader } from 'fumadocs-core/source';
 import { attachFile, createOpenAPI } from 'fumadocs-openapi/server';
@@ -25,6 +25,7 @@ const ENABLE_GIT_NEW_DETECTION = false; // Set to true when ready to use
 
 const gitMetadataCache = new Map<string, { date: Date | null; timestamp: number }>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache TTL
+const folderMetaCache = new Map<string, Record<string, unknown>>();
 
 // Global storage for collecting filterable pages during build
 const filterablePages: FilterablePage[] = [];
@@ -166,6 +167,22 @@ function isPageNew(filePath: string, frontmatter?: any): boolean {
 
 function isValidDate(date: Date): boolean {
   return date instanceof Date && !isNaN(date.getTime());
+}
+
+function getFolderMeta(folderPath: string): Record<string, unknown> {
+  if (!folderPath) return {};
+  const cached = folderMetaCache.get(folderPath);
+  if (cached) return cached;
+
+  try {
+    const metaPath = join(process.cwd(), 'content/docs', folderPath, 'meta.json');
+    const parsed = JSON.parse(readFileSync(metaPath, 'utf8')) as Record<string, unknown>;
+    folderMetaCache.set(folderPath, parsed);
+    return parsed;
+  } catch {
+    folderMetaCache.set(folderPath, {});
+    return {};
+  }
 }
 
 /**
@@ -545,7 +562,7 @@ export const steelThemeDark: ThemeRegistrationResolved = {
 // See https://fumadocs.vercel.app/docs/headless/source-api for more info
 export const source = loader({
   pageTree: {
-    attachFolder: (node, folder, _meta) => {
+    attachFolder: (node, folder, meta) => {
       // Link nodes from meta.json `[Label](url)` syntax don't get a `$id`
       // assigned by fumadocs (they have no backing file). When `...folder`
       // extraction flattens them into a parent section's tree the original
@@ -555,8 +572,12 @@ export const source = loader({
       // the sidebar's prefix-based section filter scopes them correctly.
       const folderPath = (folder as any)?.file?.path ?? '';
       const section = folderPath.split('/')[0];
+      const folderMeta = { ...getFolderMeta(folderPath), ...((meta as any)?.data ?? meta) };
       if (section && Array.isArray((node as any).children)) {
         for (const child of (node as any).children) {
+          if (child?.type === 'separator' && folderMeta?.isNew === true) {
+            child.data = { ...(child.data ?? {}), isNew: true };
+          }
           if (
             child?.type === 'page' &&
             !child.$ref?.file &&

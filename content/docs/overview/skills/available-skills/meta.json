@@ -1,0 +1,11 @@
+{
+  "title": "Available Skills",
+  "defaultOpen": true,
+  "pages": [
+    "steel-browser",
+    "steel-developer",
+    "steel-reliability",
+    "steel-session-debugging",
+    "steel-skill-creator"
+  ]
+}

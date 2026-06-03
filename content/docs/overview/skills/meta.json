@@ -1,0 +1,6 @@
+{
+  "title": "Skills",
+  "root": false,
+  "isNew": true,
+  "pages": ["---Skills---", "index", "available-skills", "troubleshooting"]
+}

@@ -1,0 +1,80 @@
+---
+title: Getting Started
+description: Install Steel Skills so coding agents can use Steel cloud browsers correctly.
+llm: true
+---
+
+Steel Skills help coding agents use Steel cloud browsers correctly. Install the skill that matches what you want the agent to do: operate a browser now, write Steel code, diagnose a failed session, improve reliability, or turn a repeated browser task into a reusable workflow.
+
+Most users should start with `steel-browser` and `steel-developer`. Add the debugging and reliability skills when you are running repeated workflows or investigating failed sessions.
+
+## Quick install
+
+Use `npx skills` when you want a direct install command that works across supported coding agents.
+
+```bash Terminal
+npx skills add steel-dev/skills --list
+npx skills add steel-dev/skills --skill steel-browser
+npx skills add steel-dev/skills --skill steel-developer
+```
+
+Or use the Steel CLI helper:
+
+```bash Terminal
+steel skills install steel-browser
+steel skills install steel-developer
+steel skills doctor
+```
+
+## Claude Code plugin marketplace
+
+Use the plugin marketplace if you are working inside Claude Code and prefer Claude's plugin manager. Run these slash commands inside Claude Code.
+
+Add the Steel Skills marketplace once, then install individual skills from it:
+
+```bash Terminal
+/plugin marketplace add steel-dev/skills
+/plugin install steel-browser@steel-skills
+```
+
+Install another skill by replacing `steel-browser` with any catalog skill:
+
+```bash Terminal
+/plugin install steel-developer@steel-skills
+/plugin install steel-session-debugging@steel-skills
+/plugin install steel-reliability@steel-skills
+/plugin install steel-skill-creator@steel-skills
+```
+
+The marketplace name is `steel-skills`.
+
+## Agent targets
+
+Pass the target agent when you know where the skill should be installed:
+
+```bash Terminal
+npx skills add steel-dev/skills --skill steel-browser -a claude-code -g
+npx skills add steel-dev/skills --skill steel-browser -a cursor -g
+npx skills add steel-dev/skills --skill steel-browser -a codex -g
+npx skills add steel-dev/skills --skill steel-browser -a opencode -g
+```
+
+Supported agent targets are Claude Code, Cursor, Codex, OpenCode, and Pi.
+
+## Which skill should I use?
+
+- Use `steel-browser` for live web work the agent should perform now.
+- Use `steel-developer` for code, scripts, docs, examples, SDKs, and app integrations.
+- Use `steel-session-debugging` when a session failed and you need evidence-backed diagnosis.
+- Use `steel-reliability` for bot detection, CAPTCHA, proxy, identity, login reliability, pacing, and retries.
+- Use `steel-skill-creator` to turn recurring browser tasks into reusable workflows.
+
+## Verify setup
+
+```bash Terminal
+steel skills doctor
+steel doctor --preflight
+steel scrape https://example.com
+```
+
+Restart your agent client after installing new skills so it can discover them.

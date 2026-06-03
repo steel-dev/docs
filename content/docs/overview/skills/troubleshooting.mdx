@@ -1,0 +1,58 @@
+---
+title: Troubleshooting Skills
+description: Fix common Steel Skills install, auth, and routing issues.
+llm: true
+---
+
+Start here:
+
+```bash Terminal
+steel skills doctor
+steel doctor --preflight
+```
+
+## Common Issues
+
+### `npx skills` is missing
+
+Install Node.js/npm, then retry:
+
+```bash Terminal
+npx skills add steel-dev/skills --skill steel-browser
+```
+
+### The agent does not see the skill
+
+Restart the agent client after installation. Then run:
+
+```bash Terminal
+steel skills paths
+```
+
+### Claude Code does not show the marketplace
+
+Make sure the marketplace was added from inside Claude Code:
+
+```bash Terminal
+/plugin marketplace add steel-dev/skills
+```
+
+Then install the skill by name:
+
+```bash Terminal
+/plugin install steel-browser@steel-skills
+```
+
+### The wrong skill triggers
+
+Use the boundary map:
+
+- Live browser work: `steel-browser`
+- Code generation: `steel-developer`
+- Failed-session diagnosis: `steel-session-debugging`
+- Bot/proxy/CAPTCHA/login reliability: `steel-reliability`
+- New reusable browser task skill: `steel-skill-creator`
+
+### A live task failed
+
+Use `steel-session-debugging` with the session ID. If evidence points to bot detection, CAPTCHA, proxy, identity, or pacing, continue with `steel-reliability`.

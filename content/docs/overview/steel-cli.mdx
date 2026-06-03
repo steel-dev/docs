@@ -1,7 +1,7 @@
 ---
-title: Steel CLI + Skill
-sidebarTitle: Steel CLI + Skill
-description: Run browser automation from the terminal with the Steel CLI. Manage sessions, scrape, screenshot, and ship a Skill package for coding agents like Claude Code, Codex, and OpenCode.
+title: Steel CLI
+sidebarTitle: Steel CLI
+description: Run browser automation from the terminal with the Steel CLI. Manage sessions, scrape, screenshot, and install Steel Skills for coding agents like Claude Code, Cursor, Codex, and OpenCode.
 llm: true
 ---
 
@@ -75,9 +75,10 @@ steel dev stop
 
 ## Skills for Coding Agents
 
-Steel ships a dedicated skill package for browser workflows:
+Steel ships a first-party skills catalog for agent workflows:
 
-- [skills/steel-browser](https://github.com/steel-dev/cli/tree/main/skills/steel-browser)
+- [Steel Skills](/overview/skills)
+- [steel-dev/skills](https://github.com/steel-dev/skills)
 
 This is designed for coding agents, including:
 
@@ -86,16 +87,18 @@ This is designed for coding agents, including:
 - OpenClaw
 - Claude Code
 
-Install from GitHub:
+Install from the public skills catalog:
 
 ```bash Terminal
-npx skills add github:steel-dev/cli/skills/steel-browser
+npx skills add steel-dev/skills --skill steel-browser
 ```
 
-Or from a local checkout:
+Or through the Steel CLI helper:
 
 ```bash Terminal
-npx skills add ./skills/steel-browser
+steel skills install steel-browser
+steel skills list
+steel skills doctor
 ```
 
 After installation, restart your agent client so it can discover newly installed skills.
@@ -185,21 +188,22 @@ steel browser wait --help
 ```
 
 For full command references:
+
 - [Steel browser commands reference](https://github.com/steel-dev/cli/blob/main/docs/references/steel-browser-commands.md)
 - [Steel browser session lifecycle reference](https://github.com/steel-dev/cli/blob/main/docs/references/steel-browser.md)
 
 ## Command Overview
 
-| Group | Commands |
-|---|---|
-| Onboarding | `init`, `forge` |
-| Browser lifecycle | `browser start`, `browser stop`, `browser sessions`, `browser live`, `browser captcha solve` |
-| Browser passthrough | `steel browser <inherited-command>` |
-| API tools | `scrape`, `screenshot`, `pdf` |
-| Local runtime | `dev install`, `dev start`, `dev stop` |
-| Profiles | `profile import`, `profile sync`, `profile list`, `profile delete` |
-| Credentials | `credentials list`, `credentials create`, `credentials update`, `credentials delete` |
-| Account + utility | `login`, `logout`, `config`, `doctor`, `cache`, `update` |
+| Group               | Commands                                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------- |
+| Onboarding          | `init`, `forge`                                                                              |
+| Browser lifecycle   | `browser start`, `browser stop`, `browser sessions`, `browser live`, `browser captcha solve` |
+| Browser passthrough | `steel browser <inherited-command>`                                                          |
+| API tools           | `scrape`, `screenshot`, `pdf`                                                                |
+| Local runtime       | `dev install`, `dev start`, `dev stop`                                                       |
+| Profiles            | `profile import`, `profile sync`, `profile list`, `profile delete`                           |
+| Credentials         | `credentials list`, `credentials create`, `credentials update`, `credentials delete`         |
+| Account + utility   | `login`, `logout`, `config`, `doctor`, `cache`, `update`                                     |
 
 ## Common Workflows
 
@@ -332,4 +336,4 @@ NODE_ENV=test steel scrape https://example.com
 - [Steel CLI README](https://github.com/steel-dev/cli/blob/main/README.md)
 - [Generated CLI Reference](https://github.com/steel-dev/cli/blob/main/docs/cli-reference.md)
 - [Steel Browser Reference](https://github.com/steel-dev/cli/blob/main/docs/references/steel-browser.md)
-- [Steel Browser Skill Package](https://github.com/steel-dev/cli/tree/main/skills/steel-browser)
+- [Steel Skills](/overview/skills)

@@ -150,7 +150,7 @@ export function DocsLayout({ tree, children, stars }: DocsLayoutProps) {
                 <SearchToggle />
                 <Button
                   asChild
-                  className="bg-yellow-300 font-mono text-neutral-900 flex items-baseline gap-0.5 px-2 xl:px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group hidden xl:flex shrink-0"
+                  className="bg-yellow-300 font-mono text-neutral-900 hidden items-baseline gap-0.5 px-2 xl:px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group xl:flex shrink-0"
                 >
                   <Link href="https://app.steel.dev" target="_blank">
                     Sign in
@@ -427,9 +427,10 @@ export function SidebarItem({
 
   if (item.type === 'separator') {
     return (
-      <p className="text-primary uppercase text-[0.75rem] leading-none tracking-wide font-mono font-bold mt-6 mb-2 first:mt-0 px-2">
-        {item.name}
-      </p>
+      <div className="text-primary uppercase text-[0.75rem] leading-none tracking-wide font-mono font-bold mt-6 mb-2 first:mt-0 px-2 flex items-center gap-2">
+        <span>{item.name}</span>
+        <PageBadges item={item} />
+      </div>
     );
   }
 
@@ -504,8 +505,6 @@ export function SidebarItem({
 }
 
 export function PageBadges({ item }: { item: PageTree.Node }) {
-  if (item.type !== 'page') return null;
-
   const badges: React.ReactNode[] = [];
 
   const isNew = (item as any).data?.isNew;
