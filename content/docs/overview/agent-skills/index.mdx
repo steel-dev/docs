@@ -1,0 +1,36 @@
+---
+title: Steel Agent Skills
+description: Installable agent skills for operating, building, debugging, hardening, and creating Steel browser workflows.
+llm: true
+---
+
+Steel Skills are installable agent instructions for using Steel cloud browsers. They help coding agents choose the right Steel primitive, run the CLI correctly, debug failed sessions, and build reusable Steel software without repeated setup.
+
+```bash Terminal
+steel skills list
+```
+
+<SkillGrid />
+
+## Quick Install
+
+```bash Terminal
+npx skills add steel-dev/skills --skill steel-browser
+npx skills add steel-dev/skills --skill steel-developer
+```
+
+Or use the Steel CLI helper:
+
+```bash Terminal
+steel skills install steel-browser
+steel skills install steel-developer
+steel skills doctor
+```
+
+## Which Skill Should I Use?
+
+- Use `steel-browser` for live web work the agent should perform now.
+- Use `steel-developer` for code, scripts, docs, examples, SDKs, and app integrations.
+- Use `steel-session-debugging` when a session failed and you need evidence-backed diagnosis.
+- Use `steel-reliability` for bot detection, CAPTCHA, proxy, identity, login reliability, pacing, and retries.
+- Use `steel-skill-creator` to turn recurring browser tasks into reusable skills.

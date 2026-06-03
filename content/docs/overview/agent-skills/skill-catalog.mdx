@@ -1,0 +1,27 @@
+---
+title: Steel Skills Catalog
+description: The launch catalog of first-party Steel agent skills.
+llm: true
+---
+
+<SkillGrid />
+
+## Install Commands
+
+```bash Terminal
+npx skills add steel-dev/skills --skill steel-browser
+npx skills add steel-dev/skills --skill steel-developer
+npx skills add steel-dev/skills --skill steel-session-debugging
+npx skills add steel-dev/skills --skill steel-reliability
+npx skills add steel-dev/skills --skill steel-skill-creator
+```
+
+## Skill Boundaries
+
+| Intent | Primary Skill |
+| --- | --- |
+| Browse, click, scrape, screenshot, or create a PDF now | `steel-browser` |
+| Write reusable Steel code | `steel-developer` |
+| Diagnose a failed session | `steel-session-debugging` |
+| Mitigate bot detection, CAPTCHA, proxy, identity, or login reliability | `steel-reliability` |
+| Turn a recurring browser task into a skill | `steel-skill-creator` |

@@ -1,0 +1,28 @@
+---
+title: Steel Skill Creator
+description: Use Steel Skill Creator to turn recurring browser workflows into reusable, parameterized agent skills.
+llm: true
+---
+
+## Install
+
+```bash Terminal
+npx skills add steel-dev/skills --skill steel-skill-creator
+```
+
+## Use When
+
+- A user repeats the same browser task.
+- The task has clear inputs and success criteria.
+- The agent can safely record the task twice in Steel.
+- The output should be a reusable `SKILL.md` with evals.
+
+## Example Prompts
+
+- "Turn this weekly report download into a reusable skill."
+- "Capture this search workflow twice and make it parameterized."
+- "Generate evals for the browser task skill you just created."
+
+## Related Skills
+
+Use `steel-browser` to drive the recording sessions, `steel-session-debugging` for failed recordings, and `steel-reliability` for bot/proxy/CAPTCHA reliability issues.

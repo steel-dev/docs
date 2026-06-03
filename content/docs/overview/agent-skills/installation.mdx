@@ -1,0 +1,47 @@
+---
+title: Installing Steel Skills
+description: Install Steel Skills with npx skills or the Steel CLI helper.
+llm: true
+---
+
+## Recommended
+
+List available skills:
+
+```bash Terminal
+npx skills add steel-dev/skills --list
+```
+
+Install one skill:
+
+```bash Terminal
+npx skills add steel-dev/skills --skill steel-browser
+```
+
+Install with the Steel CLI helper:
+
+```bash Terminal
+steel skills install steel-browser
+steel skills install steel-developer
+```
+
+## Agent Targets
+
+Pass the target agent when you know it:
+
+```bash Terminal
+npx skills add steel-dev/skills --skill steel-browser -a claude-code -g
+npx skills add steel-dev/skills --skill steel-browser -a cursor -g
+npx skills add steel-dev/skills --skill steel-browser -a codex -g
+npx skills add steel-dev/skills --skill steel-browser -a opencode -g
+```
+
+## Verify
+
+```bash Terminal
+steel skills doctor
+steel doctor --preflight
+steel scrape https://example.com
+```
+
+Restart your agent client if it does not discover newly installed skills.
