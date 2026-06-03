@@ -1,10 +1,10 @@
 ---
 title: Installing Steel Skills
-description: Install Steel Skills with npx skills or the Steel CLI helper.
+description: Install Steel Skills with npx skills, Claude Code plugins, or the Steel CLI helper.
 llm: true
 ---
 
-## Recommended
+## Recommended install
 
 List available skills:
 
@@ -25,6 +25,26 @@ steel skills install steel-browser
 steel skills install steel-developer
 ```
 
+## Claude Code plugin marketplace
+
+Claude Code users can add the Steel Skills marketplace once, then install individual skills from it:
+
+```bash Terminal
+/plugin marketplace add steel-dev/skills
+/plugin install steel-browser@steel-skills
+```
+
+Install another skill by replacing `steel-browser` with any catalog skill:
+
+```bash Terminal
+/plugin install steel-developer@steel-skills
+/plugin install steel-session-debugging@steel-skills
+/plugin install steel-reliability@steel-skills
+/plugin install steel-skill-creator@steel-skills
+```
+
+The marketplace name is `steel-skills`.
+
 ## Agent Targets
 
 Pass the target agent when you know it:
@@ -35,6 +55,8 @@ npx skills add steel-dev/skills --skill steel-browser -a cursor -g
 npx skills add steel-dev/skills --skill steel-browser -a codex -g
 npx skills add steel-dev/skills --skill steel-browser -a opencode -g
 ```
+
+Supported agent targets are Claude Code, Cursor, Codex, OpenCode, and Pi.
 
 ## Verify
 

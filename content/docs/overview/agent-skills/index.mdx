@@ -1,10 +1,10 @@
 ---
-title: Steel Agent Skills
-description: Installable agent skills for operating, building, debugging, hardening, and creating Steel browser workflows.
+title: Steel Skills
+description: Install Steel Skills so coding agents can use Steel cloud browsers correctly.
 llm: true
 ---
 
-Steel Skills are installable agent instructions for using Steel cloud browsers. They help coding agents choose the right Steel primitive, run the CLI correctly, debug failed sessions, and build reusable Steel software without repeated setup.
+Steel Skills help coding agents use Steel cloud browsers correctly. Install the skill that matches what you want the agent to do: operate a browser now, write Steel code, diagnose a failed session, improve reliability, or turn a repeated browser task into a reusable workflow.
 
 ```bash Terminal
 steel skills list
@@ -12,7 +12,7 @@ steel skills list
 
 <SkillGrid />
 
-## Quick Install
+## Quick install
 
 ```bash Terminal
 npx skills add steel-dev/skills --skill steel-browser
@@ -27,10 +27,26 @@ steel skills install steel-developer
 steel skills doctor
 ```
 
-## Which Skill Should I Use?
+Claude Code users can also install through the Steel Skills plugin marketplace:
+
+```bash Terminal
+/plugin marketplace add steel-dev/skills
+/plugin install steel-browser@steel-skills
+```
+
+## Which skill should I use?
 
 - Use `steel-browser` for live web work the agent should perform now.
 - Use `steel-developer` for code, scripts, docs, examples, SDKs, and app integrations.
 - Use `steel-session-debugging` when a session failed and you need evidence-backed diagnosis.
 - Use `steel-reliability` for bot detection, CAPTCHA, proxy, identity, login reliability, pacing, and retries.
-- Use `steel-skill-creator` to turn recurring browser tasks into reusable skills.
+- Use `steel-skill-creator` to turn recurring browser tasks into reusable workflows.
+
+## Verify setup
+
+```bash Terminal
+steel skills doctor
+steel scrape https://example.com
+```
+
+Restart your agent client after installing new skills so it can discover them.

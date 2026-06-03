@@ -1,12 +1,12 @@
 ---
-title: Steel Skills Catalog
-description: The launch catalog of first-party Steel agent skills.
+title: Skill Catalog
+description: Choose the Steel Skill that matches your agent workflow.
 llm: true
 ---
 
 <SkillGrid />
 
-## Install Commands
+## Install commands
 
 ```bash Terminal
 npx skills add steel-dev/skills --skill steel-browser
@@ -16,7 +16,14 @@ npx skills add steel-dev/skills --skill steel-reliability
 npx skills add steel-dev/skills --skill steel-skill-creator
 ```
 
-## Skill Boundaries
+For Claude Code plugin installs, add the marketplace once and install by skill name:
+
+```bash Terminal
+/plugin marketplace add steel-dev/skills
+/plugin install steel-browser@steel-skills
+```
+
+## Choosing a skill
 
 | Intent | Primary Skill |
 | --- | --- |
@@ -24,4 +31,4 @@ npx skills add steel-dev/skills --skill steel-skill-creator
 | Write reusable Steel code | `steel-developer` |
 | Diagnose a failed session | `steel-session-debugging` |
 | Mitigate bot detection, CAPTCHA, proxy, identity, or login reliability | `steel-reliability` |
-| Turn a recurring browser task into a skill | `steel-skill-creator` |
+| Turn a recurring browser task into a reusable workflow | `steel-skill-creator` |
