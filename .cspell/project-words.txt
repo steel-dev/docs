@@ -36,6 +36,7 @@ crewai
 notte
 magnitude
 openclaw
+opencode
 hermes
 hermesforge
 codex
