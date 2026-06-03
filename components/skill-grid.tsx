@@ -64,7 +64,7 @@ export function SkillGrid() {
             </div>
             <div className="flex shrink-0 gap-2">
               <Badge variant="outline">{skill.category}</Badge>
-              <Badge variant="secondary">{skill.stage}</Badge>
+              {/* <Badge variant="secondary">{skill.stage}</Badge> */}
             </div>
           </div>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{skill.description}</p>

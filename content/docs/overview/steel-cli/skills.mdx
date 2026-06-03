@@ -1,28 +1,35 @@
 ---
 title: Installing Steel Skills
-description: Install Steel Skills with npx skills, Claude Code plugins, or the Steel CLI helper.
+description: Install Steel Skills so coding agents can use Steel cloud browsers correctly.
 llm: true
 ---
 
-## Recommended install
+Steel Skills help coding agents use Steel cloud browsers correctly. Install the skill that matches what you want the agent to do: operate a browser now, write Steel code, diagnose a failed session, improve reliability, or turn a repeated browser task into a reusable workflow.
 
-List available skills:
+Most users should start with `steel-browser` and `steel-developer`. Add the debugging and reliability skills when you are running repeated workflows or investigating failed sessions.
+
+```bash Terminal
+steel skills list
+```
+
+<SkillGrid />
+
+## Quick install
+
+Use `npx skills` when you want a direct install command that works across supported coding agents.
 
 ```bash Terminal
 npx skills add steel-dev/skills --list
-```
-
-Install one skill:
-
-```bash Terminal
 npx skills add steel-dev/skills --skill steel-browser
+npx skills add steel-dev/skills --skill steel-developer
 ```
 
-Install with the Steel CLI helper:
+Or use the Steel CLI helper:
 
 ```bash Terminal
 steel skills install steel-browser
 steel skills install steel-developer
+steel skills doctor
 ```
 
 ## Claude Code plugin marketplace
@@ -47,7 +54,7 @@ Install another skill by replacing `steel-browser` with any catalog skill:
 
 The marketplace name is `steel-skills`.
 
-## Agent Targets
+## Agent targets
 
 Pass the target agent when you know where the skill should be installed:
 
@@ -60,7 +67,15 @@ npx skills add steel-dev/skills --skill steel-browser -a opencode -g
 
 Supported agent targets are Claude Code, Cursor, Codex, OpenCode, and Pi.
 
-## Verify
+## Which skill should I use?
+
+- Use `steel-browser` for live web work the agent should perform now.
+- Use `steel-developer` for code, scripts, docs, examples, SDKs, and app integrations.
+- Use `steel-session-debugging` when a session failed and you need evidence-backed diagnosis.
+- Use `steel-reliability` for bot detection, CAPTCHA, proxy, identity, login reliability, pacing, and retries.
+- Use `steel-skill-creator` to turn recurring browser tasks into reusable workflows.
+
+## Verify setup
 
 ```bash Terminal
 steel skills doctor
@@ -68,4 +83,4 @@ steel doctor --preflight
 steel scrape https://example.com
 ```
 
-Restart your agent client if it does not discover newly installed skills.
+Restart your agent client after installing new skills so it can discover them.
