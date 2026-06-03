@@ -9,7 +9,7 @@ const SKILLS = [
     stage: 'GA',
     description:
       'Live browser tasks: scrape, click, fill forms, capture screenshots, and create PDFs.',
-    href: '/overview/steel-cli/steel-browser',
+    href: '/overview/skills/available-skills/steel-browser',
   },
   {
     name: 'steel-developer',
@@ -18,7 +18,7 @@ const SKILLS = [
     stage: 'GA',
     description:
       'Reusable Steel code with SDKs, REST APIs, Playwright, Puppeteer, Stagehand, and Browser Use.',
-    href: '/overview/steel-cli/steel-developer',
+    href: '/overview/skills/available-skills/steel-developer',
   },
   {
     name: 'steel-session-debugging',
@@ -27,7 +27,7 @@ const SKILLS = [
     stage: 'Beta',
     description:
       'Failed-session diagnosis from metadata, logs, traces, replay links, and network evidence.',
-    href: '/overview/steel-cli/steel-session-debugging',
+    href: '/overview/skills/available-skills/steel-session-debugging',
   },
   {
     name: 'steel-reliability',
@@ -36,7 +36,7 @@ const SKILLS = [
     stage: 'Beta',
     description:
       'Bot-detection, CAPTCHA, proxy, identity, login persistence, pacing, and retry guidance.',
-    href: '/overview/steel-cli/steel-reliability',
+    href: '/overview/skills/available-skills/steel-reliability',
   },
   {
     name: 'steel-skill-creator',
@@ -44,7 +44,7 @@ const SKILLS = [
     category: 'Create',
     stage: 'Beta',
     description: 'Turn recurring browser workflows into reusable, parameterized agent skills.',
-    href: '/overview/steel-cli/steel-skill-creator',
+    href: '/overview/skills/available-skills/steel-skill-creator',
   },
 ];
 
