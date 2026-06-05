@@ -1,9 +1,9 @@
 import './global.css';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { RootProvider } from 'fumadocs-ui/provider';
 import { GeistMono } from 'geist/font/mono';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import { ReoAnalytics } from '@/components/analytics/reo';
 import { inter, jetBrainsMono } from '@/fonts';
 import { KeyboardShortcutsProvider } from '@/hooks/use-keyboard-shortcuts';
 import { QueryProvider } from '@/providers/query-provider';
@@ -53,7 +53,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <head />
       <body className="flex flex-col min-h-screen">
-        <ReoAnalytics />
+        {process.env.NEXT_PUBLIC_GTM_ID && (
+          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
+        )}
         <QueryProvider>
           <KeyboardShortcutsProvider>
             <RootProvider

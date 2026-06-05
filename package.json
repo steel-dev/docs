@@ -43,6 +43,7 @@
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.1",
     "@fumadocs/cli": "^0.0.8",
+    "@next/third-parties": "^16.2.7",
     "@octokit/app": "^16.0.1",
     "@octokit/graphql": "^9.0.1",
     "@paper-design/shaders-react": "^0.0.59",
