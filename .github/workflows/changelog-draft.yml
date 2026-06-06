@@ -33,17 +33,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Gate scheduled run to 9 AM Toronto
+      - name: Skip scheduled run if a changelog draft PR is already open
         id: gate
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           should_run=true
 
+          # Scheduled runs are idempotent rather than time-gated: GitHub's
+          # scheduler can delay a cron by an hour or more, so we can't rely on
+          # the wall-clock execution time. Two crons fire each Friday (one per
+          # DST offset) for redundancy; whichever runs first does the work, and
+          # any later run skips once a draft PR exists. Manual dispatch always
+          # runs so drafts can be regenerated on demand.
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            toronto_hour="$(TZ=America/Toronto date +%H)"
-            toronto_weekday="$(TZ=America/Toronto date +%u)"
+            open_drafts="$(gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --json headRefName \
+              --jq '[.[] | select(.headRefName | startswith("automation/changelog-"))] | length')"
 
-            if [ "$toronto_hour" != "09" ] || [ "$toronto_weekday" != "5" ]; then
+            if [ "$open_drafts" != "0" ]; then
+              echo "Found $open_drafts open changelog draft PR(s); skipping."
               should_run=false
             fi
           fi
