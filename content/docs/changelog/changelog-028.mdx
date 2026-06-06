@@ -1,0 +1,55 @@
+---
+title: "Changelog #028"
+sidebarTitle: "Changelog #028"
+llm: true
+image: "/images/changelog/28.png"
+imageAlt: "Announcing Changelog #028"
+publishedAt: "2026-06-06"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/28.png"
+  alt="Announcing Changelog #028"
+  width={800}
+  height={400}
+/>
+Hey everyone. This was a session-and-CLI week.
+
+The big one: sessions can now release themselves after sitting idle for however long you set, so you stop paying for tabs nobody's using. The CLI also grew up a bit — you can manage sessions and browse or install agent skills straight from it now. The rest is docs and API cleanup.
+
+### ⭐ New
+
+#### Inactivity-based session timeouts
+
+Set an inactivity timeout and idle sessions get released automatically. No more orphaned sessions running until the hard limit.
+
+#### CLI commands for sessions and agent skills
+
+The Steel CLI now manages sessions and agent skills directly, including an interactive skills catalog and an `--all` install option.
+
+### 🔧 Improvements
+
+*   The docs have a dedicated agent skills section now — installation, authoring, and troubleshooting — and the quickstart covers skills as part of setup.
+
+*   Docs pages support markdown content negotiation, so you can pull raw markdown straight from the site.
+
+*   API error responses are more consistent now: clearer validation and recovery messages, and standardized docs links in the payload.
+
+*   Anti-bot detection now covers DataDome, Imperva, Amazon WAF, and FunCaptcha, and we record which captcha type was detected on the session.
+
+*   Steel Browser switched its PDF tooling to MuPDF.
+
+### 🐛 Bug Fixes
+
+*   Fixed docs pages that intermittently returned 500s when rendering raw markdown outside the prerender cache.
+
+*   Fixed `/changelog` so it redirects to the latest entry instead of leaning on a stale index source.
+
+*   Corrected billing credit grants and usage display so they match each plan's configured credits.
+
+*   Fixed Steel Browser fingerprint injection so launch configs that skip injection are respected.
+
+### 🏡 Housekeeping
+
+*   Docs analytics moved to a shared GTM container, replacing the standalone Reo script setup.
