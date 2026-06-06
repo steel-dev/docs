@@ -503,7 +503,7 @@ function renderDraftBody(draft: DraftResult): string {
   return blocks.join('\n\n').trim();
 }
 
-function buildMdxDocument(number: number, draft: DraftResult): string {
+function buildMdxDocument(number: number, draft: DraftResult, publishedAt: string): string {
   const numberLabel = formatChangelogNumber(number);
   const imageAlt = `Announcing Changelog #${numberLabel}`;
   const frontmatter = [
@@ -513,6 +513,7 @@ function buildMdxDocument(number: number, draft: DraftResult): string {
     'llm: true',
     `image: "${CHANGELOG_PLACEHOLDER_IMAGE.src}"`,
     `imageAlt: "${imageAlt}"`,
+    `publishedAt: "${publishedAt}"`,
     '---',
     "import Image from 'next/image';",
     '',
@@ -915,7 +916,7 @@ async function main() {
   console.log(`Fetched ${commits.length} candidate commits across monitored repositories.`);
 
   const draft = await requestDraftFromModel(commits, nextNumber, windowSelection, openAiToken);
-  const mdx = buildMdxDocument(nextNumber, draft);
+  const mdx = buildMdxDocument(nextNumber, draft, windowSelection.until.slice(0, 10));
   await fs.writeFile(path.join(process.cwd(), draftPath), mdx);
   await updateChangelogMeta(slug);
   await updateChangelogLlms();
