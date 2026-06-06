@@ -1,0 +1,52 @@
+---
+title: "Changelog #028"
+sidebarTitle: "Changelog #028"
+llm: true
+image: "/images/changelog-placeholder-white.jpeg"
+imageAlt: "Announcing Changelog #028"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog-placeholder-white.jpeg"
+  alt="Announcing Changelog #028"
+  width={800}
+  height={400}
+/>
+Hey everyone — this week was mostly about session controls, CLI coverage, and docs for newer agent workflows. We added inactivity-based session timeouts, expanded the CLI to manage sessions and skills, and shipped a few docs and API quality-of-life updates around markdown access and error handling.
+
+### ⭐ New
+
+#### Inactivity-based session timeouts
+
+Sessions now support an inactivity timeout, so idle sessions can be released automatically after a configurable period.
+
+#### CLI commands for sessions and agent skills
+
+The Steel CLI now includes sessions management commands and agent skills commands, including an interactive skills catalog flow and an `--all` install option.
+
+### 🔧 Improvements
+
+*   Docs now include a dedicated agent skills section, with installation, authoring, and troubleshooting guidance, and the quickstart has been updated to cover skills as part of the setup flow.
+
+*   Docs pages now support markdown content negotiation, making it easier to fetch raw markdown directly from the docs site.
+
+*   Steel API error responses are now more consistent, with clearer validation and recovery messages and standardized docs links in error payloads.
+
+*   Session anti-bot detection now covers more systems, including DataDome, Imperva, Amazon WAF, and FunCaptcha, with detected captcha types recorded on sessions for analytics.
+
+*   Steel Browser migrated its PDF tooling to MuPDF.
+
+### 🐛 Bug Fixes
+
+*   Fixed docs pages that intermittently returned 500s when rendering raw markdown outside the prerender cache.
+
+*   Fixed `/changelog` so it now redirects to the latest changelog entry instead of relying on a stale index source.
+
+*   Corrected billing credit grants and usage display so they align with each plan's configured credits.
+
+*   Fixed Steel Browser fingerprint injection so launch configs that skip fingerprint injection are respected.
+
+### 🏡 Housekeeping
+
+*   Docs analytics moved to a shared GTM container, replacing the standalone Reo script setup.
