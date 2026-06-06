@@ -13,39 +13,41 @@ import Image from 'next/image';
   width={800}
   height={400}
 />
-Hey everyone — this week was mostly about session controls, CLI coverage, and docs for newer agent workflows. We added inactivity-based session timeouts, expanded the CLI to manage sessions and skills, and shipped a few docs and API quality-of-life updates around markdown access and error handling.
+Hey everyone. This was a session-and-CLI week.
+
+The big one: sessions can now release themselves after sitting idle for however long you set, so you stop paying for tabs nobody's using. The CLI also grew up a bit — you can manage sessions and browse or install agent skills straight from it now. The rest is docs and API cleanup.
 
 ### ⭐ New
 
 #### Inactivity-based session timeouts
 
-Sessions now support an inactivity timeout, so idle sessions can be released automatically after a configurable period.
+Set an inactivity timeout and idle sessions get released automatically. No more orphaned sessions running until the hard limit.
 
 #### CLI commands for sessions and agent skills
 
-The Steel CLI now includes sessions management commands and agent skills commands, including an interactive skills catalog flow and an `--all` install option.
+The Steel CLI now manages sessions and agent skills directly, including an interactive skills catalog and an `--all` install option.
 
 ### 🔧 Improvements
 
-*   Docs now include a dedicated agent skills section, with installation, authoring, and troubleshooting guidance, and the quickstart has been updated to cover skills as part of the setup flow.
+*   The docs have a dedicated agent skills section now — installation, authoring, and troubleshooting — and the quickstart covers skills as part of setup.
 
-*   Docs pages now support markdown content negotiation, making it easier to fetch raw markdown directly from the docs site.
+*   Docs pages support markdown content negotiation, so you can pull raw markdown straight from the site.
 
-*   Steel API error responses are now more consistent, with clearer validation and recovery messages and standardized docs links in error payloads.
+*   API error responses are more consistent now: clearer validation and recovery messages, and standardized docs links in the payload.
 
-*   Session anti-bot detection now covers more systems, including DataDome, Imperva, Amazon WAF, and FunCaptcha, with detected captcha types recorded on sessions for analytics.
+*   Anti-bot detection now covers DataDome, Imperva, Amazon WAF, and FunCaptcha, and we record which captcha type was detected on the session.
 
-*   Steel Browser migrated its PDF tooling to MuPDF.
+*   Steel Browser switched its PDF tooling to MuPDF.
 
 ### 🐛 Bug Fixes
 
 *   Fixed docs pages that intermittently returned 500s when rendering raw markdown outside the prerender cache.
 
-*   Fixed `/changelog` so it now redirects to the latest changelog entry instead of relying on a stale index source.
+*   Fixed `/changelog` so it redirects to the latest entry instead of leaning on a stale index source.
 
-*   Corrected billing credit grants and usage display so they align with each plan's configured credits.
+*   Corrected billing credit grants and usage display so they match each plan's configured credits.
 
-*   Fixed Steel Browser fingerprint injection so launch configs that skip fingerprint injection are respected.
+*   Fixed Steel Browser fingerprint injection so launch configs that skip injection are respected.
 
 ### 🏡 Housekeeping
 
