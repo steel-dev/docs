@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loader } from 'fumadocs-core/source';
 import { attachFile, createOpenAPI } from 'fumadocs-openapi/server';
@@ -18,7 +18,7 @@ const customIcons = {
 
 const icons = { ...lucideIcons, ...customIcons } as any;
 
-const NEW_BADGE_DURATION = 10 * 24 * 60 * 60 * 1000;
+const NEW_BADGE_DURATION = 7 * 24 * 60 * 60 * 1000;
 
 // FIXME: feature flag to enable/disable git-based "new" badge detection
 const ENABLE_GIT_NEW_DETECTION = false; // Set to true when ready to use
@@ -116,7 +116,54 @@ function getFileGitDate(filePath: string): Date | null {
   return gitDate;
 }
 
+// Returns the `changelog-NNN` slug for a changelog entry, or null otherwise.
+function getChangelogSlug(filePath: string): string | null {
+  return filePath.match(/changelog\/(changelog-\d+)\.mdx$/)?.[1] ?? null;
+}
+
+let latestChangelogSlugCache: string | null | undefined;
+
+// The highest-numbered changelog entry on disk. Cached for the process since
+// the set of changelog files is fixed at build time.
+function getLatestChangelogSlug(): string | null {
+  if (latestChangelogSlugCache !== undefined) return latestChangelogSlugCache;
+
+  let latest: string | null = null;
+  let highest = -1;
+  try {
+    for (const entry of readdirSync(join(process.cwd(), 'content/docs/changelog'))) {
+      const match = entry.match(/^(changelog-(\d+))\.mdx$/);
+      if (!match) continue;
+      const num = Number(match[2]);
+      if (num > highest) {
+        highest = num;
+        latest = match[1];
+      }
+    }
+  } catch {
+    latest = null;
+  }
+
+  latestChangelogSlugCache = latest;
+  return latest;
+}
+
 function isPageNew(filePath: string, frontmatter?: any): boolean {
+  // Changelog entries get the NEW badge only on the most recent entry, and
+  // only while it's within the publish window. Publishing a newer changelog
+  // moves the badge forward; the previous entry loses it immediately.
+  const changelogSlug = getChangelogSlug(filePath);
+  if (changelogSlug) {
+    if (changelogSlug !== getLatestChangelogSlug()) return false;
+    if (frontmatter?.publishedAt) {
+      const publishDate = new Date(frontmatter.publishedAt);
+      if (isValidDate(publishDate)) {
+        return Date.now() - publishDate.getTime() < NEW_BADGE_DURATION;
+      }
+    }
+    return false;
+  }
+
   if (frontmatter?.publishedAt) {
     try {
       const publishDate = new Date(frontmatter.publishedAt);
