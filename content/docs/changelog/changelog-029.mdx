@@ -1,0 +1,47 @@
+---
+title: "Changelog #029"
+sidebarTitle: "Changelog #029"
+llm: true
+image: "/images/changelog/29.png"
+imageAlt: "Announcing Changelog #029"
+publishedAt: "2026-06-12"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/29.png"
+  alt="Announcing Changelog #029"
+  width={800}
+  height={400}
+/>
+Hey everyone. This week was mostly about project scoping, browser behavior, and a couple of session and viewer upgrades.
+
+### ⭐ New
+
+#### Projects and project-scoped API context
+
+Steel now supports projects in the API and app, including project-scoped API keys, project management endpoints, and project-aware session creation.
+
+### 🔧 Improvements
+
+*   The Steel CLI now shows which project and environment your API key belongs to in `steel config` and `steel doctor`
+
+*   Sessions now support `caCertificates`, so browser sessions can trust custom certificate authorities during a run
+
+*   `v1/scrape`'s markdown output was overhauled with improved extraction, richer metadata, better JSON handling, and a fallback to full-page conversion when article extraction comes up empty
+
+*   Browser infrastructure now uses browser pooling, with updated autoscaling and routing for stealth workloads
+
+*   The live session viewer now supports horizontal scrolling, and the docs include a [fullscreen watch-only viewer setup](https://docs.steel.dev/overview/sessions-api/fullscreen-mode)
+
+*   The leaderboard now includes an Aider benchmark page for the Aider Polyglot leaderboard
+
+### 🐛 Bug Fixes
+
+*   Fixed Chrome 148+ DevTools WebSocket connections in Steel Browser by sending the correct Host header to the local browser endpoint
+
+*   Fixed device metrics and timezone validation issues in Steel's session configs
+
+*   Fixed mobile IME autocorrect in the live viewer input bridge that could send text twice
+
+*   Fixed docs rendering issues that caused some table cells with mixed inline content to stringify incorrectly
