@@ -112,3 +112,15 @@ await client.profiles.update(firstSession.profileId, { userAgent: 'Mozilla/5.0 (
 client.profiles.update(first_session.profile_id, user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3')
 ```
 </CodeTabs>
+
+### FAQ
+
+:::faq
+### What does a Steel profile actually store?
+
+A profile stores a snapshot of the browser's User Data Directory, which includes everything stored in the browser: auth, cookies, extensions, credentials, and browser settings. You can keep a separate profile per use case, like a LinkedIn profile or a GitHub profile.
+
+### How do I create and reuse a profile across sessions?
+
+Create a session with `persistProfile: true`; after release, the profile reaches the `READY` state and the session returns a `profileId`. Pass that `profileId` when creating future sessions to start them with the same user data directory and context.
+:::

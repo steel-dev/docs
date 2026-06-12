@@ -43,6 +43,31 @@ const openSession = tool({
 
 Full runnable starter: [Steel + OpenAI Agents SDK recipe →](/cookbook/openai-agents)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing OpenAI Agents SDK code to use Steel?
+
+No — Steel slots in as a typed `tool()`. The tool's `execute` opens a Steel session and connects Playwright over CDP; your agents, handoffs, guardrails, and tracing work as before.
+
+### How do I connect the OpenAI Agents SDK to a Steel browser session?
+
+Inside a `tool()`'s `execute`, call `steel.sessions.create()` and attach Playwright via `chromium.connectOverCDP()` using the session's `websocketUrl` with your `apiKey` appended. Subsequent tools drive that browser.
+
+### Does the OpenAI Agents SDK work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — pass the options when creating the session (e.g. `useProxy`, `solveCaptcha`, `stealthConfig` on `sessions.create()`). They're transparent to the SDK's tool-calling loop.
+
+### Can I watch what the agent is doing in the browser?
+
+Yes — the example tool returns `liveViewUrl` from `session.sessionViewerUrl`, which you can open to watch the session live alongside the agent run.
+
+### Is the Steel integration available in both TypeScript and Python?
+
+Yes — the Agents SDK integration works in TypeScript and Python (Node.js 20+ or Python 3.10+). The page's example is TypeScript; the cookbook recipe has the full runnable starter.
+:::
+
+
 ### Resources
 
 *   [OpenAI Agents SDK documentation](https://openai.github.io/openai-agents-js/) – Agents, tools, handoffs, tracing

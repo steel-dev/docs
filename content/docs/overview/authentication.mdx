@@ -196,3 +196,19 @@ type: help
 
 Ping us in the **#help** channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section, or email [team@steel.dev](mailto:team@steel.dev?subject=Authentication%20Help).
 :::
+
+### FAQ
+
+:::faq
+### How do I authenticate requests to the Steel API?
+
+Every request uses an API key tied to your organization. Pass it as the `steel-api-key` HTTP header for the REST API, via the `STEEL_API_KEY` environment variable (or client option) for the SDKs, or as the `apiKey` query parameter on `wss://connect.steel.dev` for CDP browser connections.
+
+### Where do I get a Steel API key?
+
+Sign in at app.steel.dev, open Settings → API Keys, click Create API Key, and copy the value. The full key is shown only once at creation, so save it somewhere safe; if you lose it you must delete it and create a new one.
+
+### Why am I getting a 401 Unauthorized from Steel?
+
+A 401 means your key is invalid (typo, trailing whitespace, wrong env var, or recently deleted) or missing (`Missing API key` means no `steel-api-key` header was sent). A quick sanity check is `curl -i https://api.steel.dev/v1/sessions` with your key header: 200 means authenticated.
+:::

@@ -192,3 +192,23 @@ client.extensions.deleteAll()
  ### Need help building with the Extensions API?
  Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
  :::
+
+### FAQ
+
+:::faq
+### Can I use Chrome extensions in Steel browser sessions?
+
+Yes. Upload an extension as a `.zip` or `.crx` file, or directly from a Chrome Web Store URL, then attach it to any session. Note the Extensions system is currently in beta.
+
+### Do I have to upload an extension for every session?
+
+No. Extensions are stored globally against your organization, so you only upload them once and can then inject them into any session.
+
+### How do I add extensions to a session?
+
+Pass specific extension IDs via the `extensionIds` field when creating the session, or pass `all_ext` to inject every extension installed for your organization. Extensions are loaded and initialized when the session starts.
+
+### How do I update or remove an extension?
+
+Update by calling `client.extensions.update` with the `extensionId` and a new file or Chrome Web Store URL. Delete a single extension with `DELETE /v1/extensions/{extensionId}` or remove all of them with `DELETE /v1/extensions/`.
+:::

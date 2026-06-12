@@ -136,3 +136,27 @@ type: help
 ### Need help building with the Sessions API?
 Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
+
+### FAQ
+
+:::faq
+### How long does a Steel browser session stay alive by default?
+
+5 minutes — after that the session is automatically released. You can change this by passing the `timeout` parameter (in milliseconds) when creating the session, e.g. `timeout: 600000` for 10 minutes.
+
+### What is the maximum length of a Steel session?
+
+Up to 24 hours, depending on your plan. Sessions are billed and metered by the minute.
+
+### Can I extend the timeout of a running Steel session?
+
+No — Steel currently doesn't support editing the timeout duration of a live session, so set the `timeout` you need at creation time.
+
+### How do I avoid paying for an idle Steel session?
+
+Set `inactivityTimeout` so the session releases itself if your side goes quiet — for example when your agent crashes, hangs, or simply stops sending commands. Without it (the default), a stalled client keeps the session alive and billed until the hard `timeout` cap; with it, any CDP command or remote input resets the timer, so normal automation is unaffected while you're protected from paying for a browser nobody is driving.
+
+### How do I end a Steel session before it times out?
+
+Call `client.sessions.release(session.id)` — releasing explicitly is best practice rather than waiting for the timeout. To clean up everything at once, `client.sessions.releaseAll()` releases all active sessions.
+:::

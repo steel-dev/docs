@@ -78,3 +78,15 @@ steel scrape https://example.com
 ```
 
 Restart your agent client after installing new skills so it can discover them.
+
+### FAQ
+
+:::faq
+### How do I install Steel Skills?
+
+Use `npx skills add steel-dev/skills --skill steel-browser` or the Steel CLI helper `steel skills install steel-browser`. In Claude Code you can also use the plugin marketplace: `/plugin marketplace add steel-dev/skills` then `/plugin install steel-browser@steel-skills`.
+
+### Which coding agents do Steel Skills support?
+
+Supported agent targets are Claude Code, Cursor, Codex, OpenCode, and Pi — pass the target with the `-a` flag, e.g. `npx skills add steel-dev/skills --skill steel-browser -a cursor -g`. Beyond these built-in targets, Steel Skills generally work with any agent that supports the agent skills format.
+:::

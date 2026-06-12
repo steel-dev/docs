@@ -34,6 +34,19 @@ const page = await browser.newPage();
 
 Full runnable starter: [Steel + Puppeteer recipe →](/cookbook/puppeteer)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Puppeteer code to use Steel?
+
+No — replace `puppeteer.launch()` with `puppeteer.connect()` and pass Steel's CDP URL as `browserWSEndpoint`. `page.goto`, `page.evaluate`, `page.waitForSelector`, and the rest of the API work unchanged against the remote browser.
+
+### How do I connect Puppeteer to a Steel browser session?
+
+Create a session with `client.sessions.create()`, then call `puppeteer.connect()` with `browserWSEndpoint` set to the session's `websocketUrl` (with your `apiKey` appended) and open a tab with `browser.newPage()`.
+:::
+
+
 ### Resources
 
 *   [Puppeteer documentation](https://pptr.dev) – Official Puppeteer API reference

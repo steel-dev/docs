@@ -51,6 +51,23 @@ result = await agent.run("Open example.com and report the title.", deps=BrowserD
 
 Full runnable starter: [Steel + Pydantic AI recipe →](/cookbook/pydantic-ai)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Pydantic AI code to use Steel?
+
+No — Steel enters through dependency injection. You connect Playwright to a Steel session over CDP and pass the resulting `Page` in via `deps=BrowserDeps(page=page)`; your agent, tools, and output models stay the same.
+
+### How do I connect Pydantic AI to a Steel browser session?
+
+Create a session with `steel.sessions.create()`, connect via `chromium.connect_over_cdp(f"{session.websocket_url}&apiKey={STEEL_API_KEY}")`, take `browser.contexts[0].pages[0]`, and pass it as `deps=BrowserDeps(page=page)` to `agent.run()`.
+
+### Does Pydantic AI work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — set them on `sessions.create()` (e.g. `use_proxy`, `solve_captcha`, `stealth_config`). The agent only sees a Playwright `Page` through `ctx.deps`, so session options never leak into tool code.
+:::
+
+
 ### Resources
 
 *   [Pydantic AI documentation](https://ai.pydantic.dev/) – Agents, tools, output validators, retries, and Logfire integration

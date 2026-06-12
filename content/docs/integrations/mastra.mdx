@@ -60,6 +60,23 @@ Tools are passed as a record (not an array): the keys are what the model sees as
 
 Full runnable starter: [Steel + Mastra recipe →](/cookbook/mastra)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Mastra code to use Steel?
+
+No — Steel lives inside a standard `createTool` definition whose `execute` opens a session and connects Playwright over CDP. Your `Agent`, the `Mastra` registry, Model Router strings, and Studio all work unchanged.
+
+### How do I connect Mastra to a Steel browser session?
+
+Define a `createTool` whose `execute` calls `steel.sessions.create()` and connects via `chromium.connectOverCDP()` with the session's `websocketUrl` plus `apiKey`, register it on an `Agent` via `tools`, and attach the agent to a top-level `Mastra` registry.
+
+### Does Mastra work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — pass the options to `sessions.create()` inside your tool (e.g. `useProxy`, `solveCaptcha`, `stealthConfig`). Mastra's tool layer is unaffected because these are Steel session settings.
+:::
+
+
 ### Resources
 
 *   [Mastra documentation](https://mastra.ai/docs) – Agents, tools, workflows, memory, and Studio

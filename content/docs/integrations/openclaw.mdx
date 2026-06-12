@@ -87,6 +87,31 @@ See:
 *   **Form-heavy workflows can still take time.** Dynamic fields, validation errors, and bot checks add retries and extra browser steps.
 *   **Authenticated sites work best with prepared Steel auth state.** Reusing profiles or auth context is generally more reliable than repeated interactive logins.
 
+### FAQ
+
+:::faq
+### Do I need to write integration code to use Steel with OpenClaw?
+
+No — the integration works through the Steel CLI. Install it with `curl -LsSf https://setup.steel.dev | sh`, run `steel login`, and once the CLI is on your `PATH` OpenClaw can run multi-step web tasks, scrape rendered pages, and work through forms without custom integration code.
+
+### How does OpenClaw connect to a Steel browser session?
+
+Via Steel CLI commands in its shell. Install the `steel-browser` skill for better command discovery — `npx skills add steel-dev/skills --skill steel-browser -a opencode -g` — then restart OpenClaw so it discovers the skill.
+
+### Does OpenClaw work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — those are properties of the Steel session, not the agent. Sessions OpenClaw starts run on the same Sessions API that supports `useProxy`, `solveCaptcha`, and `stealthConfig` at creation time; the page notes bot checks can still add retries on form-heavy flows.
+
+### When should I use `steel scrape` instead of a full OpenClaw browser session?
+
+When you only need page content — `steel scrape https://example.com` is often faster than spinning up an interactive session. Save full sessions for forms, multi-step workflows, and pages that need JavaScript rendering before the agent can reason about them.
+
+### How do I monitor or debug what OpenClaw is doing in the browser?
+
+Steel sessions return a viewer URL so you can watch the browser live — useful on form-heavy flows when a modal blocks progress or the agent needs a second attempt. For longer workflows, Steel keeps the full session history for after-the-fact inspection.
+:::
+
+
 ### Resources
 
 *   [OpenClaw + Steel blog post](https://steel.dev/blog/openclaw-steel-browser-let-your-ai-agent-fill-the-forms) – Case study using OpenClaw to work through a CFP submission flow

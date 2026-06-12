@@ -40,6 +40,31 @@ Full runnable starters:
 *   Auto-solve captchas with Steel + Browser Use: [Captcha auto recipe →](/cookbook/browser-use-captcha-auto)
 *   Hand off captchas to a human via Steel Live View: [Manual captcha recipe →](/cookbook/browser-use-captcha-manual)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Browser Use code to use Steel?
+
+No — pass a `BrowserSession(cdp_url=...)` into your `Agent` and Browser Use drives Steel's cloud browser instead of a local one. Your task, LLM config, and `agent.run()` loop stay the same.
+
+### How do I connect Browser Use to a Steel browser session?
+
+Create a session with `client.sessions.create()`, build the CDP URL as `f"{session.websocket_url}&apiKey={STEEL_API_KEY}"`, and pass it to `BrowserSession(cdp_url=cdp_url)` on the `Agent`.
+
+### Does Browser Use work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — these are session-creation options (e.g. `use_proxy`, `solve_captcha`, `stealth_config` on `sessions.create`), invisible to Browser Use itself. The page links dedicated recipes for auto-solving CAPTCHAs and handing them to a human.
+
+### Which LLMs work with Browser Use on Steel?
+
+Vision-capable models — the page calls out GPT-5, Claude Sonnet 4, and Gemini 3 Pro, and the example wires `ChatOpenAI(model="gpt-5")`. You also need Python 3.11+. For up-to-date model recommendations for browser agents, check the [Steel leaderboard](https://leaderboard.steel.dev/).
+
+### Can a human take over when the agent hits a CAPTCHA?
+
+Yes — Steel's Live View lets a person solve the CAPTCHA in the running session while the agent waits. The page links a manual-captcha recipe showing this hand-off pattern.
+:::
+
+
 ### Resources
 
 *   [Browser Use documentation](https://docs.browser-use.com/) – Comprehensive guide to the browser-use library

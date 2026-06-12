@@ -237,3 +237,15 @@ type: help
 ### Need help with Browser Tools?
 Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
+
+### FAQ
+
+:::faq
+### Should I use Browser Tools or Sessions?
+
+Use Browser Tools (`/v1/scrape`, `/v1/screenshot`, `/v1/pdf`) for stateless one-shot actions against a URL; each call spins up a fresh browser and tears it down. Reach for Sessions when you need to persist cookies, click through multi-step flows, pin a proxy to a country, or reuse an authenticated profile or extension.
+
+### What formats can the scrape endpoint return?
+
+Pass `format` to get `html` (raw DOM after JS execution, the default), `cleaned_html`, `markdown` (best for feeding LLMs), or `readability` (Mozilla Readability's article object). Every response also includes `metadata` (SEO fields, status code) and a `links` array.
+:::

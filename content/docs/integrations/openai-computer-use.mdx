@@ -38,6 +38,23 @@ const { base64_image } = await steel.sessions.computer(session.id, {
 
 Full runnable starter: [Steel + OpenAI Computer Use recipe →](/cookbook/openai-computer-use)
 
+### FAQ
+
+:::faq
+### How do I connect OpenAI Computer Use to a Steel browser session?
+
+Create a session with explicit `dimensions` (the example uses 1024x768), take a screenshot with `steel.sessions.computer(session.id, { action: "take_screenshot" })`, send the `base64_image` to OpenAI's Responses API computer-use tool, and route returned actions back through `steel.sessions.computer({ action: ... })`.
+
+### Does OpenAI Computer Use work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — the page notes it pairs well with Steel's anti-bot capabilities, proxy support, and sandboxed environments. These are session-creation options (e.g. `useProxy`, `solveCaptcha`, `stealthConfig`) and don't change the agent loop.
+
+### How does the screenshot/action loop work?
+
+Steel screenshots the session, you send the image to the Responses API with the computer-use tool, the model returns the next action, and Steel executes it via `sessions.computer` — then the loop repeats until the task is done.
+:::
+
+
 ### Resources
 
 *   [OpenAI Computer Use documentation](https://platform.openai.com/docs/guides/tools-computer-use) – Official documentation from OpenAI
