@@ -25,7 +25,7 @@ export function FAQ({ jsonLd, children }: { jsonLd?: string; children: ReactNode
 export function FAQItem({ question, children }: { question: string; children: ReactNode }) {
   return (
     <AccordionItem value={question}>
-      <AccordionTrigger>{question}</AccordionTrigger>
+      <AccordionTrigger className="text-base">{question}</AccordionTrigger>
       <AccordionContent>
         <div className="px-2 pb-4 text-fd-muted-foreground [&>p]:my-2">{children}</div>
       </AccordionContent>
