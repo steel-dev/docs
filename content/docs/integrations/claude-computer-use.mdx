@@ -42,6 +42,27 @@ Full runnable starters:
 *   Build a Claude Computer Use loop on Steel: [Steel + Claude Computer Use recipe →](/cookbook/claude-computer-use)
 *   Drive a mobile-viewport Steel session with Claude: [Mobile recipe →](/cookbook/claude-computer-use-mobile)
 
+### FAQ
+
+:::faq
+### Do I need Playwright or CSS selectors to use Claude Computer Use with Steel?
+
+No — Claude's computer-use loop is vision-based. Claude looks at screenshots, decides actions like click, type, or scroll, and Steel executes them through its `sessions.computer` API, so there are no custom selectors to write.
+
+### How do I connect Claude Computer Use to a Steel browser session?
+
+Create a session with explicit `dimensions` (the example uses 1024x768), take screenshots via `steel.sessions.computer(session.id, { action: "take_screenshot" })`, send the `base64_image` to Claude's `computer_20251124` tool, and route Claude's returned actions back through `steel.sessions.computer({ action: ... })`.
+
+### Does Claude Computer Use work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — the page notes it pairs well with Steel's anti-bot capabilities, proxy support, and sandboxed environments. These are enabled at session creation (e.g. `useProxy`, `solveCaptcha`, `stealthConfig`) and don't change the agent loop.
+
+### How does the screenshot/action loop actually work?
+
+Steel takes a screenshot, you send it to Claude with the computer-use tool, Claude returns the next action (click, type, scroll), and Steel executes it via `sessions.computer` — then you screenshot again and repeat until the task completes.
+:::
+
+
 ### Resources
 
 *   [Anthropic Computer Use documentation](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) – Official documentation from Anthropic

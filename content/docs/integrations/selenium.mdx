@@ -52,6 +52,27 @@ Each command is an HTTP round-trip, so prefer `WebDriverWait` with `expected_con
 
 Full runnable starter: [Steel + Selenium recipe →](/cookbook/selenium)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Selenium code to use Steel?
+
+Mostly no — your test logic stays plain Selenium 4. The change is in the connection: point `webdriver.Remote` at Steel's WebDriver endpoint and inject the `steel-api-key` and `session-id` headers on every request via a small `RemoteConnection` subclass.
+
+### How do I connect Selenium to a Steel browser session?
+
+Steel runs a WebDriver endpoint at `http://connect.steelbrowser.com/selenium`. Create a session with `client.sessions.create(is_selenium=True)`, then pass a `RemoteConnection` subclass that adds `steel-api-key` and `session-id` headers as the `command_executor` for `webdriver.Remote`.
+
+### Does Selenium work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — those are set when you create the session (e.g. `use_proxy`, `solve_captcha`, `stealth_config` on `sessions.create`), so Selenium doesn't need to know about them. Your WebDriver commands run against the session however it was provisioned.
+
+### Why does my session need `is_selenium=True`?
+
+Because Selenium speaks the W3C WebDriver protocol over HTTP, not CDP. `is_selenium=True` provisions a WebDriver-compatible node — without it you get a CDP browser that Selenium cannot drive.
+:::
+
+
 ### Resources
 
 *   [Selenium Python documentation](https://selenium-python.readthedocs.io) – Official Python bindings reference

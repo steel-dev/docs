@@ -38,6 +38,23 @@ await stagehand.init();
 
 Full runnable starter: [Steel + Stagehand recipe →](/cookbook/stagehand)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Stagehand code to use Steel?
+
+No — your `act`, `extract`, and `observe` calls stay the same. The only change is constructing `Stagehand` with `env: "LOCAL"` and Steel's CDP URL in `localBrowserLaunchOptions.cdpUrl`.
+
+### How do I connect Stagehand to a Steel browser session?
+
+Create a session with `client.sessions.create()`, then set `cdpUrl` inside `localBrowserLaunchOptions` to the session's `websocketUrl` with your `apiKey` appended, and call `stagehand.init()`.
+
+### Does Stagehand work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — set them when creating the Steel session (e.g. `useProxy`, `solveCaptcha`, `stealthConfig` on `sessions.create`). Stagehand connects over CDP and is unaware of how the session was provisioned.
+:::
+
+
 ### Resources
 
 *   [Stagehand documentation](https://docs.stagehand.dev/first-steps/introduction) – Official documentation for Stagehand

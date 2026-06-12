@@ -181,3 +181,15 @@ Check out the full example
 
 *   **Available for Live Sessions:**
     Context can only be captured from live sessions. So if you wish to re-use a context, make sure to grab the object _before_ releasing the session.
+
+### FAQ
+
+:::faq
+### How do I reuse a login across Steel sessions?
+
+Authenticate in an initial session, capture its browser state with the `GET /v1/sessions/{id}/context` endpoint (`client.sessions.context(id)` in the SDK), then pass that object to the `sessionContext` parameter when creating a new session. The new session starts already authenticated, with no second login.
+
+### Should I use the Profiles API or session context reuse?
+
+For an easier path, use the Profiles API: it reuses a complete browser profile (auth, context, cookies, extensions) automatically, not just context or cookies. Context reuse is the lower-level option when you only need to transfer cookies and local storage.
+:::

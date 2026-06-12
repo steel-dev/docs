@@ -38,6 +38,27 @@ const agent = await startBrowserAgent({
 
 Full runnable starter: [Steel + Magnitude recipe →](/cookbook/magnitude)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Magnitude code to use Steel?
+
+No — add `browser: { cdp: ... }` to your `startBrowserAgent` config and Magnitude's planning loop runs on the Steel cloud browser. Prompts, typed actions, and structured outputs work as before.
+
+### How do I connect Magnitude to a Steel browser session?
+
+Create a session with `client.sessions.create()`, then set `browser.cdp` in the `startBrowserAgent` config to the session's `websocketUrl` with your `apiKey` appended.
+
+### Does Magnitude work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — configure them when creating the session (e.g. `useProxy`, `solveCaptcha`, `stealthConfig` on `sessions.create()`). Magnitude just connects to the resulting CDP endpoint.
+
+### Which model does Magnitude use for planning?
+
+Anthropic is Magnitude's default planning provider — the example configures `llm: { provider: "anthropic", options: { model: "claude-sonnet-4-6" } }`. You need an Anthropic API key plus Node.js 20+.
+:::
+
+
 ### Resources
 
 *   [Magnitude documentation](https://docs.magnitude.run/) – Concepts, agent APIs, and examples

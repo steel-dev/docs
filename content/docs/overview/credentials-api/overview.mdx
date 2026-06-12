@@ -268,3 +268,19 @@ type: help
 ### Need help building with the Credentials API?
 Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
+
+### FAQ
+
+:::faq
+### How does Steel keep stored credentials secure?
+
+With envelope encryption — each credential is protected by its own short-lived AES-256-GCM key, which is in turn encrypted with an organization-specific KMS key. The ciphertext is also bound to your org ID and credential origin as additional authenticated data (AAD), which blocks replay attacks across orgs.
+
+### Can AI agents see the passwords Steel injects?
+
+No — credentials are injected into login forms without being exposed to agents, programs, or humans viewing a live session, and each filled field is blurred immediately after input (`blurFields: true` by default) to prevent vision agents from reading PII.
+
+### Does Steel's Credentials API support 2FA / TOTP logins?
+
+Yes — include a `totpSecret` in the credential's `value` object and Steel generates a valid time-based one-time password on demand when a TOTP field is detected. The secret is securely stored and never exposed to the page.
+:::

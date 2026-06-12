@@ -38,6 +38,27 @@ class SteelScrapeTool(BaseTool):
 
 Full runnable starter: [Steel + CrewAI recipe →](/cookbook/crewai)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing CrewAI code to use Steel?
+
+No — Steel plugs in as a regular CrewAI tool. Define a `BaseTool` subclass whose `_run` method calls Steel, hand it to your agents, and your crews, flows, and memory setup stay untouched.
+
+### How do I connect CrewAI to Steel?
+
+Expose Steel as a CrewAI `BaseTool`: instantiate the Steel client in `__init__` and call it from `_run`. The page's example tool scrapes a URL with `self._steel.scrape(url=url, format=["markdown"])` and returns markdown to the agent.
+
+### Does CrewAI work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — when your tool creates Steel sessions you can enable these at session creation (e.g. `use_proxy`, `solve_captcha`, `stealth_config`). They're Steel-side options, so CrewAI's orchestration doesn't change.
+
+### Do I need a full browser session, or is scraping enough for a crew?
+
+For read-only research, the page's tool uses Steel's `scrape` API to return page markdown — no session management needed. For interactive flows (forms, clicks, multi-step navigation), create a Steel session inside the tool instead.
+:::
+
+
 ### Resources
 
 *   [CrewAI documentation](https://docs.crewai.com/) – Official documentation for CrewAI

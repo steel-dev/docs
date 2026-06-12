@@ -20,7 +20,8 @@
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
     "sync-cookbook": "bun run ./scripts/sync-cookbook.ts",
     "generate-changelog-draft": "bun run ./scripts/generate-changelog-draft.ts",
-    "generate": "bun run generate-openapi && bun run generate-llms"
+    "generate": "bun run generate-openapi && bun run generate-llms",
+    "test": "bun test tests/"
   },
   "overrides": {
     "@shikijs/core": "3.3.0",

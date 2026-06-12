@@ -60,6 +60,27 @@ app = graph.compile()
 
 Full runnable starter: [Steel + LangGraph recipe →](/cookbook/langgraph)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing LangGraph code to use Steel?
+
+No — your `StateGraph`, nodes, and edges stay the same. Steel lives inside your `@tool` functions: a tool creates a session and attaches Playwright via `connect_over_cdp`, and the agent loop drives that page.
+
+### How do I connect LangGraph to a Steel browser session?
+
+Inside a `@tool`, call `steel.sessions.create()` and connect Playwright with `chromium.connect_over_cdp(f"{session.websocket_url}&apiKey={STEEL_API_KEY}")`, then use `browser.contexts[0].pages[0]` as the shared page for your other tools.
+
+### Does LangGraph work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — enable them when the tool creates the session (e.g. `use_proxy`, `solve_captcha`, `stealth_config` on `sessions.create()`). The graph and `ToolNode` wiring are unaffected.
+
+### How does the agent loop actually work in the LangGraph example?
+
+`tools_condition` routes to the `"tools"` node when the assistant message contains tool calls and to `END` when it doesn't, and the `tools -> agent` edge closes the loop. Three nodes and four edges give you a complete tool-calling browser agent.
+:::
+
+
 ### Resources
 
 *   [LangGraph documentation](https://langchain-ai.github.io/langgraph/) – State graphs, prebuilts, checkpointing, and streaming

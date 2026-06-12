@@ -151,3 +151,23 @@ All new sessions now run **headful by default**, streaming real-time video with 
 Use the same `debugUrl` to embed or view — Steel automatically determines the correct playback mode.  
 
 Headless live streams remain available for legacy sessions but will be phased out over time.
+
+### FAQ
+
+:::faq
+### Can I embed a live Steel browser session in my app?
+
+Yes. Every session created via the API returns a `debugUrl` that you can open directly in a browser or embed in your UI with an iframe, streaming the live browser in real time.
+
+### Can users interact with an embedded live session, or is it view-only?
+
+Both. The `interactive` parameter (default `true`) enables remote mouse and keyboard input for human-in-the-loop workflows; set `interactive=false` on the debug URL for a read-only, watch-only view.
+
+### Is the debug URL authenticated?
+
+No. Debug URLs are unauthenticated by design, so anyone with the URL can view or interact with that session. Add your own access controls if you embed live sessions in a user-facing product.
+
+### How does Steel's live view streaming work?
+
+New sessions run headful by default and stream real-time video over WebRTC at 25 fps using H.264, with OS-level capture and low latency. Legacy headless sessions use the same `debugUrl` but display via Chrome's screencasting, and Steel automatically picks the right playback mode.
+:::

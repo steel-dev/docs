@@ -266,3 +266,23 @@ type: help
 ### Need help building with captcha solving?
 Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
+
+### FAQ
+
+:::faq
+### How does Steel handle CAPTCHAs?
+
+With a two-pronged approach: browser fingerprinting and anti-detection systems prevent many CAPTCHAs from appearing in the first place, and when one does appear, automatic solving handles it transparently. Enable it by setting `solveCaptcha: true` when creating a session.
+
+### What CAPTCHA types does Steel support?
+
+Steel's auto-solver currently handles reCAPTCHA v2 and v3, hCaptcha, Cloudflare Turnstile, image-to-text, and slider CAPTCHAs. Systems like DataDome, Imperva, Amazon WAF, and FunCAPTCHA are detected and logged but not auto-solved, and custom or enterprise-specific implementations aren't supported.
+
+### Does Steel's CAPTCHA solver work 100% of the time?
+
+No — the system has high success rates but solving is not guaranteed to work 100% of the time, so you should implement proper error handling. Solving can also add latency, so account for it in your timeouts and waiting strategies.
+
+### How can I avoid triggering CAPTCHAs in the first place?
+
+Use Steel's automatic fingerprinting (which often bypasses avoidable CAPTCHAs by making sessions appear more human-like), reuse successful sessions while maintaining cookies, and add natural delays while avoiding rapid, repetitive actions.
+:::

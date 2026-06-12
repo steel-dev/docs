@@ -380,3 +380,27 @@ type: help
 ### Need help building with the Captchas API?
 Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
+
+### FAQ
+
+:::faq
+### Does Steel solve CAPTCHAs automatically?
+
+Yes — set `solveCaptcha: true` when creating a session and Steel automatically detects and solves CAPTCHAs without interrupting your automation flow.
+
+### Can Steel detect CAPTCHAs without solving them?
+
+Yes — set `autoCaptchaSolving: false` in the session's `stealthConfig` to detect CAPTCHAs without auto-solving, then trigger solving manually via the solve endpoint (all detected CAPTCHAs, or a specific `taskId`, `url`, or `pageId`).
+
+### What CAPTCHA types does Steel's CAPTCHAs API handle?
+
+Tasks are mapped to four supported types: `recaptchaV2` (checkbox and image challenges), `recaptchaV3` (invisible scoring), `turnstile` (Cloudflare), and `image_to_text` (traditional distorted-character CAPTCHAs).
+
+### How do I check if a CAPTCHA is being solved in my Steel session?
+
+Call the status endpoint (`client.sessions.captchas.status('sessionId')`) — it returns each page's `isSolvingCaptcha` flag plus per-task statuses like `detected`, `solving`, `solved`, and `failed_to_solve`.
+
+### How does Steel solve image-based CAPTCHAs?
+
+Via the `solveImage` endpoint — you pass `imageXPath` (the CAPTCHA image element) and `inputXPath` (the answer field), both required, plus an optional `url` that defaults to the current page.
+:::

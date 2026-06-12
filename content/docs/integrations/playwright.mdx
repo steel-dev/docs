@@ -48,6 +48,27 @@ page = browser.contexts[0].new_page()
 
 Full runnable starter: [Steel + Playwright recipe →](/cookbook/playwright)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Playwright code to use Steel?
+
+No — swap your local launch for `chromium.connectOverCDP()` (or `connect_over_cdp` in Python) pointed at the Steel session's `websocketUrl`. The rest of your script — `page.goto`, locators, `expect`, tracing — runs unchanged against the remote browser.
+
+### How do I connect Playwright to a Steel browser session?
+
+Create a session with `client.sessions.create()`, then connect with `chromium.connectOverCDP()` in Node or `playwright.chromium.connect_over_cdp()` in Python, passing the session's `websocketUrl` with your `apiKey` appended as a query parameter.
+
+### Does Playwright work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — those are options on `sessions.create()` (e.g. `useProxy`, `solveCaptcha`, `stealthConfig`), not Playwright settings. Playwright just sees a normal CDP browser; stealth, proxies, and the live viewer come from the Steel session.
+
+### Do I still need to run `playwright install` or have Chrome installed locally?
+
+No — the browser runs in Steel's cloud, so there's no `playwright install`, no headful display, and no Chrome on your machine. You only need the `playwright` package and a Steel API key.
+:::
+
+
 ### Resources
 
 *   [Playwright documentation](https://playwright.dev) – Official Playwright docs for TypeScript and Python

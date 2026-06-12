@@ -474,3 +474,15 @@ type: help
 ### Need help building with the Files API?
 Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
+
+### FAQ
+
+:::faq
+### How do I upload a file into a website's file input from a Steel session?
+
+Upload the file to the session first, then either use CDP's `DOM.setFileInputFiles` with the session file path, or for simpler cases use standard automation methods like Playwright's `page.setInputFiles` with the session file path.
+
+### Can I download all files from a session at once?
+
+Yes. Use `client.sessions.files.downloadArchive(sessionId)` in the SDK, or hit the `files.zip` endpoint via raw HTTP, to download every file in the session as a single zip archive.
+:::

@@ -37,6 +37,27 @@ page = browser.contexts[0].pages[0]
 
 Full runnable starter: [Steel + Agno recipe →](/cookbook/agno)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Agno code to use Steel?
+
+No — Steel is exposed to Agno as a regular `Toolkit`. You connect Playwright to a Steel session over CDP and wrap the resulting `page` in the toolkit; agents, teams, memory, and reasoning stay as they were.
+
+### How do I connect Agno to a Steel browser session?
+
+Create a session with `steel.sessions.create()`, connect with `playwright.chromium.connect_over_cdp(f"{session.websocket_url}&apiKey={STEEL_API_KEY}")`, take `browser.contexts[0].pages[0]` as your page, and wrap it in an Agno `Toolkit`.
+
+### Does Agno work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — set them at session creation (e.g. `use_proxy`, `solve_captcha`, `stealth_config` on `sessions.create()`). Agno only sees the Playwright page, so these options don't touch your agent code.
+
+### Which model providers can I use with Agno on Steel?
+
+Any Agno-supported provider — Agno is model-agnostic and natively multi-modal, so OpenAI, Anthropic, or others all work. You just need the provider key plus your Steel API key.
+:::
+
+
 ### Resources
 
 *   [Agno documentation](https://docs.agno.com/) – Concepts, APIs, and examples for agents, teams, memory, and reasoning

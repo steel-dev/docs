@@ -9,6 +9,7 @@ import { AuthorProfile } from '@/components/author-profile';
 import { Callout } from '@/components/callout';
 import * as CardComponents from '@/components/card';
 import { docskit } from '@/components/docskit/components';
+import { FAQ, FAQItem } from '@/components/faq';
 import { IntegrationGrid } from '@/components/integration-grid';
 import { OrderedList, UnorderedList } from '@/components/lists';
 import { RecipeCard, RecipeGrid } from '@/components/recipe-card';
@@ -41,6 +42,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Badge,
     Callout,
     ...CardComponents,
+    FAQ,
+    FAQItem,
     ...FilesComponents,
     ...StepsComponents,
     ...TabsComponents,

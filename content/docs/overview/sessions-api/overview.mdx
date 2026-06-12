@@ -38,3 +38,19 @@ type: help
 ### Need help building with the Sessions API?
 Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev/) under the community ⭐ section.
 :::
+
+### FAQ
+
+:::faq
+### What is a Steel session?
+
+A session is an isolated cloud browser instance your agent spins up on demand, like opening a fresh incognito window but running in Steel's cloud and controlled through code. Sessions are the atomic unit of the Sessions API.
+
+### Do Steel sessions keep state between steps?
+
+Yes. Each session maintains its own state, cookies, and storage, which is designed for AI agents that need to navigate the web, interact with sites, and keep context across multiple steps.
+
+### Can I control a Steel session with Puppeteer, Playwright, or Selenium?
+
+Yes. Steel has connection guides for Puppeteer, Playwright (Node and Python), and Selenium, plus Python and Node SDK references for managing sessions themselves.
+:::

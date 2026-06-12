@@ -55,6 +55,27 @@ Pass the server into `query()` via `mcpServers` and pre-approve calls with `allo
 
 Full runnable starter: [Steel + Claude Agent SDK recipe →](/cookbook/claude-agent-sdk)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Claude Agent SDK code to use Steel?
+
+No — Steel is exposed as in-process MCP tools. Wrap a Steel session in a `tool()`, bundle it with `createSdkMcpServer`, and your `query()` loop and message handling stay exactly the same.
+
+### How do I connect the Claude Agent SDK to a Steel browser session?
+
+Define a `tool()` that calls `steel.sessions.create()` and connects via `chromium.connectOverCDP()` with the session's `websocketUrl` plus `apiKey`, bundle it into an in-process MCP server with `createSdkMcpServer`, then pass that server to `query()` via `mcpServers` and pre-approve calls with `allowedTools`.
+
+### Does the Claude Agent SDK work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — enable them when your tool creates the session (e.g. `useProxy`, `solveCaptcha`, `stealthConfig` on `sessions.create()`). The SDK's agent loop and MCP plumbing are unaffected.
+
+### Is the Steel integration available in both TypeScript and Python?
+
+Yes — use `@anthropic-ai/claude-agent-sdk` for TypeScript or `claude-agent-sdk` for Python, plus `steel-sdk` and `playwright`. You'll also need an Anthropic API key with access to a Claude 4 model.
+:::
+
+
 ### Resources
 
 *   [Claude Agent SDK documentation](https://platform.claude.com/docs/en/agent-sdk/overview) – Agent loop, custom MCP tools, hooks, subagents

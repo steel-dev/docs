@@ -46,6 +46,31 @@ Full runnable starters:
 *   Server-only typed agent: [Steel + Vercel AI SDK recipe →](/cookbook/vercel-ai-sdk)
 *   Next.js chat UI with embedded Steel Live View: [Steel + Vercel AI SDK + Next.js recipe →](/cookbook/vercel-ai-sdk-nextjs)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing Vercel AI SDK code to use Steel?
+
+No — Steel slots in as a typed `tool()` from the `ai` package. The tool's `execute` opens a Steel session and connects Playwright over CDP; your streaming, provider setup, and the rest of the agent stay the same.
+
+### How do I connect the Vercel AI SDK to a Steel browser session?
+
+Inside a `tool()`'s `execute`, call `steel.sessions.create()` and connect with `chromium.connectOverCDP()` using the session's `websocketUrl` plus your `apiKey`. Subsequent tools (navigate, snapshot, extract) drive that browser and return typed results.
+
+### Does the Vercel AI SDK work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — pass them to `sessions.create()` (e.g. `useProxy`, `solveCaptcha`, `stealthConfig`). They're session-creation options and don't touch the AI SDK's tool or streaming layers.
+
+### Can users watch the browser while the agent runs in a chat UI?
+
+Yes — the tool returns `liveViewUrl` (`session.sessionViewerUrl`), and the Next.js recipe embeds Steel's Live View iframe alongside the chat so users watch the browser as the agent works.
+
+### Which model providers can I use?
+
+Any AI SDK-supported provider — install a provider package like `@ai-sdk/anthropic` and bring an Anthropic, OpenAI, or other provider key. Steel only needs the CDP connection, so the model choice is independent. For current model recommendations, see the [Steel leaderboard](https://leaderboard.steel.dev/).
+:::
+
+
 ### Resources
 
 *   [Vercel AI SDK documentation](https://ai-sdk.dev/) – Tools, agents, streaming, and providers

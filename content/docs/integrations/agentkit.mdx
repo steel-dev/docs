@@ -35,6 +35,23 @@ const page = browser.contexts()[0].pages()[0];
 
 Full runnable starter: [Steel + AgentKit recipe →](/cookbook/agentkit)
 
+### FAQ
+
+:::faq
+### Do I need to change my existing AgentKit code to use Steel?
+
+No — AgentKit keeps handling orchestration, routing, and shared state. Inside a tool handler you create a Steel session, connect Playwright over CDP, and call the resulting `page` from your handlers.
+
+### How do I connect AgentKit to a Steel browser session?
+
+Call `steel.sessions.create()`, connect with `chromium.connectOverCDP()` using the session's `websocketUrl` plus your `apiKey`, and take the first page of `browser.contexts()[0]` as the page your AgentKit tool handlers drive.
+
+### Does AgentKit work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — pass them to `sessions.create()` (e.g. `useProxy`, `solveCaptcha`, `stealthConfig`). They're Steel-side session options, so your agent network and routers don't change.
+:::
+
+
 ### Resources
 
 *   [AgentKit documentation](https://agentkit.inngest.com/overview) – Official documentation for AgentKit

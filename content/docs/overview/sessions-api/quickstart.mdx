@@ -111,3 +111,15 @@ type: help
 ### Need help building with the Sessions API?
 Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
+
+### FAQ
+
+:::faq
+### How long does a Steel session last by default?
+
+The default session timeout is 5 minutes. You can extend it with the `timeout` option on session create (e.g. `timeout: 1800000` for 30 minutes) and set `inactivityTimeout` to release after a period of inactivity.
+
+### Can I enable proxies and CAPTCHA solving on a session?
+
+Yes. Pass `useProxy: true` to route through Steel's residential proxy network and `solveCaptcha: true` to enable automatic CAPTCHA solving when creating the session. You can also set a custom user agent with `userAgent`.
+:::

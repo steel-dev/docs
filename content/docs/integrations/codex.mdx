@@ -59,6 +59,31 @@ That works well for jobs like recurring research, internal reporting, or lightwe
 *   **Command approvals depend on your Codex settings.** Codex may ask before running shell commands unless you have configured a more permissive approval mode.
 *   **Authenticated workflows usually need preconfigured Steel auth state.** For reusable login state, see [Profiles API](/overview/profiles-api/overview) and [Reusing Auth Context](/overview/sessions-api/reusing-auth-context).
 
+### FAQ
+
+:::faq
+### Do I need to write integration code to use Steel with Codex?
+
+No — the integration works through the Steel CLI. Install it with `curl -LsSf https://setup.steel.dev | sh`, run `steel login`, and Codex can start and control Steel sessions, scrape rendered pages, and run computer-use actions from the terminal.
+
+### How does Codex connect to a Steel browser session?
+
+Once Steel CLI is on your `PATH`, Codex inspects command help, runs the commands it needs, and verifies results from the terminal. For better command discovery, install the `steel-browser` skill with `npx skills add steel-dev/skills --skill steel-browser -a codex -g` and restart Codex.
+
+### Does Codex work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — those are properties of the Steel session, not of Codex. Sessions started from the CLI run on the same Sessions API that supports `useProxy`, `solveCaptcha`, and `stealthConfig` at creation time.
+
+### How do I turn a one-off Codex browser run into a recurring job?
+
+After a successful manual run, prompt Codex with "Write a bash script based on what you just did", then schedule the script with cron or another runner. The page recommends this run-once, convert, schedule pattern for recurring research, reporting, and monitoring.
+
+### What should I know before pointing Codex at authenticated sites?
+
+Authenticated workflows usually need preconfigured Steel auth state — set up reusable login state via the Profiles API or Reusing Auth Context instead of interactive logins each run. Also note Codex may ask for command approvals depending on your approval mode.
+:::
+
+
 ### Resources
 
 *   [Codex + Steel + Resend blog post](https://steel.dev/blog/codex-wired-steel-and-resend-into-a-daily-newsletter) – Example workflow for building a daily newsletter with Codex

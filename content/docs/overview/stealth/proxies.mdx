@@ -248,3 +248,27 @@ type: help
 ### Need help building with proxies?
 Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) under the ⭐ community section.
 :::
+
+### FAQ
+
+:::faq
+### How much do Steel proxies cost?
+
+Steel-managed residential proxies are billed per GB of usage, while the default behavior (no proxy, Steel's datacenter IPs) is free and included in all plans. Bring Your Own Proxy carries no charge from Steel — you only pay your own proxy provider.
+
+### Do Steel sessions use a proxy by default?
+
+No — proxies are disabled by default (`useProxy: false` is the implicit setting), so traffic originates from Steel's own datacenter IPs at no proxy-bandwidth cost. Set `useProxy: true` to route through a Steel-managed residential IP (US-based by default).
+
+### Can I use my own proxies with Steel?
+
+Yes — Bring Your Own Proxy (BYOP) lets you pass a `server` URL in `http://`, `https://`, or `socks5://` format on any plan, including the free Hobby plan. Your proxy credentials are handled securely and never logged or stored by Steel beyond the duration of your session.
+
+### Can Steel proxies target a specific country or city?
+
+Yes — Steel-managed proxies support geographic targeting across 200+ countries (two-letter Alpha-2 codes), US states, and major global cities via the `geolocation` option. Steel recommends the broadest targeting that meets your needs, since narrower targeting means a smaller IP pool.
+
+### Which Steel plans include managed residential proxies?
+
+Developer, Pro, and Enterprise plans. The proxy pool offers hundreds of millions of residential IPs with automatic rotation, while the no-proxy default and BYOP are available on all plans including the free Hobby tier.
+:::

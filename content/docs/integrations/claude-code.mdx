@@ -67,6 +67,31 @@ After a successful run, Claude Code can help turn the browser workflow into some
 *   **First runs are usually the roughest.** Dynamic web apps often need a few retries before the workflow is stable.
 *   **Authenticated sites work best with prepared Steel auth state.** Reusing profiles or auth context is generally more reliable than repeated interactive logins.
 
+### FAQ
+
+:::faq
+### Do I need to write integration code to use Steel with Claude Code?
+
+No — the integration works through the Steel CLI. Install it with `curl -LsSf https://setup.steel.dev | sh`, run `steel login`, and Claude Code can start and control Steel sessions, scrape rendered pages, and run computer-use actions from the terminal.
+
+### How does Claude Code connect to a Steel browser session?
+
+Through Steel CLI commands in its shell. For better command discovery and more reliable workflows, install the `steel-browser` skill with `npx skills add steel-dev/skills --skill steel-browser -a claude-code -g` and restart Claude Code so it discovers the skill.
+
+### Does Claude Code work with Steel's proxies, stealth mode, and CAPTCHA solving?
+
+Yes — those are properties of the Steel session itself, not the client driving it. Sessions Claude Code starts run on the same Sessions API that supports `useProxy`, `solveCaptcha`, and `stealthConfig` at creation time.
+
+### How should I handle sites that require login?
+
+Prepare reusable auth state in Steel ahead of time via the Profiles API or Reusing Auth Context, rather than asking Claude Code to log in from scratch every run. The page calls prepared auth state more reliable than repeated interactive logins.
+
+### Can I watch what Claude Code is doing in the browser?
+
+Yes — Steel sessions return a viewer URL for monitoring the browser in real time. That's especially useful when Claude Code hits a modal, a sign-in wall, or a page that misbehaves, and successful runs can then be turned into scripts or runbooks.
+:::
+
+
 ### Resources
 
 *   [Give Claude Code a real browser](https://steel.dev/blog/give-claude-code-a-real-browser) – Blog post on using Claude Code with Steel

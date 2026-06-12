@@ -141,3 +141,23 @@ Learn about session timeouts for managing interactive sessions:
 Session Lifecycle
 
 Learn how to start and release browser sessions programmatically.
+
+### FAQ
+
+:::faq
+### How do I let a user take control of an automated browser session?
+
+Embed the session's debug URL in an iframe with `interactive=true` (enables clicks, scrolling, and form input) and `showControls=true` (shows the navigation bar with URL entry and back/forward controls).
+
+### What can users do in an interactive session?
+
+With both parameters enabled, users can click page elements, scroll, fill out forms and inputs, enter new URLs in the navigation bar, and use browser-style forward/back navigation.
+
+### When is human-in-the-loop useful for browser agents?
+
+It is most useful when users need to take over a session that needs assistance, enter sensitive information like login credentials, solve CAPTCHAs, verify or correct automated actions, or demonstrate actions that will be automated.
+
+### Do actions taken in the embedded viewer affect the real session?
+
+Yes. Any actions a user takes in an interactive session affect the actual browser session and its state, so make it clear to users when they are in control. A minimum iframe height of 600px is recommended for comfortable interaction.
+:::
