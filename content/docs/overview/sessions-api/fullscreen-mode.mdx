@@ -81,6 +81,10 @@ No browser UI means no strip of dead pixels at the top of every capture. Screens
 
 Dashboards, signage, and embedded views render edge-to-edge, the way they would on a dedicated full-screen display. Pages built against the full viewport get the canvas they expect.
 
+**Watch-Only Views for Your Users**
+
+Pair fullscreen with a read-only embed and you can surface a live session inside your own product as a clean, edge-to-edge view your users can watch but not control. Embed the session's `debugUrl` with `interactive=false` to lock interaction to your backend, and fullscreen removes the browser chrome so all they see is the page. See [Live Sessions](/overview/sessions-api/embed-sessions/live-sessions) for the embed parameters.
+
 **Viewport Matches Screen**
 
 Sites that compare `innerHeight` to `screen.height` see exactly what a maximized, fullscreened real browser reports: the two are identical. Windowed sessions report the gap a real toolbar would create, so both modes present a consistent fingerprint—fullscreen just presents the edge-to-edge one.
