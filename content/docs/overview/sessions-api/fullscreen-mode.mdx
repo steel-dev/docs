@@ -1,0 +1,98 @@
+---
+title: Fullscreen Mode
+sidebarTitle: Fullscreen Mode
+description: Launch browser sessions edge-to-edge with no Chrome UI, so pages get the full 1920×1080 and screenshots stay clean.
+llm: true
+publishedAt: "2026-05-15"
+---
+
+### Overview
+
+Fullscreen mode launches the browser covering the full screen with no Chrome UI—no address bar, no tabs, no toolbars. Pass `fullscreen: true` when creating a session and the page gets every pixel of the 1920×1080 screen.
+
+By default, sessions run windowed: Steel reserves space for browser UI the same way a real desktop browser does, so the page sees a viewport slightly smaller than the screen. Fullscreen removes that reservation entirely. The result is cleaner screenshots and recordings with no browser chrome in the frame, and a viewport that exactly matches the screen.
+
+### How It Works
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+import { chromium } from 'playwright';
+
+const client = new Steel({ steelAPIKey: process.env.STEEL_API_KEY });
+
+// Create a session that launches fullscreen
+const session = await client.sessions.create({
+  fullscreen: true
+});
+
+// Connect to the fullscreen session
+const browser = await chromium.connectOverCDP(
+  `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`
+);
+
+const page = await browser.contexts()[0].pages()[0];
+await page.goto('https://example.com');
+```
+
+```python !! Python -wcn
+from steel import Steel
+from playwright.async_api import async_playwright
+import os
+
+client = Steel(steel_api_key=os.environ.get("STEEL_API_KEY"))
+
+# Create a session that launches fullscreen
+session = client.sessions.create(
+    fullscreen=True
+)
+
+# Connect to the fullscreen session
+async with async_playwright() as p:
+    browser = await p.chromium.connect_over_cdp(
+        f"wss://connect.steel.dev?apiKey={os.environ.get('STEEL_API_KEY')}&sessionId={session.id}"
+    )
+
+    page = browser.contexts[0].pages[0]
+    await page.goto('https://example.com')
+```
+
+</CodeTabs>
+
+The flag is set at session creation and can't be changed on a running session. It defaults to `false`, so existing integrations are unaffected, and it echoes back on the session object so you can confirm what you got.
+
+The difference fullscreen makes is in the viewport. A windowed session subtracts a chrome allowance from the screen—5px of width and 91px of height—so a default 1920×1080 session hands the page a 1915×989 viewport. Fullscreen skips the subtraction:
+
+| | Windowed (default) | Fullscreen |
+|---|---|---|
+| Browser UI | Reserves space at the top | None |
+| Screen size | Your `dimensions`, capped at 1920×1080 | Fixed at 1920×1080 |
+| Viewport | Screen minus chrome allowance (e.g. 1915×989) | Full 1920×1080 |
+| `innerHeight` vs `screen.height` | Smaller | Identical |
+
+### Why This Matters
+
+**Clean Screenshots and Recordings**
+
+No browser UI means no strip of dead pixels at the top of every capture. Screenshots and session recordings show only page content, with no cropping step in your pipeline.
+
+**Kiosk-Style Displays**
+
+Dashboards, signage, and embedded views render edge-to-edge, the way they would on a dedicated full-screen display. Pages built against the full viewport get the canvas they expect.
+
+**Viewport Matches Screen**
+
+Sites that compare `innerHeight` to `screen.height` see exactly what a maximized, fullscreened real browser reports: the two are identical. Windowed sessions report the gap a real toolbar would create, so both modes present a consistent fingerprint—fullscreen just presents the edge-to-edge one.
+
+### Things to Know
+
+- **Fullscreen overrides `dimensions`.** The session is fixed at 1920×1080; any `width`/`height` you pass is ignored. Use `dimensions` for a specific size, `fullscreen` for the whole screen—not both.
+- **Click coordinates shift.** Moving from a windowed session to fullscreen changes the viewport from 1915×989 to 1920×1080, so saved coordinates from windowed runs won't line up.
+- **It's not the viewer's fullscreen button.** That button expands the live viewer on your screen; `fullscreen: true` changes how the cloud browser itself launches.
+
+:::callout
+type: help
+### Need help with fullscreen mode?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) or [@steeldotdev](https://twitter.com/steeldotdev).
+:::
