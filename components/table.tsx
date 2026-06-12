@@ -14,12 +14,12 @@ export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 }
 
 interface NetworkBadgeProps {
-  network: string | React.ReactElement;
+  network: ReactNode;
 }
 
 const NetworkBadge = ({ network }: NetworkBadgeProps) => (
   <>
-    {typeof network === 'object' && network !== null ? (
+    {React.isValidElement(network) ? (
       <code className="relative rounded bg-neutral-150 dark:bg-neutral-600 p-1.5 font-mono text-sm text-left text-muted-foreground whitespace-nowrap">
         {(network as React.ReactElement<{ children?: ReactNode }>).props.children ?? ''}
       </code>
@@ -88,13 +88,7 @@ function CustomTable({ className, ...props }: TableProps) {
             return (
               <TableRow key={i} className="bg-background border-0 border-t border-b">
                 <TableCell className="py-4 px-4 min-w-[150px] md:min-w-0">
-                  <NetworkBadge
-                    network={
-                      React.isValidElement(cells[0])
-                        ? cells[0] // Pass element directly
-                        : String(cells[0] ?? '') // Convert others to string
-                    }
-                  />
+                  <NetworkBadge network={cells[0]} />
                 </TableCell>
                 {cells.slice(1).map((cell, j) => (
                   <TableCell
