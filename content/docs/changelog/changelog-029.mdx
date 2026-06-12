@@ -2,14 +2,14 @@
 title: "Changelog #029"
 sidebarTitle: "Changelog #029"
 llm: true
-image: "/images/changelog-placeholder-white.jpeg"
+image: "/images/21.png"
 imageAlt: "Announcing Changelog #029"
 publishedAt: "2026-06-12"
 ---
 import Image from 'next/image';
 
 <Image
-  src="/images/changelog-placeholder-white.jpeg"
+  src="/images/21.png"
   alt="Announcing Changelog #029"
   width={800}
   height={400}
@@ -24,24 +24,24 @@ Steel now supports projects in the API and app, including project-scoped API key
 
 ### 🔧 Improvements
 
-*   The Steel CLI now shows which project and environment your API key belongs to in `steel config` and `steel doctor`.
+*   The Steel CLI now shows which project and environment your API key belongs to in `steel config` and `steel doctor`
 
-*   Sessions now support `caCertificates`, so managed browsers can trust custom certificate authorities during a run.
+*   Sessions now support `caCertificates`, so browser sessions can trust custom certificate authorities during a run
 
-*   Steel Browser's markdown output was overhauled with improved extraction, richer metadata, better JSON handling, and a fallback to full-page conversion when article extraction comes up empty.
+*   `v1/scrape`'s markdown output was overhauled with improved extraction, richer metadata, better JSON handling, and a fallback to full-page conversion when article extraction comes up empty
 
-*   Browser infrastructure now uses browser pooling, with updated autoscaling and routing for stealth workloads.
+*   Browser infrastructure now uses browser pooling, with updated autoscaling and routing for stealth workloads
 
-*   The live session viewer now supports horizontal scrolling, and the docs include a fullscreen watch-only viewer setup.
+*   The live session viewer now supports horizontal scrolling, and the docs include a fullscreen watch-only viewer setup (docs)
 
-*   The leaderboard now includes an Aider benchmark page for the Aider Polyglot leaderboard.
+*   The leaderboard now includes an Aider benchmark page for the Aider Polyglot leaderboard
 
 ### 🐛 Bug Fixes
 
-*   Fixed Chrome 148+ DevTools WebSocket connections in Steel Browser by sending the correct Host header to the local browser endpoint.
+*   Fixed Chrome 148+ DevTools WebSocket connections in Steel Browser by sending the correct Host header to the local browser endpoint
 
-*   Fixed device metrics and timezone validation issues in Steel Browser session setup.
+*   Fixed device metrics and timezone validation issues in Steel's session configs
 
-*   Fixed mobile IME autocorrect in the live viewer input bridge that could send text twice.
+*   Fixed mobile IME autocorrect in the live viewer input bridge that could send text twice
 
-*   Fixed docs rendering issues that caused some table cells with mixed inline content to stringify incorrectly.
+*   Fixed docs rendering issues that caused some table cells with mixed inline content to stringify incorrectly
