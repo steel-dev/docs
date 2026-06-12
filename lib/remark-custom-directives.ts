@@ -11,6 +11,7 @@ import { visit } from 'unist-util-visit';
  * - :::callout directive for creating Callout components
  * - :::objectives directive for creating What you'll learn sections
  * - :::prerequisites directive for creating Prerequisites sections
+ * - :::faq directive for creating FAQ accordions with FAQPage JSON-LD
  */
 export const remarkCustomDirectives: Plugin<[], Root> = () => {
   return (tree: Root, file) => {
@@ -29,6 +30,9 @@ export const remarkCustomDirectives: Plugin<[], Root> = () => {
             break;
           case 'prerequisites':
             transformPrerequisitesDirective(node, index, parent, file);
+            break;
+          case 'faq':
+            transformFaqDirective(node, index, parent, file);
             break;
           default:
             // For unknown directives, transform to mdxJsxFlowElement with empty attributes
@@ -408,6 +412,94 @@ function transformPrerequisitesDirective(
   if (parent && index !== undefined) {
     parent.children.splice(index, 1, transformedNode);
   }
+}
+
+/**
+ * Transform :::faq directive into FAQ accordion with FAQPage JSON-LD
+ * Expected format:
+ * :::faq
+ * ### Question text?
+ * Answer content (markdown allowed, multiple blocks supported).
+ * :::
+ */
+function transformFaqDirective(node: any, index: number | undefined, parent: any, file: any) {
+  const items: { question: string; answerNodes: any[] }[] = [];
+
+  for (const child of node.children ?? []) {
+    if (child.type === 'heading' && child.depth === 3) {
+      const question = extractInlineText(child);
+      if (!question) {
+        file.fail('faq directive question headings must contain text', child.position);
+        return;
+      }
+      items.push({ question, answerNodes: [] });
+    } else if (items.length === 0) {
+      file.fail(
+        'faq directive content must start with a ### question heading',
+        child.position ?? node.position,
+      );
+      return;
+    } else {
+      items[items.length - 1].answerNodes.push(child);
+    }
+  }
+
+  if (items.length === 0) {
+    file.fail('faq directive must contain at least one ### question heading', node.position);
+    return;
+  }
+
+  // Build FAQPage structured data from plain-text questions and answers
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answerNodes
+          .map((answerNode: any) => extractInlineText(answerNode))
+          .join(' ')
+          .trim(),
+      },
+    })),
+  });
+
+  node.type = 'mdxJsxFlowElement';
+  node.name = 'FAQ';
+  node.attributes = [
+    {
+      type: 'mdxJsxAttribute',
+      name: 'jsonLd',
+      value: jsonLd,
+    },
+  ];
+  node.children = items.map((item) => ({
+    type: 'mdxJsxFlowElement',
+    name: 'FAQItem',
+    attributes: [
+      {
+        type: 'mdxJsxAttribute',
+        name: 'question',
+        value: item.question,
+      },
+    ],
+    children: item.answerNodes,
+  }));
+}
+
+/**
+ * Extract plain text (including inline code and link text) from a node tree
+ */
+function extractInlineText(node: any): string {
+  if (node.type === 'text' || node.type === 'inlineCode') {
+    return node.value;
+  }
+  if (node.children) {
+    return node.children.map((child: any) => extractInlineText(child)).join('');
+  }
+  return '';
 }
 
 /**
