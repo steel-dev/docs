@@ -1,23 +1,46 @@
 ---
 title: x402
 sidebarTitle: x402
-description: Pay-per-use Steel sessions with USDC on Base and Solana. No API key, no account.
+description: Pay-per-use Steel API calls with USDC on Base and Solana. No API key, no account.
 llm: true
 ---
 
-The x402 integration enables pay-per-use Steel browser sessions powered by cryptocurrency. Built on the [x402 protocol](https://www.x402.org/), it lets you create and manage Steel sessions by paying with USDC on Base or Solana, with no API keys or accounts required.
+The x402 integration lets you call Steel's web actions — scrape, screenshot, and PDF — and pay per request with USDC on Base or Solana. It's built on the [x402 protocol](https://www.x402.org/), so there are no API keys or accounts: you pay for each call with your wallet.
 
 **Endpoint:** `https://x402.steel.dev`
 
 ### How it works
 
-1.  **Send a request** to the x402 endpoint. The server responds with a `402 Payment Required`.
-2.  **Sign a payment authorization** for the requested amount with your wallet.
-3.  **Resend the request** with the signed payment header. You receive your data with a `200 OK` response.
+1.  **Send a request** to one of the endpoints below. The server responds with `402 Payment Required` and the payment details (amount, networks, and recipient).
+2.  **Sign a payment authorization** for the requested amount with your wallet. An x402 client library does this for you.
+3.  **Resend the request** with the signed `X-PAYMENT` header. You receive your data with a `200 OK` response.
+
+### Available endpoints
+
+All endpoints take a `POST` with a JSON body and return JSON.
+
+| Endpoint              | What it does                                                                 |
+|-----------------------|------------------------------------------------------------------------------|
+| `POST /v1/scrape`     | Fetch a rendered page as HTML, Markdown, or readable text — optionally with a screenshot or PDF |
+| `POST /v1/screenshot` | Capture a screenshot of a page                                               |
+| `POST /v1/pdf`        | Render a page to PDF                                                         |
+
+#### Request parameters
+
+| Parameter    | Type       | Endpoints     | Description                                                              |
+|--------------|------------|---------------|--------------------------------------------------------------------------|
+| `url`        | `string`   | all           | URL of the page to load. **Required.**                                   |
+| `format`     | `string[]` | scrape        | Output format(s): `html`, `readability`, `cleaned_html`, `markdown`. Defaults to `html`. |
+| `screenshot` | `boolean`  | scrape        | Include a screenshot in the response.                                    |
+| `pdf`        | `boolean`  | scrape        | Include a PDF in the response.                                           |
+| `fullPage`   | `boolean`  | screenshot    | Capture the full scrollable page.                                        |
+| `delay`      | `number`   | all           | Delay before acting, in milliseconds.                                    |
+| `useProxy`   | `boolean`  | all           | Route through a Steel-provided residential proxy.                        |
+| `region`     | `string`   | all           | Region to run the action in.                                             |
 
 ### Pricing
 
-Rate: **$0.10/hour**
+Each request costs **$0.01 in USDC** (`10000` base units), charged on whichever network you pay from. There's no subscription and no per-hour billing — you pay only for the requests you make.
 
 ### Requirements
 
@@ -30,25 +53,55 @@ Rate: **$0.10/hour**
 | Base (mainnet)         | **0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913**    |
 | Solana (mainnet)       | **EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v**  |
 
+### Quickstart
+
+First, see the payment requirements by sending an unpaid request:
+
+```bash Terminal
+curl -i -X POST https://x402.steel.dev/v1/scrape \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com", "format": ["markdown"]}'
+```
+
+You'll get a `402 Payment Required` describing the amount and the Base and Solana payment options.
+
+To complete the call, use an x402 client library — it reads the `402`, signs the payment, and retries automatically. For example, with [`x402-fetch`](https://www.x402.org/):
+
+```ts
+import { wrapFetchWithPayment } from "x402-fetch";
+import { privateKeyToAccount } from "viem/accounts";
+
+const account = privateKeyToAccount(process.env.PRIVATE_KEY);
+const fetchWithPay = wrapFetchWithPayment(fetch, account);
+
+const res = await fetchWithPay("https://x402.steel.dev/v1/scrape", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ url: "https://example.com", format: ["markdown"] }),
+});
+
+const data = await res.json();
+```
+
 ### FAQ
 
 :::faq
-### Do I need a Steel account or API key to use x402 sessions?
+### Do I need a Steel account or API key to use x402?
 
-No — x402 sessions are pay-per-use with cryptocurrency. You create and manage Steel sessions by paying with USDC on Base or Solana, with no API keys or accounts required.
+No — x402 is pay-per-use with cryptocurrency. You call the scrape, screenshot, and PDF endpoints by paying with USDC on Base or Solana, with no API keys or accounts required.
 
-### How do I create a Steel session over x402?
+### How do I make a request over x402?
 
-Send a request to `https://x402.steel.dev`; the server responds with `402 Payment Required`. Sign a payment authorization for the requested amount with your wallet, resend the request with the signed payment header, and you get your data with a `200 OK`.
+Send a `POST` to an endpoint like `https://x402.steel.dev/v1/scrape`; the server responds with `402 Payment Required`. Sign a payment authorization for the requested amount with your wallet (an x402 client does this for you), resend the request with the signed `X-PAYMENT` header, and you get your data with a `200 OK`.
 
-### How much do x402 Steel sessions cost?
+### How much does it cost?
 
-The rate is $0.10/hour, paid in USDC. All you need is a Base or Solana wallet holding USDC.
+$0.01 in USDC per request, paid on Base or Solana. All you need is a wallet holding USDC.
 :::
 
 
 ### Resources
 
 *   [x402 protocol](https://www.x402.org/) – Learn more about the x402 protocol
-*   [Steel Sessions API reference](/api-reference) – Programmatic session management
+*   [Steel API reference](/api-reference) – Full reference for the scrape, screenshot, and PDF endpoints
 *   [Steel Discord](https://discord.gg/steel-dev) – Get help and share your implementations
