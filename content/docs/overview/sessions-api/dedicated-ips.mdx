@@ -11,7 +11,10 @@ look consistent where the network matters.
 Without a dedicated IP, each session may come from a different network path. With a
 dedicated IP, a site can see requests from a familiar IP instead of a new location on
 every run. This is useful for login reliability, long-running automations, and workflows
-where repeated "new network" signals cause extra checks.
+where repeated "new network" signals cause extra checks. This is often called the
+impossible traveler problem: auth and anti-bot systems see the same account appear from
+unrelated networks or locations too quickly, then invalidate the saved auth state or add
+extra verification.
 
 Profiles take this further. A dedicated IP gives the session stable network identity, but
 it does not preserve the browser itself. Without a profile, each session still starts like
@@ -29,6 +32,27 @@ Together:
 - Profiles give those sessions stable browser identity.
 - Using both helps automations resume from a trusted, logged-in state instead of starting
   cold every time.
+
+## Lease Dedicated IPs
+
+Dedicated IPs are leased from **Settings > Network** in the Steel dashboard. They are
+available on paid plans; Hobby workspaces need to upgrade before leasing dedicated IPs.
+
+Each dedicated IP is billed as a monthly subscription at **$5 per dedicated IP / month**.
+You can lease up to 25 dedicated IPs self-serve from the Network page. If you need more,
+contact support.
+
+1. Open [Settings > Network](https://app.steel.dev/settings/network).
+2. Click **Lease Dedicated IPs**.
+3. Choose a location and quantity.
+4. Complete checkout.
+
+After checkout completes, the Network page lists each leased dedicated IP. You will see
+the public IP address, such as `203.0.113.42`, and a Steel dedicated IP identifier, such
+as `fixed:8SdfYs77me`.
+
+Use the `fixed:<id>` identifier in API requests. Copy the Dedicated IP ID from the
+Network page when you want to pin a session or profile to a specific IP.
 
 ## Use Any Dedicated IP
 

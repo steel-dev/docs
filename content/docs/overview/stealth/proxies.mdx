@@ -8,6 +8,12 @@ llm: true
 ## Overview
 Steel offers two powerful ways to use proxies: our built-in **Managed Residential Proxies** or connecting to your own proxy provider with our **Bring Your Own Proxy (BYOP)** feature.
 
+If your workflow needs a stable network identity instead of automatic rotation, use
+[Dedicated IPs](/overview/sessions-api/dedicated-ips). Dedicated IPs lease a specific
+Steel-managed IP into your workspace so sessions can reuse the same egress IP, especially
+when paired with [Profiles](/overview/profiles-api/overview) for persistent cookies and
+browser state.
+
 ### Which Proxy Approach Should you choose?
 
 Use this table to pick the right option for your project.
