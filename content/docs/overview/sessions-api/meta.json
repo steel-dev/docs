@@ -9,6 +9,7 @@
     "mobile-mode",
     "fullscreen-mode",
     "multi-region",
+    "dedicated-ips",
     "embed-sessions",
     "human-in-the-loop",
     "reusing-auth-context"
