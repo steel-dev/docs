@@ -53,7 +53,7 @@ const TOPIC_DESCRIPTIONS: Record<string, string> = {
 
 // Display order for language tabs in merged concept pages. Entries not
 // listed fall back to the end in insertion order.
-const LANGUAGE_ORDER: string[] = ['TypeScript', 'Python', 'Next.js'];
+const LANGUAGE_ORDER: string[] = ['TypeScript', 'Python', 'Next.js', 'Go', 'Rust'];
 
 interface CookbookLock {
   repo: string; // "owner/name" on GitHub
