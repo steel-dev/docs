@@ -40,6 +40,16 @@ const config = {
         permanent: true,
       },
       {
+        source: "/steel-go-sdk",
+        destination: "https://pkg.go.dev/github.com/steel-dev/steel-go",
+        permanent: true,
+      },
+      {
+        source: "/steel-rust-sdk",
+        destination: "https://crates.io/crates/steel-rs",
+        permanent: true,
+      },
+      {
         source: "/api-reference",
         destination: "https://steel.apidocumentation.com/api-reference",
         permanent: true,
