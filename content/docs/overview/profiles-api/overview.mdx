@@ -13,6 +13,13 @@ Then you can keep reusing profiles across sessions for each different use case. 
 
 This allows your agents to look more human, persist everything across sessions and frees you to focus on the most important part of your workflow.
 
+:::callout
+Profiles preserve browser identity. [Dedicated IPs](/overview/sessions-api/dedicated-ips)
+preserve network identity. For account-based agents, the strongest setup is usually one
+profile plus one dedicated IP per account, so sites see the same cookies, storage, and a
+familiar IP instead of a fresh browser from a new network every run.
+:::
+
 ### Limits
 - There is a 300 MB limit on the size of a profile, if the upload fails after a session, the profile will be set to a `FAILED` state and cannot be used
 - If a profile is not used after 30 days, it will be automatically deleted

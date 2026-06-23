@@ -1,0 +1,209 @@
+---
+title: Dedicated IPs
+sidebarTitle: Dedicated IPs
+description: Give Steel sessions a stable network identity with dedicated IPs, and combine them with profiles for durable browser identity.
+llm: true
+---
+
+Steel sessions give you a fresh cloud browser on demand. Dedicated IPs let those sessions
+look consistent where the network matters.
+
+Without a dedicated IP, each session may come from a different network path. With a
+dedicated IP, a site can see requests from a familiar IP instead of a new location on
+every run. This is useful for login reliability, long-running automations, and workflows
+where repeated "new network" signals cause extra checks. This is often called the
+impossible traveler problem: auth and anti-bot systems see the same account appear from
+unrelated networks or locations too quickly, then invalidate the saved auth state or add
+extra verification.
+
+Profiles take this further. A dedicated IP gives the session stable network identity, but
+it does not preserve the browser itself. Without a profile, each session still starts like
+a new browser: no cookies, local storage, IndexedDB, login state, permissions, or prior
+browser history.
+
+With [Steel Profiles](/overview/profiles-api/overview), the browser identity persists too.
+You can sign in once, release the session, and later start another cloud browser with the
+same profile and the same saved browser state.
+
+Together:
+
+- Sessions give you scalable, on-demand cloud browsers.
+- Dedicated IPs give those sessions stable network identity.
+- Profiles give those sessions stable browser identity.
+- Using both helps automations resume from a trusted, logged-in state instead of starting
+  cold every time.
+
+## Lease Dedicated IPs
+
+Dedicated IPs are leased from **Settings > Network** in the Steel dashboard. They are
+available on paid plans; Hobby workspaces need to upgrade before leasing dedicated IPs.
+
+Each dedicated IP is billed as a monthly subscription at **$5 per dedicated IP / month**.
+You can lease up to 25 dedicated IPs self-serve from the Network page. If you need more,
+contact support.
+
+1. Open [Settings > Network](https://app.steel.dev/settings/network).
+2. Click **Lease Dedicated IPs**.
+3. Choose a location and quantity.
+4. Complete checkout.
+
+After checkout completes, the Network page lists each leased dedicated IP. You will see
+the public IP address, such as `203.0.113.42`, and a Steel dedicated IP identifier, such
+as `fixed:8SdfYs77me`.
+
+Use the `fixed:<id>` identifier in API requests. Copy the Dedicated IP ID from the
+Network page when you want to pin a session or profile to a specific IP.
+
+## Use Any Dedicated IP
+
+Pass `useProxy: { type: "fixed" }` when creating a session. Steel will randomly select
+one active dedicated IP from your workspace.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const session = await client.sessions.create({
+  useProxy: { type: "fixed" },
+});
+```
+
+```python !! Python -wcn
+session = client.sessions.create(
+    use_proxy={"type": "fixed"}
+)
+```
+
+</CodeTabs>
+
+This default is useful when you want stable, dedicated egress without caring which
+dedicated IP is used for a specific run.
+
+## Pin A Specific Dedicated IP
+
+If you want a specific IP, pass its fixed IP identifier with `id`.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const session = await client.sessions.create({
+  useProxy: { type: "fixed", id: "fixed:aaaa" },
+});
+```
+
+```python !! Python -wcn
+session = client.sessions.create(
+    use_proxy={"type": "fixed", "id": "fixed:aaaa"}
+)
+```
+
+</CodeTabs>
+
+Use this when a specific account, profile, customer, or workflow should always use the
+same network identity.
+
+## Persist A Dedicated IP With A Profile
+
+When you create a persisted profile with an unspecified dedicated IP, Steel first selects
+one of your dedicated IPs, then stores that selected IP on the profile after the session
+starts successfully.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const firstSession = await client.sessions.create({
+  persistProfile: true,
+  useProxy: { type: "fixed" },
+});
+
+const profileId = firstSession.profileId;
+
+const secondSession = await client.sessions.create({
+  profileId,
+});
+```
+
+```python !! Python -wcn
+first_session = client.sessions.create(
+    persist_profile=True,
+    use_proxy={"type": "fixed"}
+)
+
+profile_id = first_session.profile_id
+
+second_session = client.sessions.create(
+    profile_id=profile_id
+)
+```
+
+</CodeTabs>
+
+The second session loads the saved profile, including the fixed IP selection. That means
+future sessions using the profile can keep both the same browser state and the same
+network identity.
+
+You can also explicitly pin the IP at profile creation time:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const session = await client.sessions.create({
+  persistProfile: true,
+  useProxy: { type: "fixed", id: "fixed:aaaa" },
+});
+```
+
+```python !! Python -wcn
+session = client.sessions.create(
+    persist_profile=True,
+    use_proxy={"type": "fixed", "id": "fixed:aaaa"}
+)
+```
+
+</CodeTabs>
+
+## Why Lease Multiple IPs?
+
+Multiple dedicated IPs give you more control over how work is distributed:
+
+- Keep one stable IP per account, profile, customer, or workflow.
+- Run parallel sessions without every workflow sharing the same IP.
+- Reduce repeated traffic from one network identity.
+- Keep a fallback IP available if a site challenges or blocks one IP.
+- Let Steel randomly distribute sessions across your dedicated IPs when you do not pass
+  an `id`.
+
+For account-based automations, a common pattern is one profile plus one dedicated IP per
+account. The profile keeps browser state. The dedicated IP keeps network identity.
+
+## Billing And Metering
+
+Dedicated IP traffic is metered as normal proxy bandwidth. It appears in the same proxy
+bandwidth usage model as your other Steel proxy traffic.
+
+Browser session time is still metered separately as normal session usage.
+
+:::callout
+type: help
+### Need help choosing an IP strategy?
+Reach out to us on the <span className="font-bold">#help</span> channel on
+[Discord](https://discord.gg/steel-dev) under the ⭐ community section.
+:::
+
+## FAQ
+
+:::faq
+### What happens if I do not pass a fixed IP `id`?
+
+Steel randomly selects one active dedicated IP from your workspace. If you use a persisted
+profile, Steel saves that selected IP to the profile after the session starts.
+
+### Should I use dedicated IPs with profiles?
+
+Yes, if the workflow needs continuity. Dedicated IPs keep the network identity stable.
+Profiles keep cookies, storage, login state, permissions, and browser history stable.
+
+### Does dedicated IP traffic have separate metering?
+
+No. Dedicated IP traffic counts as normal proxy bandwidth. Browser session time is still
+metered separately.
+:::
