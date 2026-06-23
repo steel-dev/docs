@@ -9,6 +9,7 @@ interface Recipe {
   title: string;
   description: string;
   topics: string[];
+  languages?: string[];
   date?: string;
 }
 
@@ -31,7 +32,13 @@ export function RecipeSearch({ recipes }: Props) {
       .filter(Boolean);
     if (tokens.length === 0) return recipes;
     return recipes.filter((recipe) => {
-      const haystack = [recipe.title, recipe.description, recipe.slug, ...(recipe.topics ?? [])]
+      const haystack = [
+        recipe.title,
+        recipe.description,
+        recipe.slug,
+        ...(recipe.topics ?? []),
+        ...(recipe.languages ?? []),
+      ]
         .join(' ')
         .toLowerCase();
       return tokens.every((token) => haystack.includes(token));
