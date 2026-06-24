@@ -53,7 +53,11 @@ const TOPIC_DESCRIPTIONS: Record<string, string> = {
 
 // Display order for language tabs in merged concept pages. Entries not
 // listed fall back to the end in insertion order.
-const LANGUAGE_ORDER: string[] = ['TypeScript', 'Python', 'Go', 'Rust'];
+const LANGUAGE_ORDER: string[] = ['TypeScript', 'Python', 'Rust', 'Go'];
+
+// Curated recipes surfaced in a "Featured" row at the top of the cookbook
+// home page, shown in this order. Slugs must match concept slugs.
+const FEATURED_SLUGS: string[] = ['scrape', 'playwright', 'vercel-ai-sdk', 'claude-agent-sdk'];
 
 interface CookbookLock {
   repo: string; // "owner/name" on GitHub
@@ -523,12 +527,15 @@ async function emitHome(concepts: Concept[]): Promise<void> {
     date: conceptCreatedDate(c),
   }));
   const recipesLiteral = JSON.stringify(recipeData, null, 2);
+  const bySlug = new Map(recipeData.map((r) => [r.slug, r]));
+  const featuredData = FEATURED_SLUGS.map((s) => bySlug.get(s)).filter((r) => r !== undefined);
+  const featuredLiteral = JSON.stringify(featuredData, null, 2);
   const fm = frontmatter({
     title: 'Cookbook',
     sidebarTitle: 'Home',
     description: 'Runnable recipes for using Steel with your favorite libraries and frameworks.',
   });
-  const body = `<RecipeSearch recipes={${recipesLiteral}} />`;
+  const body = `<RecipeSearch recipes={${recipesLiteral}} featured={${featuredLiteral}} />`;
   await fs.writeFile(path.join(OUTPUT_DIR, 'index.mdx'), `${fm}\n\n${body}\n`);
 }
 

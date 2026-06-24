@@ -49,14 +49,26 @@ function topicSlug(topic: string): string {
     .replace(/^-|-$/g, '');
 }
 
-export function RecipeCard({ slug, title, description, topics, languages, date }: RecipeCardProps) {
+export function RecipeCard({
+  slug,
+  title,
+  description,
+  topics,
+  languages,
+  date,
+}: RecipeCardProps) {
   // "Stretched link" pattern: an absolute overlay <Link> covers the whole
   // card, so clicking anywhere navigates to the recipe. Inner contents are
   // pointer-events-none by default; interactive children (title, topic
   // pills) re-enable pointer events and sit above the overlay so they stay
   // clickable as distinct links.
   return (
-    <article className="group not-prose relative flex flex-col rounded-lg border border-border bg-card p-5 transition-colors hover:border-muted-foreground">
+    <article
+      className={cn(
+        'group not-prose relative flex flex-col rounded-lg border bg-card p-5 transition-colors',
+        'border-border hover:border-muted-foreground',
+      )}
+    >
       <Link
         href={`/cookbook/${slug}`}
         className="absolute inset-0 z-0 rounded-lg"

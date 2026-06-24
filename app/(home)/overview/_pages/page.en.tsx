@@ -163,16 +163,16 @@ export default function HomePage() {
                 description="Python SDK for building applications on Steel."
               />
               <SmallCard
-                icon={<GoIcon />}
-                href="/steel-go-sdk"
-                title="Steel Go SDK"
-                description="Go SDK for building applications on Steel."
-              />
-              <SmallCard
                 icon={<RustIcon />}
                 href="/steel-rust-sdk"
                 title="Steel Rust SDK"
                 description="Rust SDK for building applications on Steel."
+              />
+              <SmallCard
+                icon={<GoIcon />}
+                href="/steel-go-sdk"
+                title="Steel Go SDK"
+                description="Go SDK for building applications on Steel."
               />
             </Cards>
           </div>
