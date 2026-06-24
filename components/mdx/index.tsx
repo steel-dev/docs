@@ -12,6 +12,7 @@ import { docskit } from '@/components/docskit/components';
 import { FAQ, FAQItem } from '@/components/faq';
 import { IntegrationGrid } from '@/components/integration-grid';
 import { OrderedList, UnorderedList } from '@/components/lists';
+import { Tabs as LangTabs } from '@/components/mdx/lang-tabs';
 import { RecipeCard, RecipeGrid } from '@/components/recipe-card';
 import { RecipeJsonLd } from '@/components/recipe-jsonld';
 import { RecipeMeta } from '@/components/recipe-meta';
@@ -47,6 +48,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ...FilesComponents,
     ...StepsComponents,
     ...TabsComponents,
+    Tabs: LangTabs,
     IntegrationGrid,
     RecipeCard,
     RecipeGrid,

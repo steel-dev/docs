@@ -3,11 +3,15 @@ title: Reuse authenticated sessions across browsers
 description: Maintain authenticated sessions across Steel browser instances by capturing and reusing cookies and local storage.
 ---
 
-<RecipeJsonLd slug="auth-context" title={"Reuse authenticated sessions across browsers"} description={"Maintain authenticated sessions across Steel browser instances by capturing and reusing cookies and local storage."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-03-11" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/92f29742253e2b6c6801d109e18232768e5291a0/examples/auth-context" />
+<RecipeJsonLd slug="auth-context" title={"Reuse authenticated sessions across browsers"} description={"Maintain authenticated sessions across Steel browser instances by capturing and reusing cookies and local storage."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-03-11" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e08de0575649d82b60ddfad343541f336589d919/examples/auth-context-ts" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/92f29742253e2b6c6801d109e18232768e5291a0/examples/auth-context" path="examples/auth-context" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
 
-<RecipeQuickstart slug="auth-context" />
+<Tab id="typescript" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e08de0575649d82b60ddfad343541f336589d919/examples/auth-context-ts" path="examples/auth-context-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+
+<RecipeQuickstart slug="auth-context-ts" />
 
 An auth context is a snapshot of a browser's cookies and local storage at a point in time. Steel exposes one endpoint to read it and one session option to restore it:
 
@@ -34,7 +38,7 @@ The second session is a brand new browser on Steel's fleet. It has the auth stat
 ## Run it
 
 ```bash
-cd examples/auth-context
+cd examples/auth-context-ts
 cp .env.example .env          # set STEEL_API_KEY
 npm install
 npm start
@@ -87,10 +91,207 @@ If you want Steel to store credentials and handle the login itself, see [credent
 
 [credentials](/cookbook/credentials) · [Playwright docs](https://playwright.dev)
 
+</Tab>
+
+<Tab id="python" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e08de0575649d82b60ddfad343541f336589d919/examples/auth-context-py" path="examples/auth-context-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="auth-context-py" />
+
+Logging in is the expensive part of browser automation: forms, redirects, sometimes a captcha. Steel lets you do it once, freeze the result, and pour it into a brand new browser. `main.py` runs that whole loop with Playwright's sync API: log in on session #1, snapshot the auth state, throw session #1 away, then prove a fresh session #2 is already signed in without ever touching the login form.
+
+The two calls that matter are a read and a write:
+
+```python
+session_context = client.sessions.context(session.id)
+session = client.sessions.create(session_context=session_context)
+```
+
+## The round-trip is a no-op in Python
+
+`client.sessions.context()` returns a Pydantic `SessionContext` model: `cookies`, `local_storage`, `session_storage`, `indexed_db`. The keyword `session_context` on `create()` wants a typed dict shaped the same way. You might expect to unpack and remap fields between them, but the SDK transforms the response model on the way in, so the object you capture goes straight back without a single field touched. Capture into a variable, hand the variable to `create()`, done. (The Go and Rust ports do have to copy fields between distinct read and write types. Python does not.)
+
+That model is plain data. `session_context.model_dump(by_alias=True)` gives you JSON you can write to disk, push to a secret store, or move between machines. Treat it like a password: it holds live session tokens, and anyone holding the blob is the logged-in user until those tokens expire.
+
+## Browser lifecycle
+
+The script starts one `sync_playwright()` driver and reuses it across both sessions, calling `browser.close()` after each so the CDP socket from the released session does not linger. The driver itself is stopped in `finally` alongside the session release, so a failure mid-run still tears everything down. Each session is reached through `browser.contexts[0].pages[0]`, the page Steel opens for you, rather than `new_page()`.
+
+## Run it
+
+```bash
+cd examples/auth-context-py
+cp .env.example .env          # set STEEL_API_KEY
+uv run main.py
+```
+
+Grab a key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). `uv sync` runs automatically on first `uv run`, so there is no separate install step. Prefer pip? `pip install -e .` then `python main.py`. Playwright needs its browser binaries once: `playwright install chromium`.
+
+The script prints two session viewer URLs. Open them in other tabs to watch each browser live.
+
+Your output varies. Structure looks like this:
+
+```text
+Steel + Reuse Auth Context Example
+============================================================
+
+Creating initial Steel session...
+Steel Session #1 created!
+View session at https://app.steel.dev/sessions/ab12cd34...
+Initial authentication successful
+Session #1 released
+
+Creating second Steel session with the captured context...
+Steel Session #2 created!
+View session at https://app.steel.dev/sessions/ef56gh78...
+Authentication successfully transferred!
+Session #2 released
+```
+
+A run takes about 20 seconds and costs a few cents of session time. Both sessions go through `client.sessions.release()`; session #2 is released in the `finally` block. Skip the release and the browser idles until the default timeout.
+
+## Make it yours
+
+- **Swap the target site.** Change the URLs and selectors in `login` and `verify_auth`. The capture and restore between them stay identical no matter the site.
+- **Persist the snapshot.** `json.dump(session_context.model_dump(by_alias=True), f)` after capture, load it next run, and pass the dict straight into `session_context=`. The keyword accepts the dict form too.
+- **Re-auth on failure.** If `verify_auth` on the restored session returns `False`, fall back to a fresh `login` and capture a new context. Cookies expire, so a snapshot from last week may already be dead.
+
+## Related
+
+[TypeScript version](/cookbook/auth-context) covers the same flow as a reusable primitive. [Go version](/cookbook/auth-context) and [Rust version](/cookbook/auth-context) map fields between the read and write context types. If you want Steel to store credentials and run the login itself, see [credentials](/cookbook/credentials). For the Playwright sync API, see the [Playwright docs](https://playwright.dev/python/).
+
+</Tab>
+
+<Tab id="rust" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e08de0575649d82b60ddfad343541f336589d919/examples/auth-context-rs" path="examples/auth-context-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="auth-context-rs" />
+
+A Steel auth context is the cookies and storage that make a browser "logged in." This recipe reads that snapshot off one session and hands it to the next, so the second browser starts already signed in. There is no login form on the second run.
+
+One detail matters in Rust that the dynamic SDKs hide: the snapshot you read back is not the same type you write on create. `client.sessions().context(&id)` returns a `SessionContext` (its cookies are `Vec<SessionContextCookie>`), but `SessionCreateParams::session_context` wants a `SessionCreateParamsSessionContext` (cookies are `Vec<SessionCreateParamsSessionContextCookie>`). The two cookie structs carry the same fields under different struct names, so `to_write_context` in `main.rs` maps one into the other field by field. The compiler will not let you skip this.
+
+## What the demo does
+
+`main.rs` drives [practice.expandtesting.com](https://practice.expandtesting.com/login), a public login test site, over CDP with chromiumoxide:
+
+1. Create session #1, connect, and run `login`: type `practice` / `SuperSecretPassword!` into the form and submit. `verify_auth` then loads `/secure` and checks that `#username` reads `Hi, practice!`.
+2. Read the snapshot with `client.sessions().context(&session.id)`, then release session #1.
+3. Map the read snapshot into a `SessionCreateParamsSessionContext`, create session #2 with `session_context` set, connect, and call `verify_auth` again without logging in.
+
+Each chromiumoxide connection spawns a handler task (`tokio::spawn`) to pump CDP events and `handle.abort()`s it before the session is released. The cookie map copies `name` and `value` (the required fields) plus the optional `domain`, `path`, `expires`, `http_only`, `secure`, `same_site`, `priority`, `source_scheme`, `url`, and `session` directly, since those types are shared between the read and write cookie structs; only `partition_key` is dropped. The `local_storage` and `session_storage` maps move across unchanged.
+
+## Run it
+
+```bash
+cd examples/auth-context-rs
+cp .env.example .env          # set STEEL_API_KEY
+cargo run
+```
+
+Get a key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). The run prints both session viewer URLs. Open them to watch each browser.
+
+```text
+Creating Steel session #1...
+Session #1 live at https://app.steel.dev/sessions/ab12cd34...
+Logging in...
+Initial authentication confirmed
+Session #1 released
+
+Creating Steel session #2 from the captured context...
+Session #2 live at https://app.steel.dev/sessions/ef56gh78...
+Session #2 released
+
+Authentication successfully transferred without logging in
+```
+
+A run takes ~20 seconds. Both sessions go through `client.sessions().release(...)` before the program exits; skip it and the browsers idle until the 5-minute default timeout.
+
+## Make it yours
+
+- **Swap the target.** Change `LOGIN_URL`, `SECURE_URL`, and the selectors in `login` and `verify_auth`. The capture and replay around them stay the same for any site.
+- **Persist the snapshot.** `SessionContext` derives `Serialize`, so you can write it to disk or a vault after capture and load it on the next run. Treat the file like a password: it holds live session tokens.
+- **Re-auth on failure.** If `verify_auth` on the restored session returns false, fall back to a fresh `login` and capture a new snapshot. Cookies expire, so a snapshot from last week may already be dead.
+
+## Related
+
+[auth-context-ts](/cookbook/auth-context) · [auth-context-py](/cookbook/auth-context) · [auth-context-go](/cookbook/auth-context) · [credentials-rs](/cookbook/credentials) · [chromiumoxide](https://github.com/mattsse/chromiumoxide)
+
+</Tab>
+
+<Tab id="go" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e08de0575649d82b60ddfad343541f336589d919/examples/auth-context-go" path="examples/auth-context-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="auth-context-go" />
+
+A Steel session can hand you a snapshot of its browser state: cookies, localStorage, sessionStorage, indexedDB. Steel exposes that as one read call and one create option, so you log in once, pull the snapshot, and start a second browser that is already signed in.
+
+```go
+// Capture the live cookies + storage off session #1
+captured, _ := client.Sessions.Context(ctx, first.ID)
+
+// Restore them into a brand new session #2
+second, _ := client.Sessions.Create(ctx, steel.SessionCreateParams{
+    SessionContext: restoreContext(captured),
+})
+```
+
+`main.go` drives both browsers with [chromedp](https://github.com/chromedp/chromedp) over CDP. It connects with `chromedp.NewRemoteAllocator(ctx, cdpURL, chromedp.NoModifyURL)` so the websocket URL Steel returns is used verbatim, then runs the login form on [practice.expandtesting.com](https://practice.expandtesting.com/login) and reads the `#username` welcome text to confirm auth.
+
+## The read type is not the write type
+
+This is the one sharp edge in the Go SDK. `Sessions.Context` returns a `*steel.SessionContext` with plain Go values: `Cookies []steel.SessionContextCookie`, `LocalStorage map[string]map[string]string`, and so on. The create side wants a `steel.SessionCreateParamsSessionContext`, where every field is wrapped in `param.Field[...]` and built with `steel.F(...)`. So you cannot pass the captured value straight back in: you read concrete values and you write wrapped ones.
+
+`restoreContext` does that bridge. It rebuilds each cookie into a `steel.SessionCreateParamsSessionContextCookie`, wrapping `Name`, `Value`, `Domain`, `Path`, `Expires`, `HTTPOnly`, and `Secure` with `steel.F`. The `SameSite` enum is the same named type on both sides (`CreateSessionRequestSessionContextCookiesItemSameSite`), so it just gets wrapped, not converted. `LocalStorage` and `SessionStorage` are the same map type on each side and pass through `steel.F` unchanged. If you only need cookies for your target site, you can skip storage entirely.
+
+## Run it
+
+```bash
+cd examples/auth-context-go
+cp .env.example .env          # set STEEL_API_KEY
+go mod tidy
+go run .
+```
+
+Get a key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). The run prints two viewer URLs. Open them to watch each browser; the second one lands on the secure page without ever touching the login form.
+
+```text
+Creating Steel session #1...
+Session #1 live at https://app.steel.dev/sessions/ab12cd34...
+Authenticated on session #1
+Session #1 released
+
+Creating Steel session #2 from the captured context...
+Session #2 live at https://app.steel.dev/sessions/ef56gh78...
+Authenticated on session #2
+
+Authentication successfully transferred.
+Releasing session #2...
+```
+
+Session #1 is released as soon as its context is captured. Session #2 is released by a `defer` on the way out, so a verify failure still cleans up. A full run is about 20 seconds.
+
+## Make it yours
+
+- **Swap the target.** Change the URLs and selectors in `login` and `verifyAuth`. The capture/restore path in `restoreContext` does not care what site you used.
+- **Persist the snapshot.** `*steel.SessionContext` marshals to JSON. Write it after capture, load it next run, feed it through `restoreContext`, and skip the login entirely. Treat the file like a password: it carries live session tokens.
+- **Re-auth on failure.** Cookies expire. If `verifyAuth` on session #2 returns an error, fall back to a fresh `login` and capture a new snapshot.
+
+## Related
+
+[auth-context-ts](/cookbook/auth-context) · [auth-context-py](/cookbook/auth-context) · [auth-context-rs](/cookbook/auth-context) · [credentials-go](/cookbook/credentials) · [chromedp docs](https://github.com/chromedp/chromedp)
+
+</Tab>
+
+</Tabs>
+
 ## Related recipes
 
 <RecipeGrid>
-<RecipeCard slug="profiles" title={"Persist authenticated sessions with Profiles"} description={"Maintain authenticated sessions across Steel browser instances using profiles."} topics={['Steel APIs', 'Authentication']} date="2025-10-13" />
-<RecipeCard slug="credentials" title={"Automate logins with the Credentials API"} description={"Use the Steel Credentials API with Playwright to automate flows with stored credentials."} topics={['Steel APIs', 'Authentication', 'Playwright']} date="2024-11-19" />
-<RecipeCard slug="convex-price-watch" title={"Watch Claude pricing for divergent A/B variants"} description={"Convex cron plus two parallel Steel proxy probes against claude.com/pricing. Stores per-tier per-region snapshots and surfaces tiers where the probes disagree."} topics={['Steel APIs', 'Convex']} date="2026-05-04" />
+<RecipeCard slug="profiles" title={"Persist authenticated sessions with Profiles"} description={"Maintain authenticated sessions across Steel browser instances using profiles."} topics={['Steel APIs', 'Authentication']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2025-10-13" />
+<RecipeCard slug="credentials" title={"Automate logins with the Credentials API"} description={"Use the Steel Credentials API with Playwright to automate flows with stored credentials."} topics={['Steel APIs', 'Authentication', 'Playwright']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2024-11-19" />
+<RecipeCard slug="scrape" title={"Scrape a page to Markdown, screenshot, and PDF"} description={"Use the Steel TypeScript SDK's direct API to scrape a page to clean Markdown for LLM context, plus screenshot and PDF, with no browser library."} topics={['Steel APIs']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-23" />
 </RecipeGrid>
