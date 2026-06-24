@@ -3,13 +3,13 @@ title: Automate a cloud browser with Playwright
 description: Use Steel with Playwright in TypeScript for cloud browser automation.
 ---
 
-<RecipeJsonLd slug="playwright" title={"Automate a cloud browser with Playwright"} description={"Use Steel with Playwright in TypeScript for cloud browser automation."} authors={[{"handle":"hussufo","name":"Hussien Hussien"}, {"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2024-11-19" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/b9235a859ef0ff94fccc4b443b10b7341f16209e/examples/playwright-ts" />
+<RecipeJsonLd slug="playwright" title={"Automate a cloud browser with Playwright"} description={"Use Steel with Playwright in TypeScript for cloud browser automation."} authors={[{"handle":"hussufo","name":"Hussien Hussien"}, {"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2024-11-19" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/6bf72c7152ad4f37e283113f231eae56c1655f94/examples/playwright-ts" />
 
 <Tabs items={['TypeScript', 'Python', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/b9235a859ef0ff94fccc4b443b10b7341f16209e/examples/playwright-ts" path="examples/playwright-ts" authors={[{"handle":"hussufo","name":"Hussien Hussien","avatar":"https://github.com/hussufo.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/6bf72c7152ad4f37e283113f231eae56c1655f94/examples/playwright-ts" path="examples/playwright-ts" authors={[{"handle":"hussufo","name":"Hussien Hussien","avatar":"https://github.com/hussufo.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="playwright-ts" />
 
@@ -81,7 +81,7 @@ A run costs a few cents of browser time. Steel bills per session-minute, so the 
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/b9235a859ef0ff94fccc4b443b10b7341f16209e/examples/playwright-py" path="examples/playwright-py" authors={[{"handle":"hussufo","name":"Hussien Hussien","avatar":"https://github.com/hussufo.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/6bf72c7152ad4f37e283113f231eae56c1655f94/examples/playwright-py" path="examples/playwright-py" authors={[{"handle":"hussufo","name":"Hussien Hussien","avatar":"https://github.com/hussufo.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="playwright-py" />
 
@@ -156,7 +156,7 @@ One run costs a few cents of session time. Steel bills per session-minute, which
 
 <Tab id="go" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/b9235a859ef0ff94fccc4b443b10b7341f16209e/examples/playwright-go" path="examples/playwright-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/6bf72c7152ad4f37e283113f231eae56c1655f94/examples/playwright-go" path="examples/playwright-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="playwright-go" />
 
@@ -173,7 +173,7 @@ Steel returns a context with a page already open, so there is no `NewContext` / 
 
 ## The driver, not the browser
 
-playwright-go is not a pure-Go CDP client the way [chromedp](/cookbook/chromedp) and [go-rod](/cookbook/rod) are. It drives the same Node-based Playwright driver the other language bindings use, so that driver has to exist on disk before `playwright.Run()` will start. The program installs it on the first line of `run`:
+playwright-go is not a pure-Go CDP client the way [chromedp](/cookbook/chromedp) and [Rod](/cookbook/rod) are. It drives the same Node-based Playwright driver the other language bindings use, so that driver has to exist on disk before `playwright.Run()` will start. The program installs it on the first line of `run`:
 
 ```go
 if err := playwright.Install(&playwright.RunOptions{SkipInstallBrowsers: true}); err != nil {
@@ -230,7 +230,7 @@ A run costs a few cents of browser time. Steel bills per session-minute, so the 
 
 ## Related
 
-[chromedp](/cookbook/chromedp) and [go-rod](/cookbook/rod) are the pure-Go options: both speak CDP directly with no Node driver to install, so compare their `main.go` against this one to decide whether the Playwright API is worth the extra dependency. The [TypeScript](/cookbook/playwright) and [Python](/cookbook/playwright) starters connect to Steel the same way through the official Playwright bindings. See the [playwright-go docs](https://pkg.go.dev/github.com/playwright-community/playwright-go) for the full page, locator, and screenshot API.
+[chromedp](/cookbook/chromedp) and [Rod](/cookbook/rod) are the pure-Go options: both speak CDP directly with no Node driver to install, so compare their `main.go` against this one to decide whether the Playwright API is worth the extra dependency. The [TypeScript](/cookbook/playwright) and [Python](/cookbook/playwright) starters connect to Steel the same way through the official Playwright bindings. See the [playwright-go docs](https://pkg.go.dev/github.com/playwright-community/playwright-go) for the full page, locator, and screenshot API.
 
 </Tab>
 
@@ -241,5 +241,5 @@ A run costs a few cents of browser time. Steel bills per session-minute, so the 
 <RecipeGrid>
 <RecipeCard slug="headless-chrome" title={"Automate a cloud browser with headless_chrome"} description={"Use Steel with headless_chrome, the synchronous Rust equivalent of Puppeteer, to connect over CDP and scrape quotes with element handles."} topics={['Browser automation']} languages={['Rust']} date="2026-06-24" />
 <RecipeCard slug="chromedp" title={"Automate a cloud browser with chromedp"} description={"Use Steel with chromedp to connect over CDP, navigate to Hacker News, extract the top stories, and capture a screenshot."} topics={['Browser automation']} languages={['Go']} date="2026-06-23" />
-<RecipeCard slug="rod" title={"Automate a cloud browser with go-rod"} description={"Use Steel with go-rod's fluent, chainable API to connect over CDP and scrape quotes.toscrape.com from a cloud browser."} topics={['Browser automation']} languages={['Go']} date="2026-06-23" />
+<RecipeCard slug="rod" title={"Automate a cloud browser with Rod"} description={"Use Steel with Rod's fluent, chainable API to connect over CDP and scrape quotes.toscrape.com from a cloud browser."} topics={['Browser automation']} languages={['Go']} date="2026-06-23" />
 </RecipeGrid>

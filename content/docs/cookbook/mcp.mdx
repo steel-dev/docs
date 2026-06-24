@@ -1,0 +1,277 @@
+---
+title: Expose a Steel browser to any MCP client
+description: Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools.
+---
+
+<RecipeJsonLd slug="mcp" title={"Expose a Steel browser to any MCP client"} description={"Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-06-24" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/6bf72c7152ad4f37e283113f231eae56c1655f94/examples/mcp-ts" />
+
+<Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
+
+<Tab id="typescript" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/6bf72c7152ad4f37e283113f231eae56c1655f94/examples/mcp-ts" path="examples/mcp-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="mcp-ts" />
+
+This is a [Model Context Protocol](https://modelcontextprotocol.io) server that hands any MCP client a Steel cloud browser to drive. It uses the official [TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) and drives the browser with Playwright over CDP through `connectOverCDP`, so there is no local Chrome to launch. The server carries no model key of its own: the client supplies the model, this process owns the cloud session.
+
+Five tools make up the surface. `create_session` opens a Steel session and returns its id; `navigate`, `extract`, and `screenshot` take that id and act on the browser; `release_session` closes it.
+
+## Each tool declares its shape, the id ties them together
+
+Every tool is a `server.registerTool` call: a name, a description, an `inputSchema` written as a Zod shape, and the handler. The shape is the contract the client sees and the type of the handler's argument in one place:
+
+```ts
+server.registerTool(
+  "navigate",
+  {
+    description: "Open a URL in the session's browser tab and wait for it to load. Returns the resolved title and URL.",
+    inputSchema: {
+      session_id: z.string().describe("Handle returned by create_session."),
+      url: z.string().describe("Absolute URL to open, e.g. https://news.ycombinator.com."),
+    },
+  },
+  async ({ session_id, url }) => {
+    const page = getPage(session_id);
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45_000 });
+    return { content: [{ type: "text", text: JSON.stringify({ url: page.url(), title: await page.title() }) }] };
+  },
+);
+```
+
+Every tool except `create_session` takes a `session_id` and resolves it through `getPage`, which reads a `Map` keyed by the Steel session id. That id is the handle the model threads back on each call, and it is what keeps browsers apart: the server holds no hidden "current page," so two clients with two ids never touch each other's sessions. The [Go recipe](/cookbook/mcp) covers why the explicit handle, rather than one session hidden in server state, is the shape the MCP spec now recommends. `screenshot` returns an image content block so the client renders the PNG, and `release_session` plus the `releaseAll` signal handlers make sure a session stops billing when the client goes away.
+
+## Run it
+
+```bash
+cd examples/mcp-ts
+cp .env.example .env          # set STEEL_API_KEY for local runs
+npm install
+```
+
+Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). The server runs straight from TypeScript with `ts-node`, so an MCP client launches it through `npx` and gets the key from the client's `env` block. For Claude Desktop, add this to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "steel": {
+      "command": "npx",
+      "args": ["ts-node", "/absolute/path/to/examples/mcp-ts/index.ts"],
+      "env": { "STEEL_API_KEY": "your-steel-api-key" }
+    }
+  }
+}
+```
+
+Restart the client and ask it to open a page and read it back. It calls `create_session`, then `navigate` and `extract` against the returned id, and `release_session` at the end. Open the `live_view_url` from `create_session` to watch the browser. Stdio uses stdout for the JSON-RPC stream, so the server logs only to stderr.
+
+## Make it yours
+
+- **Add a tool.** Another `server.registerTool` with a `session_id` field, resolve the page with `getPage`, and act on it. A `click` tool is `await page.click(selector)`.
+- **Start authenticated.** Pass options to `steel.sessions.create` to attach a [profile](/cookbook/profiles) or [credentials](/cookbook/credentials) so a session opens already logged in.
+- **Return structured output.** Add an `outputSchema` to a tool and return `structuredContent` so the client gets typed fields instead of a JSON string.
+
+## Related
+
+[Steel + MCP server (Go)](/cookbook/mcp) and [Steel + MCP server (Rust)](/cookbook/mcp) are the same five tools as single static binaries; read the Go one for the handle-versus-hidden-state rationale. [puppeteer-ts](/cookbook/puppeteer) and [playwright-ts](/cookbook/playwright) are the bare browser recipes, and [vercel-ai-sdk-ts](/cookbook/vercel-ai-sdk) drives Steel from an in-process agent. The [TypeScript SDK docs](https://github.com/modelcontextprotocol/typescript-sdk) cover transports, resources, and prompts beyond the tools shown here.
+
+</Tab>
+
+<Tab id="python" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/6bf72c7152ad4f37e283113f231eae56c1655f94/examples/mcp-py" path="examples/mcp-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="mcp-py" />
+
+This is a [Model Context Protocol](https://modelcontextprotocol.io) server that hands any MCP client a Steel cloud browser to drive. It uses [FastMCP](https://github.com/modelcontextprotocol/python-sdk), the decorator API in the official Python SDK, and drives the browser with Playwright over CDP. Because it connects to a remote browser with `connect_over_cdp`, there are no local browser binaries to install: the server is a thin process that owns the cloud session and nothing else, and it has no model key of its own.
+
+Five tools make up the surface. `create_session` opens a Steel session and returns its id; `navigate`, `extract`, and `screenshot` act on a session by id; `release_session` closes it.
+
+## The decorator is the schema, the id is the handle
+
+Each tool is a plain async function under `@mcp.tool()`. FastMCP reads the type hints and the docstring to build the JSON Schema the client sees, so the signature is the whole contract:
+
+```python
+@mcp.tool()
+async def navigate(session_id: str, url: str) -> dict:
+    """Open a URL in the session's browser tab and wait for it to load.
+
+    Args:
+        session_id: Handle returned by create_session.
+        url: Absolute URL to open, e.g. https://news.ycombinator.com.
+    """
+    page = _page(session_id)
+    await page.goto(url, wait_until="domcontentloaded", timeout=45_000)
+    return {"url": page.url, "title": await page.title()}
+```
+
+Every tool except `create_session` takes a `session_id` and looks it up in `_sessions`, a plain dict keyed by the Steel session id. That id is the handle the model threads back on each call, which is what keeps browsers apart: the server holds no hidden "current page," so two clients with two ids never touch each other's sessions. The [Go recipe](/cookbook/mcp) covers why the explicit handle, rather than one session hidden in server state, is the shape the MCP spec now recommends. `screenshot` returns FastMCP's `Image`, so the client renders the PNG instead of a base64 string, and `release_session` plus the `_release_all` cleanup make sure a session does not keep billing after the client goes away.
+
+## Run it
+
+```bash
+cd examples/mcp-py
+cp .env.example .env          # set STEEL_API_KEY for local runs
+uv sync
+```
+
+Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). Point an MCP client at the script through `uv run` and pass the key in the client's `env` block. For Claude Desktop, add this to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "steel": {
+      "command": "uv",
+      "args": ["run", "--directory", "/absolute/path/to/examples/mcp-py", "python", "main.py"],
+      "env": { "STEEL_API_KEY": "your-steel-api-key" }
+    }
+  }
+}
+```
+
+Restart the client and ask it to open a page and read it back. It calls `create_session`, then `navigate` and `extract` against the returned id, and `release_session` at the end. Watch the run at the `live_view_url` that `create_session` returns. One stdio rule: stdout carries the JSON-RPC stream, so the server prints nothing there. Log to stderr if you add diagnostics.
+
+## Make it yours
+
+- **Add a tool.** Write one more `async def` under `@mcp.tool()` that takes `session_id`, look the page up with `_page`, and act on it. A `click` tool is `await page.click(selector)`.
+- **Start authenticated.** Pass arguments to `steel.sessions.create` to attach a [profile](/cookbook/profiles) or [credentials](/cookbook/credentials) so a session opens already logged in.
+- **Return typed data.** Tools here return dicts, strings, and an `Image`. Return a Pydantic model from a tool and FastMCP emits a structured-content schema the client can validate against.
+
+## Related
+
+[Steel + MCP server (Go)](/cookbook/mcp) and [Steel + MCP server (Rust)](/cookbook/mcp) are the same five tools as single static binaries; read the Go one for the handle-versus-hidden-state rationale. [stagehand-py](/cookbook/stagehand) and [google-adk-py](/cookbook/google-adk) are the in-process agent recipes in Python. The [Python SDK docs](https://github.com/modelcontextprotocol/python-sdk) cover transports, resources, and prompts beyond the tools shown here.
+
+</Tab>
+
+<Tab id="rust" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/6bf72c7152ad4f37e283113f231eae56c1655f94/examples/mcp-rs" path="examples/mcp-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="mcp-rs" />
+
+This is a [Model Context Protocol](https://modelcontextprotocol.io) server that lends a Steel cloud browser to any MCP client. It is built on [rmcp](https://docs.rs/rmcp), the official Rust SDK, and drives the browser over CDP with [chromiumoxide](https://docs.rs/chromiumoxide). It compiles to a single binary with no interpreter and no model key of its own: the client supplies the model, this process owns the browser and nothing else.
+
+Five tools make up the surface. `create_session` opens a Steel session and returns its id; `navigate`, `extract`, and `screenshot` take that id and act on the browser; `release_session` closes it. Each tool is one `#[tool]`-annotated method on `SteelMcp`, and `#[tool_router]` plus `#[tool_handler]` turn those methods into the served schema.
+
+## Holding the browser open between calls
+
+The hard part of a browser MCP server is not any single tool, it is keeping one browser alive and reachable across separate calls. `create_session` does three things that have to outlive the call that made them:
+
+```rust
+let (browser, mut handler) = Browser::connect(cdp_url).await?;
+let handler_task = tokio::spawn(async move { while handler.next().await.is_some() {} });
+let page = browser.new_page("about:blank").await?;
+```
+
+`Browser::connect` returns a command handle plus a `handler` stream that pumps the CDP websocket. Nothing polls it on its own, so the spawned task that drives it to exhaustion is mandatory: drop it and the next `goto` hangs with no error. All three, the `Browser`, the join handle, and the `Page`, go into a `SessionEntry` stored in `Arc<Mutex<HashMap<String, SessionEntry>>>`, keyed by the Steel session id. Because `Page` and the `Arc`s are cheap to clone, `get` copies a whole entry out and releases the map lock before any browser work, so two sessions never block each other.
+
+That id is the handle the model threads back on every later call, which is what keeps sessions apart. The [Go recipe](/cookbook/mcp) covers why the explicit handle, rather than one browser hidden in server state, is what the MCP spec now asks for. The short version: each Steel session is its own isolated cloud browser, and naming it on every call means two clients holding two ids can never read each other's pages. `release_session` removes the entry, aborts the handler task, and releases the Steel session so it stops billing.
+
+## Run it
+
+```bash
+cd examples/mcp-rs
+cp .env.example .env          # set STEEL_API_KEY for local `cargo run`
+cargo build --release
+```
+
+Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). Point an MCP client at the compiled binary and pass the key through the client's `env` block. For Claude Desktop, add this to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "steel": {
+      "command": "/absolute/path/to/examples/mcp-rs/target/release/mcp-rs",
+      "env": { "STEEL_API_KEY": "your-steel-api-key" }
+    }
+  }
+}
+```
+
+Restart the client and ask it to open a page and read it back. It calls `create_session`, then `navigate` and `extract` against the returned id, and `release_session` at the end. Open the `live_view_url` from `create_session` to watch the browser work. Note that stdio uses stdout for the JSON-RPC stream, so the server keeps it clean and writes nothing there itself.
+
+## Make it yours
+
+- **Add a tool.** Write one more `async fn` with a `#[tool]` attribute and a `Parameters<T>` argument carrying `session_id`. A `click` tool is `entry.page.find_element(sel).await?.click().await?`.
+- **Start authenticated.** Pass a populated `SessionCreateParams` to `sessions().create` to attach a [profile](/cookbook/profiles) or [credentials](/cookbook/credentials) so the session opens already logged in.
+- **Return richer output.** Tools here return `Content::text` and `Content::image`. Swap in structured JSON content when a client wants typed fields instead of a string.
+
+## Related
+
+[Steel + MCP server (Go)](/cookbook/mcp) is the same five tools on the official Go SDK and chromedp; read it for the handle-versus-hidden-state rationale. [chromiumoxide](/cookbook/chromiumoxide) is the bare CDP browser, [rig](/cookbook/rig) drives it from an in-process agent, and [swiftide](/cookbook/swiftide) reads pages through Steel's scrape API instead. The [rmcp docs](https://docs.rs/rmcp) cover transports, resources, and prompts past the tools shown here.
+
+</Tab>
+
+<Tab id="go" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/6bf72c7152ad4f37e283113f231eae56c1655f94/examples/mcp-go" path="examples/mcp-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="mcp-go" />
+
+This is a [Model Context Protocol](https://modelcontextprotocol.io) server that hands any MCP client (Claude Desktop, an IDE, your own agent) a Steel cloud browser to drive. It is built on the [official MCP Go SDK](https://github.com/modelcontextprotocol/go-sdk) and talks to the browser over CDP with [chromedp](https://github.com/chromedp/chromedp). The whole server is one statically linked binary with no runtime, no `node_modules`, and no model key of its own: the client brings the model, this process only owns the browser.
+
+The server exposes five tools. `create_session` starts a Steel session and returns its id; `navigate`, `extract`, and `screenshot` act on a session; `release_session` tears it down. The id Steel returns is the only thing tying the calls together.
+
+## The session id is the handle
+
+A browser MCP server has to answer one question: when two tools run against "the browser," which browser do they mean? Hiding a single session in a global is the trap the [MCP spec calls out](https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/), because a second client on the same process would inherit the first one's cookies and page. The 2026 spec removed the transport-level session and says state should ride on an explicit handle "a `browser_id` minted from a tool and passed back as an ordinary argument." That is exactly what `create_session` does:
+
+```go
+func (s *server) createSession(ctx context.Context, _ *mcp.CallToolRequest, _ createInput) (*mcp.CallToolResult, createOutput, error) {
+	steelSession, err := s.steel.Sessions.Create(ctx, steel.SessionCreateParams{ ... })
+	// ... connect chromedp to steelSession.WebsocketURL ...
+	s.sessions[steelSession.ID] = sess
+	return nil, createOutput{SessionID: steelSession.ID, LiveViewURL: sess.viewerURL}, nil
+}
+```
+
+Every other tool takes a `session_id` and looks it up in `server.sessions` (a plain `map` behind a mutex), so the model names the browser it means on each call. Two clients hold two ids and never collide, and because the handle is a normal tool argument it works the same whether the client connected over stdio or HTTP. The Steel session itself is the isolation boundary: each one is its own cloud browser with its own cookies, so the server's only job is to never share a single id across callers.
+
+The allocator in `createSession` runs on `context.Background()`, not the request context. The request is cancelled the moment the tool call returns, but the browser has to outlive that call to serve the next one. `releaseAll`, deferred in `main`, releases whatever is still open when the client disconnects, so a forgotten session does not bill against your account until its idle timeout.
+
+## Run it
+
+```bash
+cd examples/mcp-go
+cp .env.example .env          # set STEEL_API_KEY for local `go run`
+go build -o steel-mcp .
+```
+
+Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). Point an MCP client at the binary and pass the key through the client's `env` block. For Claude Desktop, add this to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "steel": {
+      "command": "/absolute/path/to/examples/mcp-go/steel-mcp",
+      "env": { "STEEL_API_KEY": "your-steel-api-key" }
+    }
+  }
+}
+```
+
+Restart the client and ask it to "open news.ycombinator.com and tell me the top story." It will call `create_session`, `navigate`, `extract`, then `release_session` on its own. Watch the run live at the `live_view_url` that `create_session` returns.
+
+One stdio rule: the JSON-RPC stream owns stdout, so the server logs only to stderr (`log` writes there by default). A stray `fmt.Println` corrupts the protocol and the client drops the connection.
+
+## Make it yours
+
+- **Add a tool.** A `click` tool is a few `chromedp.Click` lines and one more `mcp.AddTool` call. Take a `session_id`, look it up with `s.get`, act on the tab.
+- **Start authenticated.** Swap the `SessionCreateParams` in `createSession` to attach a [profile](/cookbook/profiles) or [credentials](/cookbook/credentials) so a session opens already logged in.
+- **Go remote.** Replace `mcp.StdioTransport` with the SDK's streamable-HTTP handler to serve many clients from one process. The handle pattern already carries the state, so nothing else changes.
+
+## Related
+
+[Steel + MCP server (Rust)](/cookbook/mcp) is the same server built on `rmcp` and chromiumoxide; compare the two for how each language holds the session map. [chromedp](/cookbook/chromedp), [genkit](/cookbook/genkit), and [google-adk-go](/cookbook/google-adk) are the other Go recipes, covering the raw browser, a tool-calling agent, and Google's ADK. The [MCP Go SDK docs](https://pkg.go.dev/github.com/modelcontextprotocol/go-sdk/mcp) cover transports, resources, and prompts beyond the tools used here.
+
+</Tab>
+
+</Tabs>
+
+## Related recipes
+
+<RecipeGrid>
+<RecipeCard slug="genkit" title={"Build a browser agent with Genkit"} description={"Use Steel with Genkit Go to build a tool-calling agent that navigates and extracts from a chromedp-backed browser and completes a web task."} topics={['Agents']} languages={['Go']} date="2026-06-23" />
+<RecipeCard slug="eino" title={"Build a browser agent with Eino"} description={"Use Steel with the ByteDance Eino framework to build a ReAct agent that calls Steel's scrape API as a tool to research and answer a web question."} topics={['Agents']} languages={['Go']} date="2026-06-23" />
+<RecipeCard slug="rig" title={"Build a browser agent with rig"} description={"Use Steel with rig to build an agent that drives a cloud browser over CDP with chromiumoxide through navigate and extract tools, then answers a multi-step web task."} topics={['Agents']} languages={['Rust']} date="2026-06-23" />
+</RecipeGrid>
