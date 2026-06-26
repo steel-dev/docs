@@ -49,14 +49,7 @@ function topicSlug(topic: string): string {
     .replace(/^-|-$/g, '');
 }
 
-export function RecipeCard({
-  slug,
-  title,
-  description,
-  topics,
-  languages,
-  date,
-}: RecipeCardProps) {
+export function RecipeCard({ slug, title, description, topics, languages, date }: RecipeCardProps) {
   // "Stretched link" pattern: an absolute overlay <Link> covers the whole
   // card, so clicking anywhere navigates to the recipe. Inner contents are
   // pointer-events-none by default; interactive children (title, topic

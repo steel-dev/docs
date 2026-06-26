@@ -87,9 +87,7 @@ export function RecipeSearch({ recipes, featured }: Props) {
       )}
 
       {isIdle && (
-        <h2 className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
-          All
-        </h2>
+        <h2 className="font-mono text-xs uppercase tracking-wide text-muted-foreground">All</h2>
       )}
       {filtered.length > 0 ? (
         <RecipeGrid>
