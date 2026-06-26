@@ -1,113 +1,136 @@
 ---
 title: Pricing/Limits
-description: This page outlines the current pricing breakdown between free/paid plans on Steel.
+description: Steel pricing for Launch, Scale, and Enterprise plans, including usage credits, metered rates, and plan limits.
 sidebarTitle: Pricing/Limits
 llm: true
 ---
-**Last Edit:** May 30th, 2025
+**Last Edit:** June 26th, 2026
 
 ### Pricing Table
 
-| Feature                          | Hobby ($0)     | Starter ($29) | Developer ($99) | Pro ($499/m) | Enterprise |
-|----------------------------------|----------------|---------------|-----------------|--------------|------------|
-| **Rates: Browser Hour**          | $0.10/hour     | $0.10/hour    | $0.08/hour      | $0.05/hour   | custom     |
-| **Rates: Captcha Solves**        | —              | $4/1k         | $3.5/1k         | $3/1k        | custom     |
-| **Rates: Proxy Bandwidth**       | —              | $10/GB        | $8/GB           | $5/GB        | custom     |
-| **Rates: Dedicated IPs**         | —              | $5/IP/month   | $5/IP/month     | $5/IP/month  | custom     |
-| **Limits: Daily Requests**       | 500            | 1,000         | unlimited       | unlimited    | unlimited  |
-| **Limits: Requests per second**  | 1              | 2             | 5               | 10           | custom     |
-| **Limits: Concurrent Sessions**  | 5              | 10            | 20              | 100          | custom     |
-| **Limits: Data Retention**       | 24 hours       | 2 days        | 7 days          | 14 days      | unlimited  |
-| **Limits: Max Session Time**     | 15 minutes     | 1 hour        | 6 hours         | 24 hours     | custom     |
-| **Support: Community support**   | ✅              | ✅             | ✅               | ✅            | ✅          |
-| **Support: Email support**       | —              | ✅             | ✅               | ✅            | ✅          |
-| **Support: Dedicated Slack**     | —              | —             | —               | ✅            | ✅          |
-| **Team members per account**     | unlimited      | unlimited     | unlimited       | unlimited    | unlimited  |
+| Tier       | Price          | Included usage                            |
+| ---------- | -------------- | ----------------------------------------- |
+| Launch     | $0 + usage     | $30 free usage credits, one time          |
+| Scale      | $250 + usage   | $100 free usage credits / month           |
+| Enterprise | Custom + usage | [Talk to the founders](https://cal.com/hussien-hussien-fjxt3x/intro-chat-w-steel-founders) |
 
+| Category | Feature | Launch | Scale | Enterprise |
+| --- | --- | --- | --- | --- |
+| Rates | Browser hours | $0.10/hour | $0.08/hour | Custom |
+| Rates | Proxy bandwidth | $5/GB | $5/GB | Custom |
+| Rates | Captcha solves | $2/1k | $1/1k | Custom |
+| Rates | Browser tools (`/scrape`, `/screenshot`, `/pdf`) | $5/1k | $5/1k | Custom |
+| Features | Concurrent browser sessions | 10 | 100 | 1,000+ |
+| Features | Stealth Browser | - | - | Included |
+| Features | Dedicated IPs | - | $5/IP/month | Custom |
+| Features | Max session time | 15 minutes | 1 hour | Up to 24 hours |
+| Features | Number of seats | Up to 3 | Unlimited | Unlimited |
+| Features | Reserved browser pools | - | - | Included |
+| Limits | Requests per minute | 60 | 600 | Custom |
+| Limits | Data retention | 7 days | 14 days | Custom |
+| Support | Email support | Included | Included | Included |
+| Support | Community support | Included | Included | Included |
+| Support | Dedicated Slack channel | - | Included | Included |
+| Support | 911 email | - | - | Included |
+| Support | Support & uptime SLAs | - | - | Included |
+| Security | Enterprise SSO | - | Included | Included |
+| Security | HIPAA-ready BAA | - | Included | Included |
 
 \* Browser hours are billed by the minute, rounded up.
 
 ### How Credits Work
 
-Each plan's cost goes towards your credits within the platform. For example, if you're on the Developer Plan, every time your subscription renews, you will have $99 worth of credits to use within the platform.
+Usage credits are applied to metered Steel usage, including browser hours, proxy bandwidth,
+captcha solves, and Browser Tools usage.
 
-Different plans offer different rates for actions within Steel, with each plan progressively getting more efficient (bigger plans = more bang for your buck).
+Launch includes $30 in one-time free usage credits, valid for 90 days. Scale includes $100 in
+free usage credits each month. Usage beyond included credits is billed at your plan's listed
+rates.
 
-### Pay-as-You-Go Overages
+Enterprise pricing, usage credits, and limits are customized for your workload.
 
-All paid plans (Starter, Developer, Pro) include pay-as-you-go overages to prevent workflow interruptions:
+You can monitor usage by meter in the dashboard, including session time, proxy bandwidth,
+captcha solves, and remaining balance. You can also top up credits or enable auto top-up so
+a run does not stop because the workspace runs out of balance.
 
-*   **Overage Limit:** Use up to 3x your monthly credit allocation
+### Usage Examples
 
-*   **Billing:** Overages are billed at your plan's rates at the end of each billing cycle
+If you spent your included credits on a single usage category, you would get roughly:
 
-*   **No Interruption:** Continue building without upgrade pressure or hitting hard limits
+#### Launch
 
+*   300 browser hours
+*   6GB proxy bandwidth
+*   15,000 captcha solves
+*   6,000 Browser Tools calls
 
-**Example:** On the Starter Plan ($29), you can use up to $87 worth of services in a month. Your first $29 is covered by your subscription, and any usage from $29-$87 is billed as overages at Starter rates.
+#### Scale
 
-### Credit Equivalents by Plan
+*   1,250 browser hours
+*   20GB proxy bandwidth
+*   100,000 captcha solves
+*   20,000 Browser Tools calls
 
-Here's roughly\* what you'd get if you spent all of your base credits on a given service:
+\* In practice, most workloads use a mix of browser hours, proxies, captcha solves, and
+Browser Tools calls.
 
-#### Hobby Plan ($10 free credits)
+**_Enterprise plans offer custom pricing, limits, and infrastructure for high-volume or
+specialized workloads._**
 
-*   100 browser hours
+:::callout
+type: help
+### Need custom pricing or limits?
+Talk to the founders about Enterprise pricing, reserved browser pools, custom limits, and
+support requirements.
 
-
-#### Starter Plan ($29 in credits)
-
-*   290 browser hours
-
-*   2.9GB proxy bandwidth
-
-*   7,250 captcha solves
-
-
-#### Developer Plan ($99 in credits)
-
-*   1,238 browser hours
-
-*   12 GB proxy bandwidth
-
-*   28k captcha solves
-
-
-#### Pro Plan ($499 in credits)
-
-*   9,980 browser hours
-
-*   166 GB proxy bandwidth
-
-*   166k captcha solves
-
-
-\* We say roughly because in practice you couldn't spend all your credits on one thing other than browser hours, since you need to be in a session to use proxies or captcha solves.
-
-**_Enterprise plans offer even further cost efficiency with an annual commitment._**
-
-[Talk to the founders](https://cal.com/hussien-hussien-fjxt3x/intro-chat-w-steel-founders)
+[Schedule a call](https://cal.com/hussien-hussien-fjxt3x/intro-chat-w-steel-founders)
+:::
 
 ### FAQ
 
 :::faq
 ### How much does Steel cost?
 
-Steel has a free Hobby plan ($0, with $10 in free credits) plus paid plans at $29 (Starter), $99 (Developer), and $499/month (Pro), with custom Enterprise pricing. Browser time starts at $0.10/hour and drops to $0.05/hour on Pro.
+Steel has a Launch plan at $0 + usage with $30 in one-time free usage credits valid for 90
+days, a Scale plan at $250 + usage with $100 in monthly free usage credits, and custom
+Enterprise pricing.
 
 ### How long can a Steel browser session stay alive?
 
-Up to 24 hours on the Pro plan. Max session time scales by plan: 15 minutes on Hobby, 1 hour on Starter, 6 hours on Developer, 24 hours on Pro, and custom limits on Enterprise.
+Launch sessions can run up to 15 minutes, Scale sessions can run up to 1 hour, and Enterprise
+sessions can run up to 24 hours.
 
 ### How many concurrent browser sessions can I run on Steel?
 
-5 concurrent sessions on the free Hobby plan, 10 on Starter, 20 on Developer, 100 on Pro, and custom limits on Enterprise.
+Launch includes 10 concurrent browser sessions, Scale includes 100 concurrent browser sessions,
+and Enterprise supports 1,000+ concurrent browser sessions.
 
 ### How is Steel browser time billed?
 
-By the minute, rounded up. Hourly rates run from $0.10/hour on Hobby and Starter down to $0.08/hour on Developer and $0.05/hour on Pro, so $99 in Developer credits covers roughly 1,238 browser hours.
+Browser hours are billed by the minute, rounded up. Launch is $0.10/hour, Scale is $0.08/hour,
+and Enterprise is custom.
+
+### How much do proxies cost?
+
+Proxy bandwidth is $5/GB on Launch and Scale, with custom Enterprise pricing.
+
+### How much do captcha solves cost?
+
+Captcha solves are $2 per 1,000 solves on Launch and $1 per 1,000 solves on Scale, with custom
+Enterprise pricing.
+
+### How much do Browser Tools cost?
+
+Browser Tools usage for `/scrape`, `/screenshot`, and `/pdf` is $5 per 1,000 calls on Launch
+and Scale, with custom Enterprise pricing.
 
 ### How much do Dedicated IPs cost?
 
-Dedicated IPs are available on paid plans and cost $5 per dedicated IP per month. Dedicated IP traffic is metered as normal proxy bandwidth.
+Dedicated IPs are available on Scale for $5 per IP per month. Enterprise Dedicated IP pricing
+is custom.
+
+### What happens if I am already on a legacy plan?
+
+Existing Starter, Developer, and Startup customers can keep their legacy plan in the dashboard
+and switch when they choose.
 :::
