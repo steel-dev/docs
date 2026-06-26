@@ -18,7 +18,7 @@ export function MultiCode({ group, className }: { group: CodeGroup; className?: 
 
   return (
     <Tabs
-      value={currentTitle}
+      value={current.title}
       onValueChange={setCurrentTitle}
       className={cn(CODEBLOCK, className)}
       style={style}

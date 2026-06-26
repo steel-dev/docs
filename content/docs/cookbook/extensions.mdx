@@ -3,11 +3,15 @@ title: Upload and run browser extensions
 description: Use the Steel Extensions API with Playwright to upload and run browser extensions.
 ---
 
-<RecipeJsonLd slug="extensions" title={"Upload and run browser extensions"} description={"Use the Steel Extensions API with Playwright to upload and run browser extensions."} authors={[{"handle":"aspectrr","name":"Collin Pfeifer"}, {"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2024-11-19" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/92f29742253e2b6c6801d109e18232768e5291a0/examples/extensions" />
+<RecipeJsonLd slug="extensions" title={"Upload and run browser extensions"} description={"Use the Steel Extensions API with Playwright to upload and run browser extensions."} authors={[{"handle":"aspectrr","name":"Collin Pfeifer"}, {"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2024-11-19" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/extensions-ts" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/92f29742253e2b6c6801d109e18232768e5291a0/examples/extensions" path="examples/extensions" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
 
-<RecipeQuickstart slug="extensions" />
+<Tab id="typescript" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/extensions-ts" path="examples/extensions-ts" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+
+<RecipeQuickstart slug="extensions-ts" />
 
 Steel sessions launch a clean Chrome with nothing installed. The Extensions API lets you upload a Chrome extension once, get back an ID, and attach it to any future session via `extensionIds` on `sessions.create()`. Content scripts and background workers load before your first `page.goto`, so the extension has already rewritten the DOM by the time Playwright observes it.
 
@@ -32,7 +36,7 @@ The demo loads [GitHub Isometric Contributions](https://chromewebstore.google.co
 ## Run it
 
 ```bash
-cd examples/extensions
+cd examples/extensions-ts
 cp .env.example .env          # set STEEL_API_KEY
 npm install
 npm start
@@ -91,10 +95,232 @@ A run takes ~20 seconds and costs a few cents of session time. First run uploads
 
 [Credentials](/cookbook/credentials) (persist cookies across runs) · [auth-context](/cookbook/auth-context) (seed logged-in state) · [profiles](/cookbook/profiles) (reuse a full browser profile) · [Playwright docs](https://playwright.dev)
 
+</Tab>
+
+<Tab id="python" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/extensions-py" path="examples/extensions-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="extensions-py" />
+
+A fresh Steel session boots a clean Chrome with no extensions installed. The Extensions API closes that gap: you upload a Chrome extension once, Steel stores it under your account and hands back an ID, and you pass that ID to `sessions.create(extension_ids=[...])`. Content scripts run before your first `page.goto`, so by the time Playwright attaches the extension has already mutated the DOM.
+
+This port keeps the recipe to its core primitive. It uploads (or reuses) the extension, attaches it, opens a GitHub profile, and waits for the one DOM node the extension injects. It does not scrape and pretty-print the rendered stats. The presence of that node is the whole proof.
+
+```python
+existing = next(
+    (ext for ext in client.extensions.list().extensions if ext.name == "Github_Isometric_Contribu"),
+    None,
+)
+extension = existing or client.extensions.upload(url=EXTENSION_URL)
+
+session = client.sessions.create(extension_ids=[extension.id])
+```
+
+Uploads persist, so `extensions.list()` is the lookup that lets a second run skip the re-upload. Names come back normalized (truncated and underscored), which is why the match is against `Github_Isometric_Contribu` and not the full store title.
+
+## What "confirmed" means here
+
+The demo loads [GitHub Isometric Contributions](https://chromewebstore.google.com/detail/github-isometric-contribu/mjoedlfflcchnleknnceiplgaeoegien), an extension that rebuilds GitHub's flat contribution grid as a 3D isometric chart inside a `div.ic-contributions-wrapper` (the `ic-` prefix is the extension's own namespace). Stock GitHub never renders that node. So the test is simple: navigate to a profile and `page.wait_for_selector("div.ic-contributions-wrapper")`. If the selector resolves, the session attached the extension and it ran. If it times out, the script says so and moves on to release. No scraping, no table, just a yes or no on whether the injected UI showed up.
+
+## Run it
+
+```bash
+cd examples/extensions-py
+cp .env.example .env          # set STEEL_API_KEY
+uv run main.py
+```
+
+Grab a key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). `uv sync` runs automatically on first `uv run`, so there is no separate install step. The script prints a session viewer URL as it starts. Open it in another tab to watch the extension render on a live GitHub profile.
+
+Your output varies. Structure looks like this:
+
+```text
+Steel + Extensions (Python)
+============================================================
+
+Checking for an existing extension...
+No existing extension found
+Uploading extension...
+Uploaded extension: ext_...
+
+Creating Steel session...
+Steel Session created!
+View session at https://app.steel.dev/sessions/ab12cd34...
+
+Connected to browser via Playwright
+Navigating to https://github.com/junhsss ...
+Waiting for injected element: div.ic-contributions-wrapper
+Injected element appeared: the extension loaded into the page.
+Releasing session...
+Session released
+Done!
+```
+
+A run takes ~20 seconds and costs a few cents of session time. The first run uploads the extension, later runs reuse the ID.
+
+## Make it yours
+
+- **Upload your own extension.** `client.extensions.upload(url=...)` accepts any Chrome Web Store listing URL. Swap `EXTENSION_URL`, then update `EXTENSION_NAME` to the truncated, underscored form `extensions.list()` returns.
+- **Confirm a different node.** Change `INJECTED_SELECTOR` to whatever your extension adds to the page. The wait is the proof, so pick a selector that only exists when the extension ran.
+- **Target a specific profile.** Set `PROFILE_URL` to any public GitHub user, such as `https://github.com/steel-dev`.
+- **Stack extensions.** `extension_ids` is a list. Upload several (ad blocker, consent killer, a helper content script) and attach them in one session.
+
+## Related
+
+[extensions-ts](/cookbook/extensions) (same recipe, plus a styled stats table) · [extensions-go](/cookbook/extensions) · [extensions-rs](/cookbook/extensions) · [profiles-py](/cookbook/profiles) (reuse a full browser profile) · [Playwright docs](https://playwright.dev/python)
+
+</Tab>
+
+<Tab id="rust" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/extensions-rs" path="examples/extensions-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="extensions-rs" />
+
+A Steel session boots a clean Chromium with no extensions installed. The Extensions API closes that gap: upload a Chrome extension once with `client.extensions().upload(...)`, get back an `ext_...` id, and attach it to any later session by setting `extension_ids` on `SessionCreateParams`. Steel loads the content scripts and background workers before the first navigation, so by the time chromiumoxide opens the page the extension has already run.
+
+This recipe uploads [GitHub Isometric Contributions](https://chromewebstore.google.com/detail/github-isometric-contribu/mjoedlfflcchnleknnceiplgaeoegien), which replaces GitHub's flat contribution grid with a 3D isometric one wrapped in `div.ic-contributions-wrapper`. That wrapper is the proof: it does not exist on a stock GitHub profile, so finding it on the page means the session attached and ran the extension.
+
+## Upload once, reuse forever
+
+Uploads persist on your account, so re-running should not re-upload. `resolve_extension` lists what is already there and matches on the name Steel hands back, which is truncated and underscored (`Github_Isometric_Contribu`, not the full store title). A hit reuses the id; a miss uploads from the store URL and uses the fresh id. Either path produces one id, and that single value is all `SessionCreateParams` needs:
+
+```rust
+let session = client
+    .sessions()
+    .create(SessionCreateParams {
+        extension_ids: Some(vec![extension_id]),
+        ..Default::default()
+    })
+    .await?;
+```
+
+## Confirming the injection
+
+chromiumoxide has no `wait_for_selector`, so `wait_for_selector` here polls the page itself: it runs `!!document.querySelector('div.ic-contributions-wrapper')` through `page.evaluate(...).into_value()` once a second for up to 15 tries and stops on the first `true`. The program prints whether the wrapper showed up rather than scraping the numbers inside it; the goal is to confirm the DOM was rewritten, not to read it. If the extension never attached, the selector stays absent for all 15 attempts and the run says so.
+
+## Run it
+
+```bash
+cd examples/extensions-rs
+cp .env.example .env          # set STEEL_API_KEY
+cargo run
+```
+
+Grab a key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). The first build pulls chromiumoxide and tokio and takes a minute or two. As the program starts it prints a session viewer URL; open it in a second tab to watch the isometric grid render live.
+
+Your output varies. Structure looks like this:
+
+```text
+Checking for extension Github_Isometric_Contribu...
+Not found, uploading from the Chrome Web Store...
+Uploaded Github_Isometric_Contribu (ext_ab12cd34)
+Using extension ext_ab12cd34
+Creating Steel session...
+Session live at https://app.steel.dev/sessions/ab12cd34
+Connected over CDP, opening https://github.com/junhsss...
+Extension injected div.ic-contributions-wrapper; the contribution grid was rewritten.
+Releasing session...
+Session released
+```
+
+The first run uploads the extension; later runs print `Reusing uploaded extension` and skip straight to the session. `main` captures the run result, releases the session, then returns the error, so a failed check still tears the session down instead of leaving it to idle out.
+
+## Make it yours
+
+- **Upload your own extension.** `upload(...)` takes either a `url` (any Chrome Web Store listing) or a `file` (a `.zip`/`.crx` you supply). Swap `EXTENSION_URL` and update `EXTENSION_NAME` to the truncated, underscored name `extensions().list()` reports back.
+- **Target a specific profile.** `PROFILE_URL` is just a constant; point it at any public GitHub profile.
+- **Stack extensions.** `extension_ids` is a `Vec`. Upload several (an ad blocker, a consent killer, a helper content script) and pass all their ids together.
+- **Assert instead of print.** Turn the `wait_for_selector` boolean into a hard failure if you want the run to exit non-zero when the extension does not load.
+
+## Related
+
+- [extensions-ts](/cookbook/extensions) is the original this ports, driving Playwright and scraping the injected stats into a table.
+- [extensions-py](/cookbook/extensions) and [extensions-go](/cookbook/extensions) are the same upload-and-attach flow in Python and Go.
+- [profiles-rs](/cookbook/profiles) persists a full browser profile across sessions, the heavier sibling to attaching extensions per run.
+- [chromiumoxide docs](https://docs.rs/chromiumoxide) cover `Page`, `evaluate`, and `find_element` in full.
+
+</Tab>
+
+<Tab id="go" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/extensions-go" path="examples/extensions-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+
+<RecipeQuickstart slug="extensions-go" />
+
+A fresh Steel session boots a stock Chrome with no extensions. The Extensions API lets you upload a Chrome extension once, keep the returned ID on your account, and attach it to any session through `ExtensionIDs` on `Sessions.Create`. Content scripts run before chromedp ever issues a `Navigate`, so by the time the page renders the extension has already rewritten the DOM.
+
+This recipe proves that attachment happened by waiting on a selector the extension creates, nothing more. It does not scrape or pretty-print the numbers the extension renders.
+
+```go
+list, _ := client.Extensions.List(ctx)
+for _, ext := range list.Extensions {
+	if ext.Name == "Github_Isometric_Contribu" {
+		extID = ext.ID
+	}
+}
+
+if extID == "" {
+	uploaded, _ := client.Extensions.Upload(ctx, steel.ExtensionUploadParams{
+		URL: steel.Ptr("https://chromewebstore.google.com/detail/github-isometric-contribu/mjoedlfflcchnleknnceiplgaeoegien"),
+	})
+	extID = uploaded.ID
+}
+
+sess, _ := client.Sessions.Create(ctx, steel.SessionCreateParams{
+	ExtensionIDs: steel.F([]string{extID}),
+})
+```
+
+## How the confirmation works
+
+The demo attaches [GitHub Isometric Contributions](https://chromewebstore.google.com/detail/github-isometric-contribu/mjoedlfflcchnleknnceiplgaeoegien), which swaps GitHub's flat contribution grid for a 3D isometric one under a wrapper element it namespaces with `ic-`. After navigating to a profile, `chromedp.WaitVisible("div.ic-contributions-wrapper", chromedp.ByQuery)` runs against a 30-second timeout context. If the element appears, the extension loaded; if the context expires first, the wait returns an error and the run reports that the UI never showed. That selector belongs to the extension alone, so its presence is the proof.
+
+Uploads persist on your account, which is why `Extensions.List` is the first call: a repeat run finds the existing ID and skips the re-upload. Names come back normalized, truncated and underscored, so the match is against `Github_Isometric_Contribu` rather than the full store title.
+
+## Run it
+
+```bash
+cd examples/extensions-go
+cp .env.example .env          # set STEEL_API_KEY
+go mod tidy
+go run .
+```
+
+Get a key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). The session viewer URL prints as the run starts; open it in another tab to watch the extension render on a live profile.
+
+```text
+Looking for an existing extension upload...
+Not found. Uploading from the Chrome Web Store...
+Uploaded extension ext_abc123
+Creating Steel session with the extension attached...
+Session created. Watch it live at https://app.steel.dev/sessions/ab12cd34
+Navigating to https://github.com/junhsss...
+Waiting for the extension to inject "div.ic-contributions-wrapper"...
+Extension UI confirmed: the session attached and rewrote the DOM.
+Releasing session...
+```
+
+## Make it yours
+
+- **Upload your own extension.** `Extensions.Upload` takes any Chrome Web Store listing URL. Swap `storeURL` and update the `extensionName` that `Extensions.List` matches on, remembering the truncated, underscored form.
+- **Target a different profile.** Change `profileURL` to any public GitHub user.
+- **Stack extensions.** `ExtensionIDs` is a slice. Upload several and attach them together in one `Sessions.Create`.
+- **Assert on real content.** Once the wrapper is visible, add `chromedp.Text` or `chromedp.Evaluate` steps to pull values the extension injected.
+
+## Related
+
+[extensions-ts](/cookbook/extensions) (Playwright sibling) · [extensions-py](/cookbook/extensions) · [extensions-rs](/cookbook/extensions) · [profiles-go](/cookbook/profiles) (reuse a full browser profile) · [chromedp docs](https://pkg.go.dev/github.com/chromedp/chromedp)
+
+</Tab>
+
+</Tabs>
+
 ## Related recipes
 
 <RecipeGrid>
-<RecipeCard slug="credentials" title={"Automate logins with the Credentials API"} description={"Use the Steel Credentials API with Playwright to automate flows with stored credentials."} topics={['Steel APIs', 'Authentication', 'Playwright']} date="2024-11-19" />
-<RecipeCard slug="files" title={"Move files between your machine and a cloud browser"} description={"Use the Steel Files API with Playwright to automate file uploads and downloads in the cloud."} topics={['Steel APIs', 'Playwright']} date="2024-11-19" />
-<RecipeCard slug="convex-price-watch" title={"Watch Claude pricing for divergent A/B variants"} description={"Convex cron plus two parallel Steel proxy probes against claude.com/pricing. Stores per-tier per-region snapshots and surfaces tiers where the probes disagree."} topics={['Steel APIs', 'Convex']} date="2026-05-04" />
+<RecipeCard slug="credentials" title={"Automate logins with the Credentials API"} description={"Use the Steel Credentials API with Playwright to automate flows with stored credentials."} topics={['Steel APIs', 'Authentication', 'Playwright']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2024-11-19" />
+<RecipeCard slug="files" title={"Move files between your machine and a cloud browser"} description={"Use the Steel Files API with Playwright to automate file uploads and downloads in the cloud."} topics={['Steel APIs', 'Playwright']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2024-11-19" />
+<RecipeCard slug="scrape" title={"Scrape a page to Markdown, screenshot, and PDF"} description={"Use the Steel TypeScript SDK's direct API to scrape a page to clean Markdown for LLM context, plus screenshot and PDF, with no browser library."} topics={['Steel APIs']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-23" />
 </RecipeGrid>

@@ -6,11 +6,168 @@ description: Runnable recipes for using Steel with your favorite libraries and f
 
 <RecipeSearch recipes={[
   {
+    "slug": "headless-chrome",
+    "title": "Automate a cloud browser with headless_chrome",
+    "description": "Use Steel with headless_chrome, the synchronous Rust equivalent of Puppeteer, to connect over CDP and scrape quotes with element handles.",
+    "topics": [
+      "Browser automation"
+    ],
+    "languages": [
+      "Rust"
+    ],
+    "date": "2026-06-24"
+  },
+  {
+    "slug": "mcp",
+    "title": "Expose a Steel browser to any MCP client",
+    "description": "Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools.",
+    "topics": [
+      "Agents",
+      "MCP"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
+    ],
+    "date": "2026-06-24"
+  },
+  {
+    "slug": "chromedp",
+    "title": "Automate a cloud browser with chromedp",
+    "description": "Use Steel with chromedp to connect over CDP, navigate to Hacker News, extract the top stories, and capture a screenshot.",
+    "topics": [
+      "Browser automation"
+    ],
+    "languages": [
+      "Go"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "rod",
+    "title": "Automate a cloud browser with Rod",
+    "description": "Use Steel with Rod's fluent, chainable API to connect over CDP and scrape quotes.toscrape.com from a cloud browser.",
+    "topics": [
+      "Browser automation"
+    ],
+    "languages": [
+      "Go"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "chromiumoxide",
+    "title": "Automate a cloud browser with chromiumoxide",
+    "description": "Use Steel with chromiumoxide to connect over CDP, drive the handler task, extract page content, and capture a screenshot.",
+    "topics": [
+      "Browser automation"
+    ],
+    "languages": [
+      "Rust"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "scrape",
+    "title": "Scrape a page to Markdown, screenshot, and PDF",
+    "description": "Use the Steel TypeScript SDK's direct API to scrape a page to clean Markdown for LLM context, plus screenshot and PDF, with no browser library.",
+    "topics": [
+      "Steel APIs"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "genkit",
+    "title": "Build a browser agent with Genkit",
+    "description": "Use Steel with Genkit Go to build a tool-calling agent that navigates and extracts from a chromedp-backed browser and completes a web task.",
+    "topics": [
+      "Agents"
+    ],
+    "languages": [
+      "Go"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "eino",
+    "title": "Build a browser agent with Eino",
+    "description": "Use Steel with the ByteDance Eino framework to build a ReAct agent that calls Steel's scrape API as a tool to research and answer a web question.",
+    "topics": [
+      "Agents"
+    ],
+    "languages": [
+      "Go"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "rig",
+    "title": "Build a browser agent with rig",
+    "description": "Use Steel with rig to build an agent that drives a cloud browser over CDP with chromiumoxide through navigate and extract tools, then answers a multi-step web task.",
+    "topics": [
+      "Agents"
+    ],
+    "languages": [
+      "Rust"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "swiftide",
+    "title": "Build a research agent with Swiftide",
+    "description": "Use Steel with Swiftide to build an agent whose tool reads the web through Steel's scrape endpoint, so the model works from clean Markdown with no browser library.",
+    "topics": [
+      "Agents"
+    ],
+    "languages": [
+      "Rust"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "langchaingo",
+    "title": "Build a browser agent with LangChainGo",
+    "description": "Use Steel with LangChainGo's zero-shot ReAct (MRKL) agent and a string-in, string-out scrape tool so Claude reads a page and answers a question.",
+    "topics": [
+      "Agents"
+    ],
+    "languages": [
+      "Go"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "google-adk",
+    "title": "Build a browser agent with Google ADK",
+    "description": "Use Steel with Google's Agent Development Kit (ADK) for Go to build a tool-using browser agent that drives a chromedp session over CDP and reads Hacker News.",
+    "topics": [
+      "Agents",
+      "Typed output"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Go"
+    ],
+    "date": "2026-06-23"
+  },
+  {
     "slug": "microsoft-agent-framework",
     "title": "Build a browser agent with Microsoft Agent Framework",
     "description": "Use Steel with Microsoft Agent Framework 1.0 (the successor to AutoGen and Semantic Kernel) to build a tool-using browser agent.",
     "topics": [
       "Agents"
+    ],
+    "languages": [
+      "Python"
     ],
     "date": "2026-05-11"
   },
@@ -22,6 +179,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Agents",
       "Convex"
     ],
+    "languages": [
+      "TypeScript"
+    ],
     "date": "2026-05-04"
   },
   {
@@ -31,6 +191,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Steel APIs",
       "Convex"
+    ],
+    "languages": [
+      "TypeScript"
     ],
     "date": "2026-05-04"
   },
@@ -42,6 +205,10 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Agents",
       "Subagents"
     ],
+    "languages": [
+      "TypeScript",
+      "Python"
+    ],
     "date": "2026-05-01"
   },
   {
@@ -52,6 +219,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Agents",
       "Search"
     ],
+    "languages": [
+      "Python"
+    ],
     "date": "2026-04-30"
   },
   {
@@ -60,6 +230,10 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "description": "Use Steel with the Claude Agent SDK (TypeScript) to build a tool-using browser agent on Anthropic's first-party agent loop.",
     "topics": [
       "Agents"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python"
     ],
     "date": "2026-04-29"
   },
@@ -71,6 +245,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Agents",
       "Typed output"
     ],
+    "languages": [
+      "Python"
+    ],
     "date": "2026-04-29"
   },
   {
@@ -80,6 +257,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Agents",
       "Typed output"
+    ],
+    "languages": [
+      "Python"
     ],
     "date": "2026-04-29"
   },
@@ -91,6 +271,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Agents",
       "Typed output"
     ],
+    "languages": [
+      "TypeScript"
+    ],
     "date": "2026-04-29"
   },
   {
@@ -101,6 +284,10 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Agents",
       "Typed output"
     ],
+    "languages": [
+      "TypeScript",
+      "Python"
+    ],
     "date": "2026-04-23"
   },
   {
@@ -110,6 +297,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Agents",
       "Typed output"
+    ],
+    "languages": [
+      "TypeScript"
     ],
     "date": "2026-04-23"
   },
@@ -122,6 +312,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Typed output",
       "Next.js"
     ],
+    "languages": [
+      "TypeScript"
+    ],
     "date": "2026-04-23"
   },
   {
@@ -133,6 +326,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Browser Use",
       "Captchas"
     ],
+    "languages": [
+      "Python"
+    ],
     "date": "2026-02-10"
   },
   {
@@ -141,6 +337,12 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "description": "Connect Google's Gemini Computer Use to a Steel browser session for autonomous web interactions.",
     "topics": [
       "Computer use"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
     ],
     "date": "2025-11-25"
   },
@@ -152,6 +354,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Computer use",
       "Mobile"
     ],
+    "languages": [
+      "TypeScript"
+    ],
     "date": "2025-10-14"
   },
   {
@@ -162,6 +367,12 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Steel APIs",
       "Authentication"
     ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
+    ],
     "date": "2025-10-13"
   },
   {
@@ -170,6 +381,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "description": "Integrate Steel with the CrewAI multi-agent framework.",
     "topics": [
       "Agents"
+    ],
+    "languages": [
+      "Python"
     ],
     "date": "2025-09-05"
   },
@@ -180,6 +394,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Agents"
     ],
+    "languages": [
+      "TypeScript"
+    ],
     "date": "2025-09-05"
   },
   {
@@ -188,6 +405,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "description": "Integrate Steel with the Agno agent framework.",
     "topics": [
       "Agents"
+    ],
+    "languages": [
+      "Python"
     ],
     "date": "2025-09-05"
   },
@@ -198,6 +418,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Agents"
     ],
+    "languages": [
+      "Python"
+    ],
     "date": "2025-08-26"
   },
   {
@@ -206,6 +429,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "description": "Use Steel with Magnitude for AI-powered browser automation.",
     "topics": [
       "Agents"
+    ],
+    "languages": [
+      "TypeScript"
     ],
     "date": "2025-07-30"
   },
@@ -216,6 +442,10 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Browser automation"
     ],
+    "languages": [
+      "TypeScript",
+      "Python"
+    ],
     "date": "2025-07-16"
   },
   {
@@ -225,6 +455,12 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Computer use"
     ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
+    ],
     "date": "2025-07-16"
   },
   {
@@ -233,6 +469,12 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "description": "Connect OpenAI's Computer Use Assistant to a Steel browser session for autonomous web interactions.",
     "topics": [
       "Computer use"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
     ],
     "date": "2025-03-19"
   },
@@ -244,6 +486,12 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Steel APIs",
       "Authentication"
     ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
+    ],
     "date": "2025-03-11"
   },
   {
@@ -253,6 +501,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Agents",
       "Browser Use"
+    ],
+    "languages": [
+      "Python"
     ],
     "date": "2025-02-20"
   },
@@ -265,6 +516,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Browser Use",
       "Captchas"
     ],
+    "languages": [
+      "Python"
+    ],
     "date": "2025-02-20"
   },
   {
@@ -275,6 +529,11 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Browser automation",
       "Playwright"
     ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Go"
+    ],
     "date": "2024-11-19"
   },
   {
@@ -284,6 +543,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Browser automation"
     ],
+    "languages": [
+      "TypeScript"
+    ],
     "date": "2024-11-19"
   },
   {
@@ -292,6 +554,9 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "description": "Use Steel with Selenium in Python for cloud browser automation.",
     "topics": [
       "Browser automation"
+    ],
+    "languages": [
+      "Python"
     ],
     "date": "2024-11-19"
   },
@@ -304,6 +569,12 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Authentication",
       "Playwright"
     ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
+    ],
     "date": "2024-11-19"
   },
   {
@@ -313,6 +584,12 @@ description: Runnable recipes for using Steel with your favorite libraries and f
     "topics": [
       "Steel APIs",
       "Playwright"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
     ],
     "date": "2024-11-19"
   },
@@ -324,6 +601,69 @@ description: Runnable recipes for using Steel with your favorite libraries and f
       "Steel APIs",
       "Playwright"
     ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
+    ],
     "date": "2024-11-19"
+  }
+]} featured={[
+  {
+    "slug": "scrape",
+    "title": "Scrape a page to Markdown, screenshot, and PDF",
+    "description": "Use the Steel TypeScript SDK's direct API to scrape a page to clean Markdown for LLM context, plus screenshot and PDF, with no browser library.",
+    "topics": [
+      "Steel APIs"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Rust",
+      "Go"
+    ],
+    "date": "2026-06-23"
+  },
+  {
+    "slug": "playwright",
+    "title": "Automate a cloud browser with Playwright",
+    "description": "Use Steel with Playwright in TypeScript for cloud browser automation.",
+    "topics": [
+      "Browser automation",
+      "Playwright"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python",
+      "Go"
+    ],
+    "date": "2024-11-19"
+  },
+  {
+    "slug": "vercel-ai-sdk",
+    "title": "Build a typed browser agent with the Vercel AI SDK",
+    "description": "Use Steel with the Vercel AI SDK v6 ToolLoopAgent for typed, tool-using browser agents.",
+    "topics": [
+      "Agents",
+      "Typed output"
+    ],
+    "languages": [
+      "TypeScript"
+    ],
+    "date": "2026-04-23"
+  },
+  {
+    "slug": "claude-agent-sdk",
+    "title": "Build a browser agent with the Claude Agent SDK",
+    "description": "Use Steel with the Claude Agent SDK (TypeScript) to build a tool-using browser agent on Anthropic's first-party agent loop.",
+    "topics": [
+      "Agents"
+    ],
+    "languages": [
+      "TypeScript",
+      "Python"
+    ],
+    "date": "2026-04-29"
   }
 ]} />
