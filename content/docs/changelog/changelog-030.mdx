@@ -2,30 +2,26 @@
 title: "Changelog #030"
 sidebarTitle: "Changelog #030"
 llm: true
-image: "/images/changelog-placeholder-white.jpeg"
+image: "/images/changelog/30.png"
 imageAlt: "Announcing Changelog #030"
 publishedAt: "2026-06-19"
 ---
 import Image from 'next/image';
 
 <Image
-  src="/images/changelog-placeholder-white.jpeg"
+  src="/images/changelog/30.png"
   alt="Announcing Changelog #030"
   width={800}
   height={400}
 />
-Hey everyone. This week was mostly docs and ecosystem updates, with a few useful additions for agent-facing docs and the leaderboard.
+Hey everyone. This was a docs week. We're prepping a lot of new stuff for our upcoming [launch week](https://steel.dev/launch-week), so this week was mostly about getting the docs into better shape: more FAQs, even an agent-friendly 404 page, updated x402 examples, and a new benchmark on the leaderboard.
 
 ### 🔧 Improvements
 
-*   The docs now include FAQ sections across overview and integration pages, with accordion rendering, FAQ structured data, and cleaner markdown output for LLM-oriented crawlers.
+*   Added FAQ sections with questions we've been getting to more overview and integration pages. They include FAQ structured data and stay readable in the markdown that agents crawl.
 
-*   The docs 404 page was redesigned with quick links for onboarding and an agent-oriented hint for the LLM docs index.
+*   Reworked the docs 404 page with better recovery links and a pointer to the LLM docs index.
 
-*   The x402 docs were updated to match the live browser tool endpoints for scrape, screenshot, and PDF.
+*   Updated the x402 docs so the scrape, screenshot, and PDF examples match the live browser tool endpoints.
 
-*   The leaderboard now includes HealthAdminBench, a healthcare admin benchmark covering simulated portal workflows.
-
-### 🏡 Housekeeping
-
-*   Infra docs now include system structure and TLS termination diagrams for the Steel platform.
+*   Added HealthAdminBench to the leaderboard, with simulated healthcare admin portal workflows.
