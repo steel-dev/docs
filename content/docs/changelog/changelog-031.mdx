@@ -1,0 +1,55 @@
+---
+title: "Changelog #031"
+sidebarTitle: "Changelog #031"
+llm: true
+image: "/images/changelog-placeholder-white.jpeg"
+imageAlt: "Announcing Changelog #031"
+publishedAt: "2026-06-29"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog-placeholder-white.jpeg"
+  alt="Announcing Changelog #031"
+  width={800}
+  height={400}
+/>
+Hey everyone. This week was mostly about dedicated IPs, billing and plan changes, and broader language and recipe coverage in the docs and cookbook.
+
+### ⭐ New
+
+#### Dedicated IPs for sessions
+
+Steel now supports dedicated IPs for browser sessions, including session-level IP selection, supported location selection in the app, and updated docs and pricing details for the new networking option.
+
+#### Go and Rust SDK support in the docs and cookbook
+
+Steel's docs and cookbook now cover Go and Rust SDK usage, with new browser, scrape, computer-use, and framework examples across both languages.
+
+### 🔧 Improvements
+
+*   Billing now supports usage-based plans, self-serve plan changes, plan change previews, budget alerts, budget caps, project usage filtering, and updated pricing and payment method flows in the app.
+
+*   Steel's CAPTCHA handling now supports PerimeterX press-and-hold challenges via CDP, with controls to disable autosolving for specific CAPTCHA types when needed.
+
+*   The cookbook added new recipes for MCP servers and agent orchestration workflows with Trigger.dev, Restate, and Temporal.
+
+*   The leaderboard added the DRACO deep research benchmark, new BrowseComp rows for Exa Agent and Perplexity Agent, and Atlas callouts on research benchmark pages.
+
+### 🐛 Bug Fixes
+
+*   Fixed cookbook language tabs so pages fall back to a valid default when a previously saved language is no longer available.
+
+*   Fixed session creation failures in Steel Browser by falling back to relaxed fingerprint constraints when the bundled dataset lags the latest Chrome release.
+
+*   Fixed browser log draining so large DuckDB write buffers no longer overflow during flushes, and updated managed-browser log handling to wait for logs to clear reliably.
+
+*   Fixed managed-browser shutdown handling so ffmpeg exits gracefully during session teardown.
+
+*   Corrected selected API request bodies so endpoints that do not require payloads are optional again.
+
+*   Fixed Go and Rust browser examples in the cookbook so they run reliably against the live API.
+
+### 🏡 Housekeeping
+
+*   Infra added a provider-agnostic bare-metal provisioning layer, internal APT repository support, and Debian package publishing pipelines for host-native services used in Steel's next infrastructure stack.
