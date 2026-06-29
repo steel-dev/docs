@@ -14,21 +14,29 @@ import Image from 'next/image';
   width={800}
   height={400}
 />
-Hey everyone. This week was mostly about dedicated IPs, billing and plan changes, and broader language and recipe coverage in the docs and cookbook.
+Hey everyone. We held a bunch of changes for [Launch Week v3](https://steel.dev/launch-week), so this one is larger than usual: Stealth Browser, Dedicated IPs, Rust and Go SDKs, Atlas, pricing updates, and new cookbook recipes.
 
 ### ⭐ New
+
+#### Stealth Browser
+
+Stealth Browser is live for enterprise customers. It is Steel's Chromium fork for agent sessions, with the browser profile applied at process startup before page JavaScript reads browser surfaces.
 
 #### Dedicated IPs for sessions
 
 Steel now supports dedicated IPs for browser sessions, including session-level IP selection, supported location selection in the app, and updated docs and pricing details for the new networking option.
 
-#### Go and Rust SDK support in the docs and cookbook
+#### Rust and Go SDK support in the docs and cookbook
 
-Steel's docs and cookbook now cover Go and Rust SDK usage, with new browser, scrape, computer-use, and framework examples across both languages.
+Steel's docs and cookbook now cover the [Rust SDK](https://github.com/steel-dev/steel-rust) and [Go SDK](https://github.com/steel-dev/steel-go), with browser, scrape, computer-use, and framework examples across both languages.
+
+#### Atlas
+
+[Atlas](https://github.com/steel-dev/atlas) is a new open-source research harness (`@steel-dev/atlas`) for multi-agent browser research with an evidence ledger and optional claim verification.
 
 ### 🔧 Improvements
 
-*   Billing now supports usage-based plans, self-serve plan changes, plan change previews, budget alerts, budget caps, project usage filtering, and updated pricing and payment method flows in the app.
+*   Pricing moved to Launch, Scale, and Enterprise on one metered model, with usage credits, top-ups, budget controls, project usage filtering, and clearer per-meter cost breakdowns.
 
 *   Steel's CAPTCHA handling now supports PerimeterX press-and-hold challenges via CDP, with controls to disable autosolving for specific CAPTCHA types when needed.
 
@@ -52,4 +60,4 @@ Steel's docs and cookbook now cover Go and Rust SDK usage, with new browser, scr
 
 ### 🏡 Housekeeping
 
-*   Infra added a provider-agnostic bare-metal provisioning layer, internal APT repository support, and Debian package publishing pipelines for host-native services used in Steel's next infrastructure stack.
+*   Infra added a provider-agnostic bare-metal provisioning layer, internal APT repository support, and Debian package publishing pipelines for host-native services used in Steel's next infrastructure stack 😱.
