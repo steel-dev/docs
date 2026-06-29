@@ -9,17 +9,19 @@ interface Recipe {
   title: string;
   description: string;
   topics: string[];
+  languages?: string[];
   date?: string;
 }
 
 interface Props {
   recipes: Recipe[];
+  featured?: Recipe[];
 }
 
 // Client-side filter over the Home page's recipe list. Matches tokens in
 // the query against any of title/description/topics/slug (substring
 // match). Global ⌘K search still covers the full docs index.
-export function RecipeSearch({ recipes }: Props) {
+export function RecipeSearch({ recipes, featured }: Props) {
   const inputId = useId();
   const [query, setQuery] = useState('');
 
@@ -31,19 +33,30 @@ export function RecipeSearch({ recipes }: Props) {
       .filter(Boolean);
     if (tokens.length === 0) return recipes;
     return recipes.filter((recipe) => {
-      const haystack = [recipe.title, recipe.description, recipe.slug, ...(recipe.topics ?? [])]
+      const haystack = [
+        recipe.title,
+        recipe.description,
+        recipe.slug,
+        ...(recipe.topics ?? []),
+        ...(recipe.languages ?? []),
+      ]
         .join(' ')
         .toLowerCase();
       return tokens.every((token) => haystack.includes(token));
     });
   }, [recipes, query]);
 
+  // Featured + All sections only make sense on the unfiltered view; once the
+  // user is searching, collapse to a single focused result list.
+  const isIdle = query.trim().length === 0;
+  const showFeatured = isIdle && !!featured && featured.length > 0;
+
   return (
     <div className="not-prose">
       <label htmlFor={inputId} className="sr-only">
         Filter recipes
       </label>
-      <div className="relative mb-4">
+      <div className="relative mb-8">
         <SearchIcon
           className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
           aria-hidden
@@ -59,6 +72,23 @@ export function RecipeSearch({ recipes }: Props) {
           spellCheck={false}
         />
       </div>
+
+      {showFeatured && featured && (
+        <section className="mb-10">
+          <h2 className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
+            Featured
+          </h2>
+          <RecipeGrid>
+            {featured.map((r) => (
+              <RecipeCard key={r.slug} {...r} />
+            ))}
+          </RecipeGrid>
+        </section>
+      )}
+
+      {isIdle && (
+        <h2 className="font-mono text-xs uppercase tracking-wide text-muted-foreground">All</h2>
+      )}
       {filtered.length > 0 ? (
         <RecipeGrid>
           {filtered.map((r) => (

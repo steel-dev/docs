@@ -53,7 +53,11 @@ const TOPIC_DESCRIPTIONS: Record<string, string> = {
 
 // Display order for language tabs in merged concept pages. Entries not
 // listed fall back to the end in insertion order.
-const LANGUAGE_ORDER: string[] = ['TypeScript', 'Python', 'Next.js'];
+const LANGUAGE_ORDER: string[] = ['TypeScript', 'Python', 'Rust', 'Go'];
+
+// Curated recipes surfaced in a "Featured" row at the top of the cookbook
+// home page, shown in this order. Slugs must match concept slugs.
+const FEATURED_SLUGS: string[] = ['scrape', 'playwright', 'vercel-ai-sdk', 'claude-agent-sdk'];
 
 interface CookbookLock {
   repo: string; // "owner/name" on GitHub
@@ -227,6 +231,20 @@ function conceptTopics(concept: Concept): string[] {
   return ordered;
 }
 
+// Distinct languages a concept ships in, in display order (TypeScript,
+// Python, Go, Rust, ...). Drives the language badges on recipe cards.
+function conceptLanguages(concept: Concept): string[] {
+  const seen = new Set<string>();
+  const ordered: string[] = [];
+  for (const entry of concept.entries) {
+    if (entry.language && !seen.has(entry.language)) {
+      seen.add(entry.language);
+      ordered.push(entry.language);
+    }
+  }
+  return ordered;
+}
+
 // Earliest first-commit date among a concept's variants. Shown on cards
 // and used to sort every recipe grid (home, topic pages, related)
 // "newest published first".
@@ -344,9 +362,11 @@ function frontmatter(fields: Record<string, string>): string {
 function renderRecipeCard(concept: Concept): string {
   const topics = conceptTopics(concept);
   const topicsLiteral = `[${topics.map((t) => `'${t.replace(/'/g, "\\'")}'`).join(', ')}]`;
+  const languages = conceptLanguages(concept);
+  const languagesLiteral = `[${languages.map((l) => `'${l.replace(/'/g, "\\'")}'`).join(', ')}]`;
   const date = conceptCreatedDate(concept);
   const dateAttr = date ? ` date="${date}"` : '';
-  return `<RecipeCard slug="${concept.slug}" title={${JSON.stringify(concept.title)}} description={${JSON.stringify(concept.description)}} topics={${topicsLiteral}}${dateAttr} />`;
+  return `<RecipeCard slug="${concept.slug}" title={${JSON.stringify(concept.title)}} description={${JSON.stringify(concept.description)}} topics={${topicsLiteral}} languages={${languagesLiteral}}${dateAttr} />`;
 }
 
 function renderRecipeGrid(concepts: Concept[]): string {
@@ -503,15 +523,19 @@ async function emitHome(concepts: Concept[]): Promise<void> {
     title: c.title,
     description: c.description,
     topics: conceptTopics(c),
+    languages: conceptLanguages(c),
     date: conceptCreatedDate(c),
   }));
   const recipesLiteral = JSON.stringify(recipeData, null, 2);
+  const bySlug = new Map(recipeData.map((r) => [r.slug, r]));
+  const featuredData = FEATURED_SLUGS.map((s) => bySlug.get(s)).filter((r) => r !== undefined);
+  const featuredLiteral = JSON.stringify(featuredData, null, 2);
   const fm = frontmatter({
     title: 'Cookbook',
     sidebarTitle: 'Home',
     description: 'Runnable recipes for using Steel with your favorite libraries and frameworks.',
   });
-  const body = `<RecipeSearch recipes={${recipesLiteral}} />`;
+  const body = `<RecipeSearch recipes={${recipesLiteral}} featured={${featuredLiteral}} />`;
   await fs.writeFile(path.join(OUTPUT_DIR, 'index.mdx'), `${fm}\n\n${body}\n`);
 }
 

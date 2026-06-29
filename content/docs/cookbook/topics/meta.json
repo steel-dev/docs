@@ -8,12 +8,16 @@
     "captchas",
     "computer-use",
     "convex",
+    "mcp",
     "mobile",
     "nextjs",
     "playwright",
+    "restate",
     "search",
     "steel-apis",
     "subagents",
+    "temporal",
+    "triggerdev",
     "typed-output"
   ]
 }

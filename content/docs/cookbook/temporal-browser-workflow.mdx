@@ -1,0 +1,309 @@
+---
+title: Run a durable browser workflow with Temporal
+description: Build a Temporal TypeScript Workflow that schedules retryable Steel browser Activities to capture page summaries, screenshots, and Markdown artifacts.
+---
+
+<RecipeJsonLd slug="temporal-browser-workflow" title={"Run a durable browser workflow with Temporal"} description={"Build a Temporal TypeScript Workflow that schedules retryable Steel browser Activities to capture page summaries, screenshots, and Markdown artifacts."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-06-29" dateModified="2026-06-29" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/temporal-browser-workflow-ts" />
+
+<Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
+
+<Tab id="typescript" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/temporal-browser-workflow-ts" path="examples/temporal-browser-workflow-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-29" />
+
+<RecipeQuickstart slug="temporal-browser-workflow-ts" />
+
+This recipe runs a Temporal Workflow named `browserWorkflow`. The Workflow stays deterministic: it clamps small inputs, loops over URLs, and delegates each Steel scrape plus screenshot to the `capturePage` Activity. The Activity writes Markdown and PNG artifacts locally, then returns the compact page summary recorded in workflow history.
+
+The retry boundary lives on the Activity proxy in `workflows.ts`:
+
+```ts
+const { capturePage } = proxyActivities<Activities>({
+  startToCloseTimeout: "2 minutes",
+  retry: {
+    initialInterval: "5 seconds",
+    maximumInterval: "30 seconds",
+    backoffCoefficient: 2,
+    maximumAttempts: 3,
+  },
+});
+```
+
+If a page fetch fails, Temporal retries that Activity. If the worker restarts after one URL succeeds, the completed Activity result is replayed from history and the workflow resumes at the next URL.
+
+## Run it
+
+Install the Temporal CLI if you do not already have it, then start a local dev server:
+
+```bash
+temporal server start-dev
+```
+
+In another terminal, run the worker and workflow client:
+
+```bash
+cd examples/temporal-browser-workflow-ts
+cp .env.example .env
+npm install
+npm start
+```
+
+Set `STEEL_API_KEY` in `.env`. Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). The Temporal dev server listens on `localhost:7233`, which matches `TEMPORAL_ADDRESS` in `.env.example`.
+
+Your output varies. Structure looks like this:
+
+```json
+{
+  "pages": [
+    {
+      "url": "https://news.ycombinator.com/",
+      "title": "Hacker News",
+      "statusCode": 200,
+      "screenshotUrl": "https://...",
+      "artifacts": {
+        "screenshotPath": "artifacts/news-ycombinator-com-2026-06-29T10-30-00-000Z.png",
+        "markdownPath": "artifacts/news-ycombinator-com-2026-06-29T10-30-00-000Z.md"
+      }
+    }
+  ],
+  "pageCount": 2
+}
+```
+
+Open the Temporal UI printed by `temporal server start-dev`. The workflow history shows one `capturePage` Activity per URL.
+
+## Why Steel runs in an Activity
+
+Temporal Workflows replay, so they should not call Steel, `fetch`, `Date.now()`, the filesystem, or any other side-effecting API. `browserWorkflow` only decides which Activity to schedule next. `capturePage` owns the browser work and artifact writes:
+
+```ts
+const scraped = await steel.scrape({ url, format: ["markdown"] });
+const screenshot = await steel.screenshot({ url, fullPage });
+await writeFile(markdownPath, toMarkdown(result, markdown), "utf8");
+await download(screenshot.url, screenshotPath);
+```
+
+This keeps browser cost tied to Activity attempts. A failed Activity can retry. A completed Activity is not re-run during workflow replay.
+
+## Make it yours
+
+- **Change the batch.** Set `TARGET_URLS` to a comma-separated list. The workflow caps each run at 10 URLs.
+- **Adjust extraction.** Use more fields from the Steel scrape response, or add PDF generation inside `capturePage`.
+- **Store artifacts durably.** Upload the PNG and Markdown files to object storage inside the Activity before returning.
+- **Deploy the worker.** Point `TEMPORAL_ADDRESS`, `TEMPORAL_NAMESPACE`, and `TEMPORAL_TASK_QUEUE` at your Temporal cluster, then run the same worker process.
+
+## Related
+
+[temporal-browser-workflow-py](/cookbook/temporal-browser-workflow), [temporal-browser-workflow-go](/cookbook/temporal-browser-workflow), and [temporal-browser-workflow-rs](/cookbook/temporal-browser-workflow) implement the same workflow in other SDKs. See the [Temporal TypeScript SDK](https://docs.temporal.io/develop/typescript), [Steel scrape recipe](/cookbook/scrape), and [Trigger.dev browser job](/cookbook/trigger-dev-browser-job).
+
+</Tab>
+
+<Tab id="python" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/temporal-browser-workflow-py" path="examples/temporal-browser-workflow-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-29" />
+
+<RecipeQuickstart slug="temporal-browser-workflow-py" />
+
+`BrowserWorkflow` is a Python Temporal Workflow that batches page captures without putting network calls in replayed code. The workflow module contains only dataclasses and the deterministic loop. `main.py` registers `capture_page` as an Activity, and that Activity calls Steel, downloads the screenshot, and writes the Markdown report.
+
+The Python SDK's sandbox is the reason for the split. `workflows.py` does not import Steel or touch the filesystem. The worker imports both modules, registers the workflow and Activity, starts one workflow run, waits for the result, then shuts the local worker down.
+
+## Run it
+
+Start a local Temporal dev server:
+
+```bash
+temporal server start-dev
+```
+
+Run the Python worker and starter in another terminal:
+
+```bash
+cd examples/temporal-browser-workflow-py
+cp .env.example .env
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+python main.py
+```
+
+Set `STEEL_API_KEY` in `.env`. Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys).
+
+Your output varies. Structure looks like this:
+
+```text
+Started Temporal workflow: steel-browser-py-1782740000000
+Workflow result:
+{
+  "pages": [
+    {
+      "url": "https://news.ycombinator.com",
+      "title": "Hacker News",
+      "status_code": 200,
+      "screenshot_path": "artifacts/news.ycombinator.com-2026-06-29T10-30-00.png"
+    }
+  ],
+  "page_count": 2
+}
+```
+
+Artifacts land in `ARTIFACT_DIR`:
+
+```text
+artifacts/
+|-- news.ycombinator.com-2026-06-29T10-30-00.png
+`-- news.ycombinator.com-2026-06-29T10-30-00.md
+```
+
+## Make it yours
+
+- **Change the batch.** Set `TARGET_URLS` to a comma-separated list. The workflow caps each run at 10 URLs.
+- **Return typed fields.** Add dataclass fields to `PageCapture`, then populate them inside `capture_page_sync`.
+- **Tighten failure policy.** Adjust `RetryPolicy` in `workflows.py` when a target site should stop retrying sooner.
+- **Move storage out of disk.** Replace `download` and `markdown_path.write_text` with object storage writes inside the Activity.
+
+## Related
+
+[temporal-browser-workflow-ts](/cookbook/temporal-browser-workflow), [temporal-browser-workflow-go](/cookbook/temporal-browser-workflow), and [temporal-browser-workflow-rs](/cookbook/temporal-browser-workflow) cover the same shape in other SDKs. See the [Temporal Python SDK](https://docs.temporal.io/develop/python) and [Steel scrape recipe](/cookbook/scrape).
+
+</Tab>
+
+<Tab id="rust" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/temporal-browser-workflow-rs" path="examples/temporal-browser-workflow-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-29" />
+
+<RecipeQuickstart slug="temporal-browser-workflow-rs" />
+
+This recipe uses Temporal's prerelease Rust SDK (`temporalio-sdk` 0.4). `BrowserWorkflow` is declared with `#[workflow]` and keeps only deterministic control flow. `SteelActivities::capture_page` is declared with `#[activities]`, and that is where Steel, HTTP downloads, timestamps, and filesystem writes happen.
+
+The Rust SDK makes the workflow/activity boundary explicit:
+
+```rust
+let page = ctx
+    .start_activity(
+        SteelActivities::capture_page,
+        CapturePageInput { url, link_limit, full_page_screenshot },
+        activity_options.clone(),
+    )
+    .await?;
+```
+
+The binary has two modes because the prerelease Rust worker is not `Send`; run the worker and starter as separate commands.
+
+## Run it
+
+Start Temporal locally:
+
+```bash
+temporal server start-dev
+```
+
+Run the Rust worker:
+
+```bash
+cd examples/temporal-browser-workflow-rs
+cp .env.example .env
+cargo run -- worker
+```
+
+Start one workflow from another terminal:
+
+```bash
+cd examples/temporal-browser-workflow-rs
+cargo run -- start
+```
+
+Set `STEEL_API_KEY` in `.env`. Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys). The first build pulls Temporal Core, the Rust SDK macros, `steel-rs`, and their transitive dependencies.
+
+Your output varies. Structure looks like this:
+
+```json
+{
+  "pages": [
+    {
+      "url": "https://news.ycombinator.com/",
+      "title": "Hacker News",
+      "statusCode": 200,
+      "screenshotUrl": "https://...",
+      "markdownPath": "artifacts/news-ycombinator-com-1782740000.md"
+    }
+  ],
+  "pageCount": 2
+}
+```
+
+## Make it yours
+
+- **Keep the worker running.** `cargo run -- worker` already polls indefinitely. Put it under your process manager for a long-lived deployment.
+- **Tune retries.** Edit the `RetryPolicy` in `BrowserWorkflow::run`.
+- **Capture more artifacts.** Add PDF generation or object storage writes inside `capture_page_impl`.
+- **Watch SDK churn.** The Rust SDK is prerelease, so pin the `temporalio-*` crate versions before deploying.
+
+## Related
+
+[temporal-browser-workflow-ts](/cookbook/temporal-browser-workflow), [temporal-browser-workflow-py](/cookbook/temporal-browser-workflow), and [temporal-browser-workflow-go](/cookbook/temporal-browser-workflow) cover the same workflow in stable SDKs. See the [Temporal Rust SDK crate](https://crates.io/crates/temporalio-sdk) and [Steel scrape recipe](/cookbook/scrape).
+
+</Tab>
+
+<Tab id="go" className="cookbook-concept-tab">
+
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/temporal-browser-workflow-go" path="examples/temporal-browser-workflow-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-29" />
+
+<RecipeQuickstart slug="temporal-browser-workflow-go" />
+
+This Go recipe keeps the Temporal pieces in one process for local runs. `main` connects to Temporal, starts a worker on `steel-browser-workflows-go`, registers `BrowserWorkflow` and `CapturePage`, then starts one workflow execution through the same SDK client.
+
+`BrowserWorkflow` is pure workflow code. It configures `workflow.ActivityOptions`, clamps the batch size, and calls `workflow.ExecuteActivity` once per URL. `CapturePage` is regular Go code: it calls Steel's scrape and screenshot APIs, writes artifacts, and returns a typed `PageCapture`.
+
+## Run it
+
+Start Temporal locally:
+
+```bash
+temporal server start-dev
+```
+
+Run the Go worker and starter:
+
+```bash
+cd examples/temporal-browser-workflow-go
+cp .env.example .env
+go mod tidy
+go run .
+```
+
+Set `STEEL_API_KEY` in `.env`. Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys).
+
+Your output varies. Structure looks like this:
+
+```text
+Started Temporal workflow: steel-browser-go-1782740000000
+Target URLs: https://news.ycombinator.com, https://example.com
+Workflow result:
+{Pages:[{URL:https://news.ycombinator.com/ Title:Hacker News ...}] PageCount:2}
+```
+
+The Temporal UI shows one Activity task for each URL, with the retry policy configured in `BrowserWorkflow`.
+
+## Make it yours
+
+- **Change the batch.** Set `TARGET_URLS` to a comma-separated list. The workflow caps each run at 10 URLs.
+- **Keep the worker long-lived.** Remove `startWorkflow` from `main` when you want a worker process that only polls and executes tasks.
+- **Add more Steel calls.** Put PDF generation, profile-backed sessions, or proxy options inside `CapturePage`.
+- **Route artifacts elsewhere.** Replace `os.WriteFile` and `download` with S3, GCS, or your own blob store.
+
+## Related
+
+[temporal-browser-workflow-ts](/cookbook/temporal-browser-workflow), [temporal-browser-workflow-py](/cookbook/temporal-browser-workflow), and [temporal-browser-workflow-rs](/cookbook/temporal-browser-workflow) cover the same workflow in other SDKs. See the [Temporal Go SDK](https://docs.temporal.io/develop/go) and [Steel scrape recipe](/cookbook/scrape).
+
+</Tab>
+
+</Tabs>
+
+## Related recipes
+
+<RecipeGrid>
+<RecipeCard slug="trigger-dev-browser-job" title={"Run a Steel browser job with Trigger.dev"} description={"Queue a Trigger.dev task that creates a Steel session, drives Playwright over CDP, saves artifacts, and releases the browser in cleanup."} topics={['Browser automation', 'Trigger.dev']} languages={['TypeScript']} date="2026-06-29" />
+<RecipeCard slug="headless-chrome" title={"Automate a cloud browser with headless_chrome"} description={"Use Steel with headless_chrome, the synchronous Rust equivalent of Puppeteer, to connect over CDP and scrape quotes with element handles."} topics={['Browser automation']} languages={['Rust']} date="2026-06-24" />
+<RecipeCard slug="chromedp" title={"Automate a cloud browser with chromedp"} description={"Use Steel with chromedp to connect over CDP, navigate to Hacker News, extract the top stories, and capture a screenshot."} topics={['Browser automation']} languages={['Go']} date="2026-06-23" />
+</RecipeGrid>

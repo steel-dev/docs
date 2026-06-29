@@ -19,6 +19,9 @@ exclude = [
   "^https?://127\\.0\\.0\\.1",
   "^#",
   "^mailto:",
+  "^https://github\\.com/steel-dev/steel-cookbook/tree/main/examples/(auth-context|extensions|files-api)$",
+  "^https://github\\.com/chromedp/chromedp/tree/master/examples$",
+  "^https://swiftide\\.rs",
 ]
 
 user_agent = "Mozilla/5.0 (compatible; lychee/0.16; +https://github.com/lycheeverse/lychee)"

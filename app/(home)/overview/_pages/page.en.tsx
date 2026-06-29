@@ -10,8 +10,10 @@ import {
   Cloud,
   Container,
   GeminiIcon,
+  GoIcon,
   OpenAIIcon,
   PythonIcon,
+  RustIcon,
   TSIcon,
 } from '@/components/ui/icon';
 import SteelLogo from '@/public/images/logo.png';
@@ -159,6 +161,18 @@ export default function HomePage() {
                 href="/steel-python-sdk"
                 title="Steel Python SDK"
                 description="Python SDK for building applications on Steel."
+              />
+              <SmallCard
+                icon={<RustIcon />}
+                href="/steel-rust-sdk"
+                title="Steel Rust SDK"
+                description="Rust SDK for building applications on Steel."
+              />
+              <SmallCard
+                icon={<GoIcon />}
+                href="/steel-go-sdk"
+                title="Steel Go SDK"
+                description="Go SDK for building applications on Steel."
               />
             </Cards>
           </div>

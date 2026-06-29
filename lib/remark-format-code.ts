@@ -52,6 +52,9 @@ function shouldFormatLanguage(lang: string): boolean {
     'python',
     'py',
     'json',
+    'go',
+    'rust',
+    'rs',
     // Add more languages as needed
   ];
 

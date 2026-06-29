@@ -13,6 +13,13 @@ In this guide, you'll learn how to use the Steel Sessions API to reuse authentic
 For an easier way to reuse authentication, context, cookies, extensions etc. consider using Steel's new [Profiles API](/overview/profiles-api/overview). It utilizes auth context alongside a complete browser profile to automatically reuse all your auth, not just context or cookies.
 :::
 
+:::callout
+If reused auth still triggers extra verification, check whether the target site is reacting
+to a new network on each run. Pairing profiles or reused context with
+[Dedicated IPs](/overview/sessions-api/dedicated-ips) keeps both browser state and network
+identity stable.
+:::
+
 For additional practical examples and recipes, check out the [Steel Cookbook](https://github.com/steel-dev/steel-cookbook).
 
 
