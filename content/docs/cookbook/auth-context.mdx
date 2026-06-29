@@ -3,13 +3,13 @@ title: Reuse authenticated sessions across browsers
 description: Maintain authenticated sessions across Steel browser instances by capturing and reusing cookies and local storage.
 ---
 
-<RecipeJsonLd slug="auth-context" title={"Reuse authenticated sessions across browsers"} description={"Maintain authenticated sessions across Steel browser instances by capturing and reusing cookies and local storage."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-03-11" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/auth-context-ts" />
+<RecipeJsonLd slug="auth-context" title={"Reuse authenticated sessions across browsers"} description={"Maintain authenticated sessions across Steel browser instances by capturing and reusing cookies and local storage."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-03-11" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/auth-context-ts" />
 
 <Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/auth-context-ts" path="examples/auth-context-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/auth-context-ts" path="examples/auth-context-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="auth-context-ts" />
 
@@ -95,7 +95,7 @@ If you want Steel to store credentials and handle the login itself, see [credent
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/auth-context-py" path="examples/auth-context-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/auth-context-py" path="examples/auth-context-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="auth-context-py" />
 
@@ -165,7 +165,7 @@ A run takes about 20 seconds and costs a few cents of session time. Both session
 
 <Tab id="rust" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/auth-context-rs" path="examples/auth-context-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/auth-context-rs" path="examples/auth-context-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="auth-context-rs" />
 
@@ -223,7 +223,7 @@ A run takes ~20 seconds. Both sessions go through `client.sessions().release(...
 
 <Tab id="go" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/a3ea30d764f623478c0bb93f68956827e8185672/examples/auth-context-go" path="examples/auth-context-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/auth-context-go" path="examples/auth-context-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="auth-context-go" />
 
@@ -292,6 +292,6 @@ Session #1 is released as soon as its context is captured. Session #2 is release
 
 <RecipeGrid>
 <RecipeCard slug="profiles" title={"Persist authenticated sessions with Profiles"} description={"Maintain authenticated sessions across Steel browser instances using profiles."} topics={['Steel APIs', 'Authentication']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2025-10-13" />
-<RecipeCard slug="credentials" title={"Automate logins with the Credentials API"} description={"Use the Steel Credentials API with Playwright to automate flows with stored credentials."} topics={['Steel APIs', 'Authentication', 'Playwright']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2024-11-19" />
+<RecipeCard slug="credentials" title={"Automate logins with the Credentials API"} description={"Use the Steel Credentials API with Playwright to automate flows with stored credentials."} topics={['Steel APIs', 'Authentication']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2024-11-19" />
 <RecipeCard slug="scrape" title={"Scrape a page to Markdown, screenshot, and PDF"} description={"Use the Steel TypeScript SDK's direct API to scrape a page to clean Markdown for LLM context, plus screenshot and PDF, with no browser library."} topics={['Steel APIs']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-23" />
 </RecipeGrid>

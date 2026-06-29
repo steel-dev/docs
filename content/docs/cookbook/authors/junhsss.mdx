@@ -1,11 +1,14 @@
 ---
 title: Jun Ryu
-description: 40 recipes contributed to the Steel Cookbook by Jun Ryu.
+description: 43 recipes contributed to the Steel Cookbook by Jun Ryu.
 ---
 
 <AuthorProfile handle="junhsss" name={"Jun Ryu"} avatar="https://github.com/junhsss.png?size=40" />
 
 <RecipeGrid>
+<RecipeCard slug="trigger-dev-browser-job" title={"Run a Steel browser job with Trigger.dev"} description={"Queue a Trigger.dev task that creates a Steel session, drives Playwright over CDP, saves artifacts, and releases the browser in cleanup."} topics={['Browser automation', 'Trigger.dev']} languages={['TypeScript']} date="2026-06-29" />
+<RecipeCard slug="temporal-browser-workflow" title={"Run a durable browser workflow with Temporal"} description={"Build a Temporal TypeScript Workflow that schedules retryable Steel browser Activities to capture page summaries, screenshots, and Markdown artifacts."} topics={['Browser automation', 'Temporal']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-29" />
+<RecipeCard slug="restate-agent" title={"Run a durable browser agent with Restate"} description={"Build a Restate Virtual Object in TypeScript that uses durable OpenAI planning steps and Steel scraping to answer browser research questions."} topics={['Agents', 'Restate']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-29" />
 <RecipeCard slug="headless-chrome" title={"Automate a cloud browser with headless_chrome"} description={"Use Steel with headless_chrome, the synchronous Rust equivalent of Puppeteer, to connect over CDP and scrape quotes with element handles."} topics={['Browser automation']} languages={['Rust']} date="2026-06-24" />
 <RecipeCard slug="mcp" title={"Expose a Steel browser to any MCP client"} description={"Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools."} topics={['Agents', 'MCP']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-24" />
 <RecipeCard slug="chromedp" title={"Automate a cloud browser with chromedp"} description={"Use Steel with chromedp to connect over CDP, navigate to Hacker News, extract the top stories, and capture a screenshot."} topics={['Browser automation']} languages={['Go']} date="2026-06-23" />
@@ -43,7 +46,7 @@ description: 40 recipes contributed to the Steel Cookbook by Jun Ryu.
 <RecipeCard slug="playwright" title={"Automate a cloud browser with Playwright"} description={"Use Steel with Playwright in TypeScript for cloud browser automation."} topics={['Browser automation', 'Playwright']} languages={['TypeScript', 'Python', 'Go']} date="2024-11-19" />
 <RecipeCard slug="puppeteer" title={"Automate a cloud browser with Puppeteer"} description={"Use Steel with Puppeteer in TypeScript for cloud browser automation."} topics={['Browser automation']} languages={['TypeScript']} date="2024-11-19" />
 <RecipeCard slug="selenium" title={"Automate a cloud browser with Selenium"} description={"Use Steel with Selenium in Python for cloud browser automation."} topics={['Browser automation']} languages={['Python']} date="2024-11-19" />
-<RecipeCard slug="credentials" title={"Automate logins with the Credentials API"} description={"Use the Steel Credentials API with Playwright to automate flows with stored credentials."} topics={['Steel APIs', 'Authentication', 'Playwright']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2024-11-19" />
+<RecipeCard slug="credentials" title={"Automate logins with the Credentials API"} description={"Use the Steel Credentials API with Playwright to automate flows with stored credentials."} topics={['Steel APIs', 'Authentication']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2024-11-19" />
 <RecipeCard slug="extensions" title={"Upload and run browser extensions"} description={"Use the Steel Extensions API with Playwright to upload and run browser extensions."} topics={['Steel APIs', 'Playwright']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2024-11-19" />
 <RecipeCard slug="files" title={"Move files between your machine and a cloud browser"} description={"Use the Steel Files API with Playwright to automate file uploads and downloads in the cloud."} topics={['Steel APIs', 'Playwright']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2024-11-19" />
 </RecipeGrid>

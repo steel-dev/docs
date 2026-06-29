@@ -12,9 +12,12 @@
     "mobile",
     "nextjs",
     "playwright",
+    "restate",
     "search",
     "steel-apis",
     "subagents",
+    "temporal",
+    "triggerdev",
     "typed-output"
   ]
 }
