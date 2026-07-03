@@ -1,0 +1,33 @@
+---
+title: "Changelog #032"
+sidebarTitle: "Changelog #032"
+llm: true
+image: "/images/changelog-placeholder-white.jpeg"
+imageAlt: "Announcing Changelog #032"
+publishedAt: "2026-07-03"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog-placeholder-white.jpeg"
+  alt="Announcing Changelog #032"
+  width={800}
+  height={400}
+/>
+Hey everyone. This week was mostly about session observability and a couple of browser and recorder quality fixes, plus some pricing docs updates to make plan behavior clearer.
+
+### 🔧 Improvements
+
+*   Sessions now support opt-in worker network instrumentation and network capture flags for runs that need deeper request visibility.
+
+*   Managed browser support now includes browser chrome cropping.
+
+*   Updated pricing docs to reflect current proxy and CAPTCHA rates and to clarify that Launch plan access to proxies and CAPTCHA solving unlocks after a $10 deposit.
+
+*   The leaderboard added WebChallenger results to WebArena and Online-Mind2Web, plus new Claude Sonnet 5 and Agents-A1 entries and refreshed Sonnet 4.6 scores.
+
+### 🐛 Bug Fixes
+
+*   Fixed recorder event handling so heavy sessions no longer flood the local API or drop recording data as easily under load.
+
+*   Reduced CAPTCHA task upsert lock contention in the backend.
