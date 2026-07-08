@@ -131,7 +131,12 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
               </Link>
             )}
           </div>
-          <SearchToggle />
+          {/* Close the menu when search opens: the search dialog is portaled
+              before the header in the DOM, so the full-screen menu (same z-50)
+              would otherwise paint over the open dialog. */}
+          <div onClick={handleClose} onKeyDown={(e) => e.key === 'Enter' && handleClose()}>
+            <SearchToggle />
+          </div>
         </div>
 
         <nav className="overflow-y-auto h-[calc(100dvh-64px)] bg-background px-3">
