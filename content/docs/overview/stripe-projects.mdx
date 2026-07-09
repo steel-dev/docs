@@ -1,0 +1,150 @@
+---
+title: Stripe Projects
+description: Provision a Steel project and STEEL_API_KEY from the Stripe CLI with `stripe projects add steel/browser`. Credentials sync into .env so your agents can start cloud browser sessions.
+sidebarTitle: Stripe Projects
+llm: true
+publishedAt: "2026-07-08"
+---
+
+Steel is available through [Stripe Projects](https://docs.stripe.com/projects), a Stripe CLI
+workflow for provisioning third-party services and syncing credentials into your project. Add
+Steel with `stripe projects add steel/browser` to create a Steel project and project-scoped
+`STEEL_API_KEY` for cloud browser sessions.
+
+## Overview
+
+Stripe Projects provisions provider resources from the terminal and writes credentials into your
+active environment file. For Steel, the provisioned resource is a Steel project plus an API key
+scoped to that project.
+
+| Command | What it does |
+| --- | --- |
+| `stripe projects init` | Initializes a Stripe Projects workspace in your app directory. |
+| `stripe projects add steel/browser` | Provisions a Steel project and syncs credentials into `.env`. |
+
+After provisioning, your app uses the standard Steel API, SDKs, and authentication model. See
+[authentication](/overview/authentication) and the [Steel CLI](/overview/steel-cli).
+
+## Prerequisites
+
+Install the [Stripe CLI](https://docs.stripe.com/stripe-cli/install), then install the Projects
+plugin:
+
+```bash Terminal
+stripe plugin install projects
+```
+
+## Provision Steel
+
+Initialize Stripe Projects in your app directory, then add Steel:
+
+```bash Terminal -wc
+stripe projects init my-app
+stripe projects add steel/browser
+```
+
+The add command links your Stripe account to a Steel account, creating one when needed, then
+provisions a Steel project and API key inside the Steel account you own. Stripe Projects syncs the
+returned credentials into your active environment output file, `.env` by default.
+
+## What lands in `.env`
+
+Steel returns a project-scoped API key plus resource metadata to Stripe Projects. The key your app
+uses directly is:
+
+```bash .env -wcn
+STEEL_API_KEY=ste-...
+```
+
+Use `stripe projects env` to list synced variable names with values redacted:
+
+```bash Terminal -wc
+stripe projects env
+```
+
+Keep `.env` out of version control. `stripe projects init` adds credential files to `.gitignore`,
+but review your repository before committing.
+
+## Use the credentials
+
+The Steel SDK reads `STEEL_API_KEY` from the environment automatically:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+const session = await client.sessions.create();
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+client = Steel()
+
+session = client.sessions.create()
+```
+
+</CodeTabs>
+
+## Plans and pricing
+
+Steel is available through Stripe Projects on Launch and Scale plans. Current plan limits,
+included credits, billing requirements, and metered rates live on
+[pricing and limits](/overview/pricinglimits).
+
+Upgrade between available Steel plan tiers from the Stripe CLI:
+
+```bash Terminal -wc
+stripe projects upgrade steel/browser
+```
+
+## Pull credentials on another machine
+
+If you cloned the repo or a teammate provisioned Steel, pull the current credentials into your
+local environment file:
+
+```bash Terminal -wc
+stripe projects env --pull
+```
+
+## Limits and self-hosting
+
+The `steel-browser` runtime is open source under Apache-2.0, so teams can inspect the code and run
+it locally or self-hosted when they need a local path. Managed Steel Cloud features still require
+Steel Cloud.
+
+| Ships with the open-source runtime | Steel Cloud only |
+| --- | --- |
+| Browser automation core | Managed residential proxies |
+| Session lifecycle and tracing | Credentials API |
+| Local and self-hosted deployment | Higher concurrency and managed anti-bot features |
+
+For plan limits such as concurrent sessions, session length, requests per minute, and data
+retention, see [pricing and limits](/overview/pricinglimits).
+
+### FAQ
+
+:::faq
+### Do I need a Steel account before I run `stripe projects add`?
+
+No. The command links your Stripe account to a Steel account, creating one when needed. The Steel
+project and `STEEL_API_KEY` land in a Steel account you own.
+
+### Where do my provisioned resources live?
+
+In your own Steel account. `stripe projects add steel/browser` provisions a Steel project plus a
+project-scoped API key inside the Steel organization tied to your Stripe account.
+
+### Can I link an existing Steel project to a Stripe Project?
+
+Not today. Steel provisions a fresh project for each Stripe Project rather than attaching an
+existing Steel project.
+
+### Do the provisioned credentials work with the Steel SDK and CLI?
+
+Yes. Provisioning writes a standard `STEEL_API_KEY`, so the official SDKs, the REST API, and the
+Steel CLI can use it from the environment.
+:::
