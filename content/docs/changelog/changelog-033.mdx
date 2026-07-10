@@ -2,42 +2,40 @@
 title: "Changelog #033"
 sidebarTitle: "Changelog #033"
 llm: true
-image: "/images/changelog-placeholder-white.jpeg"
+image: "/images/changelog/33.png"
 imageAlt: "Announcing Changelog #033"
 publishedAt: "2026-07-10"
 ---
 import Image from 'next/image';
 
 <Image
-  src="/images/changelog-placeholder-white.jpeg"
+  src="/images/changelog/33.png"
   alt="Announcing Changelog #033"
   width={800}
   height={400}
 />
-Hey everyone. This week was mostly about session compatibility and billing visibility, plus a couple of anti-bot and browser updates behind the scenes.
+Hey everyone. Mostly billing visibility and session ID plumbing this week, plus some anti-bot and browser updates.
 
 ### 🔧 Improvements
 
 *   The console now shows more billing detail, including metered usage and balance breakdowns, effective concurrency limits, and scrape costs in spend calculations.
 
-*   Steel now supports the new session ID schema across session creation and connect routing, including larger target indexes.
+*   Steel now supports a new session ID format across session creation and connect routing.
 
 *   Anti-bot sessions picked up a CDP input-event stealth layer to reduce synthetic typing signals, and Steel Browser now preserves native request headers during challenge handling.
 
-*   Managed browsers now run on Chromium 150 with updated browser fingerprints.
+*   Managed browsers now run on Chromium 150 with updated fingerprints.
 
-*   The leaderboard added OSWorld 2.0 as a separate long-horizon computer-use benchmark and re-ranked its entries on partial score.
+*   The leaderboard added OSWorld 2.0 as a separate long-horizon computer-use benchmark and re-ranked entries on partial score.
 
 ### 🐛 Bug Fixes
 
 *   Fixed a CLI daemon bug for self-hosted servers where sessions with `timeout: 0` or `inactivityTimeout: 0` could expire immediately and break `steel browser start`.
 
-*   Fixed billing provisioning races during signup and corrected admin billing plan updates to pass the right org context.
+*   Fixed billing provisioning races during signup.
 
 *   Fixed the mobile docs header so opening search closes the hamburger menu instead of leaving the search dialog covered.
 
-*   Corrected staging connect routing for target 5 gateways.
-
 ### 🏡 Housekeeping
 
-*   Infra added shared APT package publishing and started publishing internal packages through that pipeline as part of the next host-native infrastructure stack.
+*   Infra added shared APT package publishing and started shipping internal packages through it.
