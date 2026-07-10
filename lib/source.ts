@@ -772,6 +772,46 @@ export const source = loader({
   },
 });
 
+// Featured shelf entries (and any other meta.json `[Label](url)` link) render as
+// link nodes with no backing file, so `attachFile` never runs the NEW-badge logic
+// on them. Resolve each link against its target page's `publishedAt` so a freshly
+// published featured page shows a NEW badge that expires with the same 7-day
+// window as the page itself, with no manual bookkeeping.
+function isWithinNewWindow(publishedAt: unknown): boolean {
+  if (typeof publishedAt !== 'string') return false;
+  const publishDate = new Date(publishedAt);
+  if (!isValidDate(publishDate)) return false;
+  return Date.now() - publishDate.getTime() < NEW_BADGE_DURATION;
+}
+
+function markFreshLinkNodes(tree: { children?: unknown[] }): void {
+  const publishedByUrl = new Map<string, string>();
+  for (const page of source.getPages()) {
+    const publishedAt = (page.data as any)?.publishedAt;
+    if (typeof publishedAt === 'string' && page.url) {
+      publishedByUrl.set(page.url, publishedAt);
+    }
+  }
+
+  const visit = (node: any): void => {
+    if (Array.isArray(node?.children)) {
+      for (const child of node.children) visit(child);
+    }
+    // Link nodes have a url but no backing file. Real page nodes carry `$ref.file`
+    // and are handled by `attachFile`, so skip them to preserve their own logic
+    // (e.g. the changelog latest-entry-only rule).
+    if (node?.type === 'page' && !node.$ref?.file && typeof node.url === 'string') {
+      if (!node.data?.isNew && isWithinNewWindow(publishedByUrl.get(node.url))) {
+        node.data = { ...(node.data ?? {}), isNew: true };
+      }
+    }
+  };
+
+  visit(tree);
+}
+
+markFreshLinkNodes(source.pageTree as { children?: unknown[] });
+
 export const openapi = createOpenAPI({
   // proxyUrl: "https://api.steel.dev",
   shikiOptions: {
