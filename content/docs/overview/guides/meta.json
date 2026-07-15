@@ -3,6 +3,7 @@
   "root": true,
   "pages": [
     "---Featured---",
+    "[Stripe Projects](/overview/stripe-projects)",
     "[Claude Code with Steel](/integrations/claude-code)",
     "[Auto-solve captchas](/cookbook/browser-use-captcha-auto)",
     "[OpenAI Agents SDK](/integrations/openai-agents-sdk)",
