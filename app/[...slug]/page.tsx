@@ -199,7 +199,9 @@ export default async function Page(props: {
                     </Badge>
                   )}
                 </div>
-                {page.data.llm !== false && <LLMShare content={LLMContent} />}
+                {page.data.llm !== false && page.url !== '/cookbook' && (
+                  <LLMShare content={LLMContent} />
+                )}
               </div>
               <DocsPageDescription />
 
