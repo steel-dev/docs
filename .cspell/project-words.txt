@@ -53,6 +53,7 @@ genai
 aistudio
 langgraph
 jina
+kimi
 libsql
 trafilatura
 youcom

@@ -201,9 +201,7 @@ export default async function Page(props: {
                 </div>
                 {page.data.llm !== false &&
                   page.url !== '/cookbook' &&
-                  !page.url.startsWith('/cookbook/topics/') && (
-                    <LLMShare content={LLMContent} />
-                  )}
+                  !page.url.startsWith('/cookbook/topics/') && <LLMShare content={LLMContent} />}
               </div>
               <DocsPageDescription />
 
