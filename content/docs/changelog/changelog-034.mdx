@@ -1,0 +1,39 @@
+---
+title: "Changelog #034"
+sidebarTitle: "Changelog #034"
+llm: true
+image: "/images/changelog-placeholder-white.jpeg"
+imageAlt: "Announcing Changelog #034"
+publishedAt: "2026-07-17"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog-placeholder-white.jpeg"
+  alt="Announcing Changelog #034"
+  width={800}
+  height={400}
+/>
+Hey everyone. This week was mostly docs and console polish, plus a new overview for Stripe Projects and a couple of fixes around that rollout.
+
+### ⭐ New
+
+*   Added a Stripe Projects overview page to the docs.
+
+### 🔧 Improvements
+
+*   The console was reworked with a new UI shell, feature-flag rollout lookup, synced session status display, and broader session ID validation.
+
+*   The cookbook now has curated topic pages in the sidebar for easier navigation.
+
+*   The leaderboard added Inkling results to SWE-bench Verified and BrowseComp, plus a new Kimi K3 BrowseComp result.
+
+### 🐛 Bug Fixes
+
+*   Fixed Stripe Projects key fetching by using the correct Stripe API version headers for public key and v2 API requests.
+
+*   Fixed the cookbook UI so the Copy markdown button no longer appears on the cookbook landing page or topic pages.
+
+*   Fixed the Stripe Projects docs publish date so the page shows the NEW badge during its actual launch window.
+
+*   Corrected console flag grouping for the CDP input-event stealth setting.
