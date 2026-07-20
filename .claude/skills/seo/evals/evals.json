@@ -1,0 +1,26 @@
+{
+  "skill_name": "seo",
+  "evals": [
+    {
+      "id": 1,
+      "name": "monthly-pulse-run",
+      "prompt": "Run this month's SEO pulse for Steel and give me the report.",
+      "expected_output": "Executes the 3 scripts in order (volumes, rank, tech-audit), reads outputs, adds drift notes, and writes scripts/seo/pulse/reports/seo-YYYY-MM.md following the SKILL.md template. Handles DataForSEO balance/verification errors gracefully.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "progress-query",
+      "prompt": "how are our SEO changes doing? did shipping the browser-use title change move its ranking?",
+      "expected_output": "Runs the pulse (at least tech-audit + rank for browser-use terms), reports whether /integrations/browser-use title is now optimized vs prior month and any rank change, referencing the delta vs the previous snapshot.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "config-maintenance",
+      "prompt": "add 'browser-use vs stagehand' and 'undetected chromedriver alternative' to our tracked keywords and run the volumes check on them",
+      "expected_output": "Edits config.json tracked_keywords (and rank_keywords where appropriate), then runs dfs-volumes.mjs for the new terms and reports their volume/CPC. Does not clobber existing config.",
+      "files": []
+    }
+  ]
+}

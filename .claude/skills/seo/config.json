@@ -1,0 +1,65 @@
+{
+  "$comment": "Steel-specific monthly SEO pulse config. Sites, tracked keywords, key pages, and competitors baked in from the 2026-07 SEO research (SEO-OPPORTUNITIES.md). Edit this file to add/remove tracked terms or pages.",
+  "sites": ["docs.steel.dev", "steel.dev"],
+  "primary_site": "docs.steel.dev",
+  "location_code": 2840,
+  "language_code": "en",
+  "serp_depth": 20,
+
+  "tracked_keywords": [
+    "selenium", "playwright", "langgraph", "puppeteer", "crewai", "claude agent sdk",
+    "browser use", "pydantic ai", "vercel ai sdk", "stagehand", "openai agents sdk",
+    "mastra", "agno", "claude computer use", "chromiumoxide",
+    "browser agent", "agentic browser", "ai web scraping", "ai browser agent", "ai scraper",
+    "computer using agent", "openai computer use", "agent observability",
+    "residential proxies", "anti detect browser", "browser fingerprinting", "proxy rotation",
+    "undetected chromedriver", "cloudflare bypass", "2captcha", "captcha solving api",
+    "browserbase", "apify", "scraperapi", "scrapingbee", "browserless", "hyperbrowser", "zenrows",
+    "browserbase alternative", "apify alternative",
+    "browser automation", "web scraping api", "web scraping", "best scraping api",
+    "headless browser", "cloud browser", "browser as a service"
+  ],
+
+  "$comment_rank_keywords": "Ownable terms worth tracking SERP position for (Steel can realistically rank). Tracking head terms like 'selenium'/'playwright' is pointless — Wikipedia/official docs dominate. SERP live is the costly phase (~$0.05–0.10/kw); use --limit and watch the DataForSEO balance.",
+  "rank_keywords": [
+    "browser use cloud", "browser use alternative", "browser use docker",
+    "playwright cloud", "playwright stealth", "playwright headless detection",
+    "selenium grid", "selenium grid alternative", "selenium alternative",
+    "puppeteer stealth", "puppeteer as a service",
+    "langgraph browser agent", "stagehand tutorial", "stagehand docker",
+    "browserbase alternative", "browserless alternative", "apify alternative",
+    "captcha solving api", "cloudflare bypass", "undetected chromedriver", "browser fingerprinting",
+    "proxy rotation", "anti detect browser", "agent observability", "agentic browser"
+  ],
+
+  "key_pages": [
+    { "url": "https://docs.steel.dev/integrations/selenium",     "section": "integrations", "target_any": ["grid", "selenium grid", "alternative"] },
+    { "url": "https://docs.steel.dev/integrations/playwright",   "section": "integrations", "target_any": ["cloud", "steel cloud"] },
+    { "url": "https://docs.steel.dev/integrations/langgraph",    "section": "integrations", "target_any": ["browser agent"] },
+    { "url": "https://docs.steel.dev/integrations/puppeteer",   "section": "integrations", "target_any": ["cloud", "cdp", "remote"] },
+    { "url": "https://docs.steel.dev/integrations/crewai",       "section": "integrations", "target_any": ["browser", "browser agent", "crew"] },
+    { "url": "https://docs.steel.dev/integrations/claude-agent-sdk", "section": "integrations", "target_any": ["browser", "cloud browser"] },
+    { "url": "https://docs.steel.dev/integrations/browser-use",  "section": "integrations", "target_any": ["cloud", "in the cloud", "steel cloud"] },
+    { "url": "https://docs.steel.dev/integrations/pydantic-ai",  "section": "integrations", "target_any": ["browser agent", "browser"] },
+    { "url": "https://docs.steel.dev/integrations/ai-sdk",       "section": "integrations", "target_any": ["browser tool", "browser"] },
+    { "url": "https://docs.steel.dev/integrations/stagehand",    "section": "integrations", "target_any": ["cloud", "self-host"] },
+    { "url": "https://docs.steel.dev/integrations/openai-agents-sdk", "section": "integrations", "target_any": ["browser", "cloud browser"] },
+    { "url": "https://docs.steel.dev/overview/agent-traces/overview", "section": "overview", "target_any": ["observability", "trace"] },
+    { "url": "https://docs.steel.dev/overview/stealth/captcha-solving", "section": "overview", "target_any": ["captcha solving api", "turnstile", "recaptcha", "api"] },
+    { "url": "https://docs.steel.dev/overview/stealth/proxies",  "section": "overview", "target_any": ["proxy rotation", "rotation", "rotating"] },
+    { "url": "https://docs.steel.dev/cookbook/scrape",           "section": "cookbook", "target_any": ["javascript", "rendered", "js"] },
+    { "url": "https://docs.steel.dev/cookbook/langgraph",        "section": "cookbook", "target_any": ["browser agent", "langgraph browser"] }
+  ],
+
+  "competitors": [
+    "browserbase.com", "browserless.io", "hyperbrowser.ai", "apify.com",
+    "scraperapi.com", "scrapingbee.com", "brightdata.com", "zenrows.com", "zyte.com"
+  ],
+
+  "paths": {
+    "$comment": "Runtime data lives under scripts/seo/pulse (repo-relative). Run scripts from the repo root.",
+    "pulse_dir": "scripts/seo/pulse",
+    "reports_dir": "scripts/seo/pulse/reports",
+    "snapshots_dir": "scripts/seo/pulse/snapshots"
+  }
+}
