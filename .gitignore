@@ -12,7 +12,8 @@ node_modules
 .source/
 tmp
 .cursor/
-.claude/
+.claude/*
+!.claude/skills/
 .agents/
 
 # Local workflow files
@@ -24,3 +25,6 @@ public/**/*.txt
 !public/21a10fefb8713c3f667a2e94460f9357.txt
 /generated
 tsconfig.tsbuildinfo
+
+# seo-pulse runtime state (regenerable; keep reports/, ignore raw snapshots/)
+scripts/seo/pulse/snapshots/
