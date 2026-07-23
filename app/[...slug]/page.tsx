@@ -1,4 +1,5 @@
 //@ts-nocheck
+import { getBreadcrumbItems } from 'fumadocs-core/breadcrumb';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import matter from 'gray-matter';
 import * as lucideIcons from 'lucide-react';
@@ -22,9 +23,11 @@ import { LLMShare } from '@/components/llm-share';
 import { getMDXComponents } from '@/components/mdx';
 import { Mermaid } from '@/components/mdx/mermaid';
 import { APIPage } from '@/components/openapi/api-page';
+import { BreadcrumbJsonLd, TechArticleJsonLd } from '@/components/page-jsonld';
 import { Badge } from '@/components/ui/badge';
 import * as customIcons from '@/components/ui/icon';
 import { TagFilterSystem } from '@/components/ui/tag-filter-system';
+import { getLastModified } from '@/lib/last-modified';
 import { getAllFilterablePages, source } from '@/lib/source';
 import type { HeadingProps } from '@/types';
 
@@ -107,6 +110,40 @@ export default async function Page(props: {
     icon: link.icon ? getIconComponent(link.icon) : undefined,
   }));
 
+  const canonicalPath = page.url.replace(/^\/en(\/|$)/, '/');
+
+  // BreadcrumbList JSON-LD trail: home + section hub + ancestor folders that
+  // have their own page + the page itself. Fumadocs resets the trail at
+  // `root: true` section folders, so the section crumb is prepended manually
+  // when the section has an index page (named by that page's title, since
+  // section index sidebarTitles are generic like "Home"). Folder nodes without
+  // an index page carry no url and are dropped: Google requires `item` on
+  // every ListItem except the last.
+  const stripEn = (url: string) => url.replace(/^\/en(\/|$)/, '/');
+  const sectionSlug = canonicalPath.split('/').filter(Boolean)[0];
+  const sectionPage = sectionSlug
+    ? (source.getPage([sectionSlug]) ?? source.getPage(['en', sectionSlug]))
+    : undefined;
+  const sectionUrl = sectionPage ? stripEn(sectionPage.url) : undefined;
+  const crumbs = getBreadcrumbItems(page.url, source.pageTree, { includePage: true })
+    .filter((item) => typeof item.name === 'string' && !!item.url)
+    .map((item) => ({ name: item.name as string, url: stripEn(item.url as string) }))
+    .filter((item) => item.url !== sectionUrl);
+  const breadcrumbItems = [
+    { name: 'Steel Docs', url: '/' },
+    ...(sectionPage && sectionUrl !== canonicalPath
+      ? [{ name: sectionPage.data.title as string, url: sectionUrl as string }]
+      : []),
+    ...(crumbs.length > 0 ? crumbs : [{ name: page.data.title, url: canonicalPath }]),
+  ];
+
+  // TechArticle JSON-LD on integration pages; cookbook recipes emit their own
+  // via RecipeJsonLd. The hub page at /integrations is a listing, not an article.
+  const isIntegrationArticle = /^\/integrations\/.+/.test(canonicalPath);
+  const lastModified = isIntegrationArticle
+    ? await getLastModified(page.data._file?.absolutePath)
+    : undefined;
+
   // Prepare page data for context - only include serializable data
   const pageData = {
     toc: page.data.toc,
@@ -120,6 +157,16 @@ export default async function Page(props: {
 
   return (
     <DocsPage data={pageData}>
+      <BreadcrumbJsonLd items={breadcrumbItems} />
+      {isIntegrationArticle && (
+        <TechArticleJsonLd
+          title={page.data.title}
+          description={page.data.description}
+          path={canonicalPath}
+          datePublished={page.data.publishedAt}
+          dateModified={lastModified?.toISOString().slice(0, 10)}
+        />
+      )}
       {page.data.interactive ? (
         <DocsPageLayout variant="interactive">
           <DocsPageHeader>
