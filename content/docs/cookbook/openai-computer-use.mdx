@@ -13,7 +13,7 @@ description: "Connect OpenAI's Computer Use Assistant to a Steel browser session
 
 <RecipeQuickstart slug="openai-computer-use-ts" />
 
-OpenAI's computer-use model ships as a single tool declaration: `{ type: "computer" }`. You hand it to the Responses API, send a screenshot, and the model returns `computer_call` items with actions like `click`, `type`, `keypress`, `scroll`. Your job is to execute them against a real browser, capture the next screenshot, and feed it back.
+OpenAI's [computer-use](/cookbook/topics/computer-use) model ships as a single tool declaration: `{ type: "computer" }`. You hand it to the Responses API, send a screenshot, and the model returns `computer_call` items with actions like `click`, `type`, `keypress`, `scroll`. Your job is to execute them against a real browser, capture the next screenshot, and feed it back. Steel's [OpenAI Computer Use integration](/integrations/openai-computer-use) covers the same loop as a guide.
 
 ## The loop
 

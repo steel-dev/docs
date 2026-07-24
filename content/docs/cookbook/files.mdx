@@ -13,7 +13,7 @@ description: Use the Steel Files API with Playwright to automate file uploads an
 
 <RecipeQuickstart slug="files-ts" />
 
-Every Steel session ships with a scoped filesystem inside the session VM. `client.sessions.files` exposes methods to move bytes across the boundary between your machine and that sandbox. This recipe uses `upload` to push a local CSV into the session, hands the resulting path to a remote `<input type="file">` over CDP, and lets the browser render a chart against it.
+Every Steel session ships with a scoped filesystem inside the session VM. `client.sessions.files` exposes methods to move bytes across the boundary between your machine and that sandbox. This recipe uses `upload` to push a local CSV into the session, hands the resulting path to a remote `<input type="file">` over CDP, and lets the browser render a chart against it. It's one of Steel's [session APIs](/cookbook/topics/steel-apis).
 
 ```typescript
 const uploadedFile = await client.sessions.files.upload(session.id, {

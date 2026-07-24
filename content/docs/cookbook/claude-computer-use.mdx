@@ -13,7 +13,7 @@ description: Connect Claude to a Steel browser session for autonomous web intera
 
 <RecipeQuickstart slug="claude-computer-use-ts" />
 
-Claude sees the screen as an image and returns concrete actions at pixel coordinates: `left_click [640, 412]`, `type "claude 4.7 opus"`, `scroll down 3`. Something has to execute those actions against a real browser and send the next screenshot back. That "something" is the agent loop in `index.ts`, and the browser is a Steel session.
+Claude sees the screen as an image and returns concrete actions at pixel coordinates: `left_click [640, 412]`, `type "claude 4.7 opus"`, `scroll down 3`. Something has to execute those actions against a real browser and send the next screenshot back. That "something" is the agent loop in `index.ts`, and the browser is a Steel session. The [Claude Computer Use integration](/integrations/claude-computer-use) covers install and setup.
 
 ## The loop
 
@@ -31,7 +31,7 @@ const response = await this.client.beta.messages.create({
 
 The tool definition declares `computer_20251124` with the viewport's `display_width_px` and `display_height_px`. Keep it consistent with the Steel session's `dimensions` (1280x768 here) or clicks land in the wrong place.
 
-`executeComputerAction` is the translation layer. Claude emits computer-use actions (`left_click`, `type`, `key`, `scroll`, `screenshot`, ...); Steel's Input API speaks a parallel vocabulary (`click_mouse`, `type_text`, `press_key`, `scroll`, `take_screenshot`):
+`executeComputerAction` is the translation layer. Claude emits [computer-use actions](/cookbook/topics/computer-use) (`left_click`, `type`, `key`, `scroll`, `screenshot`, ...); Steel's Input API speaks a parallel vocabulary (`click_mouse`, `type_text`, `press_key`, `scroll`, `take_screenshot`):
 
 ```typescript
 case "left_click":

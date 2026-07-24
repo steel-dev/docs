@@ -13,7 +13,7 @@ description: "Use Steel with Google's Agent Development Kit (ADK) for Go to buil
 
 <RecipeQuickstart slug="google-adk-ts" />
 
-[Google ADK](https://adk.dev/) (`@google/adk`) is Google's Agent Development Kit. You build an `LlmAgent` with a Gemini model, `instruction`, and a list of `FunctionTool`s, then hand it to a `Runner`. The runner owns the loop: it appends your message to a session, calls the model, dispatches tool calls, feeds results back, and yields an async stream of `Event`s until the agent produces its final answer.
+[Google ADK](https://adk.dev/) (`@google/adk`) is Google's Agent Development Kit. You build an `LlmAgent` with a Gemini model, `instruction`, and a list of `FunctionTool`s, then hand it to a `Runner`. The runner owns the loop: it appends your message to a session, calls the model, dispatches tool calls, feeds results back, and yields an async stream of `Event`s until the [agent](/cookbook/topics/agents) produces its final answer.
 
 This recipe wires that tool layer to a Steel cloud browser. Three `FunctionTool`s in `index.ts` (`navigate`, `snapshot`, `extract`) drive a single Playwright page over CDP. The Steel session opens once in `main()` before the runner starts, so the tools close over a live `page` rather than spinning up a browser per call. Demo task: read the front page of Hacker News and return the top 5 stories as JSON.
 

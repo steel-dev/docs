@@ -30,7 +30,7 @@ class CustomRemoteConnection(RemoteConnection):
 
 `get_remote_connection_headers` runs on every outbound request. Selenium has no persistent connection to keep alive; the two headers ride along with each command. That's the integration. After the driver is wired, the rest is vanilla Selenium 4.
 
-One requirement: create the session with `is_selenium=True`. Steel provisions a WebDriver-compatible node for those sessions; without the flag you get a CDP browser that Selenium cannot drive.
+One requirement: create the session with `is_selenium=True`. Steel provisions a WebDriver-compatible node for those sessions; without the flag you get a CDP browser that Selenium cannot drive. Steel's [Selenium integration](/integrations/selenium) covers the same setup on its own.
 
 ```python
 session = client.sessions.create(is_selenium=True)

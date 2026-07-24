@@ -9,7 +9,7 @@ description: "Use Steel with Swiftide to build an agent whose tool reads the web
 
 <RecipeQuickstart slug="swiftide" />
 
-[Swiftide](https://swiftide.rs) is a Rust framework for LLM applications: indexing pipelines, query pipelines, and agents that loop over tool calls until they reach an answer. This recipe builds an agent whose only tool reads the web through Steel's `scrape` endpoint, so the model works from clean Markdown instead of raw HTML and never touches a browser library or CDP.
+[Swiftide](https://swiftide.rs) is a Rust framework for LLM applications: indexing pipelines, query pipelines, and agents that loop over tool calls until they reach an answer. This recipe builds an [agent](/cookbook/topics/agents) whose only tool reads the web through Steel's `scrape` endpoint, so the model works from clean Markdown instead of raw HTML and never touches a browser library or CDP.
 
 The agent runs on Anthropic (`claude-sonnet-4-6`) and the tool is a `#[derive(Tool)]` struct that owns the Steel client:
 

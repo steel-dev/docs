@@ -9,7 +9,7 @@ description: Use Steel with Magnitude for AI-powered browser automation.
 
 <RecipeQuickstart slug="magnitude" />
 
-Magnitude grew out of end-to-end testing and kept the bias: an agent loop that narrates each turn, a CDP-level browser hookup, and LLM-backed primitives designed to intermix navigation, action, and typed readback. `startBrowserAgent()` hands you a `BrowserAgent` with a small surface this recipe exercises:
+Magnitude grew out of end-to-end testing and kept the bias: an [agent loop](/cookbook/topics/agents) that narrates each turn, a CDP-level browser hookup, and LLM-backed primitives designed to intermix navigation, action, and typed readback. Steel's [Magnitude integration](/integrations/magnitude) covers the same setup on its own. `startBrowserAgent()` hands you a `BrowserAgent` with a small surface this recipe exercises:
 
 - `agent.extract(instruction, schema)`: describe what to pull off the page, pass a Zod schema, get a typed result.
 - `agent.act(instruction)`: describe an interaction in natural language. The agent plans, clicks, types, retries.

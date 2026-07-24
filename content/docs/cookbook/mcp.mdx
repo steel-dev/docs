@@ -13,7 +13,7 @@ description: Build a Model Context Protocol server in Go with the official SDK a
 
 <RecipeQuickstart slug="mcp-ts" />
 
-This is a [Model Context Protocol](https://modelcontextprotocol.io) server that hands any MCP client a Steel cloud browser to drive. It uses the official [TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) and drives the browser with Playwright over CDP through `connectOverCDP`, so there is no local Chrome to launch. The server carries no model key of its own: the client supplies the model, this process owns the cloud session.
+This is a [Model Context Protocol](https://modelcontextprotocol.io) server that hands any [MCP client](/cookbook/topics/mcp) a Steel cloud browser to drive. It uses the official [TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) and drives the browser with Playwright over CDP through `connectOverCDP`, so there is no local Chrome to launch. The server carries no model key of its own: the client supplies the model, this process owns the cloud session.
 
 Five tools make up the surface. `create_session` opens a Steel session and returns its id; `navigate`, `extract`, and `screenshot` take that id and act on the browser; `release_session` closes it.
 

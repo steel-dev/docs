@@ -9,7 +9,7 @@ description: Use Steel with rig to build an agent that drives a cloud browser ov
 
 <RecipeQuickstart slug="rig" />
 
-[rig](https://docs.rs/rig-core) is a Rust framework for LLM applications: you define tools as trait impls, hand them to an `Agent`, and call `prompt`, which loops the model over those tools until it produces an answer. This recipe gives the agent two tools backed by a real Chrome running in the cloud through Steel, driven over CDP with [chromiumoxide](https://docs.rs/chromiumoxide). The model navigates and reads the live DOM itself instead of receiving pre-scraped text, so it can follow links and work on pages that only exist after JavaScript runs.
+[rig](https://docs.rs/rig-core) is a Rust framework for LLM applications: you define tools as trait impls, hand them to an `Agent`, and call `prompt`, which loops the model over those tools until it produces an answer. This recipe gives the [agent](/cookbook/topics/agents) two tools backed by a real Chrome running in the cloud through Steel, driven over CDP with [chromiumoxide](https://docs.rs/chromiumoxide). The model navigates and reads the live DOM itself instead of receiving pre-scraped text, so it can follow links and work on pages that only exist after JavaScript runs.
 
 Each tool is a struct that owns a `chromiumoxide::Page` and implements rig's `Tool` trait:
 

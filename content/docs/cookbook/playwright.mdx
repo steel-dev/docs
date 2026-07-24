@@ -13,7 +13,7 @@ description: Use Steel with Playwright in TypeScript for cloud browser automatio
 
 <RecipeQuickstart slug="playwright-ts" />
 
-Playwright exposes `chromium.connectOverCDP()`, which attaches to any Chrome speaking the Chrome DevTools Protocol. Steel sessions expose one over a websocket. Connect them and your local code drives a remote browser with stealth, proxies, and a live viewer. No Chrome on your machine required.
+Playwright exposes `chromium.connectOverCDP()`, which attaches to any Chrome speaking the Chrome DevTools Protocol. Steel sessions expose one over a websocket. Connect them and your local code [drives a remote browser](/cookbook/topics/browser-automation) with stealth, proxies, and a live viewer. No Chrome on your machine required. Steel's [Playwright integration](/integrations/playwright) covers the same connection as a guide.
 
 ```typescript
 session = await client.sessions.create();

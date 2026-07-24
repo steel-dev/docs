@@ -18,7 +18,7 @@ Stagehand replaces brittle selectors with two LLM-backed primitives:
 - `stagehand.extract(instruction, schema)`: describe what you want, pass a Zod schema, get typed data back.
 - `stagehand.act(instruction)`: describe an action in natural language, Stagehand figures out the click / type / scroll.
 
-Both run against a Steel session over CDP, so Stagehand handles the reasoning and Steel handles the browser (stealth, proxies, live viewer).
+Both run against a Steel session over CDP, so Stagehand handles the reasoning and Steel handles the browser (stealth, proxies, live viewer). Steel's [Stagehand integration](/integrations/stagehand) covers the same wiring on its own.
 
 ```typescript
 stagehand = new Stagehand({

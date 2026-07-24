@@ -9,7 +9,7 @@ description: "Convex app that streams an AI agent's answer about any URL. The ag
 
 <RecipeQuickstart slug="convex-chat-with-page" />
 
-A Convex app where the user pastes a URL, asks a question, and an AI agent answers from the live page. The agent runs server-side as a `pageAgent` defined in `convex/agent.ts`, with a single tool, `scrapePage`, that fetches the URL through the `@steel-dev/convex` component and serves the markdown back in chunks. Tokens stream into the UI over websockets via `@convex-dev/agent`'s delta sync.
+A [Convex](/cookbook/topics/convex) app where the user pastes a URL, asks a question, and an [AI agent](/cookbook/topics/agents) answers from the live page. The agent runs server-side as a `pageAgent` defined in `convex/agent.ts`, with a single tool, `scrapePage`, that fetches the URL through the `@steel-dev/convex` component and serves the markdown back in chunks. Tokens stream into the UI over websockets via `@convex-dev/agent`'s delta sync.
 
 ```
 convex/

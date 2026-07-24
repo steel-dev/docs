@@ -9,7 +9,7 @@ description: Integrate Steel with the browser-use framework for AI-driven web au
 
 <RecipeQuickstart slug="browser-use" />
 
-Browser Use is an agent framework: you give it an LLM, a browser, and a natural-language `task`, and it runs a perception-plan-act loop until the task is done. It doesn't need selectors or scripted steps. The model reads the page, decides the next action, and executes it against the browser you give it. The browser in this recipe is a Steel session, so the agent runs on managed cloud Chrome with stealth, proxies, and a live viewer instead of local Chromium.
+[Browser Use](/cookbook/topics/browser-use) is an agent framework: you give it an LLM, a browser, and a natural-language `task`, and it runs a perception-plan-act loop until the task is done. It doesn't need selectors or scripted steps. The model reads the page, decides the next action, and executes it against the browser you give it. The browser in this recipe is a Steel session, so the agent runs on managed cloud Chrome with stealth, proxies, and a live viewer instead of local Chromium. The [Browser Use integration](/integrations/browser-use) covers install and setup.
 
 ```python
 session = client.sessions.create()

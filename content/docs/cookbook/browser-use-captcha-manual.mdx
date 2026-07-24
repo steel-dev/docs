@@ -9,7 +9,7 @@ description: "Manually solve reCAPTCHA v2 using Steel's CAPTCHA API with the bro
 
 <RecipeQuickstart slug="browser-use-captcha-manual" />
 
-Steel can solve CAPTCHAs for you in the background, or it can hand you the status API and let you drive. This recipe picks the second path. The session is created with auto-solving explicitly off, a custom Browser Use tool polls `client.sessions.captchas.status()`, and it calls `client.sessions.captchas.solve()` only for the CAPTCHA type you care about. Every state transition (detected, solving, validating, solved) is yours to read and react to.
+Steel can solve [CAPTCHAs](/cookbook/topics/captchas) for you in the background, or it can hand you the status API and let you drive. This recipe picks the second path. The session is created with auto-solving explicitly off, a custom Browser Use tool polls `client.sessions.captchas.status()`, and it calls `client.sessions.captchas.solve()` only for the CAPTCHA type you care about. Every state transition (detected, solving, validating, solved) is yours to read and react to.
 
 ```python
 session = client.sessions.create(

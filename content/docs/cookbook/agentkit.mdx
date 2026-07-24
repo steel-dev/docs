@@ -9,9 +9,9 @@ description: "Integrate Steel with Inngest's AgentKit framework."
 
 <RecipeQuickstart slug="agentkit" />
 
-Agent Kit is Inngest's framework for multi-agent systems: a **tool** is a typed function the model can call, an **agent** bundles a system prompt with a tool set, and a **network** groups agents so they can collaborate on a task. Agent Kit handles the routing between them and wraps each call in Inngest's `step.run` checkpoint, so a network that crashes mid-flight resumes from the last finished step.
+Agent Kit is Inngest's framework for [multi-agent systems](/cookbook/topics/agents): a **tool** is a typed function the model can call, an **agent** bundles a system prompt with a tool set, and a **network** groups agents so they can collaborate on a task. Agent Kit handles the routing between them and wraps each call in Inngest's `step.run` checkpoint, so a network that crashes mid-flight resumes from the last finished step.
 
-This starter wires Agent Kit to Steel through a single tool, `browse_hacker_news`, that opens a Steel session, drives it with Playwright over CDP, and returns structured rows.
+This starter wires Agent Kit to Steel through a single tool, `browse_hacker_news`, that opens a Steel session, drives it with Playwright over CDP, and returns structured rows. The [Inngest AgentKit integration](/integrations/agentkit) covers install and configuration.
 
 ```typescript
 const browseHackerNews = createTool({

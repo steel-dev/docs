@@ -13,9 +13,9 @@ description: "Use Steel with the Claude Agent SDK (TypeScript) to build a tool-u
 
 <RecipeQuickstart slug="claude-agent-sdk-ts" />
 
-`@anthropic-ai/claude-agent-sdk` is the engine behind the Claude Code CLI, exposed as a Node library. You get the CLI's agent loop, hooks, subagents, MCP support, and built-in tool catalog (`Read`, `Edit`, `Bash`, `Grep`, ...) without spawning the CLI yourself.
+`@anthropic-ai/claude-agent-sdk` is the engine behind the Claude Code CLI, exposed as a Node library. You get the CLI's [agent loop](/cookbook/topics/agents), hooks, subagents, MCP support, and built-in tool catalog (`Read`, `Edit`, `Bash`, `Grep`, ...) without spawning the CLI yourself.
 
-This recipe disables those built-ins and attaches a Steel cloud browser instead. Four MCP tools (`openSession`, `navigate`, `snapshot`, `extract`) sit in front of Playwright; the agent calls them by name and streams back typed messages.
+This recipe disables those built-ins and attaches a Steel cloud browser instead; the [Claude Agent SDK integration](/integrations/claude-agent-sdk) covers install and setup. Four MCP tools (`openSession`, `navigate`, `snapshot`, `extract`) sit in front of Playwright; the agent calls them by name and streams back typed messages.
 
 ```typescript
 const navigate = tool(

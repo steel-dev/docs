@@ -9,9 +9,9 @@ description: Use Steel with Mastra to build a typed browser agent with the Mastr
 
 <RecipeQuickstart slug="mastra" />
 
-[Mastra](https://mastra.ai/) is a TypeScript framework that wraps the Vercel AI SDK with typed tools, a model router, and a built-in Studio playground for chatting with your agents and inspecting traces.
+[Mastra](https://mastra.ai/) is a TypeScript framework that wraps the Vercel AI SDK with typed tools, a model router, and a built-in Studio playground for chatting with your agents and inspecting traces. Steel's [Mastra integration](/integrations/mastra) covers the same setup on its own.
 
-This recipe is a four-tool browser agent: `open-session`, `navigate`, `snapshot`, `extract`. Each tool drives a Steel cloud session over Playwright. The agent runs against `github.com/trending/python` and returns a Zod-validated `FinalReport`.
+This recipe is a four-tool [browser agent](/cookbook/topics/agents): `open-session`, `navigate`, `snapshot`, `extract`. Each tool drives a Steel cloud session over Playwright. The agent runs against `github.com/trending/python` and returns a Zod-validated `FinalReport`.
 
 ```typescript
 const researchAgent = new Agent({

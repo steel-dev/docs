@@ -13,9 +13,9 @@ description: Lead orchestrator dispatches parallel researcher subagents, each dr
 
 <RecipeQuickstart slug="deep-research-ts" />
 
-`@anthropic-ai/claude-agent-sdk` exposes typed `AgentDefinition` values that you pass through the `agents` field on `query()`. The lead agent invokes them through the built-in `Agent` tool. Multiple `Agent` calls fired in a single assistant turn run in parallel, and each subagent starts in fresh context.
+`@anthropic-ai/claude-agent-sdk` exposes typed `AgentDefinition` values that you pass through the `agents` field on `query()`. The lead agent invokes them through the built-in `Agent` tool. Multiple `Agent` calls fired in a single assistant turn run in parallel, and each [subagent](/cookbook/topics/subagents) starts in fresh context.
 
-This recipe wires that pattern to Steel. The lead "orchestrator" never opens a browser. It splits a research question into focused sub-questions, hands one to each `researcher` subagent, and synthesizes their cited findings into a Markdown report. Every researcher gets its own Steel session, so three browsers run side by side without stomping on each other's address bar.
+This recipe wires that pattern to Steel, built on the [Claude Agent SDK integration](/integrations/claude-agent-sdk). The lead "orchestrator" never opens a browser. It splits a research question into focused sub-questions, hands one to each `researcher` subagent, and synthesizes their cited findings into a Markdown report. Every researcher gets its own Steel session, so three browsers run side by side without stomping on each other's address bar.
 
 ```ts
 const researcher: AgentDefinition = {

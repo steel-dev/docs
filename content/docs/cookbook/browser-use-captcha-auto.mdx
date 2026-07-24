@@ -9,7 +9,7 @@ description: Build an AI agent with browser-use and Steel that solves CAPTCHAs a
 
 <RecipeQuickstart slug="browser-use-captcha-auto" />
 
-Steel can solve CAPTCHAs inside a session without the agent lifting a finger. This recipe wires that into Browser Use: one flag at session creation, one custom tool the agent calls to block until the solver reports done. Everything else is the same perception-plan-act loop as the base [Browser Use](/cookbook/browser-use) recipe.
+Steel can solve [CAPTCHAs](/cookbook/topics/captchas) inside a session without the agent lifting a finger. This recipe wires that into Browser Use: one flag at session creation, one custom tool the agent calls to block until the solver reports done. Everything else is the same perception-plan-act loop as the base [Browser Use](/cookbook/browser-use) recipe.
 
 ```python
 session = client.sessions.create(solve_captcha=True)
