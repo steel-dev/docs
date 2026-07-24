@@ -8,6 +8,39 @@ publishedAt: "2026-05-22"
 
 Use the Agent Traces API when you want the same activity timeline shown in the dashboard, but as JSON for analysis, replay, or internal tooling.
 
+:::callout
+type: info
+### SDK availability
+The Node and Python examples below target the upcoming Steel SDK release that adds `sessions.traces()`. Use the REST endpoint until that SDK version is published.
+:::
+
+### SDK
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+const trace = await client.sessions.traces(sessionId, {
+  limit: 500,
+});
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+client = Steel()
+
+trace = client.sessions.traces(
+    session_id,
+    limit=500,
+)
+```
+
+</CodeTabs>
+
 ### GET /v1/sessions/\:id/agent-traces
 
 Returns the trace timeline for a finished or in-progress session.
@@ -44,15 +77,21 @@ const trace = await response.json();
     }
   ],
   "total": 1,
-  "hasMore": false
+  "hasMore": false,
+  "nextCursor": null,
+  "schemaVersion": "1.0",
+  "truncated": false
 }
 ```
 
 | Field | Type | Notes |
 | ----- | ---- | ----- |
 | `events` | array | Timeline activities in chronological order. |
-| `total` | number | Number of activities returned. |
+| `total` | number | Total number of matching activities. |
 | `hasMore` | boolean | Whether more activity data is available. |
+| `nextCursor` | string or null | Opaque cursor for the next page. |
+| `schemaVersion` | string | Version of the normalized activity schema. |
+| `truncated` | boolean | Whether the retained source could not be scanned completely. Production exports should require `false`. |
 
 Each activity includes a small common envelope:
 
@@ -65,6 +104,8 @@ Each activity includes a small common envelope:
 | `target` | object | Element context when available. |
 
 Activity-specific details appear when relevant. For example, click activities can include `pointer`, typing activities can include `value`, keyboard activities can include `keyboard`, navigation activities can include `navigation`, and error activities can include `error`.
+
+Sessions that predate browser-interaction capture can return an empty `events` array.
 
 ### Target Details
 
@@ -87,28 +128,38 @@ When Steel can identify the element involved in an activity, `target` can includ
 
 Use target details as hints for review or replay. Some activities, such as navigation or errors, may not include a target.
 
-### Filtering by Time
-
-You can limit results to a time range:
-
-```bash !! curl -wcn
-curl "https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces?startTime=2026-05-22T18:00:00.000Z&endTime=2026-05-22T18:10:00.000Z" \
-  -H "steel-api-key: $STEEL_API_KEY"
-```
+### Query Parameters
 
 | Query param | Notes |
 | ----------- | ----- |
-| `startTime` | Include activities at or after this ISO timestamp. |
-| `endTime` | Include activities at or before this ISO timestamp. |
+| `namespace` | Limit results to a session namespace. |
+| `startTime` | Include activities at or after this ISO 8601 timestamp. |
+| `endTime` | Include activities at or before this ISO 8601 timestamp. |
+| `limit` | Number of activities per page, from 1 to 2,000. Defaults to 500. |
+| `cursor` | Opaque cursor returned as `nextCursor`. Reuse it with identical filters. |
+
+Filter by time and request a page:
+
+```bash !! curl -wcn
+curl "https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces?startTime=2026-05-22T18:00:00.000Z&endTime=2026-05-22T18:10:00.000Z&limit=500" \
+  -H "steel-api-key: $STEEL_API_KEY"
+```
+
+For a finished session, keep the filters fixed and pass each `nextCursor` into the next request until it is `null`. Paginating a live session is not a stable snapshot because new activities can arrive between requests.
+
+Synchronous trace export accepts up to 50,000 retained raw events and a 32 MiB normalized artifact. If a full-session request returns `413`, divide the session into non-overlapping `startTime`/`endTime` windows and export each window separately.
 
 ### Errors
 
 | Status | Meaning |
 | ------ | ------- |
 | 401 | Missing or invalid `steel-api-key`. |
-| 403 | The session belongs to a different organization. |
-| 404 | No session with that ID. |
+| 404 | No accessible session with that ID. Steel also uses 404 for project or organization scope mismatches. |
+| 409 | The released session's audit data is still finalizing. Retry with backoff. |
+| 410 | The audit data has expired under the plan's retention period. |
+| 413 | The requested time range exceeds synchronous trace export limits. Retry with narrower time bounds. |
 | 429 | Rate limit hit. Retry after the `Retry-After` header. |
+| 502 | The log service or browser machine is temporarily unavailable. Retry with backoff. |
 
 :::callout
 type: help
