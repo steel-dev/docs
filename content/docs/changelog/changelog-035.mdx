@@ -1,0 +1,39 @@
+---
+title: "Changelog #035"
+sidebarTitle: "Changelog #035"
+llm: true
+image: "/images/changelog/35.png"
+imageAlt: "Announcing Changelog #035"
+publishedAt: "2026-07-24"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/35.png"
+  alt="Announcing Changelog #035"
+  width={800}
+  height={400}
+/>
+Hey everyone. Mostly session visibility and docs plumbing this week, plus a small API addition and a new Stripe Projects recipe in the cookbook.
+
+### ⭐ New
+
+*   Added a Stripe Projects web agent recipe to the cookbook: a Next.js research agent built on Steel.
+
+### 🔧 Improvements
+
+*   The Sessions API now takes a `browserMode` field on `/v1/sessions`, and the console shows which browser a session is running.
+
+*   Docs now ship BreadcrumbList JSON-LD site-wide, and integration pages include TechArticle metadata.
+
+### 🐛 Bug Fixes
+
+*   Fixed CDP capture so nested scroll interactions record correctly in Steel Browser.
+
+*   Fixed network capture for dedicated web workers in Steel Browser.
+
+*   Fixed JetStream publish timeouts in the API that were failing unpredictably.
+
+### 🏡 Housekeeping
+
+*   Wound down the fleet controller in staging and production ahead of the GCP Nomad teardown.
