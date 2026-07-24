@@ -9,7 +9,7 @@ description: Convex cron plus two parallel Steel proxy probes against claude.com
 
 <RecipeQuickstart slug="convex-price-watch" />
 
-A scheduled monitor: scrape `https://claude.com/pricing` every 10 minutes from two parallel proxy probes, store one row per (region, tier, capturedAt) in Convex, and surface tiers where the probes disagree. No LLM, no streaming. Just `@steel-dev/convex`, a cron, and a reactive dashboard.
+A scheduled monitor: scrape `https://claude.com/pricing` every 10 minutes from two parallel proxy probes, store one row per (region, tier, capturedAt) in [Convex](/cookbook/topics/convex), and surface tiers where the probes disagree. No LLM, no streaming. Just `@steel-dev/convex`, a cron, and a reactive dashboard.
 
 ```
 convex/

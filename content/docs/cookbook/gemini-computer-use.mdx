@@ -13,9 +13,9 @@ description: "Connect Google's Gemini Computer Use to a Steel browser session fo
 
 <RecipeQuickstart slug="gemini-computer-use-ts" />
 
-Gemini exposes computer use as a built-in tool type, not a hand-written schema. You set `config.tools = [{ computerUse: { environment: Environment.ENVIRONMENT_BROWSER } }]` on a `generateContent` call and the model plans against a fixed action vocabulary (`click_at`, `type_text_at`, `navigate`, `scroll_document`, `search`, `drag_and_drop`, `key_combination`, ...) with coordinates in a normalized 0-1000 grid.
+Gemini exposes [computer use](/cookbook/topics/computer-use) as a built-in tool type, not a hand-written schema. You set `config.tools = [{ computerUse: { environment: Environment.ENVIRONMENT_BROWSER } }]` on a `generateContent` call and the model plans against a fixed action vocabulary (`click_at`, `type_text_at`, `navigate`, `scroll_document`, `search`, `drag_and_drop`, `key_combination`, ...) with coordinates in a normalized 0-1000 grid.
 
-The model defaults to `gemini-3-flash-preview`. Conversation state lives entirely on your side, appended to `this.contents` turn by turn.
+The model defaults to `gemini-3-flash-preview`. Conversation state lives entirely on your side, appended to `this.contents` turn by turn. The [Gemini Computer Use integration](/integrations/gemini-computer-use) covers install and setup.
 
 ## Coordinates and action mapping
 

@@ -9,7 +9,7 @@ description: Pair the You.com Search and Contents APIs with a Steel cloud browse
 
 <RecipeQuickstart slug="you-com-search" />
 
-A search-then-act agent: [You.com](https://you.com/) handles discovery and static extraction, Steel handles real browser actions. The agent gets five tools across two cost tiers and is told to prefer the cheap tier. The Steel session is opened lazily on the first `navigate` call, so a question that resolves on search alone never spins up a browser.
+A [search-then-act agent](/cookbook/topics/search): [You.com](https://you.com/) handles discovery and static extraction, Steel handles real browser actions. The agent gets five tools across two cost tiers and is told to prefer the cheap tier. The Steel session is opened lazily on the first `navigate` call, so a question that resolves on search alone never spins up a browser.
 
 ```python
 tools = [youcom_search, youcom_contents, navigate, snapshot, click_text]

@@ -13,7 +13,7 @@ description: Build a Restate Virtual Object in TypeScript that uses durable Open
 
 <RecipeQuickstart slug="restate-agent-ts" />
 
-This recipe runs a Restate Virtual Object named `ResearchSession`. Its `answer` handler keeps scraped observations in object state, wraps OpenAI planning calls in durable `ctx.run` steps, and calls Steel's `scrape` API as the browser tool. If the service process crashes after Steel has fetched a page, Restate replays the journal entry instead of scraping the same page again.
+This recipe runs a [Restate](/cookbook/topics/restate) Virtual Object named `ResearchSession`. Its `answer` handler keeps scraped observations in object state, wraps OpenAI planning calls in durable `ctx.run` steps, and calls Steel's `scrape` API as the browser tool. If the service process crashes after Steel has fetched a page, Restate replays the journal entry instead of scraping the same page again.
 
 The agent loop is deliberately small:
 

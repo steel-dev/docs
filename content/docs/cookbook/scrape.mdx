@@ -25,7 +25,7 @@ const scraped = await client.scrape({
 const markdown = scraped.content.markdown ?? "";
 ```
 
-`scrape()` runs the fetch and the cleanup on Steel's side, so there is no session to create, connect to, or release. One HTTP call in, structured content out. The same `client.screenshot()` and `client.pdf()` calls render the same page two other ways.
+`scrape()` runs the fetch and the cleanup on Steel's side, so there is no session to create, connect to, or release. One HTTP call in, structured content out. `scrape` is one of the direct [Steel API](/cookbook/topics/steel-apis) endpoints, with no browser session to manage. The same `client.screenshot()` and `client.pdf()` calls render the same page two other ways.
 
 ## Markdown for model context
 

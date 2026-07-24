@@ -13,7 +13,7 @@ description: Use Steel with the OpenAI Agents SDK for TypeScript to build typed,
 
 <RecipeQuickstart slug="openai-agents-ts" />
 
-The [OpenAI Agents SDK](https://openai.github.io/openai-agents-js/) (`@openai/agents`) is a small runtime for agentic loops. You define an `Agent` with `instructions`, a `model`, `tools`, and an `outputType`. You call `run(agent, prompt)`. The SDK handles "pick a tool, call it, feed the result back, repeat" and validates the final message against your schema.
+The [OpenAI Agents SDK](https://openai.github.io/openai-agents-js/) (`@openai/agents`) is a small runtime for [agentic loops](/cookbook/topics/agents). You define an `Agent` with `instructions`, a `model`, `tools`, and an `outputType`. You call `run(agent, prompt)`. The SDK handles "pick a tool, call it, feed the result back, repeat" and validates the final message against your schema. Steel's [OpenAI Agents SDK integration](/integrations/openai-agents-sdk) covers the same pairing on its own.
 
 This recipe turns the tool layer into a Steel cloud browser. Four `tool()` wrappers in `index.ts` (`openSession`, `navigate`, `snapshot`, `extract`) shuttle CDP calls between the agent and Playwright. Demo task: scan `github.com/trending/python` and return the top 3 AI/ML repos as a validated `FinalReport`.
 

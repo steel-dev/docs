@@ -11,7 +11,7 @@ description: Integrate Steel with the Agno agent framework.
 
 Agno's primitive is `Agent(model=..., tools=[...])`. Tools are typed Python methods grouped into a `Toolkit` subclass; docstrings and type hints become the JSON schema the model sees.
 
-This recipe wraps a Steel browser in a `SteelTools` toolkit, hands it to an Agent, and lets the model drive the session by picking which method to call and filling in arguments on its own.
+This recipe wraps a Steel browser in a `SteelTools` toolkit, hands it to an Agent, and lets the model drive the session by picking which method to call and filling in arguments on its own. The [Agno integration](/integrations/agno) covers install and configuration.
 
 ```python
 tools = SteelTools(api_key=STEEL_API_KEY)

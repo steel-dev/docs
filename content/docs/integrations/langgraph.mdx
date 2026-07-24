@@ -5,7 +5,7 @@ description: Build a LangGraph browser agent on Steel cloud browsers. Model web 
 llm: true
 ---
 
-[LangGraph](https://langchain-ai.github.io/langgraph/) builds agents as state machines: nodes do work, edges route control, and the agent loop is something you compose explicitly rather than something the framework hides for you. LangChain ships the model wrappers and `@tool` decorator; LangGraph ships the runtime, plus prebuilt `ToolNode` and `tools_condition` helpers that turn three nodes and four edges into a tool-calling agent. The Steel integration runs each `@tool` against a Steel cloud session, so the agent loop drives a real browser.
+[LangGraph](https://langchain-ai.github.io/langgraph/) builds agents as state machines: nodes do work, edges route control, and the agent loop is something you compose explicitly rather than something the framework hides for you. LangChain ships the model wrappers and `@tool` decorator; LangGraph ships the runtime, plus prebuilt `ToolNode` and `tools_condition` helpers that turn three nodes and four edges into a [tool-calling agent](/cookbook/topics/agents). The Steel integration runs each `@tool` against a Steel cloud session, so the agent loop drives a real browser.
 
 ### Requirements
 

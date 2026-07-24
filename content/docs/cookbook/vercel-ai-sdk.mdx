@@ -9,7 +9,7 @@ description: Use Steel with the Vercel AI SDK v6 ToolLoopAgent for typed, tool-u
 
 <RecipeQuickstart slug="vercel-ai-sdk-ts" />
 
-The [Vercel AI SDK v6](https://ai-sdk.dev/docs/agents/overview) ships `ToolLoopAgent`, a typed agent that picks a tool, calls it, observes the result, and decides the next step. Give it tools that drive a Playwright page connected to a Steel session and you get a terminal browser agent with no UI scaffolding in the way.
+The [Vercel AI SDK v6](https://ai-sdk.dev/docs/agents/overview) ships `ToolLoopAgent`, a [typed agent](/cookbook/topics/typed-output) that picks a tool, calls it, observes the result, and decides the next step. Give it tools that drive a Playwright page connected to a Steel session and you get a terminal browser agent with no UI scaffolding in the way. Steel's [AI SDK integration](/integrations/ai-sdk) covers the same pairing on its own.
 
 ```typescript
 const researchAgent = new ToolLoopAgent({

@@ -13,7 +13,7 @@ description: Build a Temporal TypeScript Workflow that schedules retryable Steel
 
 <RecipeQuickstart slug="temporal-browser-workflow-ts" />
 
-This recipe runs a Temporal Workflow named `browserWorkflow`. The Workflow stays deterministic: it clamps small inputs, loops over URLs, and delegates each Steel scrape plus screenshot to the `capturePage` Activity. The Activity writes Markdown and PNG artifacts locally, then returns the compact page summary recorded in workflow history.
+This recipe runs a [Temporal](/cookbook/topics/temporal) Workflow named `browserWorkflow`. The Workflow stays deterministic: it clamps small inputs, loops over URLs, and delegates each Steel scrape plus screenshot to the `capturePage` Activity. The Activity writes Markdown and PNG artifacts locally, then returns the compact page summary recorded in workflow history.
 
 The retry boundary lives on the Activity proxy in `workflows.ts`:
 

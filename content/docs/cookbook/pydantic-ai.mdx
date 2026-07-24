@@ -9,9 +9,9 @@ description: Use Steel with Pydantic AI to build typed, provider-agnostic browse
 
 <RecipeQuickstart slug="pydantic-ai" />
 
-[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's agent framework. It's provider-agnostic and reuses Pydantic models for tool arguments and final outputs.
+[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's agent framework. It's provider-agnostic and reuses Pydantic models for tool arguments and final outputs. Steel's [Pydantic AI integration](/integrations/pydantic-ai) covers the same setup on its own.
 
-This starter wires a Steel browser into Pydantic AI's dependency-injection pattern and points the agent at GitHub Trending.
+This starter wires a Steel browser into Pydantic AI's dependency-injection pattern and points the [agent](/cookbook/topics/agents) at GitHub Trending.
 
 ```python
 from pydantic_ai import Agent, RunContext

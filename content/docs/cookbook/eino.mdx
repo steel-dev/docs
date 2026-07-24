@@ -9,7 +9,7 @@ description: "Use Steel with the ByteDance Eino framework to build a ReAct agent
 
 <RecipeQuickstart slug="eino" />
 
-[Eino](https://www.cloudwego.io/docs/eino/) is ByteDance's LLM application framework for Go. Its `flow/agent/react` package ships a prebuilt ReAct agent: give it a tool-calling model and a set of tools, and it runs the reason-act loop for you. This recipe gives that agent two tools backed by Steel's Scrape API and points it at a news front page to write a short research briefing.
+[Eino](https://www.cloudwego.io/docs/eino/) is ByteDance's LLM application framework for Go. Its `flow/agent/react` package ships a prebuilt [ReAct agent](/cookbook/topics/agents): give it a tool-calling model and a set of tools, and it runs the reason-act loop for you. This recipe gives that agent two tools backed by Steel's Scrape API and points it at a news front page to write a short research briefing.
 
 Unlike a CDP-driven recipe, there is no browser session to open or release here. `client.Scrape` runs a browser on Steel's side, fetches the page, and returns clean Markdown plus the page's links. The agent reads pages the way an LLM wants to read them (as text, not pixels), so the tools are plain HTTP calls and the whole program is stateless between turns.
 

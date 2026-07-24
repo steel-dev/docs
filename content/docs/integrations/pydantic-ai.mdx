@@ -5,7 +5,7 @@ description: "Build a Pydantic AI browser agent on Steel cloud browsers: provide
 llm: true
 ---
 
-[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's agent framework. It's provider-agnostic and reuses the Pydantic models you'd already validate API I/O with for tool arguments and final outputs, so adding an agent to a typed Python codebase doesn't introduce a parallel schema layer. The Steel integration passes a Playwright `Page` through `RunContext.deps`, so every tool in an agent run sees the same cloud browser without module globals.
+[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's [agent framework](/cookbook/topics/agents). It's provider-agnostic and reuses the Pydantic models you'd already validate API I/O with for tool arguments and final outputs, so adding an agent to a typed Python codebase doesn't introduce a parallel schema layer. The Steel integration passes a Playwright `Page` through `RunContext.deps`, so every tool in an agent run sees the same cloud browser without module globals.
 
 ### Requirements
 

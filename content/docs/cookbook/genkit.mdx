@@ -44,7 +44,7 @@ type extractInput struct {
 
 ## Two ways to read a page
 
-The tools cover the two access patterns a browsing agent needs:
+The tools cover the two access patterns a [browsing agent](/cookbook/topics/agents) needs:
 
 - `navigate` + `extract` drive one live chromedp tab attached to the Steel session over CDP. `extract` takes a row selector plus a field-per-column list and runs the whole pull inside a single `chromedp.Evaluate`. Serial CDP round-trips to a cloud browser run about 200 to 300 ms each, so collapsing N rows by M fields into one evaluate keeps a page read under a second instead of stacking dozens of trips.
 - `scrape` calls `client.Scrape` and returns clean Markdown for a URL without touching the tab. It is the reliable path when the agent just needs an article's text, and it sidesteps selector guesswork entirely.

@@ -9,7 +9,7 @@ description: "Control browsers with AI using Steel's infrastructure and Notte's 
 
 <RecipeQuickstart slug="notte" />
 
-Notte builds its agent on top of a perception layer. Each step, `notte.Session` flattens the live DOM into a compact action space (labeled interactive elements, form fields, section headings) and hands that structured view to the reasoning model. The model picks an action by id, Notte translates it back into a browser command.
+Notte builds its [agent](/cookbook/topics/agents) on top of a perception layer. Each step, `notte.Session` flattens the live DOM into a compact action space (labeled interactive elements, form fields, section headings) and hands that structured view to the reasoning model. The model picks an action by id, Notte translates it back into a browser command. Steel's [Notte integration](/integrations/notte) covers the same setup on its own.
 
 This recipe points that loop at a Steel session instead of a locally-launched browser.
 

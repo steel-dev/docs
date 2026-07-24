@@ -79,7 +79,7 @@ Auth context fits one-shot flows where you already have a way to log in and just
 - Run an agent that signs in, snapshot at the end, hand the snapshot to the next agent in the pipeline.
 - Keep a single "warm" context in memory and spawn short-lived workers from it.
 
-If you want Steel to store credentials and handle the login itself, see [credentials](/cookbook/credentials). If you need a long-lived named identity that accumulates state across runs (history, extensions, preferences), that's a different primitive.
+If you want Steel to store credentials and handle the login itself, see [credentials](/cookbook/credentials). If you need a long-lived named identity that accumulates state across runs (history, extensions, preferences), that's a different primitive. The [authentication topic](/cookbook/topics/authentication) collects the related recipes.
 
 ## Make it yours
 

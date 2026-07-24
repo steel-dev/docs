@@ -9,7 +9,7 @@ description: "Use Steel with LangChainGo's zero-shot ReAct (MRKL) agent and a st
 
 <RecipeQuickstart slug="langchaingo" />
 
-[LangChainGo](https://github.com/tmc/langchaingo) is the Go port of LangChain: LLM wrappers, chains, and agents that loop over tools until they reach an answer. This recipe gives a LangChainGo agent one tool backed by Steel's `scrape` endpoint, so the model reads pages as clean Markdown and never touches a browser library or CDP. The agent runs on Anthropic (`claude-sonnet-4-6`) through a zero-shot ReAct (MRKL) executor.
+[LangChainGo](https://github.com/tmc/langchaingo) is the Go port of LangChain: LLM wrappers, chains, and agents that loop over tools until they reach an answer. This recipe gives a LangChainGo [browser agent](/cookbook/topics/agents) one tool backed by Steel's `scrape` endpoint, so the model reads pages as clean Markdown and never touches a browser library or CDP. The agent runs on Anthropic (`claude-sonnet-4-6`) through a zero-shot ReAct (MRKL) executor.
 
 LangChainGo's `tools.Tool` interface is deliberately small. A tool is a name, a description, and a `Call` that takes a string and returns a string:
 
