@@ -1,0 +1,10 @@
+# Context
+
+## Background
+The changelog inputs contain uneven commit and pull request metadata, while the published changelog must only describe changes that actually reached users.
+
+## Why This Way
+This commit enriches release evidence with pull request metadata and changed files, groups related commits, expands promoted browser submodule ranges, and applies small repository-specific eligibility rules. The release branch and exact prior cutoff remain authoritative, and a quiet week is valid.
+
+## Gotchas
+Implementation labels and internal terminology are evidence, not proof that a change lacks user impact; the model still receives richer context for editorial judgment.
