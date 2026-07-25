@@ -12,13 +12,19 @@ import {
   groupCommitsByPullRequest,
   isTimestampInWindow,
   parseSubmodulePatch,
+  resolvePreviewWindow,
   resolveSubmoduleRange,
   resolveWindow,
   selectAssociatedPullRequest,
   summarizeExcludedChangeGroups,
 } from '../scripts/changelog/source';
 import changelogState from '../scripts/changelog/state.json';
-import { fetchApplicationReleaseCommits } from '../scripts/generate-changelog-draft';
+import {
+  extractOpenAiResponseText,
+  fetchApplicationReleaseCommits,
+  parseArgs,
+  selectRecentChangelogNumbers,
+} from '../scripts/generate-changelog-draft';
 import {
   APPLICATION_RELEASE_SHA_AT_035,
   BROWSER_SUBMODULE_PATCH,
@@ -331,6 +337,65 @@ describe('changelog v2 window and model defaults', () => {
         stateUntil: PREVIOUS_CHANGELOG_CUTOFF,
       }),
     ).toThrow('Expected until > state until');
+  });
+
+  test('allows an isolated historical preview at the stored cutoff', () => {
+    const window = resolvePreviewWindow({
+      since: '2026-07-17T15:58:38.000Z',
+      until: PREVIOUS_CHANGELOG_CUTOFF,
+    });
+
+    expect(window).toEqual({
+      since: '2026-07-17T15:58:38.000Z',
+      until: PREVIOUS_CHANGELOG_CUTOFF,
+      source: 'preview',
+    });
+    expect(isTimestampInWindow(window.since, window)).toBe(false);
+    expect(isTimestampInWindow(window.until, window)).toBe(true);
+  });
+
+  test('requires a complete, explicit preview window and rejects unknown arguments', () => {
+    expect(
+      parseArgs([
+        '--preview',
+        '--number',
+        '35',
+        '--since',
+        '2026-07-17T15:58:38.000Z',
+        '--until',
+        PREVIOUS_CHANGELOG_CUTOFF,
+      ]),
+    ).toEqual({
+      preview: true,
+      number: 35,
+      since: '2026-07-17T15:58:38.000Z',
+      until: PREVIOUS_CHANGELOG_CUTOFF,
+    });
+    expect(() => parseArgs(['--preview', '--number', '35'])).toThrow(
+      'Preview mode requires --number, --since, and --until',
+    );
+    expect(() => parseArgs(['--preveiw'])).toThrow('Unknown argument');
+    expect(() => parseArgs(['--number', '35'])).toThrow('--number can only be used with --preview');
+  });
+
+  test('does not leak the replay target or later changelogs into prompt examples', () => {
+    expect(selectRecentChangelogNumbers([30, 31, 32, 33, 34, 35, 36], 35)).toEqual([
+      34, 33, 32, 31,
+    ]);
+  });
+
+  test('extracts JSON text from a Responses API message', () => {
+    expect(
+      extractOpenAiResponseText({
+        output: [
+          { type: 'reasoning' },
+          {
+            type: 'message',
+            content: [{ type: 'output_text', text: '{"introduction":"Ready"}' }],
+          },
+        ],
+      }),
+    ).toBe('{"introduction":"Ready"}');
   });
 
   test('uses the selected GPT-5.6 model at low reasoning', () => {

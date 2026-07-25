@@ -96,7 +96,7 @@ export interface ExclusionSummary {
 export interface WindowSelection {
   since: string;
   until: string;
-  source: 'manual' | 'state';
+  source: 'manual' | 'preview' | 'state';
 }
 
 const COMMON_IGNORED_FILE_PATTERNS = [
@@ -585,6 +585,21 @@ export function resolveWindow(input: {
     since,
     until,
     source: input.explicitSince ? 'manual' : 'state',
+  };
+}
+
+export function resolvePreviewWindow(input: { since: string; until: string }): WindowSelection {
+  const since = validateTimestamp(input.since, 'since');
+  const until = validateTimestamp(input.until, 'until');
+
+  if (new Date(since) >= new Date(until)) {
+    throw new Error(`Expected since < until, received since=${since} until=${until}`);
+  }
+
+  return {
+    since,
+    until,
+    source: 'preview',
   };
 }
 

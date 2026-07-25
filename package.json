@@ -20,6 +20,7 @@
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
     "sync-cookbook": "bun run ./scripts/sync-cookbook.ts",
     "generate-changelog-draft": "bun run ./scripts/generate-changelog-draft.ts",
+    "preview-changelog": "bun run ./scripts/generate-changelog-draft.ts --preview",
     "generate": "bun run generate-openapi && bun run generate-llms",
     "test": "bun test tests/"
   },

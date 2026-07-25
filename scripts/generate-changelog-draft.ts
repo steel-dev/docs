@@ -30,6 +30,7 @@ import {
   groupCommitsByPullRequest,
   isTimestampInWindow,
   parseCommitType,
+  resolvePreviewWindow,
   resolveSubmoduleRange,
   resolveWindow,
   selectAssociatedPullRequest,
@@ -116,7 +117,19 @@ interface DraftResult {
   discardedItems: DiscardedItem[];
 }
 
-interface CliOptions {
+interface OpenAiResponse {
+  output?: Array<{
+    type?: string;
+    content?: Array<{
+      type?: string;
+      text?: string;
+    }>;
+  }>;
+}
+
+export interface CliOptions {
+  preview: boolean;
+  number?: number;
   since?: string;
   until?: string;
 }
@@ -137,22 +150,58 @@ const DRAFT_SECTION_ORDER: DraftSection['heading'][] = [
   '🐛 Bug Fixes',
 ];
 
-function parseArgs(argv: string[]): CliOptions {
-  const options: CliOptions = {};
+function requireOptionValue(argv: string[], index: number, option: string): string {
+  const value = argv[index + 1];
+  if (!value || value.startsWith('--')) {
+    throw new Error(`Missing value for ${option}.`);
+  }
+
+  return value;
+}
+
+export function parseArgs(argv: string[]): CliOptions {
+  const options: CliOptions = { preview: false };
 
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
 
+    if (value === '--preview') {
+      options.preview = true;
+      continue;
+    }
+
+    if (value === '--number') {
+      const number = Number(requireOptionValue(argv, index, value));
+      if (!Number.isInteger(number) || number < 0) {
+        throw new Error(`Invalid changelog number: ${argv[index + 1]}`);
+      }
+
+      options.number = number;
+      index += 1;
+      continue;
+    }
+
     if (value === '--since') {
-      options.since = argv[index + 1];
+      options.since = requireOptionValue(argv, index, value);
       index += 1;
       continue;
     }
 
     if (value === '--until') {
-      options.until = argv[index + 1];
+      options.until = requireOptionValue(argv, index, value);
       index += 1;
+      continue;
     }
+
+    throw new Error(`Unknown argument: ${value}`);
+  }
+
+  if (options.preview) {
+    if (options.number === undefined || !options.since || !options.until) {
+      throw new Error('Preview mode requires --number, --since, and --until.');
+    }
+  } else if (options.number !== undefined) {
+    throw new Error('--number can only be used with --preview.');
   }
 
   return options;
@@ -453,6 +502,29 @@ async function fetchBranchHead(repoConfig: ChangelogRepository, token: string): 
   return response.commit.sha;
 }
 
+async function fetchBranchHeadAtOrBefore(
+  repoConfig: ChangelogRepository,
+  token: string,
+  until: string,
+): Promise<string> {
+  const url = new URL(
+    `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/commits`,
+  );
+  url.searchParams.set('sha', repoConfig.branch);
+  url.searchParams.set('until', until);
+  url.searchParams.set('per_page', '1');
+
+  const commits = await fetchGithubJson<GitHubListCommit[]>(url, token);
+  const commit = commits[0];
+  if (!commit) {
+    throw new Error(
+      `No ${repoConfig.owner}/${repoConfig.repo}@${repoConfig.branch} commit found at or before ${until}.`,
+    );
+  }
+
+  return commit.sha;
+}
+
 async function fetchSubmoduleShaAtRef(
   repoConfig: ChangelogRepository,
   submodulePath: string,
@@ -634,7 +706,17 @@ async function loadFileForPrompt(filePath: string, charLimit: number): Promise<s
   return truncateText(cleanMdxForPrompt(raw), charLimit);
 }
 
-async function loadPromptContext(): Promise<string> {
+export function selectRecentChangelogNumbers(
+  changelogNumbers: number[],
+  beforeNumber: number,
+): number[] {
+  return changelogNumbers
+    .filter((number) => number < beforeNumber)
+    .slice(-RECENT_CHANGELOG_EXAMPLE_COUNT)
+    .reverse();
+}
+
+async function loadPromptContext(beforeNumber: number): Promise<string> {
   const sections: string[] = [];
 
   for (const contextFile of CHANGELOG_CONTEXT_FILES) {
@@ -643,7 +725,7 @@ async function loadPromptContext(): Promise<string> {
   }
 
   const changelogNumbers = await getExistingChangelogNumbers();
-  const recentNumbers = changelogNumbers.slice(-RECENT_CHANGELOG_EXAMPLE_COUNT).reverse();
+  const recentNumbers = selectRecentChangelogNumbers(changelogNumbers, beforeNumber);
 
   for (const number of recentNumbers) {
     const slug = `changelog-${formatChangelogNumber(number)}`;
@@ -835,6 +917,22 @@ function extractJsonObject(content: string): string {
   return withoutFence.slice(firstBrace, lastBrace + 1);
 }
 
+export function extractOpenAiResponseText(response: OpenAiResponse): string | undefined {
+  for (const output of response.output || []) {
+    if (output.type !== 'message') {
+      continue;
+    }
+
+    for (const content of output.content || []) {
+      if (content.type === 'output_text' && content.text) {
+        return content.text;
+      }
+    }
+  }
+
+  return undefined;
+}
+
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
@@ -989,7 +1087,7 @@ async function requestDraftFromModel(
   openAiToken: string,
 ): Promise<DraftResult> {
   const systemPrompt = await fs.readFile(path.join(process.cwd(), CHANGELOG_PROMPT_FILE), 'utf8');
-  const docsContext = await loadPromptContext();
+  const docsContext = await loadPromptContext(number);
   const sourcePayload = `[\n${groups.map(formatChangeGroupForPrompt).join(',\n')}\n]`;
   const model = process.env.CHANGELOG_OPENAI_MODEL || DEFAULT_OPENAI_MODEL;
   const reasoningEffort = getOpenAiReasoningEffort();
@@ -1032,7 +1130,7 @@ async function requestDraftFromModel(
     sourcePayload,
   ].join('\n');
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -1040,12 +1138,11 @@ async function requestDraftFromModel(
     },
     body: JSON.stringify({
       model,
-      reasoning_effort: reasoningEffort,
-      response_format: { type: 'json_object' },
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
+      instructions: systemPrompt,
+      input: userPrompt,
+      reasoning: { effort: reasoningEffort },
+      text: { format: { type: 'json_object' } },
+      store: false,
     }),
   });
 
@@ -1054,13 +1151,11 @@ async function requestDraftFromModel(
     throw new Error(`OpenAI request failed (${response.status}): ${errorBody}`);
   }
 
-  const payload = (await response.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-  const content = payload.choices?.[0]?.message?.content;
+  const payload = (await response.json()) as OpenAiResponse;
+  const content = extractOpenAiResponseText(payload);
 
   if (!content) {
-    throw new Error('OpenAI response did not include message content.');
+    throw new Error('OpenAI response did not include output text.');
   }
 
   const draft = parseDraftResult(content);
@@ -1124,27 +1219,115 @@ function createBranchName(number: number, until: string): string {
   return `automation/changelog-${formatChangelogNumber(number)}-${dateLabel}`;
 }
 
+interface PreviewWorkspace {
+  directory: string;
+  draftFilename: string;
+}
+
+async function createPreviewWorkspace(input: {
+  number: number;
+  windowSelection: WindowSelection;
+  applicationReleaseBaseSha: string;
+  applicationReleaseHeadSha: string;
+  eligibleGroups: ChangeGroup[];
+}): Promise<PreviewWorkspace> {
+  const numberLabel = formatChangelogNumber(input.number);
+  const directory = await fs.mkdtemp(
+    path.join(os.tmpdir(), `steel-changelog-${numberLabel}-preview-`),
+  );
+  const draftFilename = `changelog-${numberLabel}-preview.mdx`;
+  const sourceFacts = `[\n${input.eligibleGroups.map(formatChangeGroupForPrompt).join(',\n')}\n]\n`;
+  const manifest = {
+    changelogNumber: input.number,
+    window: input.windowSelection,
+    applicationRelease: {
+      baseSha: input.applicationReleaseBaseSha,
+      headSha: input.applicationReleaseHeadSha,
+    },
+    model: process.env.CHANGELOG_OPENAI_MODEL || DEFAULT_OPENAI_MODEL,
+    reasoningEffort: getOpenAiReasoningEffort(),
+  };
+
+  await Promise.all([
+    fs.writeFile(path.join(directory, 'source-facts.json'), sourceFacts),
+    fs.writeFile(path.join(directory, 'run.json'), `${JSON.stringify(manifest, null, 2)}\n`),
+  ]);
+
+  return { directory, draftFilename };
+}
+
+async function writePreviewDraftArtifacts(input: {
+  workspace: PreviewWorkspace;
+  number: number;
+  windowSelection: WindowSelection;
+  draft: DraftResult;
+  mdx: string;
+  exclusionSummary: ExclusionSummary[];
+}) {
+  const review = buildPrBody(
+    input.number,
+    input.workspace.draftFilename,
+    input.windowSelection,
+    input.draft,
+    input.exclusionSummary,
+  );
+
+  await Promise.all([
+    fs.writeFile(path.join(input.workspace.directory, input.workspace.draftFilename), input.mdx),
+    fs.writeFile(path.join(input.workspace.directory, 'review.md'), review),
+    fs.writeFile(
+      path.join(input.workspace.directory, 'model-output.json'),
+      `${JSON.stringify(input.draft, null, 2)}\n`,
+    ),
+  ]);
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
-  const state = await readChangelogState();
-  const windowSelection = await selectWindow(options, state);
-  const changelogNumbers = await getExistingChangelogNumbers();
-  const latestNumber = changelogNumbers.at(-1) ?? -1;
-  const nextNumber = (changelogNumbers.at(-1) ?? -1) + 1;
+  const githubToken = getGithubToken();
+  let nextNumber: number;
+  let windowSelection: WindowSelection;
+  let applicationReleaseBaseSha: string;
+  let applicationReleaseSha: string;
+
+  if (options.preview) {
+    nextNumber = options.number as number;
+    windowSelection = resolvePreviewWindow({
+      since: options.since as string,
+      until: options.until as string,
+    });
+    [applicationReleaseBaseSha, applicationReleaseSha] = await Promise.all([
+      fetchBranchHeadAtOrBefore(
+        CHANGELOG_APPLICATION_REPOSITORY,
+        githubToken,
+        windowSelection.since,
+      ),
+      fetchBranchHeadAtOrBefore(
+        CHANGELOG_APPLICATION_REPOSITORY,
+        githubToken,
+        windowSelection.until,
+      ),
+    ]);
+  } else {
+    const state = await readChangelogState();
+    windowSelection = await selectWindow(options, state);
+    const changelogNumbers = await getExistingChangelogNumbers();
+    const latestNumber = changelogNumbers.at(-1) ?? -1;
+    nextNumber = latestNumber + 1;
+
+    if (state.changelogNumber !== latestNumber) {
+      throw new Error(
+        `Changelog state points to #${formatChangelogNumber(state.changelogNumber)}, but the latest file is #${formatChangelogNumber(latestNumber)}.`,
+      );
+    }
+
+    applicationReleaseBaseSha = state.applicationReleaseSha;
+    applicationReleaseSha = await fetchBranchHead(CHANGELOG_APPLICATION_REPOSITORY, githubToken);
+  }
+
   const slug = `changelog-${formatChangelogNumber(nextNumber)}`;
   const draftPath = path.posix.join('content/docs/changelog', `${slug}.mdx`);
 
-  if (state.changelogNumber !== latestNumber) {
-    throw new Error(
-      `Changelog state points to #${formatChangelogNumber(state.changelogNumber)}, but the latest file is #${formatChangelogNumber(latestNumber)}.`,
-    );
-  }
-
-  const githubToken = getGithubToken();
-  const applicationReleaseSha = await fetchBranchHead(
-    CHANGELOG_APPLICATION_REPOSITORY,
-    githubToken,
-  );
   const commits: CommitCandidate[] = [];
   const directRepositories = CHANGELOG_REPOSITORIES.filter((repo) => repo.mode === 'direct');
 
@@ -1153,7 +1336,7 @@ async function main() {
       const repoCommits =
         repoConfig.kind === 'application'
           ? await fetchApplicationReleaseCommits(
-              state.applicationReleaseSha,
+              applicationReleaseBaseSha,
               applicationReleaseSha,
               githubToken,
             )
@@ -1188,7 +1371,9 @@ async function main() {
     console.log(
       `No source activity found between ${windowSelection.since} and ${windowSelection.until}.`,
     );
-    await appendGithubOutput('has_changes', 'false');
+    if (!options.preview) {
+      await appendGithubOutput('has_changes', 'false');
+    }
     return;
   }
 
@@ -1211,19 +1396,49 @@ async function main() {
     console.log(
       'The source window contains no public changelog facts. Treating it as a quiet week.',
     );
-    await appendGithubOutput('has_changes', 'false');
+    if (!options.preview) {
+      await appendGithubOutput('has_changes', 'false');
+    }
     return;
+  }
+
+  const previewWorkspace = options.preview
+    ? await createPreviewWorkspace({
+        number: nextNumber,
+        windowSelection,
+        applicationReleaseBaseSha,
+        applicationReleaseHeadSha: applicationReleaseSha,
+        eligibleGroups: eligible,
+      })
+    : null;
+  if (previewWorkspace) {
+    console.log(`Prepared isolated preview evidence at ${previewWorkspace.directory}`);
   }
 
   const openAiToken = getOpenAiToken();
   const draft = await requestDraftFromModel(eligible, nextNumber, windowSelection, openAiToken);
   if (!draft.sections.some((section) => section.entries.length > 0)) {
     console.log('The model found no publishable changelog entries. Treating it as a quiet week.');
-    await appendGithubOutput('has_changes', 'false');
+    if (!options.preview) {
+      await appendGithubOutput('has_changes', 'false');
+    }
     return;
   }
 
   const mdx = buildMdxDocument(nextNumber, draft, windowSelection.until.slice(0, 10));
+  if (previewWorkspace) {
+    await writePreviewDraftArtifacts({
+      workspace: previewWorkspace,
+      number: nextNumber,
+      windowSelection,
+      draft,
+      mdx,
+      exclusionSummary,
+    });
+    console.log(`Generated isolated preview at ${previewWorkspace.directory}`);
+    return;
+  }
+
   await fs.writeFile(path.join(process.cwd(), draftPath), mdx);
   await updateChangelogMeta(slug);
   await updateChangelogLlms();
