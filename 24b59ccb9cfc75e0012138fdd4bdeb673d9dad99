@@ -1,0 +1,10 @@
+# Context
+
+## Background
+Historical changelog comparisons need the real collection path without mutating generation state, creating files, or opening GitHub pull requests.
+
+## Why This Way
+This commit adds an explicit preview mode with a complete bounded window. Preview execution is isolated from the live cursor and publishing side effects, making prior-week comparisons safe and repeatable.
+
+## Gotchas
+Preview dates must be supplied together and cannot move beyond the stored live cutoff.
