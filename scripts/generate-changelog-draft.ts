@@ -1,24 +1,41 @@
 #!/usr/bin/env bun
 
-import { execFileSync } from 'node:child_process';
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import {
+  CHANGELOG_APPLICATION_REPOSITORY,
   CHANGELOG_CONTEXT_FILES,
   CHANGELOG_PLACEHOLDER_IMAGE,
   CHANGELOG_PROMPT_FILE,
   CHANGELOG_REPOSITORIES,
+  CHANGELOG_SUBMODULE_SOURCES,
   CHANGELOG_TIMEZONE,
   type ChangelogRepository,
   COMMIT_BODY_CHAR_LIMIT,
-  DEFAULT_LOOKBACK_DAYS,
   DEFAULT_OPENAI_MODEL,
+  DEFAULT_OPENAI_REASONING_EFFORT,
   PROMPT_CHANGELOG_CHAR_LIMIT,
   PROMPT_CONTEXT_CHAR_LIMIT,
   RECENT_CHANGELOG_EXAMPLE_COUNT,
   SKIP_AUTHORS,
 } from './changelog/config';
+import {
+  type ChangedFile,
+  type ChangeGroup,
+  type CommitCandidate,
+  type ExclusionSummary,
+  filterEligibleChangeGroups,
+  formatChangeGroupForPrompt,
+  groupCommitsByPullRequest,
+  isTimestampInWindow,
+  parseCommitType,
+  resolveSubmoduleRange,
+  resolveWindow,
+  selectAssociatedPullRequest,
+  summarizeExcludedChangeGroups,
+  type WindowSelection,
+} from './changelog/source';
 
 interface GitHubCommitAuthor {
   login?: string;
@@ -34,21 +51,40 @@ interface GitHubListCommit {
       name: string;
       date: string;
     };
+    committer?: {
+      date: string;
+    };
   };
 }
 
-interface CommitCandidate {
-  owner: string;
-  repo: string;
-  branch: string;
+interface GitHubCommitDetails extends GitHubListCommit {
+  parents: Array<{ sha: string }>;
+  files?: ChangedFile[];
+}
+
+interface GitHubPullRequest {
+  number: number;
+  html_url: string;
+  title: string;
+  body: string | null;
+  merged_at: string | null;
+  merge_commit_sha: string | null;
+}
+
+interface GitHubCompareResponse {
+  status: 'ahead' | 'behind' | 'diverged' | 'identical';
+  total_commits: number;
+  commits: GitHubListCommit[];
+}
+
+interface GitHubBranch {
+  commit: {
+    sha: string;
+  };
+}
+
+interface GitHubRepositoryContent {
   sha: string;
-  shortSha: string;
-  url: string;
-  author: string;
-  committedAt: string;
-  subject: string;
-  body: string;
-  commitType: string | null;
 }
 
 interface DraftReference {
@@ -64,7 +100,7 @@ interface DraftEntry {
 }
 
 interface DraftSection {
-  heading: '⭐ New' | '🐛 Bug Fixes' | '🔧 Improvements' | '🏡 Housekeeping';
+  heading: '⭐ New' | '🐛 Bug Fixes' | '🔧 Improvements';
   entries: DraftEntry[];
 }
 
@@ -85,20 +121,20 @@ interface CliOptions {
   until?: string;
 }
 
-interface WindowSelection {
-  since: string;
+interface ChangelogState {
+  changelogNumber: number;
   until: string;
-  source: 'manual' | 'git' | 'fallback' | 'bootstrap';
+  applicationReleaseSha: string;
 }
 
 const CHANGELOG_DIR = path.join(process.cwd(), 'content/docs/changelog');
 const CHANGELOG_META_PATH = path.join(CHANGELOG_DIR, 'meta.json');
 const CHANGELOG_LLMS_PATH = path.join(process.cwd(), 'public/changelog/llms.txt');
+const CHANGELOG_STATE_PATH = path.join(process.cwd(), 'scripts/changelog/state.json');
 const DRAFT_SECTION_ORDER: DraftSection['heading'][] = [
   '⭐ New',
   '🔧 Improvements',
   '🐛 Bug Fixes',
-  '🏡 Housekeeping',
 ];
 
 function parseArgs(argv: string[]): CliOptions {
@@ -147,101 +183,33 @@ async function getExistingChangelogNumbers(): Promise<number[]> {
     .sort((left, right) => left - right);
 }
 
-function getGitTimestampForAddedFile(relativeFilePath: string): string | null {
-  try {
-    const output = execFileSync(
-      'git',
-      ['log', '--diff-filter=A', '-1', '--format=%cI', '--', relativeFilePath],
-      {
-        cwd: process.cwd(),
-        encoding: 'utf8',
-      },
-    ).trim();
+async function readChangelogState(): Promise<ChangelogState> {
+  const state = JSON.parse(
+    await fs.readFile(CHANGELOG_STATE_PATH, 'utf8'),
+  ) as Partial<ChangelogState>;
 
-    return output || null;
-  } catch {
-    return null;
+  if (
+    !Number.isInteger(state.changelogNumber) ||
+    typeof state.until !== 'string' ||
+    !state.until ||
+    typeof state.applicationReleaseSha !== 'string' ||
+    !/^[0-9a-f]{40}$/i.test(state.applicationReleaseSha)
+  ) {
+    throw new Error(`Invalid changelog state in ${CHANGELOG_STATE_PATH}`);
   }
+
+  return state as ChangelogState;
 }
 
-function subtractDays(isoTimestamp: string, days: number): string {
-  const date = new Date(isoTimestamp);
-  date.setUTCDate(date.getUTCDate() - days);
-  return date.toISOString();
-}
-
-function validateIsoDate(value: string, label: string): string {
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    throw new Error(`Invalid ${label} value: ${value}`);
-  }
-
-  return parsed.toISOString();
-}
-
-function applyBootstrapSince(
-  since: string,
-  until: string,
-  source: WindowSelection['source'],
-): WindowSelection {
-  const bootstrapSince = process.env.CHANGELOG_BOOTSTRAP_SINCE;
-
-  if (!bootstrapSince) {
-    return { since, until, source };
-  }
-
-  const normalizedBootstrap = validateIsoDate(bootstrapSince, 'bootstrap since');
-
-  if (new Date(normalizedBootstrap) >= new Date(until)) {
-    throw new Error(
-      `Expected CHANGELOG_BOOTSTRAP_SINCE < until, received bootstrap=${normalizedBootstrap} until=${until}`,
-    );
-  }
-
-  if (new Date(since) < new Date(normalizedBootstrap)) {
-    return {
-      since: normalizedBootstrap,
-      until,
-      source: 'bootstrap',
-    };
-  }
-
-  return { since, until, source };
-}
-
-async function selectWindow(options: CliOptions): Promise<WindowSelection> {
+async function selectWindow(options: CliOptions, state: ChangelogState): Promise<WindowSelection> {
   const untilInput = options.until || process.env.CHANGELOG_UNTIL || new Date().toISOString();
-  const until = validateIsoDate(untilInput, 'until');
-
   const explicitSince = options.since || process.env.CHANGELOG_SINCE;
-  if (explicitSince) {
-    const since = validateIsoDate(explicitSince, 'since');
-    if (new Date(since) >= new Date(until)) {
-      throw new Error(`Expected since < until, received since=${since} until=${until}`);
-    }
 
-    return { since, until, source: 'manual' };
-  }
-
-  const changelogNumbers = await getExistingChangelogNumbers();
-  const latestNumber = changelogNumbers.at(-1);
-
-  if (latestNumber !== undefined) {
-    const relativePath = path.posix.join(
-      'content/docs/changelog',
-      `changelog-${formatChangelogNumber(latestNumber)}.mdx`,
-    );
-    const addedAt = getGitTimestampForAddedFile(relativePath);
-
-    if (addedAt) {
-      const since = validateIsoDate(addedAt, 'since');
-      if (new Date(since) < new Date(until)) {
-        return applyBootstrapSince(since, until, 'git');
-      }
-    }
-  }
-
-  return applyBootstrapSince(subtractDays(until, DEFAULT_LOOKBACK_DAYS), until, 'fallback');
+  return resolveWindow({
+    explicitSince,
+    until: untilInput,
+    stateUntil: state.until,
+  });
 }
 
 function getGithubToken(): string {
@@ -264,6 +232,19 @@ function getOpenAiToken(): string {
   }
 
   return token;
+}
+
+type OpenAiReasoningEffort = 'none' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
+
+function getOpenAiReasoningEffort(): OpenAiReasoningEffort {
+  const value = process.env.CHANGELOG_OPENAI_REASONING_EFFORT || DEFAULT_OPENAI_REASONING_EFFORT;
+  const allowed: OpenAiReasoningEffort[] = ['none', 'low', 'medium', 'high', 'xhigh', 'max'];
+
+  if (!allowed.includes(value as OpenAiReasoningEffort)) {
+    throw new Error(`Invalid CHANGELOG_OPENAI_REASONING_EFFORT value: ${value}`);
+  }
+
+  return value as OpenAiReasoningEffort;
 }
 
 async function fetchGithubJson<T>(url: URL, token: string): Promise<T> {
@@ -290,11 +271,6 @@ function shouldSkipCommitAuthor(commit: GitHubListCommit): boolean {
   return SKIP_AUTHORS.some((skipAuthor) => normalizedAuthor.includes(skipAuthor.toLowerCase()));
 }
 
-function parseCommitType(subject: string): string | null {
-  const match = subject.toLowerCase().match(/^([a-z]+)(\([^)]*\))?:\s+/);
-  return match?.[1] || null;
-}
-
 function truncateText(value: string, limit: number): string {
   if (value.length <= limit) {
     return value;
@@ -316,14 +292,19 @@ function normalizeCommit(
     owner: repoConfig.owner,
     repo: repoConfig.repo,
     branch: repoConfig.branch,
+    sourceKind: repoConfig.kind,
     sha: commit.sha,
     shortSha: commit.sha.slice(0, 7),
     url: commit.html_url,
     author,
-    committedAt: commit.commit.author.date,
+    committedAt: commit.commit.committer?.date || commit.commit.author.date,
     subject,
     body,
     commitType: parseCommitType(subject),
+    parents: [],
+    changedFiles: [],
+    pullRequest: null,
+    releasedVia: null,
   };
 }
 
@@ -353,7 +334,7 @@ async function fetchRepositoryCommits(
       }
 
       const normalized = normalizeCommit(repoConfig, commit);
-      if (/^merge (branch|pull request)/i.test(normalized.subject)) {
+      if (!isTimestampInWindow(normalized.committedAt, { since, until, source: 'manual' })) {
         continue;
       }
 
@@ -366,6 +347,268 @@ async function fetchRepositoryCommits(
   }
 
   return commits;
+}
+
+async function fetchCommitDetails(
+  repoConfig: ChangelogRepository,
+  sha: string,
+  token: string,
+): Promise<{ parents: string[]; files: ChangedFile[] }> {
+  const files: ChangedFile[] = [];
+  let parents: string[] = [];
+
+  for (let page = 1; page <= 30; page += 1) {
+    const url = new URL(
+      `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/commits/${sha}`,
+    );
+    url.searchParams.set('per_page', '100');
+    url.searchParams.set('page', String(page));
+
+    const response = await fetchGithubJson<GitHubCommitDetails>(url, token);
+    if (page === 1) {
+      parents = response.parents.map((parent) => parent.sha);
+    }
+
+    const pageFiles = response.files || [];
+    files.push(...pageFiles);
+
+    if (pageFiles.length < 100) {
+      return { parents, files };
+    }
+  }
+
+  throw new Error(`Commit ${repoConfig.owner}/${repoConfig.repo}@${sha} exceeds 3,000 files.`);
+}
+
+async function fetchAssociatedPullRequest(
+  repoConfig: ChangelogRepository,
+  sha: string,
+  token: string,
+) {
+  const url = new URL(
+    `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/commits/${sha}/pulls`,
+  );
+  url.searchParams.set('per_page', '100');
+
+  const pullRequests = await fetchGithubJson<GitHubPullRequest[]>(url, token);
+  return selectAssociatedPullRequest(pullRequests, sha);
+}
+
+async function enrichCommitCandidate(
+  repoConfig: ChangelogRepository,
+  commit: CommitCandidate,
+  token: string,
+): Promise<CommitCandidate> {
+  try {
+    const [details, pullRequest] = await Promise.all([
+      fetchCommitDetails(repoConfig, commit.sha, token),
+      fetchAssociatedPullRequest(repoConfig, commit.sha, token).catch(() => {
+        console.warn(
+          `PR metadata unavailable for ${repoConfig.owner}/${repoConfig.repo}; using commit evidence.`,
+        );
+        return null;
+      }),
+    ]);
+
+    return {
+      ...commit,
+      parents: details.parents,
+      changedFiles: details.files,
+      pullRequest,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Failed to enrich ${repoConfig.owner}/${repoConfig.repo}@${commit.shortSha}: ${message}`,
+    );
+  }
+}
+
+async function enrichCommitCandidates(
+  repoConfig: ChangelogRepository,
+  commits: CommitCandidate[],
+  token: string,
+): Promise<CommitCandidate[]> {
+  const enriched: CommitCandidate[] = [];
+
+  for (let index = 0; index < commits.length; index += 6) {
+    const batch = commits.slice(index, index + 6);
+    enriched.push(
+      ...(await Promise.all(
+        batch.map((commit) => enrichCommitCandidate(repoConfig, commit, token)),
+      )),
+    );
+  }
+
+  return enriched;
+}
+
+async function fetchBranchHead(repoConfig: ChangelogRepository, token: string): Promise<string> {
+  const branch = encodeURIComponent(repoConfig.branch);
+  const url = new URL(
+    `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/branches/${branch}`,
+  );
+  const response = await fetchGithubJson<GitHubBranch>(url, token);
+
+  return response.commit.sha;
+}
+
+async function fetchSubmoduleShaAtRef(
+  repoConfig: ChangelogRepository,
+  submodulePath: string,
+  ref: string,
+  token: string,
+): Promise<string> {
+  const encodedPath = submodulePath.split('/').map(encodeURIComponent).join('/');
+  const url = new URL(
+    `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/contents/${encodedPath}`,
+  );
+  url.searchParams.set('ref', ref);
+  const response = await fetchGithubJson<GitHubRepositoryContent>(url, token);
+
+  return response.sha;
+}
+
+async function fetchComparedCommits(
+  repoConfig: ChangelogRepository,
+  baseSha: string,
+  headSha: string,
+  token: string,
+): Promise<GitHubListCommit[]> {
+  const commits: GitHubListCommit[] = [];
+  let totalCommits: number | null = null;
+
+  for (let page = 1; page <= 3; page += 1) {
+    const url = new URL(
+      `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/compare/${baseSha}...${headSha}`,
+    );
+    url.searchParams.set('per_page', '100');
+    url.searchParams.set('page', String(page));
+
+    const response = await fetchGithubJson<GitHubCompareResponse>(url, token);
+    if (response.status === 'identical') {
+      return [];
+    }
+
+    if (response.status !== 'ahead') {
+      throw new Error(
+        `Expected an ahead range for ${repoConfig.owner}/${repoConfig.repo}, received ${response.status} for ${baseSha}...${headSha}.`,
+      );
+    }
+
+    totalCommits ??= response.total_commits;
+    commits.push(...response.commits);
+
+    if (commits.length >= totalCommits) {
+      return commits;
+    }
+
+    if (response.commits.length === 0) {
+      break;
+    }
+  }
+
+  throw new Error(
+    `${repoConfig.owner}/${repoConfig.repo} comparison ${baseSha}...${headSha} returned ${commits.length} of ${totalCommits ?? 0} commits.`,
+  );
+}
+
+export async function fetchApplicationReleaseCommits(
+  baseSha: string,
+  headSha: string,
+  token: string,
+): Promise<CommitCandidate[]> {
+  const commits = await fetchComparedCommits(
+    CHANGELOG_APPLICATION_REPOSITORY,
+    baseSha,
+    headSha,
+    token,
+  );
+
+  return commits
+    .filter((commit) => !shouldSkipCommitAuthor(commit))
+    .map((commit) => normalizeCommit(CHANGELOG_APPLICATION_REPOSITORY, commit));
+}
+
+async function expandReleasedBrowserCommits(
+  integrationCommits: CommitCandidate[],
+  token: string,
+): Promise<CommitCandidate[]> {
+  const derivedCommits = new Map<string, { repo: ChangelogRepository; commit: CommitCandidate }>();
+
+  for (const source of CHANGELOG_SUBMODULE_SOURCES) {
+    const hostCommits = integrationCommits.filter(
+      (commit) =>
+        commit.owner === source.integrationRepository.owner &&
+        commit.repo === source.integrationRepository.repo,
+    );
+    hostCommits.sort((left, right) => left.committedAt.localeCompare(right.committedAt));
+
+    for (const hostCommit of hostCommits) {
+      const submoduleFile = hostCommit.changedFiles.find((file) => file.filename === source.path);
+      if (!submoduleFile) {
+        continue;
+      }
+
+      const range = await resolveSubmoduleRange(submoduleFile.patch, async () => {
+        const parentSha = hostCommit.parents[0];
+        if (!parentSha) {
+          throw new Error(
+            `Could not find a parent for ${hostCommit.owner}/${hostCommit.repo}@${hostCommit.shortSha}.`,
+          );
+        }
+
+        const [baseSha, headSha] = await Promise.all([
+          fetchSubmoduleShaAtRef(source.integrationRepository, source.path, parentSha, token),
+          fetchSubmoduleShaAtRef(source.integrationRepository, source.path, hostCommit.sha, token),
+        ]);
+
+        return { baseSha, headSha };
+      });
+
+      const comparedCommits = await fetchComparedCommits(
+        source.repository,
+        range.baseSha,
+        range.headSha,
+        token,
+      );
+
+      for (const comparedCommit of comparedCommits) {
+        if (shouldSkipCommitAuthor(comparedCommit)) {
+          continue;
+        }
+
+        const normalized = normalizeCommit(source.repository, comparedCommit);
+        normalized.releasedVia = {
+          owner: hostCommit.owner,
+          repo: hostCommit.repo,
+          sha: hostCommit.sha,
+          url: hostCommit.url,
+          path: source.path,
+        };
+        if (!derivedCommits.has(normalized.sha)) {
+          derivedCommits.set(normalized.sha, {
+            repo: source.repository,
+            commit: normalized,
+          });
+        }
+      }
+    }
+  }
+
+  const byRepository = new Map<ChangelogRepository, CommitCandidate[]>();
+  for (const { repo, commit } of derivedCommits.values()) {
+    const commits = byRepository.get(repo) || [];
+    commits.push(commit);
+    byRepository.set(repo, commits);
+  }
+
+  const enriched: CommitCandidate[] = [];
+  for (const [repo, commits] of byRepository) {
+    enriched.push(...(await enrichCommitCandidates(repo, commits, token)));
+  }
+
+  return enriched;
 }
 
 function cleanMdxForPrompt(content: string): string {
@@ -412,34 +655,13 @@ async function loadPromptContext(): Promise<string> {
   return sections.join('\n\n');
 }
 
-function formatCommitForPrompt(commit: CommitCandidate): string {
-  const lines = [
-    `- repo: ${commit.owner}/${commit.repo}`,
-    `  branch: ${commit.branch}`,
-    `  sha: ${commit.sha}`,
-    `  url: ${commit.url}`,
-    `  author: ${commit.author}`,
-    `  committedAt: ${commit.committedAt}`,
-    `  commitType: ${commit.commitType ?? 'unknown'}`,
-    `  subject: ${commit.subject}`,
-  ];
-
-  if (commit.body) {
-    lines.push('  body: |');
-    for (const bodyLine of commit.body.split('\n')) {
-      lines.push(`    ${bodyLine}`);
-    }
-  } else {
-    lines.push('  body: <none>');
-  }
-
-  return lines.join('\n');
-}
-
 function formatRepoListForPrBody(): string {
-  return CHANGELOG_REPOSITORIES.map(
-    (repo) => `- \`${repo.owner}/${repo.repo}@${repo.branch}\``,
-  ).join('\n');
+  return CHANGELOG_REPOSITORIES.filter((repo) => repo.mode !== 'excluded')
+    .map((repo) => {
+      const mode = repo.mode === 'derived' ? 'derived from the application release' : 'direct';
+      return `- \`${repo.owner}/${repo.repo}@${repo.branch}\` (${mode})`;
+    })
+    .join('\n');
 }
 
 function getUniqueReferences(references: DraftReference[]): DraftReference[] {
@@ -544,8 +766,7 @@ function buildPrBody(
   draftPath: string,
   windowSelection: WindowSelection,
   draft: DraftResult,
-  discardedItems: DiscardedItem[],
-  warnings: string[],
+  sourceExclusions: ExclusionSummary[],
 ): string {
   const sections = [
     `# docs: draft changelog #${formatChangelogNumber(number)}`,
@@ -579,20 +800,19 @@ function buildPrBody(
     }
   }
 
-  if (discardedItems.length > 0) {
-    sections.push('## Discarded items', '');
-    for (const item of discardedItems) {
-      const refs = renderReferenceLinks(item.references);
-      const line = `- ${item.text.trim()} — ${item.reason.trim()}${refs ? ` ${refs}` : ''}`;
-      sections.push(line);
+  if (sourceExclusions.length > 0 || draft.discardedItems.length > 0) {
+    sections.push(
+      '## Source filtering',
+      '',
+      'Only aggregate counts are shown here so excluded internal source details are not copied into this public PR.',
+      '',
+    );
+    for (const item of sourceExclusions) {
+      sections.push(`- \`${item.reason}\`: ${item.count}`);
     }
-    sections.push('');
-  }
 
-  if (warnings.length > 0) {
-    sections.push('## Warnings', '');
-    for (const warning of warnings) {
-      sections.push(`- ${warning}`);
+    if (draft.discardedItems.length > 0) {
+      sections.push(`- \`model_discarded\`: ${draft.discardedItems.length}`);
     }
   }
 
@@ -647,10 +867,6 @@ function parseDraftResult(rawContent: string): DraftResult {
   const json = JSON.parse(extractJsonObject(rawContent)) as Record<string, unknown>;
   const introduction = isNonEmptyString(json.introduction) ? json.introduction.trim() : '';
 
-  if (!introduction) {
-    throw new Error('Model output was missing a valid introduction.');
-  }
-
   const sections = Array.isArray(json.sections)
     ? json.sections
         .map((section) => {
@@ -689,12 +905,7 @@ function parseDraftResult(rawContent: string): DraftResult {
                 .filter((entry): entry is DraftEntry => Boolean(entry))
             : [];
 
-          if (
-            heading !== '⭐ New' &&
-            heading !== '🐛 Bug Fixes' &&
-            heading !== '🔧 Improvements' &&
-            heading !== '🏡 Housekeeping'
-          ) {
+          if (heading !== '⭐ New' && heading !== '🐛 Bug Fixes' && heading !== '🔧 Improvements') {
             return null;
           }
 
@@ -710,8 +921,8 @@ function parseDraftResult(rawContent: string): DraftResult {
         .filter((section): section is DraftSection => Boolean(section))
     : [];
 
-  if (sections.length === 0) {
-    throw new Error('Model output did not contain any valid changelog sections.');
+  if (sections.length > 0 && !introduction) {
+    throw new Error('Model output was missing a valid introduction.');
   }
 
   const discardedItems = Array.isArray(json.discardedItems)
@@ -744,27 +955,55 @@ function parseDraftResult(rawContent: string): DraftResult {
   };
 }
 
+function validateDraftReferences(draft: DraftResult, groups: ChangeGroup[]) {
+  const allowedUrls = new Set<string>();
+  for (const group of groups) {
+    if (group.pullRequest) {
+      allowedUrls.add(group.pullRequest.url);
+    }
+
+    for (const commit of group.commits) {
+      allowedUrls.add(commit.url);
+      if (commit.releasedVia) {
+        allowedUrls.add(commit.releasedVia.url);
+      }
+    }
+  }
+
+  const references = [
+    ...draft.sections.flatMap((section) => section.entries.flatMap((entry) => entry.references)),
+    ...draft.discardedItems.flatMap((item) => item.references),
+  ];
+
+  for (const reference of references) {
+    if (!allowedUrls.has(reference.url)) {
+      throw new Error(`Model output referenced an unknown source URL: ${reference.url}`);
+    }
+  }
+}
+
 async function requestDraftFromModel(
-  commits: CommitCandidate[],
+  groups: ChangeGroup[],
   number: number,
   windowSelection: WindowSelection,
   openAiToken: string,
 ): Promise<DraftResult> {
   const systemPrompt = await fs.readFile(path.join(process.cwd(), CHANGELOG_PROMPT_FILE), 'utf8');
   const docsContext = await loadPromptContext();
-  const commitPayload = commits.map(formatCommitForPrompt).join('\n\n');
+  const sourcePayload = `[\n${groups.map(formatChangeGroupForPrompt).join(',\n')}\n]`;
   const model = process.env.CHANGELOG_OPENAI_MODEL || DEFAULT_OPENAI_MODEL;
+  const reasoningEffort = getOpenAiReasoningEffort();
 
   const userPrompt = [
     `Generate changelog #${formatChangelogNumber(number)}.`,
-    `Commit window: ${windowSelection.since} to ${windowSelection.until}.`,
+    `Source window: ${windowSelection.since} to ${windowSelection.until}.`,
     '',
     'Return JSON only with this shape:',
     '{',
     '  "introduction": "string",',
     '  "sections": [',
     '    {',
-    '      "heading": "⭐ New | 🐛 Bug Fixes | 🔧 Improvements | 🏡 Housekeeping",',
+    '      "heading": "⭐ New | 🐛 Bug Fixes | 🔧 Improvements",',
     '      "entries": [',
     '        {',
     '          "kind": "feature | bullet",',
@@ -784,11 +1023,13 @@ async function requestDraftFromModel(
     '  ]',
     '}',
     '',
+    'If none of the facts support a public changelog entry, return an empty introduction and empty sections.',
+    '',
     '## Product and style context',
     docsContext,
     '',
-    '## Weekly commit data',
-    commitPayload,
+    '## Eligible source facts grouped by logical pull request',
+    sourcePayload,
   ].join('\n');
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -799,7 +1040,8 @@ async function requestDraftFromModel(
     },
     body: JSON.stringify({
       model,
-      temperature: 0.2,
+      reasoning_effort: reasoningEffort,
+      response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
@@ -821,7 +1063,9 @@ async function requestDraftFromModel(
     throw new Error('OpenAI response did not include message content.');
   }
 
-  return parseDraftResult(content);
+  const draft = parseDraftResult(content);
+  validateDraftReferences(draft, groups);
+  return draft;
 }
 
 async function updateChangelogMeta(slug: string) {
@@ -851,6 +1095,19 @@ async function updateChangelogLlms() {
   await fs.writeFile(CHANGELOG_LLMS_PATH, content);
 }
 
+async function updateChangelogState(
+  changelogNumber: number,
+  until: string,
+  applicationReleaseSha: string,
+) {
+  const state: ChangelogState = {
+    changelogNumber,
+    until,
+    applicationReleaseSha,
+  };
+  await fs.writeFile(CHANGELOG_STATE_PATH, `${JSON.stringify(state, null, 2)}\n`);
+}
+
 async function appendGithubOutput(key: string, value: string) {
   const outputFile = process.env.GITHUB_OUTPUT;
 
@@ -869,34 +1126,54 @@ function createBranchName(number: number, until: string): string {
 
 async function main() {
   const options = parseArgs(process.argv.slice(2));
-  const windowSelection = await selectWindow(options);
+  const state = await readChangelogState();
+  const windowSelection = await selectWindow(options, state);
   const changelogNumbers = await getExistingChangelogNumbers();
+  const latestNumber = changelogNumbers.at(-1) ?? -1;
   const nextNumber = (changelogNumbers.at(-1) ?? -1) + 1;
   const slug = `changelog-${formatChangelogNumber(nextNumber)}`;
   const draftPath = path.posix.join('content/docs/changelog', `${slug}.mdx`);
+
+  if (state.changelogNumber !== latestNumber) {
+    throw new Error(
+      `Changelog state points to #${formatChangelogNumber(state.changelogNumber)}, but the latest file is #${formatChangelogNumber(latestNumber)}.`,
+    );
+  }
+
   const githubToken = getGithubToken();
-  const openAiToken = getOpenAiToken();
-
-  const warnings: string[] = [];
+  const applicationReleaseSha = await fetchBranchHead(
+    CHANGELOG_APPLICATION_REPOSITORY,
+    githubToken,
+  );
   const commits: CommitCandidate[] = [];
+  const directRepositories = CHANGELOG_REPOSITORIES.filter((repo) => repo.mode === 'direct');
 
-  for (const repoConfig of CHANGELOG_REPOSITORIES) {
+  for (const repoConfig of directRepositories) {
     try {
-      const repoCommits = await fetchRepositoryCommits(
-        repoConfig,
-        githubToken,
-        windowSelection.since,
-        windowSelection.until,
-      );
-      commits.push(...repoCommits);
+      const repoCommits =
+        repoConfig.kind === 'application'
+          ? await fetchApplicationReleaseCommits(
+              state.applicationReleaseSha,
+              applicationReleaseSha,
+              githubToken,
+            )
+          : await fetchRepositoryCommits(
+              repoConfig,
+              githubToken,
+              windowSelection.since,
+              windowSelection.until,
+            );
+      commits.push(...(await enrichCommitCandidates(repoConfig, repoCommits, githubToken)));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      warnings.push(
-        `Failed to fetch commits for ${repoConfig.owner}/${repoConfig.repo}: ${message}`,
+      throw new Error(
+        `Failed to collect ${repoConfig.owner}/${repoConfig.repo}@${repoConfig.branch}: ${message}`,
       );
     }
   }
 
+  const browserCommits = await expandReleasedBrowserCommits(commits, githubToken);
+  commits.push(...browserCommits);
   commits.sort((left, right) => {
     if (left.repo === right.repo) {
       return left.committedAt.localeCompare(right.committedAt);
@@ -905,30 +1182,54 @@ async function main() {
     return left.repo.localeCompare(right.repo);
   });
 
+  // The cursor advances only with a published changelog, so a later draft keeps the full
+  // cumulative window after one or more quiet weeks.
   if (commits.length === 0) {
     console.log(
-      `No commits found between ${windowSelection.since} and ${windowSelection.until}. Nothing to draft.`,
+      `No source activity found between ${windowSelection.since} and ${windowSelection.until}.`,
     );
     await appendGithubOutput('has_changes', 'false');
     return;
   }
 
-  console.log(`Fetched ${commits.length} candidate commits across monitored repositories.`);
+  const groups = groupCommitsByPullRequest(commits);
+  const { eligible, excluded } = filterEligibleChangeGroups(groups);
+  const exclusionSummary = summarizeExcludedChangeGroups(excluded);
 
-  const draft = await requestDraftFromModel(commits, nextNumber, windowSelection, openAiToken);
+  console.log(
+    `Collected ${commits.length} commits as ${groups.length} logical changes; ${eligible.length} are eligible.`,
+  );
+  if (exclusionSummary.length > 0) {
+    console.log(
+      `Excluded changes: ${exclusionSummary
+        .map(({ reason, count }) => `${reason}=${count}`)
+        .join(', ')}`,
+    );
+  }
+
+  if (eligible.length === 0) {
+    console.log(
+      'The source window contains no public changelog facts. Treating it as a quiet week.',
+    );
+    await appendGithubOutput('has_changes', 'false');
+    return;
+  }
+
+  const openAiToken = getOpenAiToken();
+  const draft = await requestDraftFromModel(eligible, nextNumber, windowSelection, openAiToken);
+  if (!draft.sections.some((section) => section.entries.length > 0)) {
+    console.log('The model found no publishable changelog entries. Treating it as a quiet week.');
+    await appendGithubOutput('has_changes', 'false');
+    return;
+  }
+
   const mdx = buildMdxDocument(nextNumber, draft, windowSelection.until.slice(0, 10));
   await fs.writeFile(path.join(process.cwd(), draftPath), mdx);
   await updateChangelogMeta(slug);
   await updateChangelogLlms();
+  await updateChangelogState(nextNumber, windowSelection.until, applicationReleaseSha);
 
-  const prBody = buildPrBody(
-    nextNumber,
-    draftPath,
-    windowSelection,
-    draft,
-    draft.discardedItems,
-    warnings,
-  );
+  const prBody = buildPrBody(nextNumber, draftPath, windowSelection, draft, exclusionSummary);
   const prBodyPath =
     process.env.CHANGELOG_PR_BODY_PATH ||
     path.join(os.tmpdir(), `steel-changelog-pr-body-${slug}.md`);
@@ -946,4 +1247,6 @@ async function main() {
   console.log(`Prepared PR body at ${prBodyPath}`);
 }
 
-await main();
+if (import.meta.main) {
+  await main();
+}

@@ -14,10 +14,6 @@ on:
         description: Optional ISO timestamp/date upper bound
         required: false
         type: string
-      bootstrap_since:
-        description: Optional lower bound used to cap automatic lookback
-        required: false
-        type: string
       open_pr:
         description: Open a draft PR after generating the changelog
         required: false
@@ -78,6 +74,10 @@ jobs:
         if: steps.gate.outputs.should_run == 'true'
         run: bun install --frozen-lockfile
 
+      - name: Run changelog unit tests
+        if: steps.gate.outputs.should_run == 'true'
+        run: bun test tests/changelog-v2.test.ts
+
       - name: Generate changelog draft
         if: steps.gate.outputs.should_run == 'true'
         id: generate
@@ -85,9 +85,10 @@ jobs:
           CHANGELOG_GITHUB_TOKEN: ${{ secrets.CHANGELOG_GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CHANGELOG_OPENAI_MODEL: ${{ vars.CHANGELOG_OPENAI_MODEL }}
+          CHANGELOG_OPENAI_REASONING_EFFORT: ${{ vars.CHANGELOG_OPENAI_REASONING_EFFORT }}
           CHANGELOG_SINCE: ${{ inputs.since }}
           CHANGELOG_UNTIL: ${{ inputs.until }}
-          CHANGELOG_BOOTSTRAP_SINCE: ${{ inputs.bootstrap_since || vars.CHANGELOG_BOOTSTRAP_SINCE }}
         run: bun run generate-changelog-draft
 
       - name: Run link validation
@@ -115,6 +116,10 @@ jobs:
           commit-message: ${{ steps.generate.outputs.commit_message }}
           body-path: ${{ steps.generate.outputs.pr_body_path }}
           draft: true
+          reviewers: |
+            nibzard
+            fukouda
           add-paths: |
             content/docs/changelog/**
             public/changelog/llms.txt
+            scripts/changelog/state.json
