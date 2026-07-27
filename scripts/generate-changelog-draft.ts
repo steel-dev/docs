@@ -133,6 +133,8 @@ export interface CliOptions {
   number?: number;
   since?: string;
   until?: string;
+  applicationReleaseBaseSha?: string;
+  applicationReleaseHeadSha?: string;
 }
 
 interface ChangelogState {
@@ -194,15 +196,44 @@ export function parseArgs(argv: string[]): CliOptions {
       continue;
     }
 
+    if (value === '--application-release-base-sha' || value === '--application-release-head-sha') {
+      const sha = requireOptionValue(argv, index, value);
+      if (!/^[0-9a-f]{40}$/i.test(sha)) {
+        throw new Error(`Invalid SHA for ${value}: ${sha}`);
+      }
+
+      if (value === '--application-release-base-sha') {
+        options.applicationReleaseBaseSha = sha;
+      } else {
+        options.applicationReleaseHeadSha = sha;
+      }
+      index += 1;
+      continue;
+    }
+
     throw new Error(`Unknown argument: ${value}`);
   }
 
   if (options.preview) {
-    if (options.number === undefined || !options.since || !options.until) {
-      throw new Error('Preview mode requires --number, --since, and --until.');
+    if (
+      options.number === undefined ||
+      !options.since ||
+      !options.until ||
+      !options.applicationReleaseBaseSha ||
+      !options.applicationReleaseHeadSha
+    ) {
+      throw new Error(
+        'Preview mode requires --number, --since, --until, --application-release-base-sha, and --application-release-head-sha.',
+      );
     }
-  } else if (options.number !== undefined) {
-    throw new Error('--number can only be used with --preview.');
+  } else if (
+    options.number !== undefined ||
+    options.applicationReleaseBaseSha ||
+    options.applicationReleaseHeadSha
+  ) {
+    throw new Error(
+      '--number, --application-release-base-sha, and --application-release-head-sha can only be used with --preview.',
+    );
   }
 
   return options;
@@ -554,10 +585,18 @@ async function fetchSubmoduleShaAtRef(
 }
 
 class NonAheadCompareError extends Error {
-  constructor(repoConfig: ChangelogRepository, baseSha: string, headSha: string, status: string) {
+  readonly status: GitHubCompareResponse['status'];
+
+  constructor(
+    repoConfig: ChangelogRepository,
+    baseSha: string,
+    headSha: string,
+    status: GitHubCompareResponse['status'],
+  ) {
     super(
       `Expected an ahead range for ${repoConfig.owner}/${repoConfig.repo}, received ${status} for ${baseSha}...${headSha}.`,
     );
+    this.status = status;
   }
 }
 
@@ -570,7 +609,7 @@ async function fetchComparedCommits(
   const commits: GitHubListCommit[] = [];
   let totalCommits: number | null = null;
 
-  for (let page = 1; page <= 3; page += 1) {
+  for (let page = 1; ; page += 1) {
     const url = new URL(
       `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/compare/${baseSha}...${headSha}`,
     );
@@ -665,9 +704,9 @@ export async function expandReleasedBrowserCommits(
           token,
         );
       } catch (error) {
-        // A rolled-back or rewritten submodule pointer must not block the whole draft; the
-        // application release comparison still fails loudly on the same condition.
-        if (error instanceof NonAheadCompareError) {
+        // A pure rollback contains no newly released browser commits. Diverged ranges may contain
+        // head-only commits, so they must fail instead of silently dropping release evidence.
+        if (error instanceof NonAheadCompareError && error.status === 'behind') {
           console.warn(
             `Skipping submodule expansion for ${hostCommit.owner}/${hostCommit.repo}@${hostCommit.shortSha}: ${error.message}`,
           );
@@ -1330,8 +1369,8 @@ async function writePreviewDraftArtifacts(input: {
   ]);
 }
 
-async function main() {
-  const options = parseArgs(process.argv.slice(2));
+export async function main(argv = process.argv.slice(2)) {
+  const options = parseArgs(argv);
   const githubToken = getGithubToken();
   let nextNumber: number;
   let windowSelection: WindowSelection;
@@ -1344,18 +1383,8 @@ async function main() {
       since: options.since as string,
       until: options.until as string,
     });
-    [applicationReleaseBaseSha, applicationReleaseSha] = await Promise.all([
-      fetchBranchHeadAtOrBefore(
-        CHANGELOG_APPLICATION_REPOSITORY,
-        githubToken,
-        windowSelection.since,
-      ),
-      fetchBranchHeadAtOrBefore(
-        CHANGELOG_APPLICATION_REPOSITORY,
-        githubToken,
-        windowSelection.until,
-      ),
-    ]);
+    applicationReleaseBaseSha = options.applicationReleaseBaseSha as string;
+    applicationReleaseSha = options.applicationReleaseHeadSha as string;
   } else {
     const state = await readChangelogState();
     windowSelection = await selectWindow(options, state);
@@ -1444,16 +1473,6 @@ async function main() {
     );
   }
 
-  if (eligible.length === 0) {
-    console.log(
-      'The source window contains no public changelog facts. Treating it as a quiet week.',
-    );
-    if (!options.preview) {
-      await appendGithubOutput('has_changes', 'false');
-    }
-    return;
-  }
-
   const previewWorkspace = options.preview
     ? await createPreviewWorkspace({
         number: nextNumber,
@@ -1466,6 +1485,16 @@ async function main() {
     : null;
   if (previewWorkspace) {
     console.log(`Prepared isolated preview evidence at ${previewWorkspace.directory}`);
+  }
+
+  if (eligible.length === 0) {
+    console.log(
+      'The source window contains no public changelog facts. Treating it as a quiet week.',
+    );
+    if (!options.preview) {
+      await appendGithubOutput('has_changes', 'false');
+    }
+    return;
   }
 
   const openAiToken = getOpenAiToken();

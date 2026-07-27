@@ -315,6 +315,12 @@ function allFilesMatch(group: ChangeGroup, predicate: (filename: string) => bool
   return group.changedFiles.every((file) => predicate(file.filename));
 }
 
+function fileWasAdded(group: ChangeGroup, filename: string): boolean {
+  return group.commits.some((commit) =>
+    commit.changedFiles.some((file) => file.filename === filename && file.status === 'added'),
+  );
+}
+
 function isCommonlyIgnoredFile(filename: string): boolean {
   return COMMON_IGNORED_FILE_PATTERNS.some((pattern) => pattern.test(filename));
 }
@@ -422,7 +428,7 @@ function classifyGroup(group: ChangeGroup): EligibilityReason {
     const materialFiles = readerFacingFiles.filter(
       (file) => !/(^|\/)meta\.json$/.test(file.filename),
     );
-    if (materialFiles.some((file) => file.status === 'added')) {
+    if (materialFiles.some((file) => fileWasAdded(group, file.filename))) {
       return 'eligible';
     }
 
@@ -442,7 +448,7 @@ function classifyGroup(group: ChangeGroup): EligibilityReason {
       /^(examples|recipes)\//.test(file.filename),
     );
     const addsRecipe =
-      recipeFiles.some((file) => file.status === 'added') ||
+      recipeFiles.some((file) => fileWasAdded(group, file.filename)) ||
       (/\b(add|added|new|introduc(e|ed|es|ing))\b/.test(text) &&
         group.changedFiles.some((file) => file.filename === 'registry.yaml'));
 
@@ -456,7 +462,8 @@ function classifyGroup(group: ChangeGroup): EligibilityReason {
       ) ||
       group.changedFiles.some(
         (file) =>
-          file.status === 'added' && /(^|\/)benchmarks?\//.test(file.filename.toLowerCase()),
+          fileWasAdded(group, file.filename) &&
+          /(^|\/)benchmarks?\//.test(file.filename.toLowerCase()),
       );
 
     if (addsBenchmark) {

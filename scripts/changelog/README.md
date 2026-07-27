@@ -2,19 +2,25 @@
 
 ## Replay a historical week locally
 
-Set `OPENAI_API_KEY` and a GitHub token, then run:
+Set a GitHub token and, when the window contains eligible facts, `OPENAI_API_KEY`, then run:
 
 ```bash
 GITHUB_TOKEN="$(gh auth token)" bun run preview-changelog \
   --number 35 \
   --since 2026-07-17T15:58:38.000Z \
-  --until 2026-07-24T13:35:35.621Z
+  --until 2026-07-24T13:35:35.621Z \
+  --application-release-base-sha d2f91834047984bf37e09caba27231fb07a4109a \
+  --application-release-head-sha 4cc44305bae19df7135edda12a602841ad90ffe7
 ```
 
-Preview mode resolves the application release branch at both historical cutoffs, uses the same
-collection, filtering, and model paths as automation, and writes the draft and its review evidence
-to a new temporary directory. It does not update changelog content, metadata, generator state, or
-GitHub Actions output.
+Preview mode requires the exact application release commits at both historical cutoffs because
+commit timestamps cannot reconstruct when the release branch moved. It uses the same collection,
+filtering, and model paths as automation and writes the draft and its review evidence to a new
+temporary directory. It does not update changelog content, metadata, generator state, or GitHub
+Actions output.
+
+For later replays, use `applicationReleaseSha` from the generator state at the previous and target
+published changelog revisions.
 
 ## Auditing filtered evidence
 

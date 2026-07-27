@@ -27,6 +27,7 @@ import {
   extractOpenAiResponseText,
   fetchApplicationReleaseCommits,
   fetchApplicationReleaseHead,
+  main,
   parseArgs,
   selectRecentChangelogNumbers,
 } from '../scripts/generate-changelog-draft';
@@ -57,6 +58,36 @@ describe('changelog v2 source evidence', () => {
       'src/data/osworld2.json',
     ]);
     expect(formatChangeGroupForPrompt(groups[0])).toContain('"title": "Add OSWorld 2.0 benchmark"');
+  });
+
+  test('preserves added-file evidence across later commits in the same pull request', () => {
+    const pullRequest = {
+      number: 51,
+      url: 'https://github.com/steel-dev/steel-cookbook/pull/51',
+      title: 'Stripe Projects web agent workflow',
+      body: '',
+    };
+    const groups = groupCommitsByPullRequest([
+      commitFixture('cookbook', {
+        repo: 'steel-cookbook',
+        sha: 'a'.repeat(40),
+        committedAt: '2026-07-24T15:00:00.000Z',
+        subject: 'feat: Stripe Projects web agent workflow',
+        pullRequest,
+        changedFiles: [changedFile('examples/stripe-projects-web-agent/index.ts', 'added')],
+      }),
+      commitFixture('cookbook', {
+        repo: 'steel-cookbook',
+        sha: 'b'.repeat(40),
+        committedAt: '2026-07-24T16:00:00.000Z',
+        subject: 'refactor: simplify the workflow',
+        pullRequest,
+        changedFiles: [changedFile('examples/stripe-projects-web-agent/index.ts')],
+      }),
+    ]);
+
+    expect(groups[0].changedFiles[0].status).toBe('modified');
+    expect(filterEligibleChangeGroups(groups).eligible).toHaveLength(1);
   });
 
   test('selects the exact merge pull request and cleans sparse bodies', () => {
@@ -369,18 +400,27 @@ describe('changelog v2 window and model defaults', () => {
         '2026-07-17T15:58:38.000Z',
         '--until',
         PREVIOUS_CHANGELOG_CUTOFF,
+        '--application-release-base-sha',
+        'a'.repeat(40),
+        '--application-release-head-sha',
+        APPLICATION_RELEASE_SHA_AT_035,
       ]),
     ).toEqual({
       preview: true,
       number: 35,
       since: '2026-07-17T15:58:38.000Z',
       until: PREVIOUS_CHANGELOG_CUTOFF,
+      applicationReleaseBaseSha: 'a'.repeat(40),
+      applicationReleaseHeadSha: APPLICATION_RELEASE_SHA_AT_035,
     });
     expect(() => parseArgs(['--preview', '--number', '35'])).toThrow(
-      'Preview mode requires --number, --since, and --until',
+      'Preview mode requires --number, --since, --until, --application-release-base-sha, and --application-release-head-sha',
+    );
+    expect(() => parseArgs(['--preview', '--application-release-base-sha', 'short-sha'])).toThrow(
+      'Invalid SHA',
     );
     expect(() => parseArgs(['--preveiw'])).toThrow('Unknown argument');
-    expect(() => parseArgs(['--number', '35'])).toThrow('--number can only be used with --preview');
+    expect(() => parseArgs(['--number', '35'])).toThrow('can only be used with --preview');
   });
 
   test('does not leak the replay target or later changelogs into prompt examples', () => {
@@ -441,7 +481,7 @@ function submodulePointerHostCommit() {
 }
 
 describe('changelog v2 release evidence recovery', () => {
-  test('skips submodule expansion when the released range is not ahead', async () => {
+  test('skips submodule expansion when the released range is behind', async () => {
     const originalFetch = globalThis.fetch;
     const originalWarn = console.warn;
     const warnings: string[] = [];
@@ -457,6 +497,24 @@ describe('changelog v2 release evidence recovery', () => {
     } finally {
       globalThis.fetch = originalFetch;
       console.warn = originalWarn;
+    }
+  });
+
+  test('fails when the released browser range has diverged', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async () =>
+      jsonResponse({
+        status: 'diverged',
+        total_commits: 1,
+        commits: [BROWSER_FIX_LIST_COMMIT],
+      })) as unknown as typeof fetch;
+
+    try {
+      await expect(
+        expandReleasedBrowserCommits([submodulePointerHostCommit()], 'token'),
+      ).rejects.toThrow('received diverged');
+    } finally {
+      globalThis.fetch = originalFetch;
     }
   });
 
@@ -520,6 +578,49 @@ describe('changelog v2 release evidence recovery', () => {
     }
   });
 
+  test('paginates application release comparisons past 300 commits', async () => {
+    const originalFetch = globalThis.fetch;
+    const requestedPages: number[] = [];
+    const commits = Array.from({ length: 301 }, (_, index) => {
+      const sha = index.toString(16).padStart(40, '0');
+      return {
+        sha,
+        html_url: `https://github.com/0xnenlabs/steel/commit/${sha}`,
+        author: { login: 'engineer' },
+        commit: {
+          message: `chore: release commit ${index}`,
+          author: { name: 'Engineer', date: '2026-07-24T15:00:00.000Z' },
+          committer: { date: '2026-07-24T15:00:00.000Z' },
+        },
+      };
+    });
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = new URL(String(input));
+      const page = Number(url.searchParams.get('page'));
+      requestedPages.push(page);
+      const offset = (page - 1) * 100;
+
+      return jsonResponse({
+        status: 'ahead',
+        total_commits: commits.length,
+        commits: commits.slice(offset, offset + 100),
+      });
+    }) as unknown as typeof fetch;
+
+    try {
+      const collected = await fetchApplicationReleaseCommits(
+        APPLICATION_RELEASE_SHA_AT_035,
+        'f'.repeat(40),
+        'token',
+      );
+
+      expect(collected).toHaveLength(301);
+      expect(requestedPages).toEqual([1, 2, 3, 4]);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
   test('bounds the application release head when an explicit until is provided', async () => {
     const originalFetch = globalThis.fetch;
     const requestedUrls: string[] = [];
@@ -568,6 +669,106 @@ describe('changelog v2 release evidence recovery', () => {
       expect(parsed.every((item) => item.reason && item.key)).toBe(true);
     } finally {
       await fs.rm(workspace.directory, { recursive: true, force: true });
+    }
+  });
+
+  test('preview CLI writes excluded evidence before returning for a quiet week', async () => {
+    const originalFetch = globalThis.fetch;
+    const originalLog = console.log;
+    const originalGithubToken = process.env.CHANGELOG_GITHUB_TOKEN;
+    const originalOpenAiToken = process.env.OPENAI_API_KEY;
+    const logs: string[] = [];
+    const commitSha = 'c'.repeat(40);
+    const listCommit = {
+      sha: commitSha,
+      html_url: `https://github.com/0xnenlabs/steel/commit/${commitSha}`,
+      author: { login: 'engineer' },
+      commit: {
+        message: 'chore: update dependencies',
+        author: { name: 'Engineer', date: '2026-07-24T16:32:50.500Z' },
+        committer: { date: '2026-07-24T16:32:50.500Z' },
+      },
+    };
+    let workspaceDirectory: string | undefined;
+
+    process.env.CHANGELOG_GITHUB_TOKEN = 'test-token';
+    delete process.env.OPENAI_API_KEY;
+    console.log = (message?: unknown) => logs.push(String(message));
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = new URL(String(input));
+
+      if (url.pathname.includes('/repos/0xnenlabs/steel/compare/')) {
+        return jsonResponse({ status: 'ahead', total_commits: 1, commits: [listCommit] });
+      }
+
+      if (url.pathname === `/repos/0xnenlabs/steel/commits/${commitSha}/pulls`) {
+        return jsonResponse([]);
+      }
+
+      if (url.pathname === `/repos/0xnenlabs/steel/commits/${commitSha}`) {
+        return jsonResponse({
+          ...listCommit,
+          parents: [{ sha: 'd'.repeat(40) }],
+          files: [changedFile('package.json'), changedFile('bun.lock')],
+        });
+      }
+
+      if (url.pathname.endsWith('/commits')) {
+        return jsonResponse([]);
+      }
+
+      throw new Error(`Unexpected request: ${url.toString()}`);
+    }) as unknown as typeof fetch;
+
+    try {
+      await main([
+        '--preview',
+        '--number',
+        '36',
+        '--since',
+        '2026-07-24T16:32:50.000Z',
+        '--until',
+        '2026-07-24T16:32:51.000Z',
+        '--application-release-base-sha',
+        'a'.repeat(40),
+        '--application-release-head-sha',
+        'b'.repeat(40),
+      ]);
+
+      const workspaceLog = logs.find((line) =>
+        line.startsWith('Prepared isolated preview evidence at '),
+      );
+      expect(workspaceLog).toBeDefined();
+      workspaceDirectory = workspaceLog?.replace('Prepared isolated preview evidence at ', '');
+
+      const excluded = JSON.parse(
+        await fs.readFile(path.join(workspaceDirectory as string, 'excluded-groups.json'), 'utf8'),
+      ) as Array<{ reason: string }>;
+      const sourceFacts = JSON.parse(
+        await fs.readFile(path.join(workspaceDirectory as string, 'source-facts.json'), 'utf8'),
+      ) as unknown[];
+
+      expect(excluded.map((item) => item.reason)).toEqual(['routine_maintenance']);
+      expect(sourceFacts).toEqual([]);
+      expect(logs).toContain(
+        'The source window contains no public changelog facts. Treating it as a quiet week.',
+      );
+    } finally {
+      globalThis.fetch = originalFetch;
+      console.log = originalLog;
+      if (originalGithubToken === undefined) {
+        delete process.env.CHANGELOG_GITHUB_TOKEN;
+      } else {
+        process.env.CHANGELOG_GITHUB_TOKEN = originalGithubToken;
+      }
+      if (originalOpenAiToken === undefined) {
+        delete process.env.OPENAI_API_KEY;
+      } else {
+        process.env.OPENAI_API_KEY = originalOpenAiToken;
+      }
+      if (workspaceDirectory) {
+        await fs.rm(workspaceDirectory, { recursive: true, force: true });
+      }
     }
   });
 });
