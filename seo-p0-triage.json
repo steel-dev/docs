@@ -1,0 +1,269 @@
+{
+  "meta": {
+    "name": "SEO P0 title/H1/meta proposals",
+    "date": "2026-07-23",
+    "revision": 2,
+    "note": "Frontmatter `title` drives both the <title> tag (suffix ' | Steel Docs' appended by layout) and the on-page H1. The sidebar renders `sidebarTitle` when present — shown per card. Rev 2: no third-party protection-brand names (reCAPTCHA/hCaptcha/Turnstile/Cloudflare/2captcha) in titles or meta; feature names (Agent Traces) preserved in titles.",
+    "interpretation": "accepted = apply as-is; accepted+comment = apply with tweak; denied = drop; pending+comment = revise and resubmit"
+  },
+  "items": [
+    {
+      "id": "selenium",
+      "page": "/integrations/selenium",
+      "file": "content/docs/integrations/selenium.mdx",
+      "targets": "selenium 110k/mo · selenium grid 590 · selenium alternative 210 ($17 CPC)",
+      "sidebar": "Selenium (unchanged)",
+      "current": {
+        "title": "Selenium",
+        "description": "Drive a Steel cloud browser from Selenium over the W3C WebDriver protocol in Python."
+      },
+      "proposed": {
+        "title": "Run Selenium in the Cloud on Steel",
+        "description": "Run Selenium in the cloud with Steel instead of running your own grid — stealth, rotating proxies, and CAPTCHA solving built in, over W3C WebDriver in Python.",
+        "note": "dropped 'Selenium Grid Alternative' positioning from the title; 'your own grid' (lowercase, generic) keeps the intent"
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "playwright",
+      "page": "/integrations/playwright",
+      "file": "content/docs/integrations/playwright.mdx",
+      "targets": "playwright 74k/mo · playwright docker 320 · playwright cloud 50",
+      "sidebar": "Playwright (unchanged)",
+      "current": {
+        "title": "Playwright",
+        "description": "Drive a Steel cloud browser from Playwright over CDP in TypeScript or Python."
+      },
+      "proposed": {
+        "title": "Run Playwright on Steel Cloud Browsers",
+        "description": "Run Playwright in the cloud with Steel. Connect over CDP in TypeScript or Python and get managed browsers with stealth, rotating proxies, and CAPTCHA solving."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "langgraph",
+      "page": "/integrations/langgraph",
+      "file": "content/docs/integrations/langgraph.mdx",
+      "targets": "langgraph 33.1k/mo · langgraph browser agent",
+      "sidebar": "LangGraph (unchanged)",
+      "current": {
+        "title": "LangGraph",
+        "description": "Build Python browser agents as explicit state machines with LangGraph nodes, edges, and structured output."
+      },
+      "proposed": {
+        "title": "Build a LangGraph Browser Agent on Steel",
+        "description": "Build a LangGraph browser agent on Steel cloud browsers. Model web tasks as explicit state machines with nodes, edges, and structured output in Python."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "puppeteer",
+      "page": "/integrations/puppeteer",
+      "file": "content/docs/integrations/puppeteer.mdx",
+      "targets": "puppeteer 27.1k/mo · puppeteer stealth 110 · puppeteer as a service",
+      "sidebar": "Puppeteer (unchanged)",
+      "current": {
+        "title": "Puppeteer",
+        "description": "Drive a Steel cloud browser from Puppeteer over CDP in TypeScript."
+      },
+      "proposed": {
+        "title": "Connect Puppeteer to Steel Cloud Browsers (CDP)",
+        "description": "Run Puppeteer in the cloud with Steel. Connect over CDP in TypeScript — no local Chrome, plus built-in stealth, rotating proxies, and CAPTCHA solving."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "crewai",
+      "page": "/integrations/crewai",
+      "file": "content/docs/integrations/crewai.mdx",
+      "targets": "crewai 14.8k/mo · crewai browser",
+      "sidebar": "CrewAI (unchanged)",
+      "current": {
+        "title": "CrewAI",
+        "description": "Orchestrate multi-agent Python crews with shared memory and human-in-the-loop reviews."
+      },
+      "proposed": {
+        "title": "Build a CrewAI Browser Agent on Steel",
+        "description": "Give CrewAI agents a real browser with Steel. Orchestrate multi-agent Python crews that navigate the web, with shared memory and human-in-the-loop reviews."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "claude-agent-sdk",
+      "page": "/integrations/claude-agent-sdk",
+      "file": "content/docs/integrations/claude-agent-sdk.mdx",
+      "targets": "claude agent sdk 9.9k/mo",
+      "sidebar": "Claude Agent SDK (unchanged)",
+      "current": {
+        "title": "Claude Agent SDK",
+        "description": "Build browser agents on Anthropic's first-party agent loop with in-process MCP tools."
+      },
+      "proposed": {
+        "title": "Claude Agent SDK + Steel Cloud Browsers",
+        "description": "Use the Claude Agent SDK with a Steel cloud browser: build web-browsing agents on Anthropic's first-party agent loop with in-process MCP tools."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "browser-use",
+      "page": "/integrations/browser-use",
+      "file": "content/docs/integrations/browser-use.mdx",
+      "targets": "browser use 8.1k/mo · browser use cloud 140 · browser use alternative 50",
+      "sidebar": "Browser Use (unchanged)",
+      "current": {
+        "title": "Browser Use",
+        "description": "Open-source Python agent that lets LLMs navigate, fill forms, and extract from the web."
+      },
+      "proposed": {
+        "title": "Run Browser Use in the Cloud on Steel",
+        "description": "Run Browser Use in the cloud with Steel. Point the open-source Python agent at a Steel session and let LLMs navigate, fill forms, and extract data at scale."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "pydantic-ai",
+      "page": "/integrations/pydantic-ai",
+      "file": "content/docs/integrations/pydantic-ai.mdx",
+      "targets": "pydantic ai 6.6k/mo",
+      "sidebar": "Pydantic AI (unchanged)",
+      "current": {
+        "title": "Pydantic AI",
+        "description": "Build provider-agnostic, typed Python browser agents with dependency injection."
+      },
+      "proposed": {
+        "title": "Build a Pydantic AI Browser Agent on Steel",
+        "description": "Build a Pydantic AI browser agent on Steel cloud browsers — provider-agnostic, typed Python agents with dependency injection and real web access."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "ai-sdk",
+      "page": "/integrations/ai-sdk",
+      "file": "content/docs/integrations/ai-sdk.mdx",
+      "targets": "vercel ai sdk 6.6k/mo",
+      "sidebar": "Vercel AI SDK (unchanged)",
+      "current": {
+        "title": "Vercel AI SDK",
+        "description": "Build typed browser agents with streaming across any model provider, in TypeScript."
+      },
+      "proposed": {
+        "title": "Browser Tool for the Vercel AI SDK",
+        "description": "Give the Vercel AI SDK a browser tool with Steel. Build typed TypeScript agents that stream across any model provider and browse the real web."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "stagehand",
+      "page": "/integrations/stagehand",
+      "file": "content/docs/integrations/stagehand.mdx",
+      "targets": "stagehand 5.4k/mo · stagehand docker/tutorial",
+      "sidebar": "Stagehand (unchanged)",
+      "current": {
+        "title": "Stagehand",
+        "description": "Write browser automations in natural language with act, extract, and observe."
+      },
+      "proposed": {
+        "title": "Run Stagehand on Steel Cloud Browsers",
+        "description": "Run Stagehand on Steel cloud browsers. Write automations in natural language with act, extract, and observe — with stealth and proxies managed for you."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "openai-agents-sdk",
+      "page": "/integrations/openai-agents-sdk",
+      "file": "content/docs/integrations/openai-agents-sdk.mdx",
+      "targets": "openai agents sdk 5.4k/mo ($42.80 CPC)",
+      "sidebar": "OpenAI Agents SDK (unchanged)",
+      "current": {
+        "title": "OpenAI Agents SDK",
+        "description": "Build typed browser agents with handoffs, guardrails, and tracing."
+      },
+      "proposed": {
+        "title": "OpenAI Agents SDK + Steel Cloud Browsers",
+        "description": "Use the OpenAI Agents SDK with a Steel cloud browser. Build typed browser agents with handoffs, guardrails, and tracing on managed infrastructure."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "agent-traces",
+      "page": "/overview/agent-traces/overview",
+      "file": "content/docs/overview/agent-traces/overview.mdx",
+      "targets": "agent observability 320/mo ($51.93 CPC) · browser observability",
+      "sidebar": "Overview (unchanged)",
+      "current": {
+        "title": "Agent Traces",
+        "description": "Review recorded browser sessions as a readable timeline of agent activity, synced with video and exportable for debugging, replay, and handoff."
+      },
+      "proposed": {
+        "title": "Agent Traces — Observability for Browser Agents",
+        "description": "Agent Traces adds observability to browser agents: review recorded Steel sessions as a readable timeline synced with video, and export for debugging and replay.",
+        "note": "feature name kept first; 'observability' is the SEO qualifier"
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "captcha-solving",
+      "page": "/overview/stealth/captcha-solving",
+      "file": "content/docs/overview/stealth/captcha-solving.mdx",
+      "targets": "captcha solving api · (branded solver terms unusable in title/meta)",
+      "sidebar": "Captcha Solving (unchanged)",
+      "current": {
+        "title": "Captcha Solving",
+        "description": "CAPTCHA solving is one of Steel's advanced capabilities that helps AI agents and automation tools navigate the modern web more effectively. This document explains how our CAPTCHA solving system works, what types of CAPTCHAs we support, and best practices for implementation."
+      },
+      "proposed": {
+        "title": "CAPTCHA Solving API for Browser Automation",
+        "description": "Solve CAPTCHAs automatically in Steel browser sessions — checkbox, invisible, image, and slider challenges — with an API built for AI agents and automation.",
+        "note": "all protection-brand names removed per legal constraint; branded queries can only be chased via body copy if legal ever clears factual interoperability statements"
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "proxies",
+      "page": "/overview/stealth/proxies",
+      "file": "content/docs/overview/stealth/proxies.mdx",
+      "targets": "proxy rotation 590/mo ($25 CPC) · rotating proxies 590 · residential proxies 12.1k",
+      "sidebar": "Proxies (unchanged)",
+      "current": {
+        "title": "Proxies",
+        "description": "Proxies make your browser sessions appear to originate from different locations and IP addresses. This is essential for accessing geo-restricted content, avoiding rate limits, and maintaining anonymity during web automation."
+      },
+      "proposed": {
+        "title": "Proxies & Proxy Rotation for Browser Automation",
+        "description": "Use residential proxies and proxy rotation in Steel browser sessions to avoid rate limits, access geo-restricted content, and stay undetected at scale."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "scrape",
+      "page": "/cookbook/scrape",
+      "file": "content/docs/cookbook/scrape.mdx",
+      "targets": "scrape javascript rendered page · web scraping javascript 390/mo",
+      "sidebar": "Scrape to Markdown (NEW — page has no sidebarTitle today, so the long title currently renders in the sidebar)",
+      "current": {
+        "title": "Scrape a page to Markdown, screenshot, and PDF",
+        "description": "Use the Steel TypeScript SDK's direct API to scrape a page to clean Markdown for LLM context, plus screenshot and PDF, with no browser library."
+      },
+      "proposed": {
+        "title": "Scrape JavaScript-Rendered Pages to Markdown",
+        "description": "Scrape JavaScript-rendered pages to clean Markdown for LLM context with the Steel API — plus screenshots and PDFs, no browser library required."
+      },
+      "status": "pending",
+      "comment": ""
+    }
+  ]
+}

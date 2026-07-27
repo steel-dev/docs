@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!-- ABOUTME: Standalone accept/deny triage UI for the SEO P0 title/H1/meta proposals (seo-p0-triage.json embedded inline).
+     ABOUTME: Review each proposal, add comments, export the merged JSON and feed it back to Claude for application. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO P0 Triage — titles/H1/meta</title>
+<style>
+  :root { --bg:#0f1115; --card:#181b22; --border:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accept:#2ea36b; --deny:#d05656; --accent:#5b8def; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); }
+  header { position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  header h1 { font-size:16px; margin:0 12px 0 0; }
+  .counts { color:var(--dim); font-size:13px; }
+  button { background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:6px 12px; cursor:pointer; font-size:13px; }
+  button:hover { border-color:var(--accent); }
+  select { background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:6px 8px; font-size:13px; }
+  .keys { color:var(--dim); font-size:12px; margin-left:auto; }
+  main { max-width:900px; margin:0 auto; padding:20px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px 18px; margin-bottom:14px; }
+  .card.focused { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent); }
+  .card .page { font-weight:600; font-size:15px; }
+  .card .targets { color:var(--dim); font-size:12.5px; margin:2px 0 10px; }
+  .field { margin-bottom:10px; }
+  .label { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--dim); margin-bottom:2px; }
+  .cur { color:var(--dim); text-decoration:line-through; text-decoration-color:#555c69; font-size:13.5px; }
+  .cur.long { text-decoration:none; opacity:.75; }
+  .new { font-size:14.5px; }
+  .chars { font-size:11.5px; color:var(--dim); margin-left:6px; }
+  .chars.bad { color:#e0a34e; }
+  .note { font-size:12.5px; color:#e0a34e; margin-top:8px; }
+  .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .actions .accept { border-color:var(--accept); color:var(--accept); }
+  .actions .accept:hover { background:var(--accept); color:#fff; }
+  .actions .deny { border-color:var(--deny); color:var(--deny); }
+  .actions .deny:hover { background:var(--deny); color:#fff; }
+  .status-pill { font-size:11px; padding:2px 8px; border-radius:99px; border:1px solid var(--border); color:var(--dim); }
+  .status-pill.accepted { border-color:var(--accept); color:var(--accept); }
+  .status-pill.denied { border-color:var(--deny); color:var(--deny); }
+  textarea { width:100%; background:#12151b; border:1px solid var(--border); color:var(--text); border-radius:6px; padding:8px; font:13px/1.4 inherit; resize:vertical; min-height:34px; margin-top:8px; }
+  .empty { text-align:center; color:var(--dim); padding:60px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SEO P0 Triage</h1>
+  <span class="counts" id="counts"></span>
+  <select id="filter">
+    <option value="pending" selected>pending</option>
+    <option value="accepted">accepted</option>
+    <option value="denied">denied</option>
+    <option value="all">all</option>
+  </select>
+  <button id="undo">Undo (u)</button>
+  <button id="export">Export JSON (e)</button>
+  <span class="keys">j/k move · a accept · d deny · c comment · u undo · e export</span>
+</header>
+<main id="list"></main>
+
+<script id="data" type="application/json">{
+  "meta": {
+    "name": "SEO P0 title/H1/meta proposals",
+    "date": "2026-07-23",
+    "revision": 2,
+    "note": "Frontmatter `title` drives both the <title> tag (suffix ' | Steel Docs' appended by layout) and the on-page H1. The sidebar renders `sidebarTitle` when present — shown per card. Rev 2: no third-party protection-brand names (reCAPTCHA/hCaptcha/Turnstile/Cloudflare/2captcha) in titles or meta; feature names (Agent Traces) preserved in titles.",
+    "interpretation": "accepted = apply as-is; accepted+comment = apply with tweak; denied = drop; pending+comment = revise and resubmit"
+  },
+  "items": [
+    {
+      "id": "selenium",
+      "page": "/integrations/selenium",
+      "file": "content/docs/integrations/selenium.mdx",
+      "targets": "selenium 110k/mo · selenium grid 590 · selenium alternative 210 ($17 CPC)",
+      "sidebar": "Selenium (unchanged)",
+      "current": {
+        "title": "Selenium",
+        "description": "Drive a Steel cloud browser from Selenium over the W3C WebDriver protocol in Python."
+      },
+      "proposed": {
+        "title": "Run Selenium in the Cloud on Steel",
+        "description": "Run Selenium in the cloud with Steel instead of running your own grid — stealth, rotating proxies, and CAPTCHA solving built in, over W3C WebDriver in Python.",
+        "note": "dropped 'Selenium Grid Alternative' positioning from the title; 'your own grid' (lowercase, generic) keeps the intent"
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "playwright",
+      "page": "/integrations/playwright",
+      "file": "content/docs/integrations/playwright.mdx",
+      "targets": "playwright 74k/mo · playwright docker 320 · playwright cloud 50",
+      "sidebar": "Playwright (unchanged)",
+      "current": {
+        "title": "Playwright",
+        "description": "Drive a Steel cloud browser from Playwright over CDP in TypeScript or Python."
+      },
+      "proposed": {
+        "title": "Run Playwright on Steel Cloud Browsers",
+        "description": "Run Playwright in the cloud with Steel. Connect over CDP in TypeScript or Python and get managed browsers with stealth, rotating proxies, and CAPTCHA solving."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "langgraph",
+      "page": "/integrations/langgraph",
+      "file": "content/docs/integrations/langgraph.mdx",
+      "targets": "langgraph 33.1k/mo · langgraph browser agent",
+      "sidebar": "LangGraph (unchanged)",
+      "current": {
+        "title": "LangGraph",
+        "description": "Build Python browser agents as explicit state machines with LangGraph nodes, edges, and structured output."
+      },
+      "proposed": {
+        "title": "Build a LangGraph Browser Agent on Steel",
+        "description": "Build a LangGraph browser agent on Steel cloud browsers. Model web tasks as explicit state machines with nodes, edges, and structured output in Python."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "puppeteer",
+      "page": "/integrations/puppeteer",
+      "file": "content/docs/integrations/puppeteer.mdx",
+      "targets": "puppeteer 27.1k/mo · puppeteer stealth 110 · puppeteer as a service",
+      "sidebar": "Puppeteer (unchanged)",
+      "current": {
+        "title": "Puppeteer",
+        "description": "Drive a Steel cloud browser from Puppeteer over CDP in TypeScript."
+      },
+      "proposed": {
+        "title": "Connect Puppeteer to Steel Cloud Browsers (CDP)",
+        "description": "Run Puppeteer in the cloud with Steel. Connect over CDP in TypeScript — no local Chrome, plus built-in stealth, rotating proxies, and CAPTCHA solving."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "crewai",
+      "page": "/integrations/crewai",
+      "file": "content/docs/integrations/crewai.mdx",
+      "targets": "crewai 14.8k/mo · crewai browser",
+      "sidebar": "CrewAI (unchanged)",
+      "current": {
+        "title": "CrewAI",
+        "description": "Orchestrate multi-agent Python crews with shared memory and human-in-the-loop reviews."
+      },
+      "proposed": {
+        "title": "Build a CrewAI Browser Agent on Steel",
+        "description": "Give CrewAI agents a real browser with Steel. Orchestrate multi-agent Python crews that navigate the web, with shared memory and human-in-the-loop reviews."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "claude-agent-sdk",
+      "page": "/integrations/claude-agent-sdk",
+      "file": "content/docs/integrations/claude-agent-sdk.mdx",
+      "targets": "claude agent sdk 9.9k/mo",
+      "sidebar": "Claude Agent SDK (unchanged)",
+      "current": {
+        "title": "Claude Agent SDK",
+        "description": "Build browser agents on Anthropic's first-party agent loop with in-process MCP tools."
+      },
+      "proposed": {
+        "title": "Claude Agent SDK + Steel Cloud Browsers",
+        "description": "Use the Claude Agent SDK with a Steel cloud browser: build web-browsing agents on Anthropic's first-party agent loop with in-process MCP tools."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "browser-use",
+      "page": "/integrations/browser-use",
+      "file": "content/docs/integrations/browser-use.mdx",
+      "targets": "browser use 8.1k/mo · browser use cloud 140 · browser use alternative 50",
+      "sidebar": "Browser Use (unchanged)",
+      "current": {
+        "title": "Browser Use",
+        "description": "Open-source Python agent that lets LLMs navigate, fill forms, and extract from the web."
+      },
+      "proposed": {
+        "title": "Run Browser Use in the Cloud on Steel",
+        "description": "Run Browser Use in the cloud with Steel. Point the open-source Python agent at a Steel session and let LLMs navigate, fill forms, and extract data at scale."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "pydantic-ai",
+      "page": "/integrations/pydantic-ai",
+      "file": "content/docs/integrations/pydantic-ai.mdx",
+      "targets": "pydantic ai 6.6k/mo",
+      "sidebar": "Pydantic AI (unchanged)",
+      "current": {
+        "title": "Pydantic AI",
+        "description": "Build provider-agnostic, typed Python browser agents with dependency injection."
+      },
+      "proposed": {
+        "title": "Build a Pydantic AI Browser Agent on Steel",
+        "description": "Build a Pydantic AI browser agent on Steel cloud browsers — provider-agnostic, typed Python agents with dependency injection and real web access."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "ai-sdk",
+      "page": "/integrations/ai-sdk",
+      "file": "content/docs/integrations/ai-sdk.mdx",
+      "targets": "vercel ai sdk 6.6k/mo",
+      "sidebar": "Vercel AI SDK (unchanged)",
+      "current": {
+        "title": "Vercel AI SDK",
+        "description": "Build typed browser agents with streaming across any model provider, in TypeScript."
+      },
+      "proposed": {
+        "title": "Browser Tool for the Vercel AI SDK",
+        "description": "Give the Vercel AI SDK a browser tool with Steel. Build typed TypeScript agents that stream across any model provider and browse the real web."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "stagehand",
+      "page": "/integrations/stagehand",
+      "file": "content/docs/integrations/stagehand.mdx",
+      "targets": "stagehand 5.4k/mo · stagehand docker/tutorial",
+      "sidebar": "Stagehand (unchanged)",
+      "current": {
+        "title": "Stagehand",
+        "description": "Write browser automations in natural language with act, extract, and observe."
+      },
+      "proposed": {
+        "title": "Run Stagehand on Steel Cloud Browsers",
+        "description": "Run Stagehand on Steel cloud browsers. Write automations in natural language with act, extract, and observe — with stealth and proxies managed for you."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "openai-agents-sdk",
+      "page": "/integrations/openai-agents-sdk",
+      "file": "content/docs/integrations/openai-agents-sdk.mdx",
+      "targets": "openai agents sdk 5.4k/mo ($42.80 CPC)",
+      "sidebar": "OpenAI Agents SDK (unchanged)",
+      "current": {
+        "title": "OpenAI Agents SDK",
+        "description": "Build typed browser agents with handoffs, guardrails, and tracing."
+      },
+      "proposed": {
+        "title": "OpenAI Agents SDK + Steel Cloud Browsers",
+        "description": "Use the OpenAI Agents SDK with a Steel cloud browser. Build typed browser agents with handoffs, guardrails, and tracing on managed infrastructure."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "agent-traces",
+      "page": "/overview/agent-traces/overview",
+      "file": "content/docs/overview/agent-traces/overview.mdx",
+      "targets": "agent observability 320/mo ($51.93 CPC) · browser observability",
+      "sidebar": "Overview (unchanged)",
+      "current": {
+        "title": "Agent Traces",
+        "description": "Review recorded browser sessions as a readable timeline of agent activity, synced with video and exportable for debugging, replay, and handoff."
+      },
+      "proposed": {
+        "title": "Agent Traces — Observability for Browser Agents",
+        "description": "Agent Traces adds observability to browser agents: review recorded Steel sessions as a readable timeline synced with video, and export for debugging and replay.",
+        "note": "feature name kept first; 'observability' is the SEO qualifier"
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "captcha-solving",
+      "page": "/overview/stealth/captcha-solving",
+      "file": "content/docs/overview/stealth/captcha-solving.mdx",
+      "targets": "captcha solving api · (branded solver terms unusable in title/meta)",
+      "sidebar": "Captcha Solving (unchanged)",
+      "current": {
+        "title": "Captcha Solving",
+        "description": "CAPTCHA solving is one of Steel's advanced capabilities that helps AI agents and automation tools navigate the modern web more effectively. This document explains how our CAPTCHA solving system works, what types of CAPTCHAs we support, and best practices for implementation."
+      },
+      "proposed": {
+        "title": "CAPTCHA Solving API for Browser Automation",
+        "description": "Solve CAPTCHAs automatically in Steel browser sessions — checkbox, invisible, image, and slider challenges — with an API built for AI agents and automation.",
+        "note": "all protection-brand names removed per legal constraint; branded queries can only be chased via body copy if legal ever clears factual interoperability statements"
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "proxies",
+      "page": "/overview/stealth/proxies",
+      "file": "content/docs/overview/stealth/proxies.mdx",
+      "targets": "proxy rotation 590/mo ($25 CPC) · rotating proxies 590 · residential proxies 12.1k",
+      "sidebar": "Proxies (unchanged)",
+      "current": {
+        "title": "Proxies",
+        "description": "Proxies make your browser sessions appear to originate from different locations and IP addresses. This is essential for accessing geo-restricted content, avoiding rate limits, and maintaining anonymity during web automation."
+      },
+      "proposed": {
+        "title": "Proxies & Proxy Rotation for Browser Automation",
+        "description": "Use residential proxies and proxy rotation in Steel browser sessions to avoid rate limits, access geo-restricted content, and stay undetected at scale."
+      },
+      "status": "pending",
+      "comment": ""
+    },
+    {
+      "id": "scrape",
+      "page": "/cookbook/scrape",
+      "file": "content/docs/cookbook/scrape.mdx",
+      "targets": "scrape javascript rendered page · web scraping javascript 390/mo",
+      "sidebar": "Scrape to Markdown (NEW — page has no sidebarTitle today, so the long title currently renders in the sidebar)",
+      "current": {
+        "title": "Scrape a page to Markdown, screenshot, and PDF",
+        "description": "Use the Steel TypeScript SDK's direct API to scrape a page to clean Markdown for LLM context, plus screenshot and PDF, with no browser library."
+      },
+      "proposed": {
+        "title": "Scrape JavaScript-Rendered Pages to Markdown",
+        "description": "Scrape JavaScript-rendered pages to clean Markdown for LLM context with the Steel API — plus screenshots and PDFs, no browser library required."
+      },
+      "status": "pending",
+      "comment": ""
+    }
+  ]
+}
+</script>
+<script>
+const SUFFIX = " | Steel Docs";
+const raw = JSON.parse(document.getElementById("data").textContent);
+const LS_KEY = "seo-p0-triage-v2";
+const saved = JSON.parse(localStorage.getItem(LS_KEY) || "{}");
+const items = raw.items.map(it => Object.assign({}, it, saved[it.id] || {}));
+let undoStack = JSON.parse(localStorage.getItem(LS_KEY + "-undo") || "[]");
+let focusIdx = 0;
+
+function persist() {
+  const state = {};
+  items.forEach(it => state[it.id] = { status: it.status, comment: it.comment });
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+  localStorage.setItem(LS_KEY + "-undo", JSON.stringify(undoStack));
+}
+
+function charSpan(text, kind) {
+  const n = text.length;
+  let bad = false, extra = "";
+  if (kind === "title") { const total = n + SUFFIX.length; extra = ` (+suffix = ${total})`; bad = total > 65; }
+  else { bad = n < 120 || n > 165; }
+  return `<span class="chars${bad ? " bad" : ""}">${n} chars${extra}</span>`;
+}
+
+function visible() {
+  const f = document.getElementById("filter").value;
+  return items.filter(it => f === "all" || it.status === f);
+}
+
+function render() {
+  const list = document.getElementById("list");
+  const vis = visible();
+  if (focusIdx >= vis.length) focusIdx = Math.max(0, vis.length - 1);
+  list.innerHTML = vis.length ? "" : `<div class="empty">Nothing ${document.getElementById("filter").value} — change the filter or export.</div>`;
+  vis.forEach((it, i) => {
+    const card = document.createElement("div");
+    card.className = "card" + (i === focusIdx ? " focused" : "");
+    card.innerHTML = `
+      <div class="page">${it.page} <span class="status-pill ${it.status}">${it.status}</span></div>
+      <div class="targets">${it.targets}</div>
+      <div class="targets">sidebar → ${esc(it.sidebar || "")}</div>
+      <div class="field">
+        <div class="label">Title / H1</div>
+        <div class="cur">${esc(it.current.title)}</div>
+        <div class="new">${esc(it.proposed.title)} ${charSpan(it.proposed.title, "title")}</div>
+      </div>
+      <div class="field">
+        <div class="label">Meta description</div>
+        <div class="cur long">${esc(it.current.description)}</div>
+        <div class="new">${esc(it.proposed.description)} ${charSpan(it.proposed.description, "desc")}</div>
+      </div>
+      ${it.proposed.note ? `<div class="note">⚑ ${esc(it.proposed.note)}</div>` : ""}
+      <div class="actions">
+        <button class="accept">Accept (a)</button>
+        <button class="deny">Deny (d)</button>
+      </div>
+      <textarea placeholder="Comment — carries rewrite instructions…">${esc(it.comment || "")}</textarea>`;
+    card.querySelector(".accept").onclick = () => decide(it.id, "accepted");
+    card.querySelector(".deny").onclick = () => decide(it.id, "denied");
+    card.querySelector("textarea").oninput = e => { it.comment = e.target.value; persist(); };
+    card.onclick = () => { focusIdx = i; highlight(); };
+    list.appendChild(card);
+  });
+  const c = { pending: 0, accepted: 0, denied: 0 };
+  items.forEach(it => c[it.status]++);
+  document.getElementById("counts").textContent = `${c.pending} pending · ${c.accepted} accepted · ${c.denied} denied`;
+}
+
+function highlight() {
+  document.querySelectorAll(".card").forEach((el, i) => el.classList.toggle("focused", i === focusIdx));
+}
+
+function decide(id, status) {
+  const it = items.find(x => x.id === id);
+  undoStack.push({ id, prev: it.status });
+  it.status = status;
+  persist();
+  render();
+}
+
+function undo() {
+  const last = undoStack.pop();
+  if (!last) return;
+  items.find(x => x.id === last.id).status = last.prev;
+  persist();
+  render();
+}
+
+function exportJson() {
+  const out = Object.assign({}, raw, { items });
+  const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "seo-p0-triage.reviewed.json";
+  a.click();
+}
+
+function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+document.getElementById("filter").onchange = () => { focusIdx = 0; render(); };
+document.getElementById("undo").onclick = undo;
+document.getElementById("export").onclick = exportJson;
+
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "TEXTAREA") { if (e.key === "Escape") e.target.blur(); return; }
+  const vis = visible();
+  if (e.key === "j") { focusIdx = Math.min(focusIdx + 1, vis.length - 1); highlight(); scrollToFocus(); }
+  else if (e.key === "k") { focusIdx = Math.max(focusIdx - 1, 0); highlight(); scrollToFocus(); }
+  else if (e.key === "a" && vis[focusIdx]) decide(vis[focusIdx].id, "accepted");
+  else if (e.key === "d" && vis[focusIdx]) decide(vis[focusIdx].id, "denied");
+  else if (e.key === "u") undo();
+  else if (e.key === "e") exportJson();
+  else if (e.key === "c") { const el = document.querySelectorAll(".card")[focusIdx]; if (el) { e.preventDefault(); el.querySelector("textarea").focus(); } }
+});
+
+function scrollToFocus() {
+  const el = document.querySelectorAll(".card")[focusIdx];
+  if (el) el.scrollIntoView({ block: "center", behavior: "smooth" });
+}
+
+render();
+</script>
+</body>
+</html>
