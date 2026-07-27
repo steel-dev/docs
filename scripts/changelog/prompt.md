@@ -70,6 +70,15 @@ The file wrapper is handled outside the model. You are only writing the changelo
 - New cookbook examples, integrations, and guides can be `⭐ New` only when they clearly open up a new supported workflow worth calling out publicly. Otherwise keep them in `🔧 Improvements`.
 - If there are many candidate `⭐ New` items, keep only the strongest few and demote the rest to `🔧 Improvements`.
 
+## Cover motif
+
+- `coverMotif` is a scene description for the changelog's cover background image. A fixed house style handles the rendering, so describe only the scene, never the art style, colors, or mood.
+- Describe one concrete scene in one or two sentences, with a clear focal subject, that loosely echoes the week's most significant change.
+- Any setting in the world is fair game: a street vendor's stall, a tennis rally at match point, a field of flowers opening at once, a night kitchen plating the first order, a swimmer turning at the wall. Surprise is a feature; do not settle into one territory or repeat the feel of an obvious previous cover.
+- Let the metaphor stay loose. A scene that captures the energy of the week beats a literal one-to-one mapping.
+- Do not mention Steel, browsers, software, screens, text, or logos; the scene carries the meaning on its own.
+- If the week has no publishable entries, return an empty `coverMotif`.
+
 ## Output requirements
 
 - Return JSON only.

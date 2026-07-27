@@ -74,6 +74,10 @@ jobs:
         if: steps.gate.outputs.should_run == 'true'
         run: bun install --frozen-lockfile
 
+      - name: Install Playwright Chromium
+        if: steps.gate.outputs.should_run == 'true'
+        run: bunx playwright install --with-deps chromium
+
       - name: Run changelog unit tests
         if: steps.gate.outputs.should_run == 'true'
         run: bun test tests/changelog-v2.test.ts
@@ -103,6 +107,7 @@ jobs:
           path: |
             ${{ steps.generate.outputs.draft_path }}
             ${{ steps.generate.outputs.pr_body_path }}
+            ${{ steps.generate.outputs.cover_workdir }}
 
       - name: Create draft pull request
         if: steps.gate.outputs.should_run == 'true' && steps.generate.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.open_pr)
@@ -122,4 +127,5 @@ jobs:
           add-paths: |
             content/docs/changelog/**
             public/changelog/llms.txt
+            public/images/changelog/**
             scripts/changelog/state.json

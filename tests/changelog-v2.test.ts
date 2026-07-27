@@ -1,12 +1,16 @@
 import { describe, expect, test } from 'bun:test';
 import { readdirSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
 import * as path from 'node:path';
+import sharp from 'sharp';
 import {
+  CHANGELOG_PLACEHOLDER_IMAGE,
   CHANGELOG_REPOSITORIES,
   DEFAULT_OPENAI_MODEL,
   DEFAULT_OPENAI_REASONING_EFFORT,
 } from '../scripts/changelog/config';
+import { generateChangelogCover } from '../scripts/changelog/cover';
 import {
   cleanPullRequestBody,
   filterEligibleChangeGroups,
@@ -22,6 +26,7 @@ import {
 } from '../scripts/changelog/source';
 import changelogState from '../scripts/changelog/state.json';
 import {
+  buildMdxDocument,
   createPreviewWorkspace,
   expandReleasedBrowserCommits,
   extractOpenAiResponseText,
@@ -29,6 +34,7 @@ import {
   fetchApplicationReleaseHead,
   main,
   parseArgs,
+  parseDraftResult,
   selectRecentChangelogNumbers,
 } from '../scripts/generate-changelog-draft';
 import {
@@ -769,6 +775,116 @@ describe('changelog v2 release evidence recovery', () => {
       if (workspaceDirectory) {
         await fs.rm(workspaceDirectory, { recursive: true, force: true });
       }
+    }
+  });
+});
+
+/** Stands in for gpt-image-2: a gradient at the size that was asked for. */
+async function fakeCoverBackground({ size }: { prompt: string; size: string }): Promise<Buffer> {
+  const [width, height] = size.split('x').map(Number) as [number, number];
+  const data = Buffer.alloc(width * height * 3);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * 3;
+      data[i] = Math.round((255 * x) / (width - 1));
+      data[i + 1] = Math.round((255 * y) / (height - 1));
+      data[i + 2] = 100;
+    }
+  }
+  return sharp(data, { raw: { width, height, channels: 3 } })
+    .png()
+    .toBuffer();
+}
+
+describe('changelog v2 cover', () => {
+  const minimalDraft = {
+    introduction: 'A quiet but productive week.',
+    sections: [
+      {
+        heading: '⭐ New' as const,
+        entries: [
+          {
+            kind: 'bullet' as const,
+            title: null,
+            text: 'Added a thing.',
+            references: [{ label: 'steel abc1234', url: 'https://github.com/x/y/commit/abc1234' }],
+          },
+        ],
+      },
+    ],
+    discardedItems: [],
+    coverMotif: 'A lighthouse switching on over a small harbour at dusk.',
+  };
+
+  test('parses and trims the cover motif from model output', () => {
+    const draft = parseDraftResult(
+      JSON.stringify({
+        introduction: 'Intro.',
+        sections: [],
+        discardedItems: [],
+        coverMotif: '  A drawbridge lowering over a canal at dawn.  ',
+      }),
+    );
+
+    expect(draft.coverMotif).toBe('A drawbridge lowering over a canal at dawn.');
+  });
+
+  test('treats a missing or blank cover motif as empty', () => {
+    const missing = parseDraftResult(
+      JSON.stringify({ introduction: 'Intro.', sections: [], discardedItems: [] }),
+    );
+    const blank = parseDraftResult(
+      JSON.stringify({ introduction: 'Intro.', sections: [], discardedItems: [], coverMotif: ' ' }),
+    );
+
+    expect(missing.coverMotif).toBe('');
+    expect(blank.coverMotif).toBe('');
+  });
+
+  test('builds the MDX with the generated cover when one exists', () => {
+    const mdx = buildMdxDocument(36, minimalDraft, '2026-07-31', '/images/changelog/36.png');
+
+    expect(mdx).toContain('image: "/images/changelog/36.png"');
+    expect(mdx).toContain('src="/images/changelog/36.png"');
+    expect(mdx).not.toContain(CHANGELOG_PLACEHOLDER_IMAGE.src);
+  });
+
+  test('falls back to the placeholder image without a cover', () => {
+    const mdx = buildMdxDocument(36, minimalDraft, '2026-07-31');
+
+    expect(mdx).toContain(`image: "${CHANGELOG_PLACEHOLDER_IMAGE.src}"`);
+    expect(mdx).toContain(`src="${CHANGELOG_PLACEHOLDER_IMAGE.src}"`);
+  });
+
+  test('renders, quantizes and installs the cover under public/images/changelog', async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'changelog-cover-root-'));
+
+    try {
+      const result = await generateChangelogCover({
+        number: 99,
+        motif: minimalDraft.coverMotif,
+        publishedAt: '2026-07-31',
+        repoRoot,
+        deps: { generate: fakeCoverBackground },
+      });
+
+      expect(result.src).toBe('/images/changelog/99.png');
+      expect(result.publicPath).toBe('public/images/changelog/99.png');
+
+      const bytes = await fs.readFile(path.join(repoRoot, result.publicPath));
+      // PNG IHDR colour type 3 means the committed cover is palette (PNG-8) encoded.
+      expect(bytes[25]).toBe(3);
+
+      const { width, height } = await sharp(bytes).metadata();
+      expect(width).toBe(1420);
+      expect(height).toBe(800);
+
+      // The working directory keeps the undithered original for palette retries.
+      const workdirFiles = await fs.readdir(result.workdir);
+      expect(workdirFiles).toContain('changelog-99-source.png');
+      expect(workdirFiles).toContain('changelog-99.json');
+    } finally {
+      await fs.rm(repoRoot, { recursive: true, force: true });
     }
   });
 });

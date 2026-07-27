@@ -20,6 +20,7 @@ import {
   RECENT_CHANGELOG_EXAMPLE_COUNT,
   SKIP_AUTHORS,
 } from './changelog/config';
+import { type CoverResult, generateChangelogCover } from './changelog/cover';
 import {
   type ChangedFile,
   type ChangeGroup,
@@ -116,6 +117,7 @@ interface DraftResult {
   introduction: string;
   sections: DraftSection[];
   discardedItems: DiscardedItem[];
+  coverMotif: string;
 }
 
 interface OpenAiResponse {
@@ -878,22 +880,28 @@ function renderDraftBody(draft: DraftResult): string {
   return blocks.join('\n\n').trim();
 }
 
-function buildMdxDocument(number: number, draft: DraftResult, publishedAt: string): string {
+export function buildMdxDocument(
+  number: number,
+  draft: DraftResult,
+  publishedAt: string,
+  coverSrc?: string,
+): string {
   const numberLabel = formatChangelogNumber(number);
   const imageAlt = `Announcing Changelog #${numberLabel}`;
+  const imageSrc = coverSrc || CHANGELOG_PLACEHOLDER_IMAGE.src;
   const frontmatter = [
     '---',
     `title: "Changelog #${numberLabel}"`,
     `sidebarTitle: "Changelog #${numberLabel}"`,
     'llm: true',
-    `image: "${CHANGELOG_PLACEHOLDER_IMAGE.src}"`,
+    `image: "${imageSrc}"`,
     `imageAlt: "${imageAlt}"`,
     `publishedAt: "${publishedAt}"`,
     '---',
     "import Image from 'next/image';",
     '',
     '<Image',
-    `  src="${CHANGELOG_PLACEHOLDER_IMAGE.src}"`,
+    `  src="${imageSrc}"`,
     `  alt="${imageAlt}"`,
     `  width={${CHANGELOG_PLACEHOLDER_IMAGE.width}}`,
     `  height={${CHANGELOG_PLACEHOLDER_IMAGE.height}}`,
@@ -920,6 +928,7 @@ function buildPrBody(
   windowSelection: WindowSelection,
   draft: DraftResult,
   sourceExclusions: ExclusionSummary[],
+  cover: CoverResult | null = null,
 ): string {
   const sections = [
     `# docs: draft changelog #${formatChangelogNumber(number)}`,
@@ -930,7 +939,10 @@ function buildPrBody(
     `- Window source: \`${windowSelection.source}\``,
     `- Timezone reference: \`${CHANGELOG_TIMEZONE}\``,
     '- The MDX draft is intentionally clean. Commit references for kept items are listed below for review.',
-    `- Placeholder image: \`${CHANGELOG_PLACEHOLDER_IMAGE.src}\``,
+    cover
+      ? `- Cover image: \`${cover.src}\` (the undithered original is in the run artifacts for palette retries)`
+      : `- Placeholder image: \`${CHANGELOG_PLACEHOLDER_IMAGE.src}\` (no cover was generated; see the run log)`,
+    ...(draft.coverMotif ? [`- Cover motif: ${draft.coverMotif}`] : []),
     '',
     '## Monitored repositories',
     '',
@@ -1032,7 +1044,7 @@ function sanitizeReferences(value: unknown): DraftReference[] {
     .filter((reference): reference is DraftReference => Boolean(reference));
 }
 
-function parseDraftResult(rawContent: string): DraftResult {
+export function parseDraftResult(rawContent: string): DraftResult {
   const json = JSON.parse(extractJsonObject(rawContent)) as Record<string, unknown>;
   const introduction = isNonEmptyString(json.introduction) ? json.introduction.trim() : '';
 
@@ -1121,6 +1133,7 @@ function parseDraftResult(rawContent: string): DraftResult {
     introduction,
     sections,
     discardedItems,
+    coverMotif: isNonEmptyString(json.coverMotif) ? json.coverMotif.trim() : '',
   };
 }
 
@@ -1189,7 +1202,8 @@ async function requestDraftFromModel(
     '      "reason": "string",',
     '      "references": [{ "label": "repo sha", "url": "https://..." }]',
     '    }',
-    '  ]',
+    '  ],',
+    '  "coverMotif": "string"',
     '}',
     '',
     'If none of the facts support a public changelog entry, return an empty introduction and empty sections.',
@@ -1507,26 +1521,53 @@ export async function main(argv = process.argv.slice(2)) {
     return;
   }
 
-  const mdx = buildMdxDocument(nextNumber, draft, windowSelection.until.slice(0, 10));
+  const publishedAt = windowSelection.until.slice(0, 10);
   if (previewWorkspace) {
+    // Preview stays free of image generation; the motif lands in model-output.json for review.
     await writePreviewDraftArtifacts({
       workspace: previewWorkspace,
       number: nextNumber,
       windowSelection,
       draft,
-      mdx,
+      mdx: buildMdxDocument(nextNumber, draft, publishedAt),
       exclusionSummary,
     });
     console.log(`Generated isolated preview at ${previewWorkspace.directory}`);
     return;
   }
 
+  let cover: CoverResult | null = null;
+  if (draft.coverMotif) {
+    try {
+      cover = await generateChangelogCover({
+        number: nextNumber,
+        motif: draft.coverMotif,
+        publishedAt,
+        log: (message) => console.log(message),
+      });
+      console.log(`Generated cover image at ${cover.publicPath}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn(`Cover generation failed; keeping the placeholder image: ${message}`);
+    }
+  } else {
+    console.warn('The model returned no cover motif; keeping the placeholder image.');
+  }
+
+  const mdx = buildMdxDocument(nextNumber, draft, publishedAt, cover?.src);
   await fs.writeFile(path.join(process.cwd(), draftPath), mdx);
   await updateChangelogMeta(slug);
   await updateChangelogLlms();
   await updateChangelogState(nextNumber, windowSelection.until, applicationReleaseSha);
 
-  const prBody = buildPrBody(nextNumber, draftPath, windowSelection, draft, exclusionSummary);
+  const prBody = buildPrBody(
+    nextNumber,
+    draftPath,
+    windowSelection,
+    draft,
+    exclusionSummary,
+    cover,
+  );
   const prBodyPath =
     process.env.CHANGELOG_PR_BODY_PATH ||
     path.join(os.tmpdir(), `steel-changelog-pr-body-${slug}.md`);
@@ -1539,6 +1580,9 @@ export async function main(argv = process.argv.slice(2)) {
   await appendGithubOutput('commit_message', prTitle);
   await appendGithubOutput('pr_body_path', prBodyPath);
   await appendGithubOutput('draft_path', draftPath);
+  if (cover) {
+    await appendGithubOutput('cover_workdir', cover.workdir);
+  }
 
   console.log(`Generated ${draftPath}`);
   console.log(`Prepared PR body at ${prBodyPath}`);

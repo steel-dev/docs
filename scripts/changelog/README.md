@@ -1,5 +1,31 @@
 # Changelog generator
 
+## Cover images
+
+The draft model returns a `coverMotif` scene description alongside the changelog body. The
+generator renders it into `public/images/changelog/<n>.png` with the vendored imagegen pipeline
+(`scripts/changelog/imagegen/`): a `gpt-image-2` background, an ordered dither, and the fixed
+Figma card layout, quantized to PNG-8 before it is committed. If the motif is missing or the
+render fails, the draft keeps the placeholder image and the PR body says so; a cover problem
+never fails the run. Preview mode never generates images.
+
+The undithered original and the sidecar JSON are uploaded as run artifacts, so a different
+palette can be retried during PR review without paying for another generation:
+
+```bash
+bun run generate-changelog-image -- \
+  --number 36 \
+  --background changelog-36-source.png \
+  --date 2026-07-31 \
+  --palette Ocean \
+  --scale 1 \
+  --out public/images/changelog/36.png
+```
+
+Run `bun run generate-changelog-image -- --help` for the full flag list, including generating a
+fresh background from a new motif with `--motif`. The CLI writes a full-color PNG; only the
+automated path quantizes to PNG-8, so recompress a hand-retried cover before merging.
+
 ## Replay a historical week locally
 
 Set a GitHub token and, when the window contains eligible facts, `OPENAI_API_KEY`, then run:
