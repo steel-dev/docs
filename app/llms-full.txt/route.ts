@@ -1,3 +1,4 @@
+import { AGENT_INSTRUCTIONS } from '@/lib/agent-instructions';
 import { getLLMText, shouldIncludeLLMPage } from '@/lib/get-llm-text';
 import { source } from '@/lib/source';
 
@@ -11,7 +12,7 @@ export async function GET() {
     .map(getLLMText);
   const scanned = await Promise.all(scan);
 
-  return new Response(scanned.join('\n\n'), {
+  return new Response(AGENT_INSTRUCTIONS + scanned.join('\n\n'), {
     headers: { 'Content-Type': 'text/markdown; charset=utf-8' },
   });
 }
