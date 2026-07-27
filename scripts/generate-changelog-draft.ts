@@ -24,6 +24,7 @@ import {
   type ChangedFile,
   type ChangeGroup,
   type CommitCandidate,
+  type ExcludedChangeGroup,
   type ExclusionSummary,
   filterEligibleChangeGroups,
   formatChangeGroupForPrompt,
@@ -525,6 +526,17 @@ async function fetchBranchHeadAtOrBefore(
   return commit.sha;
 }
 
+export async function fetchApplicationReleaseHead(
+  explicitUntil: string | undefined,
+  token: string,
+): Promise<string> {
+  if (explicitUntil) {
+    return fetchBranchHeadAtOrBefore(CHANGELOG_APPLICATION_REPOSITORY, token, explicitUntil);
+  }
+
+  return fetchBranchHead(CHANGELOG_APPLICATION_REPOSITORY, token);
+}
+
 async function fetchSubmoduleShaAtRef(
   repoConfig: ChangelogRepository,
   submodulePath: string,
@@ -539,6 +551,14 @@ async function fetchSubmoduleShaAtRef(
   const response = await fetchGithubJson<GitHubRepositoryContent>(url, token);
 
   return response.sha;
+}
+
+class NonAheadCompareError extends Error {
+  constructor(repoConfig: ChangelogRepository, baseSha: string, headSha: string, status: string) {
+    super(
+      `Expected an ahead range for ${repoConfig.owner}/${repoConfig.repo}, received ${status} for ${baseSha}...${headSha}.`,
+    );
+  }
 }
 
 async function fetchComparedCommits(
@@ -563,9 +583,7 @@ async function fetchComparedCommits(
     }
 
     if (response.status !== 'ahead') {
-      throw new Error(
-        `Expected an ahead range for ${repoConfig.owner}/${repoConfig.repo}, received ${response.status} for ${baseSha}...${headSha}.`,
-      );
+      throw new NonAheadCompareError(repoConfig, baseSha, headSha, response.status);
     }
 
     totalCommits ??= response.total_commits;
@@ -602,7 +620,7 @@ export async function fetchApplicationReleaseCommits(
     .map((commit) => normalizeCommit(CHANGELOG_APPLICATION_REPOSITORY, commit));
 }
 
-async function expandReleasedBrowserCommits(
+export async function expandReleasedBrowserCommits(
   integrationCommits: CommitCandidate[],
   token: string,
 ): Promise<CommitCandidate[]> {
@@ -638,12 +656,26 @@ async function expandReleasedBrowserCommits(
         return { baseSha, headSha };
       });
 
-      const comparedCommits = await fetchComparedCommits(
-        source.repository,
-        range.baseSha,
-        range.headSha,
-        token,
-      );
+      let comparedCommits: GitHubListCommit[];
+      try {
+        comparedCommits = await fetchComparedCommits(
+          source.repository,
+          range.baseSha,
+          range.headSha,
+          token,
+        );
+      } catch (error) {
+        // A rolled-back or rewritten submodule pointer must not block the whole draft; the
+        // application release comparison still fails loudly on the same condition.
+        if (error instanceof NonAheadCompareError) {
+          console.warn(
+            `Skipping submodule expansion for ${hostCommit.owner}/${hostCommit.repo}@${hostCommit.shortSha}: ${error.message}`,
+          );
+          continue;
+        }
+
+        throw error;
+      }
 
       for (const comparedCommit of comparedCommits) {
         if (shouldSkipCommitAuthor(comparedCommit)) {
@@ -1224,12 +1256,13 @@ interface PreviewWorkspace {
   draftFilename: string;
 }
 
-async function createPreviewWorkspace(input: {
+export async function createPreviewWorkspace(input: {
   number: number;
   windowSelection: WindowSelection;
   applicationReleaseBaseSha: string;
   applicationReleaseHeadSha: string;
   eligibleGroups: ChangeGroup[];
+  excludedGroups: ExcludedChangeGroup[];
 }): Promise<PreviewWorkspace> {
   const numberLabel = formatChangelogNumber(input.number);
   const directory = await fs.mkdtemp(
@@ -1237,6 +1270,17 @@ async function createPreviewWorkspace(input: {
   );
   const draftFilename = `changelog-${numberLabel}-preview.mdx`;
   const sourceFacts = `[\n${input.eligibleGroups.map(formatChangeGroupForPrompt).join(',\n')}\n]\n`;
+  // Excluded details stay out of the public PR body; this local file is the audit trail for them.
+  const excludedGroups = input.excludedGroups.map((item) => ({
+    reason: item.reason,
+    key: item.group.key,
+    pullRequest: item.group.pullRequest,
+    commits: item.group.commits.map((commit) => ({
+      sha: commit.sha,
+      url: commit.url,
+      subject: commit.subject,
+    })),
+  }));
   const manifest = {
     changelogNumber: input.number,
     window: input.windowSelection,
@@ -1250,6 +1294,10 @@ async function createPreviewWorkspace(input: {
 
   await Promise.all([
     fs.writeFile(path.join(directory, 'source-facts.json'), sourceFacts),
+    fs.writeFile(
+      path.join(directory, 'excluded-groups.json'),
+      `${JSON.stringify(excludedGroups, null, 2)}\n`,
+    ),
     fs.writeFile(path.join(directory, 'run.json'), `${JSON.stringify(manifest, null, 2)}\n`),
   ]);
 
@@ -1322,7 +1370,11 @@ async function main() {
     }
 
     applicationReleaseBaseSha = state.applicationReleaseSha;
-    applicationReleaseSha = await fetchBranchHead(CHANGELOG_APPLICATION_REPOSITORY, githubToken);
+    const explicitUntil = options.until || process.env.CHANGELOG_UNTIL;
+    applicationReleaseSha = await fetchApplicationReleaseHead(
+      explicitUntil ? windowSelection.until : undefined,
+      githubToken,
+    );
   }
 
   const slug = `changelog-${formatChangelogNumber(nextNumber)}`;
@@ -1409,6 +1461,7 @@ async function main() {
         applicationReleaseBaseSha,
         applicationReleaseHeadSha: applicationReleaseSha,
         eligibleGroups: eligible,
+        excludedGroups: excluded,
       })
     : null;
   if (previewWorkspace) {

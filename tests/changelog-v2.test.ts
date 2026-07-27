@@ -1,5 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { readdirSync } from 'node:fs';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import {
   CHANGELOG_REPOSITORIES,
   DEFAULT_OPENAI_MODEL,
@@ -20,8 +22,11 @@ import {
 } from '../scripts/changelog/source';
 import changelogState from '../scripts/changelog/state.json';
 import {
+  createPreviewWorkspace,
+  expandReleasedBrowserCommits,
   extractOpenAiResponseText,
   fetchApplicationReleaseCommits,
+  fetchApplicationReleaseHead,
   parseArgs,
   selectRecentChangelogNumbers,
 } from '../scripts/generate-changelog-draft';
@@ -401,5 +406,168 @@ describe('changelog v2 window and model defaults', () => {
   test('uses the selected GPT-5.6 model at low reasoning', () => {
     expect(DEFAULT_OPENAI_MODEL).toBe('gpt-5.6-sol');
     expect(DEFAULT_OPENAI_REASONING_EFFORT).toBe('low');
+  });
+});
+
+function jsonResponse(body: unknown): Response {
+  return new Response(JSON.stringify(body), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+const BROWSER_FIX_SHA = '5880b48c1af107219ff3d904edbb8f6b76bea9b6';
+const BROWSER_FIX_LIST_COMMIT = {
+  sha: BROWSER_FIX_SHA,
+  html_url: `https://github.com/steel-dev/steel-browser/commit/${BROWSER_FIX_SHA}`,
+  author: { login: 'engineer' },
+  commit: {
+    message: 'fix(cdp): capture network requests from dedicated web workers',
+    author: { name: 'Engineer', date: '2026-07-23T10:00:00.000Z' },
+    committer: { date: '2026-07-23T10:00:00.000Z' },
+  },
+};
+
+function submodulePointerHostCommit() {
+  return commitFixture('application', {
+    owner: '0xnenlabs',
+    repo: 'steel',
+    sha: '12d54db736181ac2bce0e553ea3d425da0ce786b',
+    shortSha: '12d54db',
+    subject: 'chore(apps): update steel-browser submodule',
+    commitType: 'chore',
+    changedFiles: [changedFile('apps/steel-browser', 'modified', BROWSER_SUBMODULE_PATCH)],
+  });
+}
+
+describe('changelog v2 release evidence recovery', () => {
+  test('skips submodule expansion when the released range is not ahead', async () => {
+    const originalFetch = globalThis.fetch;
+    const originalWarn = console.warn;
+    const warnings: string[] = [];
+    console.warn = (message: string) => warnings.push(message);
+    globalThis.fetch = (async () =>
+      jsonResponse({ status: 'behind', total_commits: 0, commits: [] })) as unknown as typeof fetch;
+
+    try {
+      const derived = await expandReleasedBrowserCommits([submodulePointerHostCommit()], 'token');
+
+      expect(derived).toEqual([]);
+      expect(warnings.join('\n')).toContain('Skipping submodule expansion');
+    } finally {
+      globalThis.fetch = originalFetch;
+      console.warn = originalWarn;
+    }
+  });
+
+  test('expands an ahead released range into enriched browser commits', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.includes('/compare/')) {
+        return jsonResponse({
+          status: 'ahead',
+          total_commits: 1,
+          commits: [BROWSER_FIX_LIST_COMMIT],
+        });
+      }
+
+      if (url.includes('/pulls')) {
+        return jsonResponse([]);
+      }
+
+      return jsonResponse({
+        ...BROWSER_FIX_LIST_COMMIT,
+        parents: [{ sha: '42b785bd554b73c09f75164a8f1e7b3c9f9d435d' }],
+        files: [changedFile('api/src/services/cdp/instrumentation/target-manager.ts')],
+      });
+    }) as unknown as typeof fetch;
+
+    try {
+      const hostCommit = submodulePointerHostCommit();
+      const derived = await expandReleasedBrowserCommits([hostCommit], 'token');
+
+      expect(derived).toHaveLength(1);
+      expect(derived[0].sourceKind).toBe('browser');
+      expect(derived[0].releasedVia?.sha).toBe(hostCommit.sha);
+      expect(derived[0].changedFiles.map((file) => file.filename)).toEqual([
+        'api/src/services/cdp/instrumentation/target-manager.ts',
+      ]);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  test('fails loudly when the application release range is not ahead', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async () =>
+      jsonResponse({
+        status: 'diverged',
+        total_commits: 0,
+        commits: [],
+      })) as unknown as typeof fetch;
+
+    try {
+      await expect(
+        fetchApplicationReleaseCommits(
+          APPLICATION_RELEASE_SHA_AT_035,
+          '2222222222222222222222222222222222222222',
+          'token',
+        ),
+      ).rejects.toThrow('Expected an ahead range');
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  test('bounds the application release head when an explicit until is provided', async () => {
+    const originalFetch = globalThis.fetch;
+    const requestedUrls: string[] = [];
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      requestedUrls.push(url);
+      if (url.includes('/branches/')) {
+        return jsonResponse({ commit: { sha: 'b'.repeat(40) } });
+      }
+
+      return jsonResponse([{ sha: 'a'.repeat(40) }]);
+    }) as unknown as typeof fetch;
+
+    try {
+      const boundedHead = await fetchApplicationReleaseHead(PREVIOUS_CHANGELOG_CUTOFF, 'token');
+      const currentHead = await fetchApplicationReleaseHead(undefined, 'token');
+
+      expect(boundedHead).toBe('a'.repeat(40));
+      expect(requestedUrls[0]).toContain(`until=${encodeURIComponent(PREVIOUS_CHANGELOG_CUTOFF)}`);
+      expect(currentHead).toBe('b'.repeat(40));
+      expect(requestedUrls[1]).toContain('/branches/release');
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  test('preview workspace records excluded groups for local audit', async () => {
+    const { excluded } = filterEligibleChangeGroups(groupCommitsByPullRequest(QUIET_WEEK_COMMITS));
+    const workspace = await createPreviewWorkspace({
+      number: 35,
+      windowSelection: resolvePreviewWindow({
+        since: '2026-07-17T15:58:38.000Z',
+        until: PREVIOUS_CHANGELOG_CUTOFF,
+      }),
+      applicationReleaseBaseSha: 'a'.repeat(40),
+      applicationReleaseHeadSha: 'b'.repeat(40),
+      eligibleGroups: [],
+      excludedGroups: excluded,
+    });
+
+    try {
+      const raw = await fs.readFile(path.join(workspace.directory, 'excluded-groups.json'), 'utf8');
+      const parsed = JSON.parse(raw) as Array<{ reason: string; key: string }>;
+
+      expect(parsed).toHaveLength(excluded.length);
+      expect(parsed.every((item) => item.reason && item.key)).toBe(true);
+    } finally {
+      await fs.rm(workspace.directory, { recursive: true, force: true });
+    }
   });
 });
