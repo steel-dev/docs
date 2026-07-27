@@ -21,6 +21,51 @@ Browser sessions are billed and metered by the minute. A session can last up to 
 
 Understanding how sessions live and die helps you manage resources effectively and build more reliable applications.
 
+### Reserving a Session ID
+
+Steel generates a session ID for you, but `create` also accepts one. Pass your own UUID when the ID has to exist before the browser does: a job row you write before starting the session, or a live view link you hand to a user while the browser is still booting.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import { randomUUID } from 'node:crypto';
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+// Reserve the ID first, then create the session with it.
+const sessionId = randomUUID();
+await jobs.insert({ sessionId, status: 'starting' });
+
+const session = await client.sessions.create({ sessionId });
+console.log(session.id === sessionId); // true
+```
+
+
+```python !! Python -wcn
+import uuid
+from steel import Steel
+
+client = Steel()
+
+# Reserve the ID first, then create the session with it.
+session_id = str(uuid.uuid4())
+jobs.insert(session_id=session_id, status="starting")
+
+session = client.sessions.create(session_id=session_id)
+print(session.id == session_id)  # True
+```
+</CodeTabs>
+
+The value must be a valid UUID such as `123e4567-e89b-12d3-a456-426614174000`. Omit `sessionId` and Steel generates one instead. Either way, the ID goes to the same places:
+
+*   `client.sessions.release(sessionId)` to end the session
+
+*   `client.sessions.files.list(sessionId)` and the rest of the Files API
+
+*   `wss://connect.steel.dev?apiKey=<key>&sessionId=<id>` to attach Playwright or Puppeteer
+
+
 ### Session Lifetime and Timeout
 
 When you start a session, it stays alive for 5 minutes by default but you can change it by passing the timeout parameter. After the time passes, the session will be automatically released.

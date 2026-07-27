@@ -318,6 +318,9 @@ const AGENT_INSTRUCTIONS = `# Steel Documentation
 - Do NOT use \`session.websocketUrl\` directly — construct the WSS URL as shown above
 - The Node SDK constructor param is \`steelAPIKey\` (not \`apiKey\`)
 - The Python SDK constructor param is \`steel_api_key\` (not \`api_key\`)
+- The Python package installs as \`pip install steel-sdk\` but imports as \`from steel import Steel\`
+- \`sessions.create()\` accepts an optional \`sessionId\` (Node) / \`session_id\` (Python) UUID when you need the ID before the session exists; omit it and Steel generates one
+- The Python \`sessions.create()\` session timeout param is \`api_timeout\` (not \`timeout\`, which is the HTTP request timeout)
 - Individual doc pages are available as markdown at \`/llms.mdx/<page-path>\`
 
 `;
