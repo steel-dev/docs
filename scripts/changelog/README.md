@@ -5,7 +5,9 @@
 The draft model returns a `coverMotif` scene description alongside the changelog body. The
 generator renders it into `public/images/changelog/<n>.png` with the vendored imagegen pipeline
 (`scripts/changelog/imagegen/`): a `gpt-image-2` background, an ordered dither, and the fixed
-Figma card layout, quantized to PNG-8 before it is committed. If the motif is missing or the
+Figma card layout, quantized to PNG-8 before it is committed. The motif supplies only the scene;
+the time of day comes from one of six color-grade presets picked at random per card, and the run
+log and sidecar JSON record which one was used. If the motif is missing or the
 render fails, the draft keeps the placeholder image and the PR body says so; a cover problem
 never fails the run. Preview mode never generates images.
 

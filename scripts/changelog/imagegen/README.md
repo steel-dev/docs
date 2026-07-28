@@ -33,7 +33,8 @@ bun run generate-changelog-image -- --number 35 --background output/changelog-35
 | `--motif` | *required* | The scene to generate. Not needed with `--background` |
 | `--category` | `Product Update` | Stacked on two lines, balanced by word length. A `\n` forces the break |
 | `--date` | today | `YYYY-MM-DD`, rendered as `July 24` / `2026` |
-| `--color-grade` | blue-hour default | Overrides the grade in the prompt |
+| `--time-of-day` | random | `dawn`, `morning`, `midday`, `golden-hour`, `dusk`, `night`, or `random` |
+| `--color-grade` | from `--time-of-day` | Free-form grade; overrides the time-of-day preset |
 | `--background` | – | Reuse an image instead of generating one — good for retyping a card |
 | `--out` | `output/changelog-<n>.png` | |
 | `--size` | `1536x864` | Size requested from `gpt-image-2`; matches the card ratio, so nothing meaningful is cropped |
@@ -44,7 +45,9 @@ bun run generate-changelog-image -- --number 35 --background output/changelog-35
 
 ## The prompt
 
-`prompt.ts` holds the house style — `main_description`, `style_notes` and the `avoid` list — which stays identical across cards. Only `motif` and `color_grade` vary per run, and both come from flags. The final prompt is the same template as the reference spec: motif, then style, then color grade, then the style notes and avoid list.
+`prompt.ts` holds the house style — `main_description`, `style_notes` and the `avoid` list — which stays identical across cards. Only `motif` and `color_grade` vary per run. The final prompt is the same template as the reference spec: motif, then style, then color grade, then the style notes and avoid list.
+
+The color grade comes from `TIME_OF_DAY_GRADES`, one of six presets across the day, picked at random per card so covers do not all land at the same hour. The house style deliberately holds no time of day of its own; it defers to the grade. `night` is written brighter than a real night because the card lays a 20-40% black scrim over the background, and `avoid` rejects towers, pylons, and cranes the motif never asked for, which the model otherwise adds to any scene.
 
 Two fields differ from the original reference spec, because they described that card's specific scene rather than the house style: `composition` is now motif-agnostic (it still reserves calm negative space in the lower-left for the headline), and `symbolism` was dropped — that job belongs to `--motif`.
 

@@ -76,6 +76,7 @@ The file wrapper is handled outside the model. You are only writing the changelo
 - Describe one concrete scene in one or two sentences, with a clear focal subject, that loosely echoes the week's most significant change.
 - Any setting in the world is fair game: a street vendor's stall, a tennis rally at match point, a field of flowers opening at once, a night kitchen plating the first order, a swimmer turning at the wall. Surprise is a feature; do not settle into one territory or repeat the feel of an obvious previous cover.
 - Let the metaphor stay loose. A scene that captures the energy of the week beats a literal one-to-one mapping.
+- Do not state a time of day, weather, or lighting. A separate preset sets those, and naming them in the motif only fights it.
 - Do not mention Steel, browsers, software, screens, text, or logos; the scene carries the meaning on its own.
 - If the week has no publishable entries, return an empty `coverMotif`.
 

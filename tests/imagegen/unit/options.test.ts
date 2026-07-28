@@ -4,6 +4,7 @@ import { describe, test } from 'bun:test';
 import assert from 'node:assert/strict';
 
 import { DEFAULT_SIZE, parseOptions } from '../../../scripts/changelog/imagegen/options';
+import { TIME_OF_DAY_GRADES } from '../../../scripts/changelog/imagegen/prompt';
 
 const MOTIF = 'A quiet harbour at dawn where five ships dock at one pier.';
 const REQUIRED = ['--number', '35', '--motif', MOTIF];
@@ -102,5 +103,44 @@ describe('parseOptions', () => {
   test('exposes print-prompt and help flags', () => {
     assert.equal(parseOptions([...REQUIRED, '--print-prompt']).printPrompt, true);
     assert.equal(parseOptions(['--help']).help, true);
+  });
+});
+
+describe('parseOptions time of day', () => {
+  test('resolves a named time of day into its color grade', () => {
+    const options = parseOptions([...REQUIRED, '--time-of-day', 'dawn']);
+    assert.equal(options.timeOfDay, 'dawn');
+    assert.equal(options.colorGrade, TIME_OF_DAY_GRADES.dawn);
+  });
+
+  test('picks a random preset by default', () => {
+    const names = Object.keys(TIME_OF_DAY_GRADES);
+    const first = parseOptions(REQUIRED, () => 0);
+    const last = parseOptions(REQUIRED, () => 0.999);
+
+    assert.equal(first.timeOfDay, names[0]);
+    assert.equal(first.colorGrade, TIME_OF_DAY_GRADES[names[0]!]);
+    assert.equal(last.timeOfDay, names[names.length - 1]);
+  });
+
+  test("accepts 'random' explicitly", () => {
+    const options = parseOptions([...REQUIRED, '--time-of-day', 'random'], () => 0);
+    assert.equal(options.timeOfDay, Object.keys(TIME_OF_DAY_GRADES)[0]);
+  });
+
+  test('an explicit color grade wins over any time of day', () => {
+    const options = parseOptions([
+      ...REQUIRED,
+      '--time-of-day',
+      'dawn',
+      '--color-grade',
+      'warm amber dusk',
+    ]);
+    assert.equal(options.colorGrade, 'warm amber dusk');
+    assert.equal(options.timeOfDay, undefined);
+  });
+
+  test('rejects an unknown time of day with the valid names', () => {
+    assert.throws(() => parseOptions([...REQUIRED, '--time-of-day', 'brunch']), /dawn/);
   });
 });

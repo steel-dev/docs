@@ -7,6 +7,7 @@ import {
   buildImageSpec,
   DEFAULT_COLOR_GRADE,
   HOUSE_STYLE,
+  TIME_OF_DAY_GRADES,
 } from '../../../scripts/changelog/imagegen/prompt';
 
 const MOTIF = 'A nighttime rail-switching terminal where five routes converge into one line.';
@@ -50,5 +51,32 @@ describe('buildImageSpec', () => {
 
   test('rejects an empty motif', () => {
     assert.throws(() => buildImageSpec({ motif: '  ' }), /motif/i);
+  });
+});
+
+describe('TIME_OF_DAY_GRADES', () => {
+  test('offers six distinct, non-empty presets across the day', () => {
+    const names = Object.keys(TIME_OF_DAY_GRADES);
+    assert.deepEqual(names, ['dawn', 'morning', 'midday', 'golden-hour', 'dusk', 'night']);
+
+    const grades = Object.values(TIME_OF_DAY_GRADES);
+    for (const grade of grades) assert.ok(grade.trim().length > 0);
+    assert.equal(new Set(grades).size, grades.length, 'presets must be distinct');
+  });
+
+  test('keeps the dusk preset as the default color grade', () => {
+    assert.equal(DEFAULT_COLOR_GRADE, TIME_OF_DAY_GRADES.dusk);
+  });
+
+  test('keeps the fixed house style free of a hard-coded time of day', () => {
+    const fixed = [
+      HOUSE_STYLE.main_description,
+      HOUSE_STYLE.style_notes.lighting,
+      HOUSE_STYLE.style_notes.colors,
+    ]
+      .join(' ')
+      .toLowerCase();
+    assert.ok(!fixed.includes('blue-hour'), 'time of day belongs to the grade presets');
+    assert.ok(!fixed.includes('dawn'), 'time of day belongs to the grade presets');
   });
 });

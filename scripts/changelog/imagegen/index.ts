@@ -38,7 +38,11 @@ export async function run(
     log(`Using background ${options.background}`);
     source = await readFile(options.background);
   } else {
-    log(`Generating background with ${IMAGE_MODEL} at ${options.size}…`);
+    log(
+      `Generating background with ${IMAGE_MODEL} at ${options.size}${
+        options.timeOfDay ? ` (${options.timeOfDay})` : ''
+      }…`,
+    );
     source = await generate({ prompt: spec!.prompt, size: options.size });
   }
 
@@ -77,6 +81,7 @@ export async function run(
         category: options.category,
         date: toIsoDate(options.date),
         scale: options.scale,
+        timeOfDay: options.timeOfDay ?? null,
         background: options.background ?? { model: IMAGE_MODEL, size: options.size },
         dither: options.paletteName
           ? { palette: options.paletteName, matrix: `bayer-${DITHER_MATRIX_SIZE}` }

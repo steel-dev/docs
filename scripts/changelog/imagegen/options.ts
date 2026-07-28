@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
 import { DEFAULT_PALETTE, getPalette } from './palettes';
+import { TIME_OF_DAY_GRADES } from './prompt';
 
 export type Options = {
   category: string;
@@ -12,6 +13,8 @@ export type Options = {
   number: string;
   motif?: string;
   colorGrade?: string;
+  /** Preset name behind colorGrade, or undefined with an explicit --color-grade. */
+  timeOfDay?: string;
   background?: string;
   out: string;
   size: string;
@@ -37,7 +40,8 @@ Options:
   --motif <text>        Scene to generate  (required unless --background)
   --category <text>     Header label, stacked on two lines            (default: "${DEFAULT_CATEGORY}")
   --date <YYYY-MM-DD>   Date shown top-right                          (default: today)
-  --color-grade <text>  Overrides the default color grade
+  --time-of-day <name>  dawn|morning|midday|golden-hour|dusk|night    (default: random)
+  --color-grade <text>  Free-form color grade; overrides --time-of-day
   --background <path>   Reuse an existing background instead of generating one
   --out <path>          Output PNG                                    (default: output/changelog-<n>.png)
   --size <WxH>          Generated background size                     (default: ${DEFAULT_SIZE})
@@ -50,7 +54,7 @@ Options:
 Requires OPENAI_API_KEY unless --background or --print-prompt is used.`;
 
 /** Parses argv (without node/script) into validated options. */
-export function parseOptions(argv: string[]): Options {
+export function parseOptions(argv: string[], random: () => number = Math.random): Options {
   const { values } = parseArgs({
     args: argv,
     options: {
@@ -58,6 +62,7 @@ export function parseOptions(argv: string[]): Options {
       date: { type: 'string' },
       number: { type: 'string' },
       motif: { type: 'string' },
+      'time-of-day': { type: 'string' },
       'color-grade': { type: 'string' },
       background: { type: 'string' },
       out: { type: 'string' },
@@ -102,12 +107,16 @@ export function parseOptions(argv: string[]): Options {
 
   const paletteName = values['no-dither'] ? undefined : values.palette?.trim() || DEFAULT_PALETTE;
 
+  const explicitGrade = values['color-grade']?.trim();
+  const timeOfDay = explicitGrade ? undefined : resolveTimeOfDay(values['time-of-day'], random);
+
   return {
     category: values.category?.trim() || DEFAULT_CATEGORY,
     date: parseDate(values.date),
     number,
     motif,
-    colorGrade: values['color-grade']?.trim(),
+    colorGrade: explicitGrade || TIME_OF_DAY_GRADES[timeOfDay as string],
+    timeOfDay,
     background: background ? resolve(background) : undefined,
     out: resolve(values.out?.trim() || `output/changelog-${number}.png`),
     size: values.size?.trim() || DEFAULT_SIZE,
@@ -117,6 +126,23 @@ export function parseOptions(argv: string[]): Options {
     printPrompt: values['print-prompt'] ?? false,
     help: false,
   };
+}
+
+/** Resolves a --time-of-day value ('random' or unset picks one) to a preset name. */
+function resolveTimeOfDay(value: string | undefined, random: () => number): string {
+  const names = Object.keys(TIME_OF_DAY_GRADES);
+  const requested = value?.trim();
+
+  if (!requested || requested === 'random') {
+    return names[Math.min(Math.floor(random() * names.length), names.length - 1)] as string;
+  }
+
+  if (!names.includes(requested)) {
+    throw new Error(
+      `--time-of-day must be one of ${names.join(', ')} or random, got "${requested}"`,
+    );
+  }
+  return requested;
 }
 
 /** Reads YYYY-MM-DD as a local calendar date; defaults to today. */

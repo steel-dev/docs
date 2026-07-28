@@ -2,36 +2,33 @@
 // ABOUTME: stdout, and the PNG plus sidecar JSON it writes to disk.
 import { afterAll, beforeAll, describe, setDefaultTimeout, test } from 'bun:test';
 import assert from 'node:assert/strict';
-
-// Subprocess spawns compete with the Chromium integration tests for CPU when the
-// whole suite runs at once, so the default 5s timeout is too tight.
-setDefaultTimeout(30000);
-
-import { execFile } from 'node:child_process';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promisify } from 'node:util';
 import { PNG } from 'pngjs';
 
-const run = promisify(execFile);
+// Each case renders a card in a subprocess, which exceeds the default 5s timeout.
+setDefaultTimeout(30000);
+
 const CLI = fileURLToPath(new URL('../../../scripts/changelog/imagegen/cli.ts', import.meta.url));
 
 const MOTIF = 'A quiet harbour at dawn where five ships dock at one long pier.';
 
 type CliResult = { code: number; stdout: string; stderr: string };
 
-async function cli(args: string[]): Promise<CliResult> {
-  try {
-    const { stdout, stderr } = await run(process.execPath, [CLI, ...args], {
-      env: { ...process.env, OPENAI_API_KEY: '' },
-    });
-    return { code: 0, stdout, stderr };
-  } catch (error) {
-    const failure = error as { code?: number; stdout?: string; stderr?: string };
-    return { code: failure.code ?? 1, stdout: failure.stdout ?? '', stderr: failure.stderr ?? '' };
-  }
+// Spawned synchronously on purpose: asynchronous spawns deadlock in this runner
+// once the Chromium integration tests have launched browsers in the same process.
+function cli(args: string[]): CliResult {
+  const result = Bun.spawnSync([process.execPath, CLI, ...args], {
+    env: { ...process.env, OPENAI_API_KEY: '' },
+  });
+
+  return {
+    code: result.exitCode,
+    stdout: result.stdout.toString(),
+    stderr: result.stderr.toString(),
+  };
 }
 
 describe('changelog-imagegen CLI', () => {
@@ -57,14 +54,14 @@ describe('changelog-imagegen CLI', () => {
   });
 
   test('prints usage for --help', async () => {
-    const { code, stdout } = await cli(['--help']);
+    const { code, stdout } = cli(['--help']);
     assert.equal(code, 0);
     assert.match(stdout, /changelog-imagegen/);
     assert.match(stdout, /--motif/);
   });
 
   test('prints the prompt spec without touching the network', async () => {
-    const { code, stdout } = await cli(['--number', '35', '--motif', MOTIF, '--print-prompt']);
+    const { code, stdout } = cli(['--number', '35', '--motif', MOTIF, '--print-prompt']);
     assert.equal(code, 0);
     const spec = JSON.parse(stdout);
     assert.equal(spec.motif, MOTIF);
@@ -73,14 +70,14 @@ describe('changelog-imagegen CLI', () => {
   });
 
   test('fails with a usage message when --number is missing', async () => {
-    const { code, stderr } = await cli(['--motif', MOTIF]);
+    const { code, stderr } = cli(['--motif', MOTIF]);
     assert.equal(code, 1);
     assert.match(stderr, /--number is required/);
     assert.match(stderr, /Usage:/);
   });
 
   test('fails when a background must be generated but no API key is set', async () => {
-    const { code, stderr } = await cli([
+    const { code, stderr } = cli([
       '--number',
       '35',
       '--motif',
@@ -94,7 +91,7 @@ describe('changelog-imagegen CLI', () => {
 
   test('renders a card from an existing background', async () => {
     const out = join(workdir, 'card.png');
-    const { code, stdout, stderr } = await cli([
+    const { code, stdout, stderr } = cli([
       '--number',
       '12',
       '--category',
@@ -130,7 +127,7 @@ describe('changelog-imagegen CLI', () => {
 
   test('dithers the background against the chosen palette', async () => {
     const out = join(workdir, 'ocean.png');
-    const { code, stderr } = await cli([
+    const { code, stderr } = cli([
       '--number',
       '12',
       '--background',
@@ -159,7 +156,7 @@ describe('changelog-imagegen CLI', () => {
 
   test('leaves the background alone with --no-dither', async () => {
     const out = join(workdir, 'flat.png');
-    const { code, stderr } = await cli([
+    const { code, stderr } = cli([
       '--number',
       '12',
       '--background',
@@ -189,7 +186,7 @@ describe('changelog-imagegen CLI', () => {
 
   test('doubles the resolution at --scale 2', async () => {
     const out = join(workdir, 'card-2x.png');
-    const { code, stderr } = await cli([
+    const { code, stderr } = cli([
       '--number',
       '12',
       '--background',
