@@ -60,13 +60,13 @@ jobs:
 
       - name: Checkout code
         if: steps.gate.outputs.should_run == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Bun
         if: steps.gate.outputs.should_run == 'true'
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
@@ -101,7 +101,7 @@ jobs:
 
       - name: Upload generated draft artifacts
         if: steps.gate.outputs.should_run == 'true' && steps.generate.outputs.has_changes == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: changelog-draft-${{ github.run_id }}
           path: |
@@ -111,7 +111,7 @@ jobs:
 
       - name: Create draft pull request
         if: steps.gate.outputs.should_run == 'true' && steps.generate.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.open_pr)
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.CHANGELOG_GITHUB_TOKEN != '' && secrets.CHANGELOG_GITHUB_TOKEN || github.token }}
           base: main
