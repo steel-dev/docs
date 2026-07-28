@@ -28,11 +28,17 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
       - name: Run Biome checks
-        run: bun run biome check app/ components/ lib/ scripts/ content/ --error-on-warnings
+        run: bun run biome check app/ components/ lib/ scripts/ content/ tests/ --error-on-warnings
 
       - name: Typecheck
         run: bun run typecheck
+
+      - name: Run tests
+        run: bun test
 
       - name: Run cspell
         run: bun run spell
