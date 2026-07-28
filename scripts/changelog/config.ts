@@ -157,6 +157,11 @@ export const PROMPT_CHANGELOG_CHAR_LIMIT = 6_000;
 export const COMMIT_BODY_CHAR_LIMIT = 1_200;
 export const PULL_REQUEST_BODY_CHAR_LIMIT = 2_000;
 export const CHANGED_FILES_PROMPT_LIMIT = 40;
+/**
+ * The cover motif reaches an image prompt and the public PR body, and it comes from a
+ * model reading untrusted commit text, so it is bounded to a sentence or two.
+ */
+export const COVER_MOTIF_CHAR_LIMIT = 400;
 export const DEFAULT_OPENAI_MODEL = 'gpt-5.6-sol';
 export const DEFAULT_OPENAI_REASONING_EFFORT = 'low';
 export const CHANGELOG_TIMEZONE = 'America/Toronto';

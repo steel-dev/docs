@@ -7,6 +7,7 @@ import sharp from 'sharp';
 import {
   CHANGELOG_PLACEHOLDER_IMAGE,
   CHANGELOG_REPOSITORIES,
+  COVER_MOTIF_CHAR_LIMIT,
   DEFAULT_OPENAI_MODEL,
   DEFAULT_OPENAI_REASONING_EFFORT,
 } from '../scripts/changelog/config';
@@ -886,5 +887,36 @@ describe('changelog v2 cover', () => {
     } finally {
       await fs.rm(repoRoot, { recursive: true, force: true });
     }
+  });
+});
+
+describe('changelog v2 cover motif hygiene', () => {
+  test('collapses a multi-line motif onto one line', () => {
+    const draft = parseDraftResult(
+      JSON.stringify({
+        introduction: 'Intro.',
+        sections: [],
+        discardedItems: [],
+        coverMotif: 'A harbour at first light.\n\nFive boats  tied to one pier.',
+      }),
+    );
+
+    // The motif is rendered as a single bullet in the public PR body, so an
+    // embedded newline would break out of the list.
+    expect(draft.coverMotif).toBe('A harbour at first light. Five boats tied to one pier.');
+  });
+
+  test('caps an overlong motif', () => {
+    const draft = parseDraftResult(
+      JSON.stringify({
+        introduction: 'Intro.',
+        sections: [],
+        discardedItems: [],
+        coverMotif: `A field of flowers. ${'very long '.repeat(200)}`,
+      }),
+    );
+
+    expect(draft.coverMotif.length).toBeLessThanOrEqual(COVER_MOTIF_CHAR_LIMIT);
+    expect(draft.coverMotif.startsWith('A field of flowers.')).toBe(true);
   });
 });

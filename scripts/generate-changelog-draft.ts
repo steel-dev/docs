@@ -13,6 +13,7 @@ import {
   CHANGELOG_TIMEZONE,
   type ChangelogRepository,
   COMMIT_BODY_CHAR_LIMIT,
+  COVER_MOTIF_CHAR_LIMIT,
   DEFAULT_OPENAI_MODEL,
   DEFAULT_OPENAI_REASONING_EFFORT,
   PROMPT_CHANGELOG_CHAR_LIMIT,
@@ -1044,6 +1045,19 @@ function sanitizeReferences(value: unknown): DraftReference[] {
     .filter((reference): reference is DraftReference => Boolean(reference));
 }
 
+/** Flattens the motif to one bounded line: it becomes a bullet in the public PR body. */
+function sanitizeCoverMotif(value: unknown): string {
+  if (!isNonEmptyString(value)) {
+    return '';
+  }
+
+  const collapsed = value.replace(/\s+/g, ' ').trim();
+
+  return collapsed.length > COVER_MOTIF_CHAR_LIMIT
+    ? collapsed.slice(0, COVER_MOTIF_CHAR_LIMIT).trimEnd()
+    : collapsed;
+}
+
 export function parseDraftResult(rawContent: string): DraftResult {
   const json = JSON.parse(extractJsonObject(rawContent)) as Record<string, unknown>;
   const introduction = isNonEmptyString(json.introduction) ? json.introduction.trim() : '';
@@ -1133,7 +1147,7 @@ export function parseDraftResult(rawContent: string): DraftResult {
     introduction,
     sections,
     discardedItems,
-    coverMotif: isNonEmptyString(json.coverMotif) ? json.coverMotif.trim() : '',
+    coverMotif: sanitizeCoverMotif(json.coverMotif),
   };
 }
 
