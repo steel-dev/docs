@@ -23,7 +23,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
   const headers = new Headers({ 'Content-Type': 'text/markdown; charset=utf-8' });
   appendMarkdownVaryHeader(headers);
 
-  return new NextResponse(await getLLMText(page), {
+  return new NextResponse(await getLLMText(page, { indexPointer: true }), {
     headers,
   });
 }

@@ -1,5 +1,5 @@
-// ABOUTME: End-to-end tests that boot the Next.js dev server and verify
-// ABOUTME: .md-suffixed docs URLs serve markdown while canonical URLs stay HTML.
+// ABOUTME: End-to-end tests that boot the Next.js dev server and verify the
+// ABOUTME: LLM-facing endpoints: .md-suffixed URLs, index pointer, llms-full.txt.
 import { afterAll, beforeAll, describe, expect, setDefaultTimeout, test } from 'bun:test';
 import { fileURLToPath } from 'node:url';
 
@@ -52,13 +52,21 @@ describe('.md suffix end-to-end', () => {
     await server?.exited;
   });
 
-  test('serves markdown at a .md-suffixed docs URL', async () => {
+  test('serves markdown with the index pointer at a .md-suffixed docs URL', async () => {
     const response = await fetch(`${BASE_URL}/overview/sessions-api/quickstart.md`, {
       headers: BROWSER_HEADERS,
     });
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toStartWith('text/markdown');
-    expect(await response.text()).toStartWith('# Quickstart');
+    const body = await response.text();
+    expect(body).toStartWith('> Full docs index: https://docs.steel.dev/llms.txt');
+    expect(body).toContain('# Quickstart');
+  });
+
+  test('llms-full.txt does not repeat the index pointer', async () => {
+    const response = await fetch(`${BASE_URL}/llms-full.txt`, { headers: BROWSER_HEADERS });
+    expect(response.status).toBe(200);
+    expect(await response.text()).not.toContain('Full docs index');
   });
 
   test('returns 404 for a .md URL with no matching page', async () => {
