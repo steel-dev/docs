@@ -45,8 +45,11 @@ describe('.md suffix end-to-end', () => {
     await waitForServer();
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    // Wait for the process to fully exit so the dev server's CPU and port
+    // are released before later test files (Chromium renders) start.
     server?.kill();
+    await server?.exited;
   });
 
   test('serves markdown at a .md-suffixed docs URL', async () => {
