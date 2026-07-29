@@ -9,7 +9,7 @@ export async function GET() {
   const scan = source
     .getPages()
     .filter((page) => !page.url.includes('/changelog/') && shouldIncludeLLMPage(page))
-    .map(getLLMText);
+    .map((page) => getLLMText(page));
   const scanned = await Promise.all(scan);
 
   return new Response(AGENT_INSTRUCTIONS + scanned.join('\n\n'), {

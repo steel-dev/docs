@@ -16,11 +16,19 @@ export function shouldIncludeLLMPage(page: InferPageType<typeof source>) {
   }
 }
 
-export async function getLLMText(page: InferPageType<typeof source>) {
-  const processed = stripFaqFences(page.data.content);
+const SITE_URL = process.env.LLMS_BASE_URL || 'https://docs.steel.dev';
 
-  return `# ${page.data.title}
-URL: ${page.url}
+export const LLMS_INDEX_POINTER = `> Full docs index: ${SITE_URL}/llms.txt`;
+
+export async function getLLMText(
+  page: InferPageType<typeof source>,
+  options: { indexPointer?: boolean } = {},
+) {
+  const processed = stripFaqFences(page.data.content);
+  const pointer = options.indexPointer ? `${LLMS_INDEX_POINTER}\n\n` : '';
+
+  return `${pointer}# ${page.data.title}
+URL: ${SITE_URL}${page.url}
 
 ${processed}`;
 }
