@@ -65,6 +65,7 @@ export const AGENT_INSTRUCTIONS = `# Steel Documentation
 - The Python package installs as \`pip install steel-sdk\` but imports as \`from steel import Steel\`
 - \`sessions.create()\` accepts an optional \`sessionId\` (Node) / \`session_id\` (Python) UUID when you need the ID before the session exists; omit it and Steel generates one
 - The Python \`sessions.create()\` session timeout param is \`api_timeout\` (not \`timeout\`, which is the HTTP request timeout)
-- Individual doc pages are available as markdown at \`/llms.mdx/<page-path>\`
+- Any docs page is available as markdown by appending \`.md\` to its URL, for example \`https://docs.steel.dev/overview/steel-cli.md\`; AI user agents (Claude, Cursor, GPT) receive markdown automatically at the canonical URL
+- \`/llms-full.txt\` concatenates every page into one file (large, roughly 230k tokens); prefer fetching the individual \`.md\` pages you need over reading the whole bundle
 
 `;
