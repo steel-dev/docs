@@ -37,4 +37,45 @@ describe('getLLMText', () => {
   test('the pointer is a blockquote linking to llms.txt', () => {
     expect(LLMS_INDEX_POINTER).toBe('> Full docs index: https://docs.steel.dev/llms.txt');
   });
+
+  test('strips frontmatter and MDX artifacts from page content', async () => {
+    const content = [
+      '---',
+      'title: Quickstart',
+      'description: Get going.',
+      '---',
+      '',
+      '<RecipeJsonLd slug="quickstart" />',
+      '',
+      ':::callout',
+      'type: tip',
+      'Mind the gap.',
+      ':::',
+      '',
+      '```typescript Typescript -wcn -f main.ts',
+      "import Steel from 'steel-sdk';",
+      'const s = new Steel();',
+      '```',
+      '',
+      '<Tabs items={["TypeScript"]} groupId="lang">',
+      '<Tab id="typescript" className="cookbook-concept-tab">',
+      'Drive the browser.',
+      '</Tab>',
+      '</Tabs>',
+    ].join('\n');
+    const text = await getLLMText(fakePage({ content }), { indexPointer: true });
+    const body = text.split('\n\n').slice(1).join('\n\n');
+
+    expect(body).not.toContain('title: Quickstart');
+    expect(body).not.toContain('RecipeJsonLd');
+    expect(body).not.toContain(':::');
+    expect(body).not.toContain('type: tip');
+    expect(body).not.toContain('<Tab');
+    expect(body).toContain('Mind the gap.');
+    expect(body).toContain('```typescript\nimport Steel');
+    expect(body).toContain('const s = new Steel();');
+    expect(body).not.toContain('-wcn');
+    expect(body).toContain('**TypeScript**');
+    expect(body).toContain('Drive the browser.');
+  });
 });

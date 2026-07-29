@@ -1,7 +1,7 @@
 import type { InferPageType } from 'fumadocs-core/source';
 import matter from 'gray-matter';
+import { cleanMdxForLLM } from '@/lib/llm-markdown';
 import { source } from '@/lib/source';
-import { stripFaqFences } from '@/lib/strip-faq-fences';
 
 export function shouldIncludeLLMPage(page: InferPageType<typeof source>) {
   if (page.data.llm === false) return false;
@@ -24,7 +24,7 @@ export async function getLLMText(
   page: InferPageType<typeof source>,
   options: { indexPointer?: boolean } = {},
 ) {
-  const processed = stripFaqFences(page.data.content);
+  const processed = cleanMdxForLLM(page.data.content);
   const pointer = options.indexPointer ? `${LLMS_INDEX_POINTER}\n\n` : '';
 
   return `${pointer}# ${page.data.title}

@@ -61,6 +61,18 @@ describe('.md suffix end-to-end', () => {
     const body = await response.text();
     expect(body).toStartWith('> Full docs index: https://docs.steel.dev/llms.txt');
     expect(body).toContain('# Quickstart');
+    expect(body).not.toContain('```package-install');
+    expect(body).not.toContain('-wcn');
+    expect(body).not.toContain('<Tabs');
+  });
+
+  test('llms-full.txt is free of MDX artifacts', async () => {
+    const response = await fetch(`${BASE_URL}/llms-full.txt`, { headers: BROWSER_HEADERS });
+    expect(response.status).toBe(200);
+    const body = await response.text();
+    expect(body).not.toContain('<Tabs');
+    expect(body).not.toContain('<Recipe');
+    expect(body).not.toContain(':::callout');
   });
 
   test('llms-full.txt does not repeat the index pointer', async () => {
