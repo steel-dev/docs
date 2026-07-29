@@ -22,8 +22,11 @@ async function waitForServer(): Promise<void> {
   const deadline = Date.now() + 90000;
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(`${BASE_URL}/llms.txt`, { headers: BROWSER_HEADERS });
-      if (response.ok) return;
+      // Any HTTP response means the server is up; fetch throws until the
+      // port accepts connections. Don't probe generated files like
+      // /llms.txt, which don't exist in CI when tests run.
+      await fetch(BASE_URL, { headers: BROWSER_HEADERS });
+      return;
     } catch {
       // Server not accepting connections yet
     }
