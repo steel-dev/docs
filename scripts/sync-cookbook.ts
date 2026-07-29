@@ -576,7 +576,9 @@ async function emitAuthorPage(
   const meta = authorMeta(handle, authors);
   const count = matching.length;
   const description = `${count} recipe${count === 1 ? '' : 's'} contributed to the Steel Cookbook by ${meta.name}.`;
-  const fm = frontmatter({ title: meta.name, description });
+  // Author pages are ego listings with little value for coding agents; keep
+  // them out of the llms.txt index and the llms-full.txt bundle.
+  const fm = frontmatter({ title: meta.name, description, llm: 'false' });
   const body = `${renderAuthorProfile(handle, authors)}\n\n${renderRecipeGrid(matching)}`;
   await fs.writeFile(path.join(AUTHORS_DIR, `${handle}.mdx`), `${fm}\n\n${body}\n`);
 }
