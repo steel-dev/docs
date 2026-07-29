@@ -25,6 +25,11 @@ const config = {
         permanent: true, // 301 redirect - tells crawlers this is the canonical location
       },
       {
+        source: "/.well-known/agents.md",
+        destination: "/AGENTS.md",
+        permanent: true,
+      },
+      {
         source: "/overview/llms-full.txt",
         destination: "/llms-full.txt",
         permanent: true,

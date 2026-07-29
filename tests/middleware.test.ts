@@ -41,4 +41,15 @@ describe('middleware .md suffix handling', () => {
     const response = middleware(browserRequest('http://localhost/llms-full.txt.md'));
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
   });
+
+  test('does not rewrite /AGENTS.md, even for markdown user agents', () => {
+    const browser = middleware(browserRequest('http://localhost/AGENTS.md'));
+    expect(browser.headers.get('x-middleware-rewrite')).toBeNull();
+    const agent = middleware(
+      new NextRequest('http://localhost/AGENTS.md', {
+        headers: { 'user-agent': 'claude-code/1.0' },
+      }),
+    );
+    expect(agent.headers.get('x-middleware-rewrite')).toBeNull();
+  });
 });

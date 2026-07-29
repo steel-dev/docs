@@ -1,5 +1,5 @@
-// ABOUTME: Quick reference and gotchas prepended to the agent-facing markdown
-// ABOUTME: bundles, shared by public/llms.txt generation and the /llms-full.txt route.
+// ABOUTME: Quick reference and gotchas served to agents via the /llms.txt index,
+// ABOUTME: the /llms-full.txt bundle, and the /AGENTS.md route.
 
 export const AGENT_INSTRUCTIONS = `# Steel Documentation
 

@@ -28,6 +28,10 @@ describe('resolveMarkdownPath', () => {
     expect(resolveMarkdownPath('/llms.txt.md')).toBeNull();
   });
 
+  test('returns null for /AGENTS.md so its route handler owns the request', () => {
+    expect(resolveMarkdownPath('/AGENTS.md')).toBeNull();
+  });
+
   test('returns null when the stripped path is under an excluded prefix', () => {
     expect(resolveMarkdownPath('/llms.mdx/overview.md')).toBeNull();
     expect(resolveMarkdownPath('/api/search.md')).toBeNull();

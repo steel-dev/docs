@@ -75,6 +75,26 @@ describe('.md suffix end-to-end', () => {
     expect(body).not.toContain(':::callout');
   });
 
+  test('serves /AGENTS.md as markdown with install, auth, and the index pointer', async () => {
+    const response = await fetch(`${BASE_URL}/AGENTS.md`, { headers: BROWSER_HEADERS });
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toStartWith('text/markdown');
+    const body = await response.text();
+    expect(body).toStartWith('> Full docs index: https://docs.steel.dev/llms.txt');
+    expect(body).toContain('npm install steel-sdk');
+    expect(body).toContain('STEEL_API_KEY');
+  });
+
+  test('redirects /.well-known/agents.md to /AGENTS.md', async () => {
+    const response = await fetch(`${BASE_URL}/.well-known/agents.md`, {
+      headers: BROWSER_HEADERS,
+      redirect: 'manual',
+    });
+    // Next.js renders permanent config redirects as 308.
+    expect(response.status).toBe(308);
+    expect(response.headers.get('location')).toBe('/AGENTS.md');
+  });
+
   test('llms-full.txt does not repeat the index pointer', async () => {
     const response = await fetch(`${BASE_URL}/llms-full.txt`, { headers: BROWSER_HEADERS });
     expect(response.status).toBe(200);
