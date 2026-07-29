@@ -1,60 +1,15 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { appendMarkdownVaryHeader, shouldServeMarkdown } from '@/lib/markdown-negotiation';
-
-const EXCLUDED_EXACT_PATHS = new Set([
-  '/.well-known/llms.txt',
-  '/favicon.ico',
-  '/llms-full.txt',
-  '/llms.txt',
-  '/overview/llms-full.txt',
-  '/robots.txt',
-  '/sitemap.xml',
-]);
-
-const EXCLUDED_PATH_PREFIXES = ['/_next', '/api', '/llms.mdx', '/og'];
-const EXCLUDED_ASSET_EXTENSIONS = new Set([
-  '.avif',
-  '.css',
-  '.gif',
-  '.ico',
-  '.jpeg',
-  '.jpg',
-  '.js',
-  '.json',
-  '.map',
-  '.otf',
-  '.pdf',
-  '.png',
-  '.svg',
-  '.ttf',
-  '.txt',
-  '.webp',
-  '.woff',
-  '.woff2',
-  '.xml',
-  '.zip',
-]);
+import {
+  appendMarkdownVaryHeader,
+  isNegotiableDocsPath,
+  resolveMarkdownPath,
+  shouldServeMarkdown,
+} from '@/lib/markdown-negotiation';
 
 function isProgrammaticClient(request: NextRequest): boolean {
   // Browsers always send Sec-Fetch-Dest; curl/WebFetch/python-requests do not
   return !request.headers.has('sec-fetch-dest');
-}
-
-function matchesPathPrefix(pathname: string, prefix: string): boolean {
-  return pathname === prefix || pathname.startsWith(`${prefix}/`);
-}
-
-function hasExcludedAssetExtension(pathname: string): boolean {
-  const extension = pathname.match(/\.[^./]+$/)?.[0]?.toLowerCase();
-  return extension ? EXCLUDED_ASSET_EXTENSIONS.has(extension) : false;
-}
-
-function isNegotiableDocsPath(pathname: string): boolean {
-  if (EXCLUDED_EXACT_PATHS.has(pathname)) return false;
-  if (EXCLUDED_PATH_PREFIXES.some((prefix) => matchesPathPrefix(pathname, prefix))) return false;
-
-  return !hasExcludedAssetExtension(pathname);
 }
 
 function isNegotiableMethod(method: string): boolean {
@@ -71,6 +26,14 @@ export default function middleware(request: NextRequest) {
 
   if (!isNegotiableMethod(request.method)) {
     return NextResponse.next();
+  }
+
+  // An explicit .md request gets markdown unconditionally, no header sniffing
+  const markdownPath = resolveMarkdownPath(pathname);
+  if (markdownPath) {
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = `/llms.mdx${markdownPath}`;
+    return NextResponse.rewrite(rewriteUrl);
   }
 
   const wantsMarkdown = shouldServeMarkdown(request.headers);

@@ -30,6 +30,65 @@ export const MARKDOWN_USER_AGENT_SUBSTRINGS = [
 
 const MARKDOWN_VARY_HEADERS = ['Accept', 'User-Agent'];
 
+const EXCLUDED_EXACT_PATHS = new Set([
+  '/.well-known/llms.txt',
+  '/favicon.ico',
+  '/llms-full.txt',
+  '/llms.txt',
+  '/overview/llms-full.txt',
+  '/robots.txt',
+  '/sitemap.xml',
+]);
+
+const EXCLUDED_PATH_PREFIXES = ['/_next', '/api', '/llms.mdx', '/og'];
+const EXCLUDED_ASSET_EXTENSIONS = new Set([
+  '.avif',
+  '.css',
+  '.gif',
+  '.ico',
+  '.jpeg',
+  '.jpg',
+  '.js',
+  '.json',
+  '.map',
+  '.otf',
+  '.pdf',
+  '.png',
+  '.svg',
+  '.ttf',
+  '.txt',
+  '.webp',
+  '.woff',
+  '.woff2',
+  '.xml',
+  '.zip',
+]);
+
+function matchesPathPrefix(pathname: string, prefix: string): boolean {
+  return pathname === prefix || pathname.startsWith(`${prefix}/`);
+}
+
+function hasExcludedAssetExtension(pathname: string): boolean {
+  const extension = pathname.match(/\.[^./]+$/)?.[0]?.toLowerCase();
+  return extension ? EXCLUDED_ASSET_EXTENSIONS.has(extension) : false;
+}
+
+export function isNegotiableDocsPath(pathname: string): boolean {
+  if (EXCLUDED_EXACT_PATHS.has(pathname)) return false;
+  if (EXCLUDED_PATH_PREFIXES.some((prefix) => matchesPathPrefix(pathname, prefix))) return false;
+
+  return !hasExcludedAssetExtension(pathname);
+}
+
+export function resolveMarkdownPath(pathname: string): string | null {
+  if (!pathname.endsWith('.md')) return null;
+
+  const stripped = pathname.slice(0, -'.md'.length);
+  if (!stripped || stripped === '/') return null;
+
+  return isNegotiableDocsPath(stripped) ? stripped : null;
+}
+
 function acceptsMarkdownType(mediaType: string): boolean {
   return MARKDOWN_ACCEPT_TYPES.has(mediaType) || mediaType.endsWith('+markdown');
 }
