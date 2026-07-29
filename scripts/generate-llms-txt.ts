@@ -50,62 +50,56 @@ function shouldIncludePage(page: any): boolean {
 function getAllPages(): PageMetadata[] {
   const sourcePages = source.getPages();
 
-  return (
-    sourcePages
-      .filter(shouldIncludePage)
-      .map((page) => {
-        // Extract section from URL (split by / and filter out empty strings)
-        const urlParts = page.url.split('/').filter(Boolean);
-        const section = urlParts.slice(0, -1); // All parts except the last one
+  return sourcePages
+    .filter(shouldIncludePage)
+    .map((page) => {
+      // Extract section from URL (split by / and filter out empty strings)
+      const urlParts = page.url.split('/').filter(Boolean);
+      const section = urlParts.slice(0, -1); // All parts except the last one
 
-        // Clean URL for content links (remove locale prefix)
-        let cleanUrl = page.url;
-        const locales = ['en', 'es']; // Add your supported locales here
-        if (urlParts.length > 0 && locales.includes(urlParts[0])) {
-          // Remove the locale prefix for content links
-          cleanUrl = '/' + urlParts.slice(1).join('/');
-        }
+      // Clean URL for content links (remove locale prefix)
+      let cleanUrl = page.url;
+      const locales = ['en', 'es']; // Add your supported locales here
+      if (urlParts.length > 0 && locales.includes(urlParts[0])) {
+        // Remove the locale prefix for content links
+        cleanUrl = '/' + urlParts.slice(1).join('/');
+      }
 
-        const frontmatter = getFrontmatter(page);
+      const frontmatter = getFrontmatter(page);
 
-        // Build a disambiguated title: if the title is generic (e.g. "Overview",
-        // "Quickstart"), prepend the parent section for clarity.
-        const toTitleCase = (s: string) =>
-          s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-        const dataTitle = (frontmatter as any)?.title as string | undefined;
-        const rawTitle: string = dataTitle || toTitleCase(page.file.name);
-        const GENERIC_TITLES = [
-          'overview',
-          'quickstart',
-          'quickstart-py',
-          'quickstart-ts',
-          'index',
-          'introduction',
-          'getting-started',
-          'integrations-overview',
-        ];
-        const isGeneric = GENERIC_TITLES.includes(rawTitle.toLowerCase().replace(/\s+/g, '-'));
-        let title = rawTitle;
-        if (isGeneric && section.length > 0) {
-          const parent = toTitleCase(section[section.length - 1]);
-          title = `${parent} ${toTitleCase(rawTitle)}`;
-        }
+      // Build a disambiguated title: if the title is generic (e.g. "Overview",
+      // "Quickstart"), prepend the parent section for clarity.
+      const toTitleCase = (s: string) =>
+        s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      const dataTitle = (frontmatter as any)?.title as string | undefined;
+      const rawTitle: string = dataTitle || toTitleCase(page.file.name);
+      const GENERIC_TITLES = [
+        'overview',
+        'quickstart',
+        'quickstart-py',
+        'quickstart-ts',
+        'index',
+        'introduction',
+        'getting-started',
+        'integrations-overview',
+      ];
+      const isGeneric = GENERIC_TITLES.includes(rawTitle.toLowerCase().replace(/\s+/g, '-'));
+      let title = rawTitle;
+      if (isGeneric && section.length > 0) {
+        const parent = toTitleCase(section[section.length - 1]);
+        title = `${parent} ${toTitleCase(rawTitle)}`;
+      }
 
-        return {
-          title,
-          description: ((frontmatter as any)?.description as string | undefined) || '',
-          url: page.url, // Keep original URL for file path generation
-          cleanUrl: cleanUrl, // Add clean URL for content links
-          section: section,
-        };
-      })
-      // .filter(
-      //   (page) =>
-      //     !page.url.includes("/changelog/") &&
-      //     !page.section.includes("changelog"),
-      // )
-      .sort((a, b) => a.url.localeCompare(b.url))
-  );
+      return {
+        title,
+        description: ((frontmatter as any)?.description as string | undefined) || '',
+        url: page.url, // Keep original URL for file path generation
+        cleanUrl: cleanUrl, // Add clean URL for content links
+        section: section,
+      };
+    })
+    .filter((page) => !page.url.includes('/changelog/') && !page.section.includes('changelog'))
+    .sort((a, b) => a.url.localeCompare(b.url));
 }
 
 function formatPageUrl(cleanUrl: string): string {
