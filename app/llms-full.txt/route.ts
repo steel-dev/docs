@@ -13,6 +13,10 @@ export async function GET() {
   const scanned = await Promise.all(scan);
 
   return new Response(AGENT_INSTRUCTIONS + scanned.join('\n\n'), {
-    headers: { 'Content-Type': 'text/markdown; charset=utf-8' },
+    headers: {
+      'Content-Type': 'text/markdown; charset=utf-8',
+      // A dump of every docs page: fetchable by agents, but not a search result.
+      'X-Robots-Tag': 'noindex',
+    },
   });
 }

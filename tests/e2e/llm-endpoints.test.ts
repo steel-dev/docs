@@ -95,6 +95,34 @@ describe('.md suffix end-to-end', () => {
     expect(response.headers.get('location')).toBe('/AGENTS.md');
   });
 
+  test('marks a .md docs URL noindex while its canonical HTML page stays indexable', async () => {
+    const markdown = await fetch(`${BASE_URL}/overview/sessions-api/quickstart.md`, {
+      headers: BROWSER_HEADERS,
+    });
+    expect(markdown.headers.get('x-robots-tag')).toContain('noindex');
+
+    const html = await fetch(`${BASE_URL}/overview/sessions-api/quickstart`, {
+      headers: BROWSER_HEADERS,
+    });
+    expect(html.headers.get('x-robots-tag')).toBeNull();
+  });
+
+  test('marks the plain-text agent endpoints noindex', async () => {
+    // Status is not asserted: /llms.txt is generated into public/ at build
+    // time, so it is absent when tests run. The header comes from the route
+    // config either way, which is what matters for crawlers.
+    for (const path of ['/llms.txt', '/llms-full.txt', '/AGENTS.md']) {
+      const response = await fetch(`${BASE_URL}${path}`, { headers: BROWSER_HEADERS });
+      expect(response.headers.get('x-robots-tag')).toContain('noindex');
+    }
+  });
+
+  test('keeps the homepage indexable when it negotiates markdown', async () => {
+    const response = await fetch(BASE_URL, { headers: { accept: 'text/markdown' } });
+    expect(response.headers.get('content-type')).toStartWith('text/markdown');
+    expect(response.headers.get('x-robots-tag')).toBeNull();
+  });
+
   test('llms-full.txt does not repeat the index pointer', async () => {
     const response = await fetch(`${BASE_URL}/llms-full.txt`, { headers: BROWSER_HEADERS });
     expect(response.status).toBe(200);

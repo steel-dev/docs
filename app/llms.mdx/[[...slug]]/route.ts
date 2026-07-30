@@ -20,7 +20,12 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
   const page = getPage(slug);
   if (!page) notFound();
 
-  const headers = new Headers({ 'Content-Type': 'text/markdown; charset=utf-8' });
+  // This markdown duplicates the canonical HTML page, so keep it out of search
+  // results. Crawlers may still fetch it: noindex only suppresses indexing.
+  const headers = new Headers({
+    'Content-Type': 'text/markdown; charset=utf-8',
+    'X-Robots-Tag': 'noindex',
+  });
   appendMarkdownVaryHeader(headers);
 
   return new NextResponse(await getLLMText(page, { indexPointer: true }), {
