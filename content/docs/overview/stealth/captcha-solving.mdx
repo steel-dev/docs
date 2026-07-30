@@ -98,13 +98,12 @@ for state in pages:
 
 ### CAPTCHA Types Steel Detects and Solves
 
-Each detected challenge is classified into one of the types below, and the type string is what you see on the task in the [CAPTCHA status response](/overview/captchas-api/overview#getting-captcha-status).
+Each detected challenge is classified, and its type string is what you see on the task in the [CAPTCHA status response](/overview/captchas-api/overview#getting-captcha-status). The types below cover what you will run into most often, and other widely used challenge types are auto-solved as well:
 
 | Type string     | What the challenge looks like                            | Auto-solved |
 | --------------- | -------------------------------------------------------- | ----------- |
 | `recaptchaV2`   | "I'm not a robot" checkbox plus image challenges         | Yes         |
 | `recaptchaV3`   | Invisible background scoring, no widget to click         | Yes         |
-| `hcaptcha`      | Image selection widget                                   | Yes         |
 | `turnstile`     | Cloudflare's minimal-interaction widget                  | Yes         |
 | `image_to_text` | Distorted characters in an image, solved with OCR        | Yes         |
 | `slider`        | Drag a handle into the correct position                  | Yes         |
@@ -427,7 +426,7 @@ With a two-pronged approach: browser fingerprinting and anti-detection systems p
 
 ### What CAPTCHA types does Steel support?
 
-Steel's auto-solver currently handles reCAPTCHA v2 and v3, hCaptcha, Cloudflare Turnstile, image-to-text, and slider CAPTCHAs. Systems like DataDome, Imperva, Amazon WAF, and FunCAPTCHA are detected and logged but not auto-solved, and custom or enterprise-specific implementations aren't supported.
+Steel's auto-solver currently handles reCAPTCHA v2 and v3, Cloudflare Turnstile, image-to-text, slider, and other widely used challenge types. Systems like DataDome, Imperva, Amazon WAF, and FunCAPTCHA are detected and logged but not auto-solved, and custom or enterprise-specific implementations aren't supported.
 
 ### Should I use automatic or manual solving?
 
