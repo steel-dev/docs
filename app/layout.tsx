@@ -10,7 +10,7 @@ import { QueryProvider } from '@/providers/query-provider';
 
 const SITE_NAME = 'Steel Docs';
 const SITE_DESCRIPTION =
-  "Find all the guides and resources you need to build with Steel's browser automation platform.";
+  "Documentation for Steel, an open-source browser API for AI agents and automation. Create cloud browser sessions with Steel's APIs, SDKs, and integrations.";
 const OG_IMAGE = '/og/overview';
 
 export const metadata: Metadata = {

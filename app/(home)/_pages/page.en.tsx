@@ -23,9 +23,10 @@ export default function HomePage() {
     <main className="space-y-10 max-w-[1024px] w-full mx-auto ">
       <div className="px-8 py-[56px]">
         <div className="space-y-10">
-          <div className="space-y-1">
+          <header className="space-y-1">
             <div className="flex space-x-6 items-end">
               <LiquidMetal1
+                className="shrink-0"
                 image={SteelLogo as HTMLImageElement}
                 speed={1}
                 colorBack="#00000000"
@@ -46,12 +47,19 @@ export default function HomePage() {
                 }}
               />
               <div className="flex flex-col [&_p]:mb-6 space-y-3">
-                <h3 className="text-3xl">Steel Documentation</h3>
-                <p>Find all the guides and resources you need to build on the Steel API.</p>
+                <h1 className="text-3xl">Steel Documentation</h1>
+                <p>
+                  Steel is an open-source browser API for AI agents and automation. Use these docs
+                  to create cloud browser sessions, connect your automation tools, and configure
+                  proxies, CAPTCHA solving, credentials, and files.
+                </p>
               </div>
             </div>
-          </div>
-          <div className="space-y-5">
+          </header>
+          <section className="space-y-5" aria-labelledby="getting-started-and-apis">
+            <h2 id="getting-started-and-apis" className="sr-only">
+              Getting started and APIs
+            </h2>
             <Cards>
               <CLIInstallCard />
               <Card
@@ -95,13 +103,13 @@ export default function HomePage() {
                 tags={['API', 'Files']}
               />
             </Cards>
-          </div>
-          <div className="flex flex-col">
-            <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
-              <a href="#explore-by-category" className="not-prose group text-sm uppercase">
+          </section>
+          <section className="flex flex-col">
+            <h2 id="integrations" className="text-muted-foreground scroll-m-20">
+              <a href="#integrations" className="not-prose group text-sm uppercase">
                 Integrations
               </a>
-            </h4>
+            </h2>
             <hr className="border-t border-border my-2" />
             <Cards className="xl:!grid-cols-3">
               <SmallCard
@@ -141,13 +149,13 @@ export default function HomePage() {
                 description="Learn how to use CrewAI with Steel Browser."
               />
             </Cards>
-          </div>
-          <div className="flex flex-col">
-            <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
-              <a href="#explore-by-category" className="not-prose group text-sm uppercase">
+          </section>
+          <section className="flex flex-col">
+            <h2 id="sdks" className="text-muted-foreground scroll-m-20">
+              <a href="#sdks" className="not-prose group text-sm uppercase">
                 Libraries &amp; SDKs
               </a>
-            </h4>
+            </h2>
             <hr className="border-t border-border my-2" />
             <Cards>
               <SmallCard
@@ -175,13 +183,13 @@ export default function HomePage() {
                 description="Go SDK for building applications on Steel."
               />
             </Cards>
-          </div>
-          <div className="flex flex-col">
-            <h4 id="explore-by-category" className="text-muted-foreground scroll-m-20">
-              <a href="#explore-by-category" className="not-prose group text-sm uppercase">
+          </section>
+          <section className="flex flex-col">
+            <h2 id="resources" className="text-muted-foreground scroll-m-20">
+              <a href="#resources" className="not-prose group text-sm uppercase">
                 Resources
               </a>
-            </h4>
+            </h2>
             <hr className="border-t border-border my-2" />
             <Cards>
               <SmallCard
@@ -197,7 +205,7 @@ export default function HomePage() {
                 description="Point your agent to docs.steel.dev/llms.txt for a fast start with Steel."
               />
             </Cards>
-          </div>
+          </section>
         </div>
       </div>
     </main>
