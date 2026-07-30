@@ -1,56 +1,53 @@
 ---
-title: CAPTCHA Solving API for Browser Automation
+title: What Is a CAPTCHA Solver? Automatic CAPTCHA Solving API
 sidebarTitle: Captcha Solving
-description: Solve CAPTCHAs automatically in Steel browser sessions with an API built for AI agents. Handles checkbox, invisible, image, and slider challenges.
+description: A CAPTCHA solver detects a challenge and answers it without a human. See how Steel solves checkbox, invisible, image, and slider CAPTCHAs in browser sessions.
 full: true
 llm: true
 ---
 
-### How Steel Handles CAPTCHAs
+### What Is a CAPTCHA Solver?
 
-Steel takes a two-pronged approach to dealing with CAPTCHAs:
+A CAPTCHA solver is a service that notices a CAPTCHA challenge on a page, produces a valid answer for it, and submits that answer back to the page so an automated session can continue. In Steel the solver runs inside the browser session, so you turn it on with a single session flag instead of wiring up a separate solving provider.
 
-1.  **Prevention First**: Our sophisticated browser fingerprinting and anti-detection systems often prevent CAPTCHAs from appearing in the first place. We maintain realistic browser profiles that make your automated sessions appear more human-like, reducing the likelihood of triggering CAPTCHA challenges.
+<CodeTabs storage="languageSwitcher">
 
-2.  **Automatic Solving**: When CAPTCHAs do appear, our automatic solving system kicks in to handle them transparently, allowing your automation to continue without interruption.
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
 
+const client = new Steel();
 
-### Supported CAPTCHA Types
+// One flag covers detection, solving, and verification for the whole session
+const session = await client.sessions.create({
+  solveCaptcha: true
+});
+```
 
-Currently, Steel's auto-solver supports these CAPTCHA services:
+```python !! Python -wcn
+from steel import Steel
 
-✅ **Currently Supported**:
+client = Steel()
 
-*   ReCAPTCHA v2 / v3
+# One flag covers detection, solving, and verification for the whole session
+session = client.sessions.create(
+    solve_captcha=True
+)
+```
+</CodeTabs>
 
-*   Cloudflare Turnstile
+Any solver, Steel's included, has to do three separate jobs, and a failure in any one of them looks the same from your automation's point of view:
 
-*   ImageToText CAPTCHAs
+*   **Detect** the challenge, including invisible ones that never render a visible widget
 
-*   Amazon AWS WAF
+*   **Solve** it, using models, third-party solving services, or by reproducing the interaction a person would perform
 
+*   **Submit and verify** the resulting token or input so the target page actually accepts it
 
-🔜 **Coming Soon**:
+### How Automated CAPTCHA Solving Works
 
-*   GeeTest v3/v4
+When CAPTCHA solving is enabled on a session, every page runs through the same pipeline and each stage is reported as a task status you can read from the API:
 
-
-❌ **Not Currently Supported**:
-
-*   Custom implementation CAPTCHAs
-
-*   Enterprise-specific CAPTCHA systems
-
-*   FunCAPTCHA
-
-*   Other specialized CAPTCHA types
-
-
-### How CAPTCHA Solving Works
-
-When you enable CAPTCHA solving in your Steel session, here's what happens behind the scenes:
-
-1.  **Detection**: Our system continuously monitors the page for CAPTCHA elements using multiple detection methods:
+1.  **Detection**: The system continuously monitors the page for CAPTCHA elements using multiple detection methods:
 
     *   DOM structure analysis
 
@@ -76,8 +73,108 @@ When you enable CAPTCHA solving in your Steel session, here's what happens behin
 
 5.  **Verification**: The system verifies that the CAPTCHA was successfully solved before allowing the session to continue.
 
+<CodeTabs storage="languageSwitcher">
 
-### Session Configuration
+```typescript !! Typescript -wcn
+const pages = await client.sessions.captchas.status(session.id);
+
+for (const state of pages) {
+  for (const task of state.tasks as Array<{ type: string; status: string }>) {
+    // detected -> solving -> validating -> solved
+    console.log(task.type, task.status);
+  }
+}
+```
+
+```python !! Python -wcn
+pages = client.sessions.captchas.status(session.id)
+
+for state in pages:
+    for task in state.tasks:
+        # detected -> solving -> validating -> solved
+        print(task["type"], task["status"])
+```
+</CodeTabs>
+
+### CAPTCHA Types Steel Detects and Solves
+
+Each detected challenge is classified, and its type string is what you see on the task in the [CAPTCHA status response](/overview/captchas-api/overview#getting-captcha-status). The types below cover what you will run into most often, and other widely used challenge types are auto-solved as well:
+
+| Type string     | What the challenge looks like                            | Auto-solved |
+| --------------- | -------------------------------------------------------- | ----------- |
+| `recaptchaV2`   | "I'm not a robot" checkbox plus image challenges         | Yes         |
+| `recaptchaV3`   | Invisible background scoring, no widget to click         | Yes         |
+| `turnstile`     | Cloudflare's minimal-interaction widget                  | Yes         |
+| `image_to_text` | Distorted characters in an image, solved with OCR        | Yes         |
+| `slider`        | Drag a handle into the correct position                  | Yes         |
+| `unknown`       | Challenge detected but not classified                    | No          |
+
+:::callout
+type: warn
+### Detected but not auto-solved
+DataDome, Imperva, Amazon WAF, and FunCAPTCHA challenges are detected and logged for diagnostics, but they are not auto-solved. Custom in-house and enterprise-specific CAPTCHA implementations are not supported either, so treat those sites as prevention problems rather than solving problems.
+:::
+
+Read the types off the status response when you want to branch on what the page threw at you:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const pages = await client.sessions.captchas.status(session.id);
+const tasks = pages.flatMap((state) => state.tasks as Array<{ type: string }>);
+
+// e.g. ['turnstile', 'image_to_text']
+console.log(tasks.map((task) => task.type));
+```
+
+```python !! Python -wcn
+pages = client.sessions.captchas.status(session.id)
+types = [task["type"] for state in pages for task in state.tasks]
+
+# e.g. ['turnstile', 'image_to_text']
+print(types)
+```
+</CodeTabs>
+
+### How Steel Handles CAPTCHAs
+
+Steel takes a two-pronged approach to dealing with CAPTCHAs:
+
+1.  **Prevention First**: Our sophisticated browser fingerprinting and anti-detection systems often prevent CAPTCHAs from appearing in the first place. We maintain realistic browser profiles that make your automated sessions appear more human-like, reducing the likelihood of triggering CAPTCHA challenges.
+
+2.  **Automatic Solving**: When CAPTCHAs do appear, our automatic solving system kicks in to handle them transparently, allowing your automation to continue without interruption.
+
+Fingerprinting is applied to every session, so the practical decision is whether to pair it with residential IPs and solving on the sites that challenge you most:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const session = await client.sessions.create({
+  useProxy: true,      // residential IP, fewer challenges triggered
+  solveCaptcha: true   // fallback for the ones that still appear
+});
+```
+
+```python !! Python -wcn
+session = client.sessions.create(
+    use_proxy=True,      # residential IP, fewer challenges triggered
+    solve_captcha=True,  # fallback for the ones that still appear
+)
+```
+</CodeTabs>
+
+### Automatic vs Manual Solving
+
+Automatic solving fires as soon as a challenge is detected and needs no further calls from you. Manual solving keeps detection on but waits for you to trigger the solve, which is useful when you want to decide whether a given challenge is worth solving at all.
+
+| | Automatic solving | Manual solving |
+| --- | --- | --- |
+| Configuration | `solveCaptcha: true` | `solveCaptcha: true` plus `autoCaptchaSolving: false` |
+| Trigger | Detection of the challenge | Your call to the solve endpoint |
+| Extra API calls | None | One solve call per challenge or page |
+| Best for | Unattended scraping and agent runs | Flows where you gate solving on the page, the URL, or your own logic |
+
+#### Session Configuration
 
 To enable autosolving, simply set `solveCaptcha: true` when creating a session.
 
@@ -126,11 +223,15 @@ session = client.sessions.create(
 ```
 </CodeTabs>
 
-### Manual Solving
+#### Manual Solving
 
-If auto-solving is disabled, use the solve endpoint to trigger solving. You can solve all detected CAPTCHAs or target specific ones.
+If auto-solving is disabled, use the solve endpoint to trigger solving. You can solve all detected CAPTCHAs, or target a specific one with a value read from the [CAPTCHA status response](/overview/captchas-api/overview#getting-captcha-status):
 
-The `taskId`, `url`, and `pageId` required for targeting specific CAPTCHAs can be retrieved from the [CAPTCHA status response](/overview/captchas-api/overview#getting-captcha-status). When using `taskId`, use the value from the task's `id` field.
+*   `taskId`: the value of the task's `id` field
+
+*   `url`: the URL the challenge was detected on
+
+*   `pageId`: the page the challenge belongs to
 
 <CodeTabs storage="languageSwitcher">
 
@@ -162,6 +263,49 @@ client.sessions.captchas.solve("sessionId", url="https://example.com")
 client.sessions.captchas.solve("sessionId", page_id="page_123")
 ```
 </CodeTabs>
+
+### Response Times
+
+Solving adds wall-clock time to a run, and how much depends on the challenge type and the target site, so Steel does not quote a fixed figure. Every task carries its own timings instead, which means you can measure the real numbers for the sites you actually automate:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+type CaptchaTiming = { type: string; status: string; totalDuration?: number };
+
+const pages = await client.sessions.captchas.status(session.id);
+
+for (const state of pages) {
+  for (const task of state.tasks as CaptchaTiming[]) {
+    // Milliseconds from detection to solved or failed
+    console.log(task.type, task.status, task.totalDuration);
+  }
+}
+```
+
+```python !! Python -wcn
+pages = client.sessions.captchas.status(session.id)
+
+for state in pages:
+    for task in state.tasks:
+        # Milliseconds from detection to solved or failed
+        print(task["type"], task["status"], task.get("totalDuration"))
+```
+</CodeTabs>
+
+Three fields on each task give you the full picture:
+
+*   `detectionTime`: when the challenge was spotted on the page
+
+*   `solveTime`: when solving finished
+
+*   `totalDuration`: milliseconds from detection to the terminal status
+
+:::callout
+type: tip
+### Budget for solving in your timeouts
+Log `totalDuration` across a representative run, then set your session timeout and your own waits above the values you observe rather than around a guessed number.
+:::
 
 ### Best Practices for Implementation
 
@@ -257,9 +401,7 @@ const captchaSelectors = [
 
 ### Looking Forward
 
-Steel is continuously improving its CAPTCHA handling capabilities. We regularly update our solving mechanisms to handle new CAPTCHA variants and improve success rates for existing ones.
-
-Stay updated with our documentation for the latest information about supported CAPTCHA types and best practices.
+Steel is continuously improving its CAPTCHA handling capabilities. We regularly update our solving mechanisms to handle new CAPTCHA variants and improve success rates for existing ones, so check back here for the latest information about supported CAPTCHA types and best practices.
 
 :::callout
 type: help
@@ -270,17 +412,33 @@ Reach out to us on the <span className="font-bold">#help</span> channel on [Disc
 ### FAQ
 
 :::faq
+### What is a CAPTCHA solver?
+
+A CAPTCHA solver detects a challenge on a page, produces a valid answer for it, and submits that answer back so an automated session can continue. Steel's solver runs inside the browser session, so setting `solveCaptcha: true` covers detection, solving, and verification without a separate solving provider.
+
+### What is a CAPTCHA solving API?
+
+It is an API that exposes solving as part of your automation instead of as a manual step: you enable it on a session, then read CAPTCHA state and trigger solves over HTTP or the SDKs. In Steel that means the `solveCaptcha` session flag plus the status and solve endpoints of the [CAPTCHAs API](/overview/captchas-api/overview).
+
 ### How does Steel handle CAPTCHAs?
 
 With a two-pronged approach: browser fingerprinting and anti-detection systems prevent many CAPTCHAs from appearing in the first place, and when one does appear, automatic solving handles it transparently. Enable it by setting `solveCaptcha: true` when creating a session.
 
 ### What CAPTCHA types does Steel support?
 
-Steel's auto-solver currently handles reCAPTCHA v2 and v3, hCaptcha, Cloudflare Turnstile, image-to-text, and slider CAPTCHAs. Systems like DataDome, Imperva, Amazon WAF, and FunCAPTCHA are detected and logged but not auto-solved, and custom or enterprise-specific implementations aren't supported.
+Steel's auto-solver currently handles reCAPTCHA v2 and v3, Cloudflare Turnstile, image-to-text, slider, and other widely used challenge types. Systems like DataDome, Imperva, Amazon WAF, and FunCAPTCHA are detected and logged but not auto-solved, and custom or enterprise-specific implementations aren't supported.
+
+### Should I use automatic or manual solving?
+
+Automatic solving is the default and the right choice for unattended runs, since it fires on detection with no extra calls. Set `autoCaptchaSolving: false` when you want detection only and prefer to decide per challenge, then trigger the solve endpoint yourself.
+
+### How long does CAPTCHA solving take?
+
+It depends on the challenge type and the target site, so Steel does not publish a fixed number. Each task in the status response carries `detectionTime`, `solveTime`, and `totalDuration`, so measure solving latency on your own target sites and size your timeouts from those values.
 
 ### Does Steel's CAPTCHA solver work 100% of the time?
 
-No — the system has high success rates but solving is not guaranteed to work 100% of the time, so you should implement proper error handling. Solving can also add latency, so account for it in your timeouts and waiting strategies.
+No, the system has high success rates but solving is not guaranteed to work 100% of the time, so you should implement proper error handling. Solving can also add latency, so account for it in your timeouts and waiting strategies.
 
 ### How can I avoid triggering CAPTCHAs in the first place?
 
