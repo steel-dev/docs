@@ -1,7 +1,11 @@
-// ABOUTME: Tests for resolveMarkdownPath, which maps .md-suffixed docs URLs
-// ABOUTME: to their canonical path so middleware can serve the markdown version.
+// ABOUTME: Tests Markdown content negotiation, path eligibility, and explicit
+// ABOUTME: .md URL mapping for the docs middleware.
 import { describe, expect, test } from 'bun:test';
-import { isNegotiableDocsPath, resolveMarkdownPath } from '../lib/markdown-negotiation';
+import {
+  isNegotiableDocsPath,
+  resolveMarkdownPath,
+  shouldServeMarkdown,
+} from '../lib/markdown-negotiation';
 
 describe('resolveMarkdownPath', () => {
   test('strips .md from a docs page path', () => {
@@ -32,6 +36,10 @@ describe('resolveMarkdownPath', () => {
     expect(resolveMarkdownPath('/AGENTS.md')).toBeNull();
   });
 
+  test('returns null for /overview.md while the React landing page has no Markdown source', () => {
+    expect(resolveMarkdownPath('/overview.md')).toBeNull();
+  });
+
   test('returns null when the stripped path is under an excluded prefix', () => {
     expect(resolveMarkdownPath('/llms.mdx/overview.md')).toBeNull();
     expect(resolveMarkdownPath('/api/search.md')).toBeNull();
@@ -44,6 +52,11 @@ describe('resolveMarkdownPath', () => {
 });
 
 describe('isNegotiableDocsPath', () => {
+  test('keeps the React overview landing page HTML-only', () => {
+    expect(isNegotiableDocsPath('/overview')).toBe(false);
+    expect(isNegotiableDocsPath('/overview/')).toBe(false);
+  });
+
   test('excludes Agent Skills discovery artifacts from markdown rewrites', () => {
     expect(isNegotiableDocsPath('/.well-known/agent-skills/index.json')).toBe(false);
     expect(isNegotiableDocsPath('/.well-known/agent-skills/steel-browser.tar.gz')).toBe(false);
@@ -62,5 +75,44 @@ describe('isNegotiableDocsPath', () => {
     expect(isNegotiableDocsPath('/downloads/starter.tgz')).toBe(false);
     expect(isNegotiableDocsPath('/downloads/starter.tar')).toBe(false);
     expect(isNegotiableDocsPath('/downloads/starter.zip')).toBe(false);
+  });
+});
+
+describe('shouldServeMarkdown', () => {
+  test.each([
+    'anthropic-ai',
+    'ClaudeBot/1.0',
+    'Claude-SearchBot/1.0',
+    'Mozilla/5.0 AppleWebKit/537.36; compatible; GPTBot/1.4; +https://openai.com/gptbot',
+    'Mozilla/5.0 AppleWebKit/537.36; compatible; OAI-AdsBot/1.0; +https://openai.com/adsbot',
+    'Mozilla/5.0 AppleWebKit/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot',
+    'Mozilla/5.0 AppleWebKit/537.36; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot',
+  ])('defaults the %s crawler to canonical HTML', (userAgent) => {
+    const headers = new Headers({ accept: 'text/html', 'user-agent': userAgent });
+    expect(shouldServeMarkdown(headers)).toBe(false);
+  });
+
+  test.each(['ChatGPT-User/1.0', 'Claude-User/1.0', 'Perplexity-User/1.0', 'claude-code/1.0'])(
+    'serves Markdown to the user-directed client %s',
+    (userAgent) => {
+      const headers = new Headers({ accept: 'text/html', 'user-agent': userAgent });
+      expect(shouldServeMarkdown(headers)).toBe(true);
+    },
+  );
+
+  test('honors an explicit Markdown Accept header from any client', () => {
+    const headers = new Headers({
+      accept: 'text/markdown',
+      'user-agent': 'OAI-SearchBot/1.0',
+    });
+    expect(shouldServeMarkdown(headers)).toBe(true);
+  });
+
+  test('ignores a zero-quality Markdown Accept value for a crawler', () => {
+    const headers = new Headers({
+      accept: 'text/markdown;q=0, text/html',
+      'user-agent': 'OAI-SearchBot/1.4',
+    });
+    expect(shouldServeMarkdown(headers)).toBe(false);
   });
 });

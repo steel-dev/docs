@@ -16,7 +16,30 @@ const BROWSER_HEADERS = {
   'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/605.1.15',
 };
 
+const HTML_CRAWLER_USER_AGENTS = [
+  'Mozilla/5.0 AppleWebKit/537.36; compatible; GPTBot/1.4; +https://openai.com/gptbot',
+  'Mozilla/5.0 AppleWebKit/537.36; compatible; OAI-AdsBot/1.0; +https://openai.com/adsbot',
+  'Mozilla/5.0 AppleWebKit/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot',
+  'ClaudeBot/1.0',
+  'Claude-SearchBot/1.0',
+  'Mozilla/5.0 AppleWebKit/537.36; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot',
+];
+
+const MARKDOWN_USER_AGENTS = [
+  'ChatGPT-User/1.0',
+  'Claude-User/1.0',
+  'Perplexity-User/1.0',
+  'claude-code/1.0',
+];
+
 let server: ReturnType<typeof Bun.spawn>;
+
+function varyTokens(response: Response): string[] {
+  return (response.headers.get('Vary') ?? '')
+    .split(',')
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+}
 
 async function waitForServer(): Promise<void> {
   const deadline = Date.now() + 90000;
@@ -136,7 +159,64 @@ describe('.md suffix end-to-end', () => {
     });
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toStartWith('text/markdown');
+    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
     expect(await response.text()).toStartWith('> Full docs index: https://docs.steel.dev/llms.txt');
+  });
+
+  test('serves canonical HTML without noindex to AI crawlers', async () => {
+    for (const userAgent of HTML_CRAWLER_USER_AGENTS) {
+      for (const path of ['/overview', '/overview/sessions-api/quickstart']) {
+        const response = await fetch(`${BASE_URL}${path}`, {
+          headers: { accept: 'text/html', 'user-agent': userAgent },
+        });
+        expect(response.status).toBe(200);
+        expect(response.headers.get('content-type')).toStartWith('text/html');
+        expect(response.headers.get('x-robots-tag')).toBeNull();
+      }
+    }
+  });
+
+  test('keeps the HTML-only overview available to Markdown clients', async () => {
+    const headersToTest = [
+      ...MARKDOWN_USER_AGENTS.map((userAgent) => ({
+        accept: 'text/html',
+        'user-agent': userAgent,
+      })),
+      { accept: 'text/markdown', 'user-agent': 'curl/8.7.1' },
+    ];
+
+    for (const headers of headersToTest) {
+      const response = await fetch(`${BASE_URL}/overview`, { headers });
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toStartWith('text/html');
+      expect(response.headers.get('x-robots-tag')).toBeNull();
+    }
+  });
+
+  test('keeps Markdown negotiation for user-directed clients on regular docs', async () => {
+    for (const userAgent of MARKDOWN_USER_AGENTS) {
+      const response = await fetch(`${BASE_URL}/overview/sessions-api/quickstart`, {
+        headers: { accept: 'text/html', 'user-agent': userAgent },
+      });
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toStartWith('text/markdown');
+      expect(response.headers.get('x-robots-tag')).toContain('noindex');
+    }
+  });
+
+  test('redirects crawler and generic root requests to the HTML overview', async () => {
+    for (const userAgent of ['curl/8.7.1', ...HTML_CRAWLER_USER_AGENTS]) {
+      const response = await fetch(BASE_URL, {
+        headers: { accept: 'text/html', 'user-agent': userAgent },
+        redirect: 'manual',
+      });
+      expect(response.status).toBe(307);
+      expect(new URL(response.headers.get('location') as string, BASE_URL).pathname).toBe(
+        '/overview',
+      );
+      expect(response.headers.get('content-type')).not.toStartWith('text/markdown');
+      expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+    }
   });
 
   test('serves the API catalog as a linkset', async () => {

@@ -5,14 +5,7 @@ const MARKDOWN_ACCEPT_TYPES = new Set([
   'text/vnd.daringfireball.markdown',
 ]);
 
-export const EXACT_MARKDOWN_USER_AGENTS = [
-  'anthropic-ai',
-  'chatgpt-user',
-  'claudebot',
-  'gptbot',
-  'oai-searchbot',
-  'perplexitybot',
-];
+export const EXACT_MARKDOWN_USER_AGENTS = ['chatgpt-user', 'claude-user', 'perplexity-user'];
 
 export const MARKDOWN_USER_AGENT_SUBSTRINGS = [
   'anthropic',
@@ -21,11 +14,19 @@ export const MARKDOWN_USER_AGENT_SUBSTRINGS = [
   'copilot',
   'cursor',
   'gemini',
-  'gptbot',
   'mistral',
-  'oai-searchbot',
   'openai',
   'perplexity',
+];
+
+const HTML_CRAWLER_USER_AGENT_SUBSTRINGS = [
+  'anthropic-ai',
+  'claudebot',
+  'claude-searchbot',
+  'gptbot',
+  'oai-adsbot',
+  'oai-searchbot',
+  'perplexitybot',
 ];
 
 const MARKDOWN_VARY_HEADERS = ['Accept', 'User-Agent'];
@@ -36,6 +37,8 @@ const EXCLUDED_EXACT_PATHS = new Set([
   '/favicon.ico',
   '/llms-full.txt',
   '/llms.txt',
+  '/overview',
+  '/overview/',
   '/overview/llms-full.txt',
   '/robots.txt',
   '/sitemap.xml',
@@ -126,6 +129,12 @@ export function isMarkdownUserAgent(userAgentHeader: string | null): boolean {
   if (!userAgentHeader) return false;
 
   const userAgent = normalizeUserAgent(userAgentHeader);
+
+  // Canonical crawler requests need indexable HTML. Explicit Markdown Accept
+  // headers are handled separately in shouldServeMarkdown and still take priority.
+  if (HTML_CRAWLER_USER_AGENT_SUBSTRINGS.some((match) => userAgent.includes(match))) {
+    return false;
+  }
 
   return (
     EXACT_MARKDOWN_USER_AGENTS.includes(userAgent) ||
