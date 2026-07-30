@@ -1,7 +1,7 @@
 // ABOUTME: Tests for resolveMarkdownPath, which maps .md-suffixed docs URLs
 // ABOUTME: to their canonical path so middleware can serve the markdown version.
 import { describe, expect, test } from 'bun:test';
-import { resolveMarkdownPath } from '../lib/markdown-negotiation';
+import { isNegotiableDocsPath, resolveMarkdownPath } from '../lib/markdown-negotiation';
 
 describe('resolveMarkdownPath', () => {
   test('strips .md from a docs page path', () => {
@@ -35,9 +35,32 @@ describe('resolveMarkdownPath', () => {
   test('returns null when the stripped path is under an excluded prefix', () => {
     expect(resolveMarkdownPath('/llms.mdx/overview.md')).toBeNull();
     expect(resolveMarkdownPath('/api/search.md')).toBeNull();
+    expect(resolveMarkdownPath('/.well-known/agent-skills/steel-browser.tar.gz.md')).toBeNull();
   });
 
   test('returns null when the stripped path is a static asset', () => {
     expect(resolveMarkdownPath('/images/logo.png.md')).toBeNull();
+  });
+});
+
+describe('isNegotiableDocsPath', () => {
+  test('excludes Agent Skills discovery artifacts from markdown rewrites', () => {
+    expect(isNegotiableDocsPath('/.well-known/agent-skills/index.json')).toBe(false);
+    expect(isNegotiableDocsPath('/.well-known/agent-skills/steel-browser.tar.gz')).toBe(false);
+  });
+
+  test('excludes the entire /.well-known namespace, including future artifacts', () => {
+    expect(isNegotiableDocsPath('/.well-known/api-catalog')).toBe(false);
+    expect(isNegotiableDocsPath('/.well-known/llms.txt')).toBe(false);
+    expect(isNegotiableDocsPath('/.well-known/agents')).toBe(false);
+    expect(isNegotiableDocsPath('/.well-known/security.txt')).toBe(false);
+    expect(isNegotiableDocsPath('/.well-known/mcp.json')).toBe(false);
+  });
+
+  test('excludes archive assets wherever they live', () => {
+    expect(isNegotiableDocsPath('/downloads/starter.tar.gz')).toBe(false);
+    expect(isNegotiableDocsPath('/downloads/starter.tgz')).toBe(false);
+    expect(isNegotiableDocsPath('/downloads/starter.tar')).toBe(false);
+    expect(isNegotiableDocsPath('/downloads/starter.zip')).toBe(false);
   });
 });

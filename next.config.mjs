@@ -210,6 +210,32 @@ const config = {
   async headers() {
     return [
       {
+        // The index and its digest-pinned tarballs change together on deploy,
+        // so both get the same short lifetime: a client holding a stale
+        // index.json would otherwise fetch tarballs whose sha256 no longer
+        // matches and have to reject them as tampered.
+        source: "/.well-known/agent-skills/:name.tar.gz",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/gzip",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=300, must-revalidate",
+          },
+        ],
+      },
+      {
+        source: "/.well-known/agent-skills/index.json",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=300, must-revalidate",
+          },
+        ],
+      },
+      {
         // RFC 9727 requires the catalog to be served as a linkset. The file has
         // no extension, so static serving would otherwise guess a type for it.
         source: "/.well-known/api-catalog",
