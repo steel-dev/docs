@@ -13,8 +13,8 @@ export const baseOptions: BaseLayoutProps = {
   links: [
     {
       text: 'Overview',
-      url: '/overview',
-      active: 'nested-url',
+      url: '/',
+      active: 'url',
     },
     {
       text: 'Integrations',

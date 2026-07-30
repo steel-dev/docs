@@ -52,7 +52,8 @@ describe('resolveMarkdownPath', () => {
 });
 
 describe('isNegotiableDocsPath', () => {
-  test('keeps the React overview landing page HTML-only', () => {
+  test('keeps the React landing pages HTML-only', () => {
+    expect(isNegotiableDocsPath('/')).toBe(false);
     expect(isNegotiableDocsPath('/overview')).toBe(false);
     expect(isNegotiableDocsPath('/overview/')).toBe(false);
   });

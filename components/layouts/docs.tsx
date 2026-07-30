@@ -184,6 +184,7 @@ export function Sidebar() {
 
   const children = useMemo(() => {
     const filterCriteria = ['overview', 'integrations', 'cookbook', 'changelog'];
+    const sectionPathname = pathname === '/' ? '/overview' : pathname;
 
     const shouldFilterItem = (item: PageTree.Node, owningSection?: string): boolean => {
       // Link nodes from meta.json `[Label](url)` syntax — both external
@@ -204,18 +205,21 @@ export function Sidebar() {
         if (!externalSection && url.includes('steel-cookbook')) externalSection = 'cookbook';
         if (externalSection) {
           const onOwningSection =
-            pathname?.includes(`/${externalSection}/`) || pathname === `/${externalSection}`;
+            sectionPathname?.includes(`/${externalSection}/`) ||
+            sectionPathname === `/${externalSection}`;
           return !onOwningSection;
         }
       }
 
       const isCurrentSection = filterCriteria.some(
-        (criteria) => pathname?.includes(`/${criteria}/`) || pathname === `/${criteria}`,
+        (criteria) =>
+          sectionPathname?.includes(`/${criteria}/`) || sectionPathname === `/${criteria}`,
       );
 
       if (isCurrentSection) {
         const matchingCriteria = filterCriteria.filter(
-          (criteria) => pathname?.includes(`/${criteria}/`) || pathname === `/${criteria}`,
+          (criteria) =>
+            sectionPathname?.includes(`/${criteria}/`) || sectionPathname === `/${criteria}`,
         );
 
         const belongsToCurrentSection = matchingCriteria.some((criteria) =>

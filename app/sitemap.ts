@@ -7,7 +7,7 @@ const SITE_URL = 'https://docs.steel.dev';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = source.getPages().filter((page) => !/^\/(en\/)?changelog\/.+/.test(page.url));
 
-  return Promise.all(
+  const pageEntries = await Promise.all(
     pages.map(async (page) => {
       const url = `${SITE_URL}${page.url.replace(/^\/en(\/|$)/, '/').replace(/\/$/, '/')}`;
       const lastModified = await getLastModified(
@@ -21,4 +21,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       };
     }),
   );
+
+  const entries: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/`,
+      changeFrequency: 'weekly',
+      priority: 1,
+    },
+    ...pageEntries.filter(
+      ({ url }) => url !== `${SITE_URL}/overview` && url !== `${SITE_URL}/overview/`,
+    ),
+  ];
+  const seenUrls = new Set<string>();
+
+  return entries.filter(({ url }) => {
+    if (seenUrls.has(url)) return false;
+    seenUrls.add(url);
+    return true;
+  });
 }

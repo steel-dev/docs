@@ -41,6 +41,12 @@ function varyTokens(response: Response): string[] {
     .filter(Boolean);
 }
 
+function hasActiveNavLink(body: string, href: string): boolean {
+  return [...body.matchAll(/<a\b[^>]*>/g)].some(
+    ([tag]) => tag.includes(`href="${href}"`) && tag.includes('data-nav-active="true"'),
+  );
+}
+
 async function waitForServer(): Promise<void> {
   const deadline = Date.now() + 90000;
   while (Date.now() < deadline) {
@@ -140,9 +146,10 @@ describe('.md suffix end-to-end', () => {
     }
   });
 
-  test('keeps the homepage indexable when it negotiates markdown', async () => {
+  test('keeps the canonical HTML homepage indexable for Markdown requests', async () => {
     const response = await fetch(BASE_URL, { headers: { accept: 'text/markdown' } });
-    expect(response.headers.get('content-type')).toStartWith('text/markdown');
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toStartWith('text/html');
     expect(response.headers.get('x-robots-tag')).toBeNull();
   });
 
@@ -152,20 +159,9 @@ describe('.md suffix end-to-end', () => {
     expect(await response.text()).not.toContain('Full docs index');
   });
 
-  test('negotiates markdown at the homepage without redirecting', async () => {
-    const response = await fetch(BASE_URL, {
-      headers: { accept: 'text/markdown' },
-      redirect: 'manual',
-    });
-    expect(response.status).toBe(200);
-    expect(response.headers.get('content-type')).toStartWith('text/markdown');
-    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
-    expect(await response.text()).toStartWith('> Full docs index: https://docs.steel.dev/llms.txt');
-  });
-
   test('serves canonical HTML without noindex to AI crawlers', async () => {
     for (const userAgent of HTML_CRAWLER_USER_AGENTS) {
-      for (const path of ['/overview', '/overview/sessions-api/quickstart']) {
+      for (const path of ['/', '/overview/sessions-api/quickstart']) {
         const response = await fetch(`${BASE_URL}${path}`, {
           headers: { accept: 'text/html', 'user-agent': userAgent },
         });
@@ -176,7 +172,7 @@ describe('.md suffix end-to-end', () => {
     }
   });
 
-  test('keeps the HTML-only overview available to Markdown clients', async () => {
+  test('keeps the canonical homepage HTML-only for Markdown clients', async () => {
     const headersToTest = [
       ...MARKDOWN_USER_AGENTS.map((userAgent) => ({
         accept: 'text/html',
@@ -186,7 +182,7 @@ describe('.md suffix end-to-end', () => {
     ];
 
     for (const headers of headersToTest) {
-      const response = await fetch(`${BASE_URL}/overview`, { headers });
+      const response = await fetch(BASE_URL, { headers });
       expect(response.status).toBe(200);
       expect(response.headers.get('content-type')).toStartWith('text/html');
       expect(response.headers.get('x-robots-tag')).toBeNull();
@@ -204,19 +200,62 @@ describe('.md suffix end-to-end', () => {
     }
   });
 
-  test('redirects crawler and generic root requests to the HTML overview', async () => {
+  test('serves crawler and generic root requests as canonical HTML', async () => {
     for (const userAgent of ['curl/8.7.1', ...HTML_CRAWLER_USER_AGENTS]) {
       const response = await fetch(BASE_URL, {
         headers: { accept: 'text/html', 'user-agent': userAgent },
         redirect: 'manual',
       });
-      expect(response.status).toBe(307);
-      expect(new URL(response.headers.get('location') as string, BASE_URL).pathname).toBe(
-        '/overview',
-      );
-      expect(response.headers.get('content-type')).not.toStartWith('text/markdown');
-      expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+      expect(response.status).toBe(200);
+      expect(response.headers.get('location')).toBeNull();
+      expect(response.headers.get('content-type')).toStartWith('text/html');
+      expect(varyTokens(response)).not.toEqual(expect.arrayContaining(['accept', 'user-agent']));
     }
+  });
+
+  test('permanently redirects only the exact legacy overview path', async () => {
+    const response = await fetch(`${BASE_URL}/overview`, {
+      headers: BROWSER_HEADERS,
+      redirect: 'manual',
+    });
+    expect(response.status).toBe(308);
+    expect(response.headers.get('location')).toBe('/');
+
+    const nested = await fetch(`${BASE_URL}/overview/sessions-api/quickstart`, {
+      headers: BROWSER_HEADERS,
+      redirect: 'manual',
+    });
+    expect(nested.status).toBe(200);
+  });
+
+  test('publishes root metadata, navigation, sidebar, and sitemap signals', async () => {
+    const metadataResponse = await fetch(BASE_URL, {
+      headers: { ...BROWSER_HEADERS, 'user-agent': 'facebookexternalhit/1.1' },
+    });
+    const metadataBody = await metadataResponse.text();
+    expect(metadataBody).toContain('<link rel="canonical" href="https://docs.steel.dev"/>');
+    expect(metadataBody).toContain(
+      '<link rel="alternate" type="text/plain" href="https://docs.steel.dev/llms.txt"/>',
+    );
+
+    const root = await fetch(BASE_URL, { headers: BROWSER_HEADERS });
+    const body = await root.text();
+    expect(body).toContain('href="/overview/sessions-api/overview"');
+    expect(hasActiveNavLink(body, '/')).toBe(true);
+
+    const nestedOverview = await fetch(`${BASE_URL}/overview/sessions-api/quickstart`, {
+      headers: BROWSER_HEADERS,
+    });
+    expect(hasActiveNavLink(await nestedOverview.text(), '/')).toBe(true);
+
+    const integrations = await fetch(`${BASE_URL}/integrations`, { headers: BROWSER_HEADERS });
+    expect(hasActiveNavLink(await integrations.text(), '/')).toBe(false);
+
+    const sitemap = await fetch(`${BASE_URL}/sitemap.xml`, { headers: BROWSER_HEADERS });
+    expect(sitemap.status).toBe(200);
+    const sitemapBody = await sitemap.text();
+    expect(sitemapBody.match(/<loc>https:\/\/docs\.steel\.dev\/<\/loc>/g)).toHaveLength(1);
+    expect(sitemapBody).not.toContain('<loc>https://docs.steel.dev/overview</loc>');
   });
 
   test('serves the API catalog as a linkset', async () => {

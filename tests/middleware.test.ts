@@ -63,55 +63,31 @@ describe('middleware .md suffix handling', () => {
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
   });
 
-  test('serves the homepage as markdown in place, without a redirect', () => {
+  test.each([
+    { accept: 'text/markdown', 'user-agent': 'curl/8.7.1' },
+    { accept: 'text/html', 'user-agent': 'claude-code/1.0' },
+    { accept: 'text/html', 'user-agent': 'Googlebot/2.1' },
+    { accept: 'text/html', 'user-agent': 'GPTBot/1.2' },
+    { accept: 'text/html', 'user-agent': 'OAI-SearchBot/1.0' },
+    { accept: 'text/html', 'user-agent': 'ClaudeBot/1.0' },
+    { accept: 'text/html', 'user-agent': 'PerplexityBot/1.0' },
+  ])('passes the invariant HTML homepage through for $user-agent', (headers) => {
     const response = middleware(
-      new NextRequest('http://localhost/', { headers: { accept: 'text/markdown' } }),
+      new NextRequest('http://localhost/', {
+        headers,
+      }),
     );
-    const rewrite = response.headers.get('x-middleware-rewrite');
-    expect(rewrite).not.toBeNull();
-    expect(new URL(rewrite as string).pathname).toBe('/AGENTS.md');
+    expect(response.headers.get('x-middleware-rewrite')).toBeNull();
     expect(response.status).toBe(200);
     expect(response.headers.get('location')).toBeNull();
-    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+    expect(varyTokens(response)).not.toEqual(expect.arrayContaining(['accept', 'user-agent']));
   });
 
-  test('serves the homepage as markdown to user-directed agent clients', () => {
-    const response = middleware(
-      new NextRequest('http://localhost/', {
-        headers: { accept: 'text/html', 'user-agent': 'claude-code/1.0' },
-      }),
-    );
-    const rewrite = response.headers.get('x-middleware-rewrite');
-    expect(rewrite).not.toBeNull();
-    expect(new URL(rewrite as string).pathname).toBe('/AGENTS.md');
-  });
-
-  test.each([
-    'curl/8.7.1',
-    'Googlebot/2.1',
-    'GPTBot/1.2',
-    'OAI-AdsBot/1.0',
-    'OAI-SearchBot/1.0',
-    'ClaudeBot/1.0',
-    'Claude-SearchBot/1.0',
-    'PerplexityBot/1.0',
-  ])('redirects the non-Markdown root request from %s to HTML', (userAgent) => {
-    const response = middleware(
-      new NextRequest('http://localhost/', {
-        headers: { accept: 'text/html', 'user-agent': userAgent },
-      }),
-    );
-    expect(response.headers.get('x-middleware-rewrite')).toBeNull();
-    expect(response.status).toBe(307);
-    expect(new URL(response.headers.get('location') as string).pathname).toBe('/overview');
-    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
-  });
-
-  test('redirects browser navigation at the homepage to HTML', () => {
+  test('passes browser navigation at the homepage through', () => {
     const response = middleware(browserRequest('http://localhost/'));
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
-    expect(response.status).toBe(307);
-    expect(new URL(response.headers.get('location') as string).pathname).toBe('/overview');
+    expect(response.status).toBe(200);
+    expect(response.headers.get('location')).toBeNull();
   });
 
   test('does not rewrite /AGENTS.md, even for markdown user agents', () => {

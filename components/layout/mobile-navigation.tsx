@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 import { baseOptions } from '@/app/layout.config';
 import { Sidebar } from '@/components/layouts/docs';
+import { isNavItemActive } from '@/components/layouts/links';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,7 +18,6 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { DocsLogo } from '@/components/ui/icon';
-import { isActive } from '@/lib/is-active';
 import { cn } from '@/lib/utils';
 import { SearchToggle } from '../layout/search-toggle';
 
@@ -46,11 +46,7 @@ export function MobileNavigation({ isOpen = false, onClose, tree }: MobileNaviga
         ?.filter((item) => {
           if (!('url' in item) || !item.url) return true;
 
-          const activeMode =
-            'active' in item ? (item.active ?? 'url') : item.type === 'menu' ? 'nested-url' : 'url';
-          if (activeMode === 'none') return true;
-
-          return !isActive(item.url, pathname, activeMode === 'nested-url');
+          return !isNavItemActive(item, pathname);
         })
         .map((item, index) => (
           <div key={index}>
