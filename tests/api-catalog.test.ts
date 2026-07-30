@@ -44,7 +44,7 @@ describe('api catalog document', () => {
     // Pointing at the spec the API itself serves keeps one canonical copy, so
     // the catalog cannot advertise a spec that has drifted from the live API.
     expect(desc?.href).toBe('https://api.steel.dev/sdk-openapi.json');
-    expect(desc?.type).toBe('application/openapi+json');
+    expect(desc?.type).toBe('application/json');
   });
 
   test('links human documentation for the API', () => {

@@ -13,7 +13,7 @@
       "service-desc": [
         {
           "href": "https://api.steel.dev/sdk-openapi.json",
-          "type": "application/openapi+json"
+          "type": "application/json"
         }
       ],
       "service-doc": [
