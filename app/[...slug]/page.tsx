@@ -23,11 +23,11 @@ import { LLMShare } from '@/components/llm-share';
 import { getMDXComponents } from '@/components/mdx';
 import { Mermaid } from '@/components/mdx/mermaid';
 import { APIPage } from '@/components/openapi/api-page';
-import { BreadcrumbJsonLd, TechArticleJsonLd } from '@/components/page-jsonld';
+import { BreadcrumbJsonLd, TechArticleJsonLd, WebPageJsonLd } from '@/components/page-jsonld';
 import { Badge } from '@/components/ui/badge';
 import * as customIcons from '@/components/ui/icon';
 import { TagFilterSystem } from '@/components/ui/tag-filter-system';
-import { getLastModified } from '@/lib/last-modified';
+import { getGitLastModified } from '@/lib/last-modified';
 import { getAllFilterablePages, source } from '@/lib/source';
 import type { HeadingProps } from '@/types';
 
@@ -140,8 +140,9 @@ export default async function Page(props: {
   // TechArticle JSON-LD on integration pages; cookbook recipes emit their own
   // via RecipeJsonLd. The hub page at /integrations is a listing, not an article.
   const isIntegrationArticle = /^\/integrations\/.+/.test(canonicalPath);
+  const isAuthorProfile = /^\/cookbook\/authors\/.+/.test(canonicalPath);
   const lastModified = isIntegrationArticle
-    ? await getLastModified(page.data._file?.absolutePath)
+    ? getGitLastModified(page.data._file?.absolutePath)
     : undefined;
 
   // Prepare page data for context - only include serializable data
@@ -158,6 +159,13 @@ export default async function Page(props: {
   return (
     <DocsPage data={pageData}>
       <BreadcrumbJsonLd items={breadcrumbItems} />
+      {!isAuthorProfile && (
+        <WebPageJsonLd
+          title={page.data.title}
+          description={page.data.description}
+          path={canonicalPath}
+        />
+      )}
       {isIntegrationArticle && (
         <TechArticleJsonLd
           title={page.data.title}

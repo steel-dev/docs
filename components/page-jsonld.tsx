@@ -1,10 +1,35 @@
-// ABOUTME: BreadcrumbList and TechArticle JSON-LD emitted by the docs page renderer.
-// ABOUTME: BreadcrumbJsonLd runs site-wide; TechArticleJsonLd covers integration pages.
-const SITE_URL = 'https://docs.steel.dev';
+// ABOUTME: Site identity, page, breadcrumb, and article JSON-LD renderers.
+// ABOUTME: Shared builders keep entity IDs consistent across documentation pages.
+import {
+  buildSiteIdentitySchema,
+  buildTechArticleSchema,
+  buildWebPageSchema,
+  DOCS_URL,
+} from '@/lib/structured-data';
 
 interface CrumbItem {
   name: string;
   url: string;
+}
+
+function JsonLd({ data }: { data: Record<string, unknown> }) {
+  return (
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
+  );
+}
+
+export function SiteIdentityJsonLd() {
+  return <JsonLd data={buildSiteIdentitySchema()} />;
+}
+
+interface WebPageProps {
+  title: string;
+  description?: string;
+  path: string;
+}
+
+export function WebPageJsonLd({ title, description, path }: WebPageProps) {
+  return <JsonLd data={buildWebPageSchema({ name: title, description, path })} />;
 }
 
 // BreadcrumbList JSON-LD: home + named ancestors that have their own page +
@@ -19,12 +44,10 @@ export function BreadcrumbJsonLd({ items }: { items: CrumbItem[] }) {
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: `${SITE_URL}${item.url}`,
+      item: `${DOCS_URL}${item.url}`,
     })),
   };
-  return (
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
-  );
+  return <JsonLd data={data} />;
 }
 
 interface TechArticleProps {
@@ -45,19 +68,15 @@ export function TechArticleJsonLd({
   datePublished,
   dateModified,
 }: TechArticleProps) {
-  const url = `${SITE_URL}${path}`;
-  const data: Record<string, unknown> = {
-    '@context': 'https://schema.org',
-    '@type': 'TechArticle',
-    headline: title,
-    url,
-    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    author: { '@type': 'Organization', name: 'Steel', url: 'https://steel.dev' },
-  };
-  if (description) data.description = description;
-  if (datePublished) data.datePublished = datePublished;
-  if (dateModified) data.dateModified = dateModified;
   return (
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
+    <JsonLd
+      data={buildTechArticleSchema({
+        name: title,
+        description,
+        path,
+        datePublished,
+        dateModified,
+      })}
+    />
   );
 }

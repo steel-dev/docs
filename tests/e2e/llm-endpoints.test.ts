@@ -47,6 +47,18 @@ function hasActiveNavLink(body: string, href: string): boolean {
   );
 }
 
+function getJsonLdNodes(body: string): Array<Record<string, unknown>> {
+  const scripts = [...body.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)]
+    .filter(([, attributes]) => /type="application\/ld\+json"/.test(attributes))
+    .map(([, , contents]) => JSON.parse(contents) as Record<string, unknown>);
+
+  return scripts.flatMap((script) =>
+    Array.isArray(script['@graph'])
+      ? (script['@graph'] as Array<Record<string, unknown>>)
+      : [script],
+  );
+}
+
 async function waitForServer(): Promise<void> {
   const deadline = Date.now() + 90000;
   while (Date.now() < deadline) {
@@ -284,6 +296,94 @@ describe('.md suffix end-to-end', () => {
       expect(body.match(new RegExp(`id="${id}"`, 'g'))).toHaveLength(1);
     }
     expect(body).not.toContain('id="explore-by-category"');
+  });
+
+  test('publishes a connected, page-aware structured data graph', async () => {
+    const rootResponse = await fetch(BASE_URL, {
+      headers: { ...BROWSER_HEADERS, 'user-agent': 'facebookexternalhit/1.1' },
+    });
+    const rootBody = await rootResponse.text();
+    const rootNodes = getJsonLdNodes(rootBody);
+    const organization = rootNodes.find((node) => node['@type'] === 'Organization');
+    const website = rootNodes.find((node) => node['@type'] === 'WebSite');
+    const homepage = rootNodes.find((node) => node['@type'] === 'WebPage');
+
+    expect(organization).toMatchObject({
+      '@id': 'https://docs.steel.dev/#organization',
+      name: 'Steel',
+      url: 'https://steel.dev/',
+      sameAs: ['https://github.com/steel-dev', 'https://x.com/steeldotdev'],
+    });
+    expect(website).toMatchObject({
+      '@id': 'https://docs.steel.dev/#website',
+      publisher: { '@id': 'https://docs.steel.dev/#organization' },
+    });
+    expect(homepage).toMatchObject({
+      '@id': 'https://docs.steel.dev/#webpage',
+      url: 'https://docs.steel.dev/',
+      name: 'Steel Documentation',
+      isPartOf: { '@id': 'https://docs.steel.dev/#website' },
+      about: { '@id': 'https://docs.steel.dev/#organization' },
+      publisher: { '@id': 'https://docs.steel.dev/#organization' },
+    });
+    expect(homepage).not.toHaveProperty('datePublished');
+    expect(homepage).not.toHaveProperty('dateModified');
+    expect(rootBody).toContain('<meta name="twitter:site" content="@steeldotdev"/>');
+    expect(rootBody).toContain('<meta name="twitter:creator" content="@steeldotdev"/>');
+
+    const ordinaryBody = await (
+      await fetch(`${BASE_URL}/overview/sessions-api/quickstart`, {
+        headers: BROWSER_HEADERS,
+      })
+    ).text();
+    const ordinaryNodes = getJsonLdNodes(ordinaryBody);
+    expect(
+      ordinaryNodes.find(
+        (node) => node['@id'] === 'https://docs.steel.dev/overview/sessions-api/quickstart#webpage',
+      ),
+    ).toMatchObject({ '@type': 'WebPage', name: 'Quickstart' });
+    expect(ordinaryNodes.some((node) => node['@type'] === 'BreadcrumbList')).toBe(true);
+    expect(ordinaryNodes.some((node) => node['@type'] === 'TechArticle')).toBe(false);
+
+    const integrationBody = await (
+      await fetch(`${BASE_URL}/integrations/playwright`, { headers: BROWSER_HEADERS })
+    ).text();
+    const integrationNodes = getJsonLdNodes(integrationBody);
+    const integrationPage = integrationNodes.find(
+      (node) => node['@id'] === 'https://docs.steel.dev/integrations/playwright#webpage',
+    );
+    const integrationArticle = integrationNodes.find((node) => node['@type'] === 'TechArticle');
+    expect(integrationPage).toMatchObject({ '@type': 'WebPage' });
+    expect(integrationArticle).toMatchObject({
+      mainEntityOfPage: {
+        '@id': 'https://docs.steel.dev/integrations/playwright#webpage',
+      },
+      author: { '@id': 'https://docs.steel.dev/#organization' },
+      publisher: { '@id': 'https://docs.steel.dev/#organization' },
+    });
+    if (integrationArticle?.dateModified) {
+      expect(integrationArticle.dateModified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+
+    const recipeBody = await (
+      await fetch(`${BASE_URL}/cookbook/playwright`, { headers: BROWSER_HEADERS })
+    ).text();
+    const recipeNodes = getJsonLdNodes(recipeBody);
+    const recipeArticle = recipeNodes.find((node) => node['@type'] === 'TechArticle');
+    expect(recipeArticle).toMatchObject({
+      mainEntityOfPage: {
+        '@id': 'https://docs.steel.dev/cookbook/playwright#webpage',
+      },
+      publisher: { '@id': 'https://docs.steel.dev/#organization' },
+    });
+    expect(recipeArticle?.author).toBeArray();
+
+    const authorBody = await (
+      await fetch(`${BASE_URL}/cookbook/authors/hussufo`, { headers: BROWSER_HEADERS })
+    ).text();
+    const authorNodes = getJsonLdNodes(authorBody);
+    expect(authorNodes.some((node) => node['@type'] === 'ProfilePage')).toBe(true);
+    expect(authorNodes.some((node) => node['@type'] === 'WebPage')).toBe(false);
   });
 
   test('serves the API catalog as a linkset', async () => {
