@@ -18,11 +18,12 @@
     "spell:full": "cspell --show-context 'content/**/*.{md,mdx}'",
     "generate-openapi": "bun run ./scripts/fetch-openapi-specs.mts",
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
+    "generate-agent-skills": "bun run ./scripts/generate-agent-skills-index.ts",
     "sync-cookbook": "bun run ./scripts/sync-cookbook.ts",
     "generate-changelog-draft": "bun run ./scripts/generate-changelog-draft.ts",
     "preview-changelog": "bun run ./scripts/generate-changelog-draft.ts --preview",
     "generate-changelog-image": "bun run ./scripts/changelog/imagegen/cli.ts",
-    "generate": "bun run generate-openapi && bun run generate-llms",
+    "generate": "bun run generate-openapi && bun run generate-llms && bun run generate-agent-skills",
     "test": "bun test tests/"
   },
   "overrides": {

@@ -23,6 +23,7 @@ tmp
 # Generated files
 public/**/*.txt
 !public/21a10fefb8713c3f667a2e94460f9357.txt
+public/.well-known/agent-skills/
 /generated
 tsconfig.tsbuildinfo
 
