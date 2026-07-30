@@ -10,7 +10,7 @@ A repeatable **monthly** SEO check for Steel's two web properties — **docs.ste
 ## What it produces
 
 Each run writes, under `scripts/seo/pulse/`:
-- **Snapshots** (`snapshots/volumes-YYYY-MM.json`, `ranks-YYYY-MM.json`, `tech-YYYY-MM.json`) — the raw state for this month. Next month's run diffs against these.
+- **Snapshots** (`snapshots/volumes-YYYY-MM.json`, `ranks-YYYY-MM.json`, `tech-YYYY-MM.json`, `perf-YYYY-MM.json`) — the raw state for this month. Next month's run diffs against these.
 - **`reports/seo-YYYY-MM.md`** — the human-readable delta report (the deliverable).
 
 Snapshots are gitignored (regenerable state); reports are kept for history.
@@ -31,9 +31,20 @@ The keyword data comes from DataForSEO's `keywords_data/google_ads/search_volume
 
 So: weight **volume × CPC × momentum** together, and treat the numbers as directional, not exact.
 
+### Impression sinks: always report an ex-sinks view
+
+A couple of pages pull huge impression volumes at near-zero CTR, so any site-level clicks/impressions/CTR figure that includes them describes those pages instead of the docs. They live in `config.json` → `impression_sinks` (with the reason each one is listed). **Whenever you report a site-level click, impression, or CTR number, report the ex-sinks figure next to it** and say which pages were excluded. Never delete the as-exported number: keep both, so a shift in the sinks themselves stays visible.
+
 ## The monthly workflow
 
-Run the three deterministic scripts in order (they print summaries and write snapshots), then add judgment for drift/discovery, then synthesize the report. The split is deliberate — **scripts handle the mechanical, repeatable data; you handle synthesis and judgment.** (A prior attempt to do everything in one big agent fan-out got stuck in loops; scripts are reliable and cheap to re-run.)
+Run the deterministic scripts in order (they print summaries and write snapshots), then add judgment for drift/discovery, then synthesize the report. The split is deliberate — **scripts handle the mechanical, repeatable data; you handle synthesis and judgment.** (A prior attempt to do everything in one big agent fan-out got stuck in loops; scripts are reliable and cheap to re-run.)
+
+### Phase 0: Search performance (needs a Search Console export)
+
+```bash
+node .claude/skills/seo/scripts/gsc-perf.mjs <path-to-gsc-pages-export.csv>
+```
+Ask the user for a Search Console **Pages** export (docs.steel.dev, last 3 months, CSV). The script prints site clicks/impressions/CTR **as exported and ex-sinks**, breaks out each `impression_sinks` page with its share of site impressions, writes `perf-YYYY-MM.json`, and prints last month's ex-sinks totals for comparison. Skip the phase if no export is available and say so in the report: don't quote site CTR from memory.
 
 ### Phase 1 — Refresh demand
 
@@ -76,6 +87,14 @@ Read the three script summaries + your Phase 4 notes and write `scripts/seo/puls
 ## TL;DR
 2–4 sentences: did the P0 title fixes ship / move rankings? Any regressions? Biggest new opportunity?
 
+## Search performance
+| View | Clicks | Impressions | CTR |
+|---|---|---|---|
+| Site (as exported) | … | … | … |
+| Site (ex-sinks) | … | … | … |
+
+Ex-sinks excludes `config.json` → `impression_sinks`; list the excluded pages with their impressions and CTR. Compare month over month on the **ex-sinks** row.
+
 ## Demand movers
 - 📈 Rising: <term> (prev → now, +X% trend) — why it matters / suggested action
 - 📉 Falling: <term> …
@@ -113,11 +132,13 @@ All tracked keywords, key pages, and competitors live in `.claude/skills/seo/con
 - Add newly-discovered ownable terms to `tracked_keywords` (and `rank_keywords` if worth tracking position).
 - Add a `key_pages` entry (with `target_any` = the intent phrase the title should carry) whenever a new high-value page is published, so the audit tracks whether its title gets optimized.
 - Remove terms that have gone stale.
+- Add a page to `impression_sinks` once it pulls large impression volumes at near-zero CTR (and remove it when it stops), so the ex-sinks view keeps tracking real docs performance.
 
 ## Cost awareness
 
 - **Volumes**: ~$0.02/run (45 keywords, batched 25/call). Negligible — run freely.
 - **SERP ranks**: ~$0.05–0.10/keyword → ~$2–3 for the full `rank_keywords` set. This is the costly phase and the account balance is finite. Use `--limit`, and if you see `40200`, stop and flag it. If budget is a recurring constraint, trim `rank_keywords` to the ~10 terms that matter most.
 - **Tech audit**: free (live fetches only).
+- **Search performance**: free (parses a Search Console CSV export).
 
 If DataForSEO is unavailable (not verified, or balance exhausted), you can still run Phase 3 (free) and do a qualitative Phase 4 via `WebSearch` — note the gap in the report rather than skipping the whole pulse.
