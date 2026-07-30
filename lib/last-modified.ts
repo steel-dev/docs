@@ -1,12 +1,14 @@
-// ABOUTME: Resolves a content file's last-modified date from git history,
-// ABOUTME: falling back to filesystem mtime. Shared by the sitemap and JSON-LD.
+// ABOUTME: Resolves content freshness from Git, with a separate filesystem fallback.
+// ABOUTME: Schema uses Git-only dates; sitemap discovery may fall back to file mtime.
 import { execSync } from 'node:child_process';
 import { stat } from 'node:fs/promises';
 
-function gitLastModified(absPath: string): Date | undefined {
+export function getGitLastModified(absPath: string | undefined): Date | undefined {
+  if (!absPath) return undefined;
   try {
     const out = execSync(`git log -1 --format=%aI -- "${absPath}"`, {
       encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
       timeout: 5000,
     }).trim();
     if (!out) return undefined;
@@ -27,5 +29,5 @@ async function fsLastModified(absPath: string): Promise<Date | undefined> {
 
 export async function getLastModified(absPath: string | undefined): Promise<Date | undefined> {
   if (!absPath) return undefined;
-  return gitLastModified(absPath) ?? (await fsLastModified(absPath));
+  return getGitLastModified(absPath) ?? (await fsLastModified(absPath));
 }

@@ -1,4 +1,4 @@
-const SITE_URL = 'https://docs.steel.dev';
+import { DOCS_URL, getWebPageId, STEEL_ORGANIZATION_ID } from '@/lib/structured-data';
 
 interface AuthorRef {
   handle: string;
@@ -29,19 +29,21 @@ export function RecipeJsonLd({
   dateModified,
   sourceUrl,
 }: Props) {
-  const recipeUrl = `${SITE_URL}/cookbook/${slug}`;
+  const recipePath = `/cookbook/${slug}`;
+  const recipeUrl = `${DOCS_URL}${recipePath}`;
   const data: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
     headline: title,
     description,
     url: recipeUrl,
-    mainEntityOfPage: { '@type': 'WebPage', '@id': recipeUrl },
+    mainEntityOfPage: { '@id': getWebPageId(recipePath) },
     author: authors.map((a) => ({
       '@type': 'Person',
       name: a.name,
-      url: `${SITE_URL}/cookbook/authors/${a.handle}`,
+      url: `${DOCS_URL}/cookbook/authors/${a.handle}`,
     })),
+    publisher: { '@id': STEEL_ORGANIZATION_ID },
   };
   if (datePublished) data.datePublished = datePublished;
   if (dateModified) data.dateModified = dateModified;
