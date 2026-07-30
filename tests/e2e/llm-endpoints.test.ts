@@ -101,6 +101,16 @@ describe('.md suffix end-to-end', () => {
     expect(await response.text()).not.toContain('Full docs index');
   });
 
+  test('negotiates markdown at the homepage without redirecting', async () => {
+    const response = await fetch(BASE_URL, {
+      headers: { accept: 'text/markdown' },
+      redirect: 'manual',
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toStartWith('text/markdown');
+    expect(await response.text()).toStartWith('> Full docs index: https://docs.steel.dev/llms.txt');
+  });
+
   test('returns 404 for a .md URL with no matching page', async () => {
     const response = await fetch(`${BASE_URL}/nonexistent-page.md`, {
       headers: BROWSER_HEADERS,

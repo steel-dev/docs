@@ -42,6 +42,35 @@ describe('middleware .md suffix handling', () => {
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
   });
 
+  test('serves the homepage as markdown in place, without a redirect', () => {
+    const response = middleware(
+      new NextRequest('http://localhost/', { headers: { accept: 'text/markdown' } }),
+    );
+    const rewrite = response.headers.get('x-middleware-rewrite');
+    expect(rewrite).not.toBeNull();
+    expect(new URL(rewrite as string).pathname).toBe('/AGENTS.md');
+    expect(response.status).toBe(200);
+    expect(response.headers.get('location')).toBeNull();
+    expect(response.headers.get('Vary')).toContain('Accept');
+  });
+
+  test('serves the homepage as markdown to programmatic clients', () => {
+    const response = middleware(
+      new NextRequest('http://localhost/', {
+        headers: { accept: 'text/html', 'user-agent': 'curl/8.7.1' },
+      }),
+    );
+    const rewrite = response.headers.get('x-middleware-rewrite');
+    expect(rewrite).not.toBeNull();
+    expect(new URL(rewrite as string).pathname).toBe('/AGENTS.md');
+  });
+
+  test('leaves the homepage untouched for browsers', () => {
+    const response = middleware(browserRequest('http://localhost/'));
+    expect(response.headers.get('x-middleware-rewrite')).toBeNull();
+    expect(response.headers.get('location')).toBeNull();
+  });
+
   test('does not rewrite /AGENTS.md, even for markdown user agents', () => {
     const browser = middleware(browserRequest('http://localhost/AGENTS.md'));
     expect(browser.headers.get('x-middleware-rewrite')).toBeNull();
