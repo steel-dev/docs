@@ -48,6 +48,11 @@ jobs:
         env:
           LLMS_BASE_URL: https://docs.steel.dev
 
+      - name: Generate Agent Skills index
+        run: bun run generate-agent-skills
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run link validation
         run: bun run validate-links
 

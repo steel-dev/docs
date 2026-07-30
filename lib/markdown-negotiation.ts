@@ -31,8 +31,6 @@ export const MARKDOWN_USER_AGENT_SUBSTRINGS = [
 const MARKDOWN_VARY_HEADERS = ['Accept', 'User-Agent'];
 
 const EXCLUDED_EXACT_PATHS = new Set([
-  '/.well-known/api-catalog',
-  '/.well-known/llms.txt',
   '/AGENTS',
   '/AGENTS.md',
   '/favicon.ico',
@@ -43,11 +41,14 @@ const EXCLUDED_EXACT_PATHS = new Set([
   '/sitemap.xml',
 ]);
 
-const EXCLUDED_PATH_PREFIXES = ['/_next', '/api', '/llms.mdx', '/og'];
+// Everything under the RFC 8615 /.well-known namespace is already
+// machine-readable, so none of it should ever be content-negotiated.
+const EXCLUDED_PATH_PREFIXES = ['/.well-known', '/_next', '/api', '/llms.mdx', '/og'];
 const EXCLUDED_ASSET_EXTENSIONS = new Set([
   '.avif',
   '.css',
   '.gif',
+  '.gz',
   '.ico',
   '.jpeg',
   '.jpg',
@@ -58,6 +59,8 @@ const EXCLUDED_ASSET_EXTENSIONS = new Set([
   '.pdf',
   '.png',
   '.svg',
+  '.tar',
+  '.tgz',
   '.ttf',
   '.txt',
   '.webp',
