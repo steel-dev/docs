@@ -51,6 +51,9 @@
     { "url": "https://docs.steel.dev/cookbook/langgraph",        "section": "cookbook", "target_any": ["browser agent", "langgraph browser"] }
   ],
 
+  "$comment_impression_sinks": "Pages that accumulate large volumes of impressions at near-zero CTR, so they drag every site-level clicks/impressions/CTR number away from what real docs pages do. Excluded from the 'ex-sinks' view in reports (gsc-perf.mjs), never from the site as exported. `/llms-full.txt` is a single machine-readable bundle of the whole docs corpus, so it surfaces for a huge spread of loosely-related queries that humans do not click. `/overview/self-hosting/railway` matches queries about Railway the deployment platform rather than about Steel. Edit this list when another page starts behaving the same way.",
+  "impression_sinks": ["/llms-full.txt", "/overview/self-hosting/railway"],
+
   "competitors": [
     "browserbase.com", "browserless.io", "hyperbrowser.ai", "apify.com",
     "scraperapi.com", "scrapingbee.com", "brightdata.com", "zenrows.com", "zyte.com"
