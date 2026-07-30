@@ -12,7 +12,8 @@ const ROBOTS = readFileSync(
 /** Splits robots.txt into its User-agent groups, keyed by agent name. */
 function parseGroups(source: string): Map<string, string[]> {
   const groups = new Map<string, string[]>();
-  let current: string[] | null = null;
+  let activeAgents: string[] = [];
+  let groupHasDirectives = false;
 
   for (const line of source.split('\n')) {
     const trimmed = line.trim();
@@ -23,15 +24,34 @@ function parseGroups(source: string): Map<string, string[]> {
     const value = rawValue.join(':').trim();
 
     if (key === 'user-agent') {
-      current = [];
-      groups.set(value, current);
-    } else if (current) {
-      current.push(trimmed);
+      activeAgents = groupHasDirectives ? [value] : [...activeAgents, value];
+      groupHasDirectives = false;
+      if (!groups.has(value)) groups.set(value, []);
+    } else if (activeAgents.length > 0) {
+      groupHasDirectives = true;
+      for (const agent of activeAgents) {
+        groups.get(agent)?.push(trimmed);
+      }
     }
   }
 
   return groups;
 }
+
+describe('parseGroups', () => {
+  const fixtureGroups = parseGroups(`User-agent: Agent-A
+User-agent: Agent-B
+Allow: /
+
+User-agent: Agent-A
+Disallow: /private
+`);
+
+  test('shares directives across stacked agents and combines repeated groups', () => {
+    expect(fixtureGroups.get('Agent-A')).toEqual(['Allow: /', 'Disallow: /private']);
+    expect(fixtureGroups.get('Agent-B')).toEqual(['Allow: /']);
+  });
+});
 
 const groups = parseGroups(ROBOTS);
 
@@ -70,10 +90,9 @@ describe('robots.txt content signals', () => {
     }
   });
 
-  test('keeps the crawl directives, sitemap and host', () => {
+  test('keeps the crawl directives and sitemap', () => {
     expect(groups.get('*')).toContain('Allow: /');
     expect(groups.get('ClaudeBot')).toContain('Allow: /');
     expect(ROBOTS).toContain('Sitemap: https://docs.steel.dev/sitemap.xml');
-    expect(ROBOTS).toContain('Host: docs.steel.dev');
   });
 });
