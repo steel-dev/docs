@@ -273,7 +273,7 @@ const config = {
         headers: [
           {
             key: "Link",
-            value: '</llms.txt>; rel="alternate"; type="text/markdown", </llms-full.txt>; rel="alternate"; type="text/markdown"',
+            value: '</llms.txt>; rel="alternate"; type="text/markdown", </llms-full.txt>; rel="alternate"; type="text/markdown", </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"',
           },
         ],
       },

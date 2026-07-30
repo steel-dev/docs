@@ -41,6 +41,24 @@ function varyTokens(response: Response): string[] {
     .filter(Boolean);
 }
 
+function hasLinkRelation(response: Response, target: string, relation: string): boolean {
+  return (response.headers.get('Link') ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .some((value) => {
+      const [rawTarget, ...rawParameters] = value.split(';');
+      if (rawTarget.trim() !== `<${target}>`) return false;
+
+      const relationParameter = rawParameters
+        .map((parameter) => parameter.trim())
+        .find((parameter) => parameter.toLowerCase().startsWith('rel='));
+      if (!relationParameter) return false;
+
+      const relations = relationParameter.slice('rel='.length).replace(/^"|"$/g, '').split(/\s+/);
+      return relations.includes(relation);
+    });
+}
+
 function hasActiveNavLink(body: string, href: string): boolean {
   return [...body.matchAll(/<a\b[^>]*>/g)].some(
     ([tag]) => tag.includes(`href="${href}"`) && tag.includes('data-nav-active="true"'),
@@ -396,6 +414,17 @@ describe('.md suffix end-to-end', () => {
     expect(catalog.linkset.length).toBeGreaterThan(0);
   });
 
+  test('advertises the API catalog relation on HEAD', async () => {
+    const response = await fetch(`${BASE_URL}/.well-known/api-catalog`, {
+      method: 'HEAD',
+      redirect: 'manual',
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toStartWith('application/linkset+json');
+    expect(hasLinkRelation(response, '/.well-known/api-catalog', 'api-catalog')).toBe(true);
+  });
+
   test('serves the API catalog to markdown clients too, without rewriting it', async () => {
     const response = await fetch(`${BASE_URL}/.well-known/api-catalog`, {
       headers: { accept: 'text/markdown', 'user-agent': 'claude-code/1.0' },
@@ -423,5 +452,8 @@ describe('.md suffix end-to-end', () => {
     });
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toStartWith('text/html');
+    expect(hasLinkRelation(response, '/.well-known/api-catalog', 'api-catalog')).toBe(true);
+    expect(hasLinkRelation(response, '/llms.txt', 'alternate')).toBe(true);
+    expect(hasLinkRelation(response, '/llms-full.txt', 'alternate')).toBe(true);
   });
 });
