@@ -221,6 +221,28 @@ const config = {
         ],
       },
       {
+        // Plain-text mirrors of the docs. Agents should fetch them; Google
+        // should not list them next to the HTML pages they duplicate. Matching
+        // happens on the requested path, so the homepage keeps its own headers
+        // when middleware rewrites it to /AGENTS.md for markdown clients.
+        source: "/:path*/llms.txt",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex",
+          },
+        ],
+      },
+      {
+        source: "/AGENTS.md",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex",
+          },
+        ],
+      },
+      {
         source: "/(.*)",
         headers: [
           {
