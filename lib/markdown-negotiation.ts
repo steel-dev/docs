@@ -31,6 +31,7 @@ export const MARKDOWN_USER_AGENT_SUBSTRINGS = [
 const MARKDOWN_VARY_HEADERS = ['Accept', 'User-Agent'];
 
 const EXCLUDED_EXACT_PATHS = new Set([
+  '/.well-known/api-catalog',
   '/.well-known/llms.txt',
   '/AGENTS',
   '/AGENTS.md',
