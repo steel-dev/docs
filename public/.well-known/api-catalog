@@ -1,0 +1,27 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://docs.steel.dev/.well-known/api-catalog",
+      "item": [
+        {
+          "href": "https://api.steel.dev"
+        }
+      ]
+    },
+    {
+      "anchor": "https://api.steel.dev",
+      "service-desc": [
+        {
+          "href": "https://api.steel.dev/sdk-openapi.json",
+          "type": "application/openapi+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://docs.steel.dev/overview/intro-to-steel",
+          "type": "text/html"
+        }
+      ]
+    }
+  ]
+}

@@ -59,6 +59,14 @@ const config = {
         destination: "https://steel.apidocumentation.com/api-reference",
         permanent: true,
       },
+      {
+        // A memorable docs URL for the spec, redirecting rather than mirroring:
+        // the API serves the spec with open CORS, so a local copy would only
+        // add one that goes stale between docs deploys.
+        source: "/openapi.json",
+        destination: "https://api.steel.dev/sdk-openapi.json",
+        permanent: true,
+      },
       // {
       //   source: "/overview/steel-cli",
       //   destination: "https://github.com/steel-dev/cli",
@@ -201,6 +209,17 @@ const config = {
   },
   async headers() {
     return [
+      {
+        // RFC 9727 requires the catalog to be served as a linkset. The file has
+        // no extension, so static serving would otherwise guess a type for it.
+        source: "/.well-known/api-catalog",
+        headers: [
+          {
+            key: "Content-Type",
+            value: 'application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"',
+          },
+        ],
+      },
       {
         source: "/(.*)",
         headers: [

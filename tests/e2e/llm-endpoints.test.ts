@@ -1,5 +1,5 @@
-// ABOUTME: End-to-end tests that boot the Next.js dev server and verify the
-// ABOUTME: LLM-facing endpoints: .md-suffixed URLs, index pointer, llms-full.txt.
+// ABOUTME: End-to-end tests that boot the Next.js dev server and verify the agent-facing
+// ABOUTME: endpoints: .md URLs, index pointer, llms-full.txt, api-catalog, openapi redirect.
 import { afterAll, beforeAll, describe, expect, setDefaultTimeout, test } from 'bun:test';
 import { fileURLToPath } from 'node:url';
 
@@ -109,6 +109,30 @@ describe('.md suffix end-to-end', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toStartWith('text/markdown');
     expect(await response.text()).toStartWith('> Full docs index: https://docs.steel.dev/llms.txt');
+  });
+
+  test('serves the API catalog as a linkset', async () => {
+    const response = await fetch(`${BASE_URL}/.well-known/api-catalog`, {
+      headers: { accept: 'application/linkset+json' },
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toStartWith('application/linkset+json');
+    const catalog = (await response.json()) as { linkset: Array<{ anchor: string }> };
+    expect(catalog.linkset.length).toBeGreaterThan(0);
+  });
+
+  test('serves the API catalog to markdown clients too, without rewriting it', async () => {
+    const response = await fetch(`${BASE_URL}/.well-known/api-catalog`, {
+      headers: { accept: 'text/markdown', 'user-agent': 'claude-code/1.0' },
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toStartWith('application/linkset+json');
+  });
+
+  test('redirects /openapi.json to the canonical spec', async () => {
+    const response = await fetch(`${BASE_URL}/openapi.json`, { redirect: 'manual' });
+    expect(response.status).toBe(308);
+    expect(response.headers.get('location')).toBe('https://api.steel.dev/sdk-openapi.json');
   });
 
   test('returns 404 for a .md URL with no matching page', async () => {
