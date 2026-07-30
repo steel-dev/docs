@@ -94,21 +94,46 @@ async function waitForServer(): Promise<void> {
   throw new Error(`Dev server did not become ready on port ${PORT}`);
 }
 
+function killProcessGroup(pid: number, signal: NodeJS.Signals): void {
+  try {
+    process.kill(-pid, signal);
+  } catch {
+    try {
+      process.kill(pid, signal);
+    } catch {}
+  }
+}
+
 describe('.md suffix end-to-end', () => {
   beforeAll(async () => {
     server = Bun.spawn(['bunx', 'next', 'dev', '--turbopack', '-p', String(PORT)], {
       cwd: PROJECT_ROOT,
       stdout: 'ignore',
       stderr: 'ignore',
+      // detached puts the dev server at the head of its own process group, so
+      // teardown can signal the whole tree (next-server, Turbopack workers),
+      // not just the direct bunx child.
+      detached: true,
     });
     await waitForServer();
   });
 
   afterAll(async () => {
-    // Wait for the process to fully exit so the dev server's CPU and port
-    // are released before later test files (Chromium renders) start.
-    server?.kill();
-    await server?.exited;
+    // Tear down the whole process group so the dev server's CPU and port are
+    // released before later test files (Chromium renders) start. The awaited
+    // exit is bounded and escalates to SIGKILL, so a child that ignores or
+    // defers SIGTERM can never hang the hook past its timeout.
+    const pid = server?.pid;
+    if (!pid) return;
+    killProcessGroup(pid, 'SIGTERM');
+    const stopped = await Promise.race([
+      server.exited.then(() => true),
+      Bun.sleep(3000).then(() => false),
+    ]);
+    if (!stopped) {
+      killProcessGroup(pid, 'SIGKILL');
+      await Promise.race([server.exited, Bun.sleep(2000)]);
+    }
   });
 
   test('serves markdown with the index pointer at a .md-suffixed docs URL', async () => {
