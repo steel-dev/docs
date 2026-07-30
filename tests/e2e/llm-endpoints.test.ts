@@ -258,6 +258,34 @@ describe('.md suffix end-to-end', () => {
     expect(sitemapBody).not.toContain('<loc>https://docs.steel.dev/overview</loc>');
   });
 
+  test('renders answerable homepage semantics without changing its visual hierarchy', async () => {
+    const response = await fetch(BASE_URL, {
+      headers: { ...BROWSER_HEADERS, 'user-agent': 'facebookexternalhit/1.1' },
+    });
+    const body = await response.text();
+    const animatedLogo = [...body.matchAll(/<div\b[^>]*>/g)]
+      .map(([tag]) => tag)
+      .find((tag) => tag.includes('height:188px') && tag.includes('width:188px'));
+
+    expect(body.match(/<h1\b/g)).toHaveLength(1);
+    expect(body).toContain('<h1 class="text-3xl">Steel Documentation</h1>');
+    expect(animatedLogo).toContain('class="shrink-0"');
+    expect(body).toContain(
+      'Steel is an open-source browser API for AI agents and automation. Use these docs to create cloud browser sessions, connect your automation tools, and configure proxies, CAPTCHA solving, credentials, and files.',
+    );
+    expect(body).toContain(
+      '<section class="space-y-5" aria-labelledby="getting-started-and-apis">',
+    );
+    expect(body).toContain(
+      '<h2 id="getting-started-and-apis" class="sr-only">Getting started and APIs</h2>',
+    );
+
+    for (const id of ['getting-started-and-apis', 'integrations', 'sdks', 'resources']) {
+      expect(body.match(new RegExp(`id="${id}"`, 'g'))).toHaveLength(1);
+    }
+    expect(body).not.toContain('id="explore-by-category"');
+  });
+
   test('serves the API catalog as a linkset', async () => {
     const response = await fetch(`${BASE_URL}/.well-known/api-catalog`, {
       headers: { accept: 'application/linkset+json' },
