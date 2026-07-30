@@ -4,8 +4,9 @@ import { afterAll, beforeAll, describe, setDefaultTimeout, test } from 'bun:test
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 
-// The pipeline renders with headless Chromium, which can exceed the default 5s on CI.
-setDefaultTimeout(30000);
+// The pipeline launches a fresh headless Chromium per render. On a loaded
+// two-core CI runner one launch has taken over 30s, so allow generous headroom.
+setDefaultTimeout(120000);
 
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';

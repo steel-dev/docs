@@ -8,8 +8,9 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 
-// Each case renders a card in a subprocess, which exceeds the default 5s timeout.
-setDefaultTimeout(30000);
+// Each case renders a card in a subprocess, launching headless Chromium, which is
+// slow enough on a loaded two-core CI runner to blow past a 30s budget.
+setDefaultTimeout(120000);
 
 const CLI = fileURLToPath(new URL('../../../scripts/changelog/imagegen/cli.ts', import.meta.url));
 
