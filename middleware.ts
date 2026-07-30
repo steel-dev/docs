@@ -7,11 +7,6 @@ import {
   shouldServeMarkdown,
 } from '@/lib/markdown-negotiation';
 
-function isProgrammaticClient(request: NextRequest): boolean {
-  // Browsers always send Sec-Fetch-Dest; curl/WebFetch/python-requests do not
-  return !request.headers.has('sec-fetch-dest');
-}
-
 function isNegotiableMethod(method: string): boolean {
   return method === 'GET' || method === 'HEAD';
 }
@@ -38,13 +33,16 @@ export default function middleware(request: NextRequest) {
 
   const wantsMarkdown = shouldServeMarkdown(request.headers);
 
-  // The homepage has no MDX page behind it, so markdown clients get the agent
-  // guide, which opens with a pointer to the /llms.txt index. Serving it in
-  // place keeps negotiation on the requested URL instead of redirecting away.
-  if (pathname === '/' && (wantsMarkdown || isProgrammaticClient(request))) {
-    const rewriteUrl = request.nextUrl.clone();
-    rewriteUrl.pathname = '/AGENTS.md';
-    return withMarkdownVary(NextResponse.rewrite(rewriteUrl));
+  if (pathname === '/') {
+    // The homepage has no MDX page behind it, so Markdown clients get the agent
+    // guide in place. Every other client follows the canonical HTML route.
+    if (wantsMarkdown) {
+      const rewriteUrl = request.nextUrl.clone();
+      rewriteUrl.pathname = '/AGENTS.md';
+      return withMarkdownVary(NextResponse.rewrite(rewriteUrl));
+    }
+
+    return withMarkdownVary(NextResponse.redirect(new URL('/overview', request.url)));
   }
 
   if (!isNegotiableDocsPath(pathname)) {

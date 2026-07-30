@@ -1,5 +1,5 @@
-// ABOUTME: Integration tests for the docs middleware, verifying .md-suffixed
-// ABOUTME: URLs rewrite to the /llms.mdx markdown route and others pass through.
+// ABOUTME: Integration tests for docs middleware Markdown rewrites and canonical
+// ABOUTME: HTML routing.
 import { describe, expect, test } from 'bun:test';
 import { NextRequest } from 'next/server';
 import middleware from '../middleware';
@@ -12,6 +12,13 @@ function browserRequest(url: string): NextRequest {
       'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/605.1.15',
     },
   });
+}
+
+function varyTokens(response: Response): string[] {
+  return (response.headers.get('Vary') ?? '')
+    .split(',')
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
 }
 
 describe('middleware .md suffix handling', () => {
@@ -37,6 +44,20 @@ describe('middleware .md suffix handling', () => {
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
   });
 
+  test.each([
+    { accept: 'text/html', 'user-agent': 'ChatGPT-User/1.0' },
+    { accept: 'text/markdown', 'user-agent': 'curl/8.7.1' },
+  ])('keeps the HTML-only overview landing page out of negotiation', (headers) => {
+    for (const pathname of ['/overview', '/overview/']) {
+      const response = middleware(
+        new NextRequest(`http://localhost${pathname}`, {
+          headers,
+        }),
+      );
+      expect(response.headers.get('x-middleware-rewrite')).toBeNull();
+    }
+  });
+
   test('does not rewrite excluded .md paths', () => {
     const response = middleware(browserRequest('http://localhost/llms-full.txt.md'));
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
@@ -51,13 +72,13 @@ describe('middleware .md suffix handling', () => {
     expect(new URL(rewrite as string).pathname).toBe('/AGENTS.md');
     expect(response.status).toBe(200);
     expect(response.headers.get('location')).toBeNull();
-    expect(response.headers.get('Vary')).toContain('Accept');
+    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
   });
 
-  test('serves the homepage as markdown to programmatic clients', () => {
+  test('serves the homepage as markdown to user-directed agent clients', () => {
     const response = middleware(
       new NextRequest('http://localhost/', {
-        headers: { accept: 'text/html', 'user-agent': 'curl/8.7.1' },
+        headers: { accept: 'text/html', 'user-agent': 'claude-code/1.0' },
       }),
     );
     const rewrite = response.headers.get('x-middleware-rewrite');
@@ -65,10 +86,32 @@ describe('middleware .md suffix handling', () => {
     expect(new URL(rewrite as string).pathname).toBe('/AGENTS.md');
   });
 
-  test('leaves the homepage untouched for browsers', () => {
+  test.each([
+    'curl/8.7.1',
+    'Googlebot/2.1',
+    'GPTBot/1.2',
+    'OAI-AdsBot/1.0',
+    'OAI-SearchBot/1.0',
+    'ClaudeBot/1.0',
+    'Claude-SearchBot/1.0',
+    'PerplexityBot/1.0',
+  ])('redirects the non-Markdown root request from %s to HTML', (userAgent) => {
+    const response = middleware(
+      new NextRequest('http://localhost/', {
+        headers: { accept: 'text/html', 'user-agent': userAgent },
+      }),
+    );
+    expect(response.headers.get('x-middleware-rewrite')).toBeNull();
+    expect(response.status).toBe(307);
+    expect(new URL(response.headers.get('location') as string).pathname).toBe('/overview');
+    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+  });
+
+  test('redirects browser navigation at the homepage to HTML', () => {
     const response = middleware(browserRequest('http://localhost/'));
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
-    expect(response.headers.get('location')).toBeNull();
+    expect(response.status).toBe(307);
+    expect(new URL(response.headers.get('location') as string).pathname).toBe('/overview');
   });
 
   test('does not rewrite /AGENTS.md, even for markdown user agents', () => {
