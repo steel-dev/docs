@@ -37,6 +37,7 @@ const EXCLUDED_EXACT_PATHS = new Set([
   '/favicon.ico',
   '/llms-full.txt',
   '/llms.txt',
+  '/',
   '/overview',
   '/overview/',
   '/overview/llms-full.txt',

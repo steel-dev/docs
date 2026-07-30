@@ -33,18 +33,6 @@ export default function middleware(request: NextRequest) {
 
   const wantsMarkdown = shouldServeMarkdown(request.headers);
 
-  if (pathname === '/') {
-    // The homepage has no MDX page behind it, so Markdown clients get the agent
-    // guide in place. Every other client follows the canonical HTML route.
-    if (wantsMarkdown) {
-      const rewriteUrl = request.nextUrl.clone();
-      rewriteUrl.pathname = '/AGENTS.md';
-      return withMarkdownVary(NextResponse.rewrite(rewriteUrl));
-    }
-
-    return withMarkdownVary(NextResponse.redirect(new URL('/overview', request.url)));
-  }
-
   if (!isNegotiableDocsPath(pathname)) {
     return NextResponse.next();
   }

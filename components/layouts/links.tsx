@@ -159,8 +159,12 @@ export const BaseLinkItem = forwardRef<
 BaseLinkItem.displayName = 'BaseLinkItem';
 
 // Helper function to determine if a navigation item should be active
-function isNavItemActive(item: LinkItemType, pathname: string): boolean {
+export function isNavItemActive(item: LinkItemType, pathname: string): boolean {
   if (!('url' in item) || !item.url) return false;
+
+  if (item.url === '/') {
+    return pathname === '/' || pathname === '/overview' || pathname.startsWith('/overview/');
+  }
 
   // Check if item has active property (only certain types have it)
   // For menu items, default to "nested-url" behavior since they should match child routes
