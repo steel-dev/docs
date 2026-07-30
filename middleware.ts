@@ -38,10 +38,13 @@ export default function middleware(request: NextRequest) {
 
   const wantsMarkdown = shouldServeMarkdown(request.headers);
 
+  // The homepage has no MDX page behind it, so markdown clients get the agent
+  // guide, which opens with a pointer to the /llms.txt index. Serving it in
+  // place keeps negotiation on the requested URL instead of redirecting away.
   if (pathname === '/' && (wantsMarkdown || isProgrammaticClient(request))) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/llms.txt';
-    return withMarkdownVary(NextResponse.redirect(redirectUrl));
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = '/AGENTS.md';
+    return withMarkdownVary(NextResponse.rewrite(rewriteUrl));
   }
 
   if (!isNegotiableDocsPath(pathname)) {
