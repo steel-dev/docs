@@ -8,6 +8,7 @@ export const DOCS_SITE_NAME = 'Steel Docs';
 export const DOCS_SITE_DESCRIPTION =
   "Documentation for Steel, an open-source browser API for AI agents and automation. Create cloud browser sessions with Steel's APIs, SDKs, and integrations.";
 export const STEEL_SAME_AS = ['https://github.com/steel-dev', 'https://x.com/steeldotdev'] as const;
+export const STEEL_LOGO_URL = `${DOCS_URL}/images/logo.png`;
 
 interface WebPageSchemaOptions {
   name: string;
@@ -18,6 +19,7 @@ interface WebPageSchemaOptions {
 interface TechArticleSchemaOptions extends WebPageSchemaOptions {
   datePublished?: string;
   dateModified?: string;
+  image?: string; // absolute URL, e.g. `${DOCS_URL}/og/integrations/playwright`
 }
 
 export function getCanonicalPageUrl(path: string): string {
@@ -26,6 +28,12 @@ export function getCanonicalPageUrl(path: string): string {
 
 export function getWebPageId(path: string): string {
   return `${getCanonicalPageUrl(path)}#webpage`;
+}
+
+// Google reconciles entities on `@id`, not `url`, so the recipe author Person
+// and the ProfilePage Person must share this ID to merge in the Search graph.
+export function getAuthorPersonId(handle: string): string {
+  return `${DOCS_URL}/cookbook/authors/${handle}#person`;
 }
 
 export function buildSiteIdentitySchema() {
@@ -37,6 +45,7 @@ export function buildSiteIdentitySchema() {
         '@id': STEEL_ORGANIZATION_ID,
         name: 'Steel',
         url: STEEL_URL,
+        logo: STEEL_LOGO_URL,
         sameAs: STEEL_SAME_AS,
       },
       {
@@ -72,6 +81,7 @@ export function buildTechArticleSchema({
   path,
   datePublished,
   dateModified,
+  image,
 }: TechArticleSchemaOptions) {
   const data: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -85,5 +95,6 @@ export function buildTechArticleSchema({
   if (description) data.description = description;
   if (datePublished) data.datePublished = datePublished;
   if (dateModified) data.dateModified = dateModified;
+  if (image) data.image = image;
   return data;
 }

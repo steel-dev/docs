@@ -1,4 +1,9 @@
-import { DOCS_URL, getWebPageId, STEEL_ORGANIZATION_ID } from '@/lib/structured-data';
+import {
+  DOCS_URL,
+  getAuthorPersonId,
+  getWebPageId,
+  STEEL_ORGANIZATION_ID,
+} from '@/lib/structured-data';
 
 interface AuthorRef {
   handle: string;
@@ -38,8 +43,10 @@ export function RecipeJsonLd({
     description,
     url: recipeUrl,
     mainEntityOfPage: { '@id': getWebPageId(recipePath) },
+    image: `${DOCS_URL}/og${recipePath}`,
     author: authors.map((a) => ({
       '@type': 'Person',
+      '@id': getAuthorPersonId(a.handle),
       name: a.name,
       url: `${DOCS_URL}/cookbook/authors/${a.handle}`,
     })),

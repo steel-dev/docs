@@ -1,11 +1,14 @@
 // ABOUTME: Contract tests for shared schema.org entity IDs and pure JSON-LD builders.
 // ABOUTME: Prevents disconnected entities, unverified profiles, and invented freshness.
 import { describe, expect, test } from 'bun:test';
+import { AuthorProfile } from '@/components/author-profile';
+import { RecipeJsonLd } from '@/components/recipe-jsonld';
 import {
   buildSiteIdentitySchema,
   buildTechArticleSchema,
   buildWebPageSchema,
   DOCS_WEBSITE_ID,
+  getAuthorPersonId,
   getWebPageId,
   STEEL_ORGANIZATION_ID,
   STEEL_SAME_AS,
@@ -22,6 +25,7 @@ describe('structured data builders', () => {
       '@id': STEEL_ORGANIZATION_ID,
       name: 'Steel',
       url: 'https://steel.dev/',
+      logo: 'https://docs.steel.dev/images/logo.png',
       sameAs: STEEL_SAME_AS,
     });
     expect(website).toMatchObject({
@@ -79,5 +83,45 @@ describe('structured data builders', () => {
       dateModified: '2026-07-30',
     });
     expect(article).not.toHaveProperty('datePublished');
+    expect(article).not.toHaveProperty('image');
+  });
+
+  test('carries the absolute article image only when provided', () => {
+    const article = buildTechArticleSchema({
+      name: 'Run Playwright on Steel Cloud Browsers',
+      path: '/integrations/playwright',
+      image: 'https://docs.steel.dev/og/integrations/playwright',
+    });
+
+    expect(article.image).toBe('https://docs.steel.dev/og/integrations/playwright');
+  });
+
+  test('gives recipe authors and profile pages the same stable Person ID', () => {
+    expect(getAuthorPersonId('junhsss')).toBe(
+      'https://docs.steel.dev/cookbook/authors/junhsss#person',
+    );
+
+    // Call the components as plain functions and parse their emitted JSON-LD:
+    // both Person entities must share the exact @id for Google to merge them.
+    const recipeElement = RecipeJsonLd({
+      slug: 'scrape',
+      title: 'Scrape JavaScript-Rendered Pages to Markdown',
+      description: 'Scrape pages to Markdown.',
+      authors: [{ handle: 'junhsss', name: 'Jun Ryu' }],
+    }) as { props: { dangerouslySetInnerHTML: { __html: string } } };
+    const recipe = JSON.parse(recipeElement.props.dangerouslySetInnerHTML.__html);
+
+    const profileElement = AuthorProfile({
+      handle: 'junhsss',
+      name: 'Jun Ryu',
+      avatar: 'https://github.com/junhsss.png?size=40',
+    }) as { props: { children: { props: { dangerouslySetInnerHTML: { __html: string } } }[] } };
+    const profile = JSON.parse(
+      profileElement.props.children[0].props.dangerouslySetInnerHTML.__html,
+    );
+
+    expect(recipe.author[0]['@id']).toBe('https://docs.steel.dev/cookbook/authors/junhsss#person');
+    expect(profile.mainEntity['@id']).toBe(recipe.author[0]['@id']);
+    expect(recipe.image).toBe('https://docs.steel.dev/og/cookbook/scrape');
   });
 });
