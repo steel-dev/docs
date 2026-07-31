@@ -201,11 +201,13 @@ describe('.md suffix end-to-end', () => {
     }
   });
 
-  test('keeps the canonical HTML homepage indexable for Markdown requests', async () => {
+  test('negotiates markdown at the canonical homepage', async () => {
     const response = await fetch(BASE_URL, { headers: { accept: 'text/markdown' } });
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-type')).toStartWith('text/html');
+    expect(response.headers.get('content-type')).toStartWith('text/markdown');
     expect(response.headers.get('x-robots-tag')).toBeNull();
+    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+    expect(await response.text()).toStartWith('> Full docs index: https://docs.steel.dev/llms.txt');
   });
 
   test('llms-full.txt does not repeat the index pointer', async () => {
@@ -227,7 +229,7 @@ describe('.md suffix end-to-end', () => {
     }
   });
 
-  test('keeps the canonical homepage HTML-only for Markdown clients', async () => {
+  test('serves Markdown clients markdown at the canonical homepage', async () => {
     const headersToTest = [
       ...MARKDOWN_USER_AGENTS.map((userAgent) => ({
         accept: 'text/html',
@@ -239,8 +241,12 @@ describe('.md suffix end-to-end', () => {
     for (const headers of headersToTest) {
       const response = await fetch(BASE_URL, { headers });
       expect(response.status).toBe(200);
-      expect(response.headers.get('content-type')).toStartWith('text/html');
+      expect(response.headers.get('content-type')).toStartWith('text/markdown');
       expect(response.headers.get('x-robots-tag')).toBeNull();
+      expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+      expect(await response.text()).toStartWith(
+        '> Full docs index: https://docs.steel.dev/llms.txt',
+      );
     }
   });
 

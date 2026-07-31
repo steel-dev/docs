@@ -66,6 +66,18 @@ describe('middleware .md suffix handling', () => {
   test.each([
     { accept: 'text/markdown', 'user-agent': 'curl/8.7.1' },
     { accept: 'text/html', 'user-agent': 'claude-code/1.0' },
+  ])('serves the homepage as markdown for $user-agent', (headers) => {
+    const response = middleware(new NextRequest('http://localhost/', { headers }));
+    const rewrite = response.headers.get('x-middleware-rewrite');
+    expect(rewrite).not.toBeNull();
+    expect(new URL(rewrite as string).pathname).toBe('/AGENTS.md');
+    expect(response.status).toBe(200);
+    expect(response.headers.get('location')).toBeNull();
+    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+  });
+
+  test.each([
+    { accept: 'text/html', 'user-agent': 'curl/8.7.1' },
     { accept: 'text/html', 'user-agent': 'Googlebot/2.1' },
     { accept: 'text/html', 'user-agent': 'GPTBot/1.2' },
     { accept: 'text/html', 'user-agent': 'OAI-SearchBot/1.0' },
@@ -80,7 +92,7 @@ describe('middleware .md suffix handling', () => {
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
     expect(response.status).toBe(200);
     expect(response.headers.get('location')).toBeNull();
-    expect(varyTokens(response)).not.toEqual(expect.arrayContaining(['accept', 'user-agent']));
+    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
   });
 
   test('varies negotiated docs URLs on accept and user-agent', () => {
@@ -104,6 +116,7 @@ describe('middleware .md suffix handling', () => {
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
     expect(response.status).toBe(200);
     expect(response.headers.get('location')).toBeNull();
+    expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
   });
 
   test('does not rewrite /AGENTS.md, even for markdown user agents', () => {
