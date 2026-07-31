@@ -4,12 +4,13 @@ import { beforeAll, describe, setDefaultTimeout, test } from 'bun:test';
 import assert from 'node:assert/strict';
 import { PNG } from 'pngjs';
 
-// The render hook launches headless Chromium, which is slow enough on a loaded
-// two-core CI runner to blow past a 120s budget.
+// Renders share one Chromium via getSharedBrowser, but the process-wide first
+// launch can land in this file and needs generous headroom on a loaded runner.
 setDefaultTimeout(240000);
 
 import { renderCard } from '../../../scripts/changelog/imagegen/render';
 import { CARD_HEIGHT, CARD_WIDTH } from '../../../scripts/changelog/imagegen/template';
+import { getSharedBrowser } from '../helpers/browser';
 
 /** A flat mid-grey background, so overlays are easy to detect. */
 function solidBackgroundDataUri(r: number, g: number, b: number): string {
@@ -35,7 +36,7 @@ describe('renderCard', () => {
   const scale = 1;
 
   beforeAll(async () => {
-    image = PNG.sync.read(await renderCard(content, { scale }));
+    image = PNG.sync.read(await renderCard(content, { scale, browser: await getSharedBrowser() }));
   });
 
   const brightness = (x: number, y: number) => {
