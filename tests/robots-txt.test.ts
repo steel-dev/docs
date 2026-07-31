@@ -95,4 +95,14 @@ describe('robots.txt content signals', () => {
     expect(groups.get('ClaudeBot')).toContain('Allow: /');
     expect(ROBOTS).toContain('Sitemap: https://docs.steel.dev/sitemap.xml');
   });
+
+  test('contains no Disallow directives in any group', () => {
+    // The docs are fully public; a blanket Disallow would silently deindex the site.
+    for (const [agent, directives] of groups) {
+      const disallows = directives.filter((directive) =>
+        directive.toLowerCase().startsWith('disallow:'),
+      );
+      expect(disallows, `${agent} blocks crawling with ${disallows.join(', ')}`).toEqual([]);
+    }
+  });
 });

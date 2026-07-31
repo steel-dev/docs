@@ -83,6 +83,22 @@ describe('middleware .md suffix handling', () => {
     expect(varyTokens(response)).not.toEqual(expect.arrayContaining(['accept', 'user-agent']));
   });
 
+  test('varies negotiated docs URLs on accept and user-agent', () => {
+    // The markdown rewrite and the HTML pass-through share one cache key,
+    // so both responses must carry the Vary tokens from appendMarkdownVaryHeader.
+    const rewritten = middleware(
+      new NextRequest('http://localhost/overview/steel-cli', {
+        headers: { accept: 'text/html', 'user-agent': 'claude-code/1.0' },
+      }),
+    );
+    expect(rewritten.headers.get('x-middleware-rewrite')).not.toBeNull();
+    expect(varyTokens(rewritten)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+
+    const passedThrough = middleware(browserRequest('http://localhost/overview/steel-cli'));
+    expect(passedThrough.headers.get('x-middleware-rewrite')).toBeNull();
+    expect(varyTokens(passedThrough)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+  });
+
   test('passes browser navigation at the homepage through', () => {
     const response = middleware(browserRequest('http://localhost/'));
     expect(response.headers.get('x-middleware-rewrite')).toBeNull();
