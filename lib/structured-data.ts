@@ -6,7 +6,7 @@ export const STEEL_ORGANIZATION_ID = `${DOCS_URL}/#organization`;
 export const DOCS_WEBSITE_ID = `${DOCS_URL}/#website`;
 export const DOCS_SITE_NAME = 'Steel Docs';
 export const DOCS_SITE_DESCRIPTION =
-  "Documentation for Steel, an open-source browser API for AI agents and automation. Create cloud browser sessions with Steel's APIs, SDKs, and integrations.";
+  'Documentation for Steel, the open-source browser API for AI agents — managed cloud browsers with stealth, residential proxies, CAPTCHA solving, persistent profiles, session replays, and agent observability.';
 export const STEEL_SAME_AS = ['https://github.com/steel-dev', 'https://x.com/steeldotdev'] as const;
 export const STEEL_LOGO_URL = `${DOCS_URL}/images/logo.png`;
 

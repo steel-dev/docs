@@ -3,7 +3,8 @@
 
 export const AGENT_INSTRUCTIONS = `# Steel Documentation
 
-> Steel is a cloud browser API for AI agents and developers.
+> Steel is the open-source browser API for AI agents — managed cloud browsers with stealth,
+> residential proxies, CAPTCHA solving, persistent profiles, session replays, and agent observability.
 > Use Steel to launch cloud browsers, scrape content, and automate web tasks.
 
 ## Quick Reference

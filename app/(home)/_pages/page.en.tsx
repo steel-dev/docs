@@ -49,9 +49,10 @@ export default function HomePage() {
               <div className="flex flex-col [&_p]:mb-6 space-y-3">
                 <h1 className="text-3xl">Steel Documentation</h1>
                 <p>
-                  Steel is an open-source browser API for AI agents and automation. Use these docs
-                  to create cloud browser sessions, connect your automation tools, and configure
-                  proxies, CAPTCHA solving, credentials, and files.
+                  Steel is the open-source browser API for AI agents — managed cloud browsers with
+                  stealth, residential proxies, CAPTCHA solving, persistent profiles, session
+                  replays, and agent observability. Use these docs to create cloud browser sessions
+                  and connect your automation tools.
                 </p>
               </div>
             </div>
