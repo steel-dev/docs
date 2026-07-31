@@ -21,13 +21,15 @@ export type RunResult = {
 export type RunDependencies = {
   /** Seam for tests, so the pipeline can be exercised without calling OpenAI. */
   generate?: typeof generateBackground;
+  /** Seam for tests, so renders can share one browser instead of launching each time. */
+  render?: typeof renderCard;
 };
 
 /** Runs the full pipeline for the given options. */
 export async function run(
   options: Options,
   log: (message: string) => void = () => {},
-  { generate = generateBackground }: RunDependencies = {},
+  { generate = generateBackground, render = renderCard }: RunDependencies = {},
 ): Promise<RunResult> {
   const spec = options.motif
     ? buildImageSpec({ motif: options.motif, colorGrade: options.colorGrade })
@@ -54,7 +56,7 @@ export async function run(
   const background = await prepareBackground(source, { palette: options.palette });
 
   log('Rendering card…');
-  const png = await renderCard(
+  const png = await render(
     {
       categoryLines: splitLabelLines(options.category),
       dateLines: formatCardDate(options.date),

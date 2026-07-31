@@ -4,8 +4,8 @@ import { afterAll, beforeAll, describe, setDefaultTimeout, test } from 'bun:test
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 
-// The pipeline launches a fresh headless Chromium per render. On a loaded
-// two-core CI runner one launch has taken over 120s, so allow generous headroom.
+// Renders share one Chromium via getSharedBrowser, but the process-wide first
+// launch can land in this file and needs generous headroom on a loaded runner.
 setDefaultTimeout(240000);
 
 import { tmpdir } from 'node:os';
@@ -15,6 +15,12 @@ import sharp from 'sharp';
 import { run } from '../../../scripts/changelog/imagegen/index';
 import { parseOptions } from '../../../scripts/changelog/imagegen/options';
 import { getPalette } from '../../../scripts/changelog/imagegen/palettes';
+import { renderCard } from '../../../scripts/changelog/imagegen/render';
+import { getSharedBrowser } from '../helpers/browser';
+
+/** Renders in the process-wide shared browser instead of launching one per card. */
+const render: typeof renderCard = async (content, options) =>
+  renderCard(content, { ...options, browser: await getSharedBrowser() });
 
 const MOTIF = 'A quiet harbour at dawn where five ships dock at one long pier.';
 
@@ -67,7 +73,7 @@ describe('run (generate path)', () => {
       '1',
     ]);
 
-    const result = await run(options, () => {}, { generate: fakeGenerator(calls) });
+    const result = await run(options, () => {}, { generate: fakeGenerator(calls), render });
 
     assert.equal(calls.length, 1);
     assert.equal(calls[0]!.size, '1536x864');
@@ -98,7 +104,7 @@ describe('run (generate path)', () => {
       '1',
     ]);
 
-    const result = await run(options, () => {}, { generate: fakeGenerator([]) });
+    const result = await run(options, () => {}, { generate: fakeGenerator([]), render });
 
     assert.equal(result.source, join(workdir, 'kept-source.png'));
     const { width, height } = await sharp(await readFile(result.source!)).metadata();
@@ -121,7 +127,7 @@ describe('run (generate path)', () => {
       '1',
     ]);
 
-    await run(options, () => {}, { generate: fakeGenerator([]) });
+    await run(options, () => {}, { generate: fakeGenerator([]), render });
 
     // Re-dithering the kept original must reproduce exactly the palette in use.
     const palette = getPalette('Ocean');
