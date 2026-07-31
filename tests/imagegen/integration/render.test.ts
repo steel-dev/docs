@@ -5,8 +5,8 @@ import assert from 'node:assert/strict';
 import { PNG } from 'pngjs';
 
 // The render hook launches headless Chromium, which is slow enough on a loaded
-// two-core CI runner to blow past a 30s budget.
-setDefaultTimeout(120000);
+// two-core CI runner to blow past a 120s budget.
+setDefaultTimeout(240000);
 
 import { renderCard } from '../../../scripts/changelog/imagegen/render';
 import { CARD_HEIGHT, CARD_WIDTH } from '../../../scripts/changelog/imagegen/template';

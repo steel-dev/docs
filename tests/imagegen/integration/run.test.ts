@@ -5,8 +5,8 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 
 // The pipeline launches a fresh headless Chromium per render. On a loaded
-// two-core CI runner one launch has taken over 30s, so allow generous headroom.
-setDefaultTimeout(120000);
+// two-core CI runner one launch has taken over 120s, so allow generous headroom.
+setDefaultTimeout(240000);
 
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';

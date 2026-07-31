@@ -9,8 +9,8 @@ import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 
 // Each case renders a card in a subprocess, launching headless Chromium, which is
-// slow enough on a loaded two-core CI runner to blow past a 30s budget.
-setDefaultTimeout(120000);
+// slow enough on a loaded two-core CI runner to blow past a 120s budget.
+setDefaultTimeout(240000);
 
 const CLI = fileURLToPath(new URL('../../../scripts/changelog/imagegen/cli.ts', import.meta.url));
 
