@@ -20,7 +20,7 @@ import SteelLogo from '@/public/images/logo.png';
 
 export default function HomePage() {
   return (
-    <main className="space-y-10 max-w-[1024px] w-full mx-auto ">
+    <div className="space-y-10 max-w-[1024px] w-full mx-auto ">
       <div className="px-8 py-[56px]">
         <div className="space-y-10">
           <header className="space-y-1">
@@ -208,6 +208,6 @@ export default function HomePage() {
           </section>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
