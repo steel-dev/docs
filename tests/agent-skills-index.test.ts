@@ -7,6 +7,9 @@ import {
   AGENT_SKILLS_SCHEMA,
   buildAgentSkillsIndex,
   buildSkillArtifactsFromRepositoryArchive,
+  GitHubTransportError,
+  githubFetch,
+  githubRequestError,
   MAX_SKILL_ARCHIVE_CONTENT_BYTES,
   type SkillArtifact,
 } from '../scripts/generate-agent-skills-index';
@@ -273,5 +276,61 @@ describe('buildAgentSkillsIndex', () => {
 
   test('rejects an empty skill set rather than publishing an empty index', () => {
     expect(() => buildAgentSkillsIndex([])).toThrow(/skill/i);
+  });
+});
+
+describe('GitHub transport error classification', () => {
+  test('classifies non-ok GitHub responses as skippable transport errors', () => {
+    const error = githubRequestError(
+      'Could not resolve steel-dev/skills@main',
+      new Response(null, { status: 502 }),
+    );
+
+    expect(error).toBeInstanceOf(GitHubTransportError);
+    expect(error.message).toContain('502');
+  });
+
+  test('classifies exhausted rate limits as skippable transport errors', () => {
+    const error = githubRequestError(
+      'Could not resolve steel-dev/skills@main',
+      new Response(null, {
+        status: 403,
+        headers: { 'x-ratelimit-remaining': '0', 'x-ratelimit-reset': '1767225600' },
+      }),
+    );
+
+    expect(error).toBeInstanceOf(GitHubTransportError);
+    expect(error.message).toContain('rate limit');
+  });
+
+  test('classifies fetch network failures as skippable transport errors', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (() =>
+      Promise.reject(new TypeError('Unable to connect'))) as typeof globalThis.fetch;
+
+    try {
+      const error = await githubFetch('https://api.github.com/repos/steel-dev/skills', {}).catch(
+        (caught: unknown) => caught,
+      );
+
+      expect(error).toBeInstanceOf(GitHubTransportError);
+      expect((error as Error).message).toContain('Unable to connect');
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  test('validation errors are not classified as skippable transport errors', async () => {
+    const indexError = await Promise.resolve()
+      .then(() => buildAgentSkillsIndex([]))
+      .catch((caught: unknown) => caught);
+    const packagingError = await buildSkillArtifactsFromRepositoryArchive(
+      await repositoryArchive({ skillMd: null }),
+    ).catch((caught: unknown) => caught);
+
+    expect(indexError).toBeInstanceOf(Error);
+    expect(indexError).not.toBeInstanceOf(GitHubTransportError);
+    expect(packagingError).toBeInstanceOf(Error);
+    expect(packagingError).not.toBeInstanceOf(GitHubTransportError);
   });
 });
