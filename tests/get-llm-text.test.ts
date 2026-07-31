@@ -1,7 +1,7 @@
 // ABOUTME: Tests for getLLMText, which renders a page as LLM-facing markdown
 // ABOUTME: with an absolute URL and an optional llms.txt index pointer.
 import { describe, expect, test } from 'bun:test';
-import { getLLMText, LLMS_INDEX_POINTER } from '../lib/get-llm-text';
+import { getLLMText, LLMS_INDEX_POINTER, shouldIncludeLLMPage } from '../lib/get-llm-text';
 
 // Minimal stand-in for a fumadocs page; typed any since building a real
 // InferPageType requires the full fumadocs loader.
@@ -15,6 +15,26 @@ function fakePage(overrides: Record<string, unknown> = {}): any {
     },
   };
 }
+
+describe('shouldIncludeLLMPage', () => {
+  test('includes pages by default', () => {
+    expect(shouldIncludeLLMPage(fakePage())).toBe(true);
+  });
+
+  test('excludes pages with llm: false in page data', () => {
+    expect(shouldIncludeLLMPage(fakePage({ llm: false }))).toBe(false);
+  });
+
+  test('excludes pages with llm: false in raw frontmatter', () => {
+    const content = ['---', 'title: Hidden', 'llm: false', '---', '', 'Body.'].join('\n');
+    expect(shouldIncludeLLMPage(fakePage({ content }))).toBe(false);
+  });
+
+  test('keeps pages whose frontmatter sets llm: true', () => {
+    const content = ['---', 'title: Visible', 'llm: true', '---', '', 'Body.'].join('\n');
+    expect(shouldIncludeLLMPage(fakePage({ content }))).toBe(true);
+  });
+});
 
 describe('getLLMText', () => {
   test('renders the title and an absolute URL', async () => {

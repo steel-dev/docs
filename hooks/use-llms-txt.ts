@@ -47,24 +47,27 @@ export function useLLMsTxt() {
   });
 }
 
+// Builds the public markdown URL for a page: the page path with a .md suffix
+// (e.g. /overview/intro.md). The docs root has no markdown page, so it points
+// at the /llms.txt index instead. Pure so the convention is unit-testable.
+export function getPublicMarkdownUrl(pathname: string | null, origin: string) {
+  if (!pathname) return "";
+
+  // Remove /docs prefix if present
+  let basePath = pathname;
+  if (basePath.startsWith("/docs")) {
+    basePath = basePath.substring(5);
+  }
+
+  const mdPath = basePath.startsWith("/") ? basePath : "/" + basePath;
+
+  return mdPath === "/" ? `${origin}/llms.txt` : `${origin}${mdPath}.md`;
+}
+
 // Hook for getting the current page's markdown URL
 export function useCurrentPageMarkdown() {
   const pathname = usePathname();
 
-  const getMarkdownUrl = () => {
-    if (!pathname) return "";
-
-    // Remove /docs prefix if present
-    let basePath = pathname;
-    if (basePath.startsWith("/docs")) {
-      basePath = basePath.substring(5);
-    }
-
-    const mdPath = basePath.startsWith("/") ? basePath : "/" + basePath;
-
-    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-    return `${baseUrl}/llms.mdx${mdPath === "/" ? "" : mdPath}`;
-  };
-
-  return getMarkdownUrl();
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  return getPublicMarkdownUrl(pathname, origin);
 }

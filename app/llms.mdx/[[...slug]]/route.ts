@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { type NextRequest, NextResponse } from 'next/server';
-import { getLLMText } from '@/lib/get-llm-text';
+import { getLLMText, shouldIncludeLLMPage } from '@/lib/get-llm-text';
 import { appendMarkdownVaryHeader } from '@/lib/markdown-negotiation';
 import { source } from '@/lib/source';
 
@@ -19,6 +19,9 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
   const { slug } = await params;
   const page = getPage(slug);
   if (!page) notFound();
+
+  // Pages opted out of LLM surfaces (llm: false) are not served as markdown.
+  if (!shouldIncludeLLMPage(page)) notFound();
 
   // This markdown duplicates the canonical HTML page, so keep it out of search
   // results. Crawlers may still fetch it: noindex only suppresses indexing.
