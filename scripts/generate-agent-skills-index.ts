@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // ABOUTME: Generates the Agent Skills discovery index and complete skill archives.
-// ABOUTME: Reads one commit-pinned steel-dev/skills snapshot and fails the build on errors.
+// ABOUTME: Skips the index when GitHub is unreachable; fails the build on validation errors.
 import { createHash } from 'node:crypto';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
@@ -282,6 +282,24 @@ export async function buildSkillArtifactsFromRepositoryArchive(
   return artifacts;
 }
 
+/**
+ * GitHub was unreachable or unhealthy: a network failure, a non-ok response,
+ * or an exhausted rate limit. The entrypoint treats these as skippable because
+ * a docs deploy should not hinge on GitHub; every other error stays fatal.
+ */
+export class GitHubTransportError extends Error {}
+
+/** Fetches from GitHub, classifying network failures as transport errors. */
+export async function githubFetch(url: string, headers: Record<string, string>): Promise<Response> {
+  try {
+    return await fetch(url, { headers });
+  } catch (error) {
+    throw new GitHubTransportError(
+      `Could not reach ${url}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
 function githubAuthorizationHeaders(): Record<string, string> {
   const token = process.env.GITHUB_TOKEN?.trim();
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -295,7 +313,7 @@ function githubApiHeaders(): Record<string, string> {
   };
 }
 
-function githubRequestError(action: string, response: Response): Error {
+export function githubRequestError(action: string, response: Response): GitHubTransportError {
   const remaining = response.headers.get('x-ratelimit-remaining');
   const reset = response.headers.get('x-ratelimit-reset');
   let guidance = '';
@@ -310,13 +328,14 @@ function githubRequestError(action: string, response: Response): Error {
     guidance = `; GitHub API rate limit exhausted until ${resetAt}, set GITHUB_TOKEN`;
   }
 
-  return new Error(`${action}: GitHub returned ${response.status}${guidance}`);
+  return new GitHubTransportError(`${action}: GitHub returned ${response.status}${guidance}`);
 }
 
 async function resolveHeadCommit(): Promise<string> {
-  const response = await fetch(`https://api.github.com/repos/${SKILLS_REPO}/commits/main`, {
-    headers: githubApiHeaders(),
-  });
+  const response = await githubFetch(
+    `https://api.github.com/repos/${SKILLS_REPO}/commits/main`,
+    githubApiHeaders(),
+  );
 
   if (!response.ok) {
     throw githubRequestError(`Could not resolve ${SKILLS_REPO}@main`, response);
@@ -332,7 +351,7 @@ async function resolveHeadCommit(): Promise<string> {
 
 async function fetchRepositoryArchive(commit: string): Promise<Buffer> {
   const url = `https://codeload.github.com/${SKILLS_REPO}/tar.gz/${commit}`;
-  const response = await fetch(url, { headers: githubAuthorizationHeaders() });
+  const response = await githubFetch(url, githubAuthorizationHeaders());
 
   if (!response.ok) {
     throw githubRequestError(`Could not fetch ${SKILLS_REPO}@${commit}`, response);
@@ -364,5 +383,14 @@ async function main(): Promise<void> {
 }
 
 if (import.meta.main) {
-  await main();
+  try {
+    await main();
+  } catch (error) {
+    if (!(error instanceof GitHubTransportError)) throw error;
+    // A docs deploy should not hinge on GitHub being reachable. Skipping leaves
+    // the index absent, which is honest, rather than stale or unverifiable.
+    // main() writes nothing before every artifact validates, so no partial
+    // output can deploy; validation and filesystem errors rethrow above.
+    console.warn(`⚠️ Skipped the Agent Skills index: ${error.message}`);
+  }
 }
