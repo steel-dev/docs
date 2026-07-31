@@ -446,6 +446,13 @@ describe('.md suffix end-to-end', () => {
     expect(response.status).toBe(404);
   });
 
+  test('returns 404 for an llm: false page at its .md URL', async () => {
+    const response = await fetch(`${BASE_URL}/cookbook/authors/hussufo.md`, {
+      headers: BROWSER_HEADERS,
+    });
+    expect(response.status).toBe(404);
+  });
+
   test('still serves HTML at the canonical URL for browsers', async () => {
     const response = await fetch(`${BASE_URL}/overview/sessions-api/quickstart`, {
       headers: BROWSER_HEADERS,
