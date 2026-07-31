@@ -31,7 +31,8 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ slug: st
 
   const title = page?.data.title ?? 'Steel Docs';
   const description =
-    page?.data.description ?? 'Documentation for Steel: the open-source browser API for AI agents.';
+    page?.data.description ??
+    'Documentation for Steel: the open-source browser API for AI agents — cloud browsers with stealth, proxies, CAPTCHA solving, and observability.';
   const section = slug?.[0] === 'en' ? slug?.[1] : slug?.[0];
   const sectionLabel = section ? (SECTION_LABELS[section] ?? '') : '';
   const accent = section ? (SECTION_ACCENTS[section] ?? '#a3a3a3') : '#a3a3a3';
