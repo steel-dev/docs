@@ -33,6 +33,16 @@ export default function middleware(request: NextRequest) {
 
   const wantsMarkdown = shouldServeMarkdown(request.headers);
 
+  if (pathname === '/') {
+    if (wantsMarkdown) {
+      const rewriteUrl = request.nextUrl.clone();
+      rewriteUrl.pathname = '/AGENTS.md';
+      return withMarkdownVary(NextResponse.rewrite(rewriteUrl));
+    }
+
+    return withMarkdownVary(NextResponse.next());
+  }
+
   if (!isNegotiableDocsPath(pathname)) {
     return NextResponse.next();
   }
