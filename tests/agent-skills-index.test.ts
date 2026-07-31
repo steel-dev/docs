@@ -306,7 +306,7 @@ describe('GitHub transport error classification', () => {
   test('classifies fetch network failures as skippable transport errors', async () => {
     const originalFetch = globalThis.fetch;
     globalThis.fetch = (() =>
-      Promise.reject(new TypeError('Unable to connect'))) as typeof globalThis.fetch;
+      Promise.reject(new TypeError('Unable to connect'))) as unknown as typeof globalThis.fetch;
 
     try {
       const error = await githubFetch('https://api.github.com/repos/steel-dev/skills', {}).catch(
