@@ -323,6 +323,7 @@ describe('.md suffix end-to-end', () => {
       .find((tag) => tag.includes('height:188px') && tag.includes('width:188px'));
 
     expect(body.match(/<h1\b/g)).toHaveLength(1);
+    expect(body.match(/<main\b/g)).toHaveLength(1);
     expect(body).toContain('<h1 class="text-3xl">Steel Documentation</h1>');
     expect(animatedLogo).toContain('class="shrink-0"');
     expect(body).toContain(
