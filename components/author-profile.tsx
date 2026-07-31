@@ -1,5 +1,6 @@
 import { Github, Globe } from 'lucide-react';
 import Link from 'next/link';
+import { getAuthorPersonId } from '@/lib/structured-data';
 
 const SITE_URL = 'https://docs.steel.dev';
 
@@ -33,6 +34,7 @@ function profileJsonLd({ handle, name, website }: Props) {
     url: profileUrl,
     mainEntity: {
       '@type': 'Person',
+      '@id': getAuthorPersonId(handle),
       name,
       alternateName: handle,
       url: profileUrl,

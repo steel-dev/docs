@@ -56,6 +56,7 @@ interface TechArticleProps {
   path: string; // canonical path, e.g. /integrations/selenium
   datePublished?: string; // YYYY-MM-DD from frontmatter publishedAt
   dateModified?: string; // YYYY-MM-DD from git history
+  image?: string; // absolute OG image URL
 }
 
 // TechArticle JSON-LD for integration pages. Cookbook recipes emit their own
@@ -67,6 +68,7 @@ export function TechArticleJsonLd({
   path,
   datePublished,
   dateModified,
+  image,
 }: TechArticleProps) {
   return (
     <JsonLd
@@ -76,6 +78,7 @@ export function TechArticleJsonLd({
         path,
         datePublished,
         dateModified,
+        image,
       })}
     />
   );

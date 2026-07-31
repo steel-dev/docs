@@ -29,6 +29,7 @@ import * as customIcons from '@/components/ui/icon';
 import { TagFilterSystem } from '@/components/ui/tag-filter-system';
 import { getGitLastModified } from '@/lib/last-modified';
 import { getAllFilterablePages, source } from '@/lib/source';
+import { DOCS_URL } from '@/lib/structured-data';
 import type { HeadingProps } from '@/types';
 
 export default async function Page(props: {
@@ -173,6 +174,7 @@ export default async function Page(props: {
           path={canonicalPath}
           datePublished={page.data.publishedAt}
           dateModified={lastModified?.toISOString().slice(0, 10)}
+          image={`${DOCS_URL}/og${canonicalPath}`}
         />
       )}
       {page.data.interactive ? (
