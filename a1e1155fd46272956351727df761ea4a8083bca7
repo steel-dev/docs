@@ -1,0 +1,14 @@
+# Design: Responsive documentation hero
+
+## Problem
+PR #113 expanded the canonical homepage description for answer-engine visibility. The fixed 188px logo remained side-by-side with the longer copy at mobile widths, so bottom alignment pushed the logo down and squeezed the text.
+
+## Approach
+Stack the existing logo above full-width copy below the small breakpoint, while preserving the desktop row and the canonical SEO/AEO wording verbatim. Add responsive padding and min-width protection without changing metadata or content.
+
+## Key Trade-offs
+- Preserve the visible canonical identity sentence instead of shortening or hiding it.
+- Accept a taller mobile hero in exchange for readable copy and stable logo placement.
+
+## References
+- https://github.com/steel-dev/docs/pull/113
