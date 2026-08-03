@@ -21,12 +21,12 @@ import SteelLogo from '@/public/images/logo.png';
 export default function HomePage() {
   return (
     <div className="space-y-10 max-w-[1024px] w-full mx-auto ">
-      <div className="px-8 py-[56px]">
+      <div className="px-6 py-10 sm:px-8 sm:py-14">
         <div className="space-y-10">
           <header className="space-y-1">
-            <div className="flex space-x-6 items-end">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-end">
               <LiquidMetal1
-                className="shrink-0"
+                className="shrink-0 self-center sm:self-auto"
                 image={SteelLogo as HTMLImageElement}
                 speed={1}
                 colorBack="#00000000"
@@ -46,7 +46,7 @@ export default function HomePage() {
                   width: '188px',
                 }}
               />
-              <div className="flex flex-col [&_p]:mb-6 space-y-3">
+              <div className="flex min-w-0 flex-col space-y-3">
                 <h1 className="text-3xl">Steel Documentation</h1>
                 <p>
                   Steel is the open-source browser API for AI agents — managed cloud browsers with
