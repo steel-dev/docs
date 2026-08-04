@@ -11,12 +11,19 @@ export type ChangelogSourceKind =
 
 export type ChangelogSourceMode = 'direct' | 'derived' | 'excluded';
 
+/**
+ * Whether a monitored repository's commit prose can appear in the public docs PR. Private
+ * sources keep their links and SHAs in the audit ledger but never their titles or paths.
+ */
+export type ChangelogRepositoryVisibility = 'private' | 'public';
+
 export interface ChangelogRepository {
   owner: string;
   repo: string;
   branch: string;
   kind: ChangelogSourceKind;
   mode: ChangelogSourceMode;
+  visibility: ChangelogRepositoryVisibility;
 }
 
 export interface ChangelogSubmoduleSource {
@@ -42,6 +49,7 @@ export const CHANGELOG_APPLICATION_REPOSITORY: ChangelogRepository = {
   branch: 'release',
   kind: 'application',
   mode: 'direct',
+  visibility: 'private',
 };
 
 export const CHANGELOG_BROWSER_REPOSITORY: ChangelogRepository = {
@@ -50,6 +58,7 @@ export const CHANGELOG_BROWSER_REPOSITORY: ChangelogRepository = {
   branch: 'main',
   kind: 'browser',
   mode: 'derived',
+  visibility: 'public',
 };
 
 export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
@@ -61,6 +70,7 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
     branch: 'main',
     kind: 'infra',
     mode: 'excluded',
+    visibility: 'private',
   },
   {
     owner: 'steel-dev',
@@ -68,6 +78,7 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
     branch: 'main',
     kind: 'inactive',
     mode: 'excluded',
+    visibility: 'public',
   },
   {
     owner: 'steel-dev',
@@ -75,6 +86,7 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
     branch: 'main',
     kind: 'cookbook',
     mode: 'direct',
+    visibility: 'public',
   },
   {
     owner: 'steel-dev',
@@ -82,6 +94,7 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
     branch: 'main',
     kind: 'inactive',
     mode: 'excluded',
+    visibility: 'public',
   },
   {
     owner: 'steel-dev',
@@ -89,6 +102,7 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
     branch: 'main',
     kind: 'leaderboard',
     mode: 'direct',
+    visibility: 'public',
   },
   {
     owner: 'steel-dev',
@@ -96,6 +110,7 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
     branch: 'main',
     kind: 'ecosystem',
     mode: 'excluded',
+    visibility: 'public',
   },
   {
     owner: 'steel-dev',
@@ -103,6 +118,7 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
     branch: 'main',
     kind: 'cli',
     mode: 'direct',
+    visibility: 'public',
   },
   {
     owner: 'steel-dev',
@@ -110,6 +126,7 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
     branch: 'main',
     kind: 'docs',
     mode: 'direct',
+    visibility: 'public',
   },
 ];
 
@@ -135,6 +152,17 @@ export const CHANGELOG_PLACEHOLDER_IMAGE: PlaceholderImageConfig = {
 };
 
 export const CHANGELOG_PROMPT_FILE = 'scripts/changelog/prompt.md';
+
+/**
+ * Every run commits its evidence ledger here so exclusion decisions stay reviewable after the
+ * Actions artifacts for the run have expired.
+ */
+export const CHANGELOG_AUDIT_DIRECTORY = 'scripts/changelog/audit';
+/**
+ * How many heuristic exclusions the PR body lists before deferring to the ledger. The block is
+ * meant to be read in full during review, so an overflow is stated rather than truncated silently.
+ */
+export const NEEDS_REVIEW_PR_BODY_LIMIT = 10;
 
 export const CHANGELOG_CONTEXT_FILES: PromptContextFile[] = [
   {

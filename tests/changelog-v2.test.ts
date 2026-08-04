@@ -10,8 +10,17 @@ import {
   COVER_MOTIF_CHAR_LIMIT,
   DEFAULT_OPENAI_MODEL,
   DEFAULT_OPENAI_REASONING_EFFORT,
+  NEEDS_REVIEW_PR_BODY_LIMIT,
 } from '../scripts/changelog/config';
 import { generateChangelogCover } from '../scripts/changelog/cover';
+import {
+  buildEvidenceLedger,
+  getEvidenceLedgerPath,
+  getExclusionConfidence,
+  getRepositoryVisibility,
+  renderSourceFilteringSection,
+  writeEvidenceLedger,
+} from '../scripts/changelog/ledger';
 import {
   cleanPullRequestBody,
   filterEligibleChangeGroups,
@@ -48,6 +57,27 @@ import {
   PREVIOUS_CHANGELOG_CUTOFF,
   QUIET_WEEK_COMMITS,
 } from './fixtures/changelog-v2';
+
+const QUIET_WEEK_WINDOW = resolvePreviewWindow({
+  since: '2026-07-17T15:58:38.000Z',
+  until: PREVIOUS_CHANGELOG_CUTOFF,
+});
+
+function quietWeekLedger(changelogNumber = 36) {
+  const groups = groupCommitsByPullRequest(QUIET_WEEK_COMMITS);
+  const { eligible, excluded } = filterEligibleChangeGroups(groups);
+
+  return buildEvidenceLedger({
+    changelogNumber,
+    windowSelection: QUIET_WEEK_WINDOW,
+    commitsCollected: QUIET_WEEK_COMMITS.length,
+    authorSkipped: [],
+    logicalChanges: groups.length,
+    eligibleGroups: eligible,
+    excludedGroups: excluded,
+    discardedItems: [],
+  });
+}
 
 describe('changelog v2 source evidence', () => {
   test('groups merge and constituent commits into one logical pull request', () => {
@@ -228,6 +258,28 @@ describe('changelog v2 eligibility', () => {
     });
   });
 
+  test('keeps the repository visibility explicit', () => {
+    expect(
+      Object.fromEntries(
+        CHANGELOG_REPOSITORIES.map((repository) => [
+          `${repository.owner}/${repository.repo}`,
+          repository.visibility,
+        ]),
+      ),
+    ).toEqual({
+      '0xnenlabs/steel': 'private',
+      'steel-dev/steel-browser': 'public',
+      'steel-dev/infra': 'private',
+      'steel-dev/surf.new': 'public',
+      'steel-dev/steel-cookbook': 'public',
+      'steel-dev/steel-mcp-server': 'public',
+      'steel-dev/leaderboard': 'public',
+      'steel-dev/awesome-web-agents': 'public',
+      'steel-dev/cli': 'public',
+      'steel-dev/docs': 'public',
+    });
+  });
+
   for (const fixture of POLICY_FIXTURES) {
     test(`${fixture.label}: ${fixture.reason}`, () => {
       const groups = groupCommitsByPullRequest([fixture.commit]);
@@ -320,6 +372,230 @@ describe('changelog v2 eligibility', () => {
     } finally {
       globalThis.fetch = originalFetch;
     }
+  });
+});
+
+describe('changelog v2 evidence ledger', () => {
+  test('records every excluded group with a reason and a review confidence', () => {
+    const { excluded } = filterEligibleChangeGroups(groupCommitsByPullRequest(QUIET_WEEK_COMMITS));
+    const ledger = quietWeekLedger();
+
+    expect(ledger.exclusions).toHaveLength(excluded.length);
+    expect(ledger.exclusions.every((entry) => entry.reason && entry.repo)).toBe(true);
+    expect(new Set(ledger.exclusions.map((entry) => entry.confidence))).toEqual(
+      new Set(['heuristic', 'structural']),
+    );
+  });
+
+  test('separates rules worth re-reading from structural ones', () => {
+    // Regex and commit-type rules are where a real change can be lost, so they
+    // are the ones a reviewer has to confirm by hand.
+    expect(getExclusionConfidence('non_material_docs')).toBe('heuristic');
+    expect(getExclusionConfidence('routine_maintenance')).toBe('heuristic');
+    expect(getExclusionConfidence('internal_only')).toBe('heuristic');
+    expect(getExclusionConfidence('benchmark_maintenance')).toBe('heuristic');
+    expect(getExclusionConfidence('non_recipe_change')).toBe('heuristic');
+    // Lost changed-file evidence is structural but still needs eyes, because the
+    // group was dropped for missing data rather than for being uninteresting.
+    expect(getExclusionConfidence('missing_changed_files')).toBe('heuristic');
+
+    expect(getExclusionConfidence('self_generated')).toBe('structural');
+    expect(getExclusionConfidence('automated_author')).toBe('structural');
+    expect(getExclusionConfidence('disabled_source')).toBe('structural');
+    expect(getExclusionConfidence('ecosystem_listing')).toBe('structural');
+    expect(getExclusionConfidence('ignored_files_only')).toBe('structural');
+    expect(getExclusionConfidence('submodule_pointer_only')).toBe('structural');
+  });
+
+  test('redacts private repository prose while keeping a clickable trail', () => {
+    const ledger = quietWeekLedger();
+    const privateEntries = ledger.exclusions.filter((entry) => entry.visibility === 'private');
+    const serialized = JSON.stringify(privateEntries);
+
+    expect(privateEntries.length).toBeGreaterThan(0);
+    expect(privateEntries.every((entry) => entry.redacted)).toBe(true);
+    expect(serialized).not.toContain('JetStream');
+    expect(serialized).not.toContain('update dependencies');
+    expect(serialized).not.toContain('improve session reliability');
+    expect(serialized).not.toContain('package.json');
+    expect(serialized).toContain('0xnenlabs/steel');
+    expect(privateEntries.every((entry) => entry.commits.every((commit) => commit.url))).toBe(true);
+    expect(privateEntries.every((entry) => entry.changedFileCount > 0)).toBe(true);
+  });
+
+  test('keeps public repository detail intact', () => {
+    const ledger = quietWeekLedger();
+    const docsEntry = ledger.exclusions.find((entry) => entry.reason === 'non_material_docs');
+
+    expect(docsEntry?.repo).toBe('steel-dev/docs');
+    expect(docsEntry?.redacted).toBe(false);
+    expect(docsEntry?.commits[0]?.subject).toBe('docs(seo): cross-link topic hubs');
+    expect(docsEntry?.changedFiles).toContain('content/docs/guides/browser.mdx');
+  });
+
+  test('treats an unconfigured repository as private', () => {
+    expect(getRepositoryVisibility('steel-dev', 'docs')).toBe('public');
+    expect(getRepositoryVisibility('0xnenlabs', 'steel')).toBe('private');
+    expect(getRepositoryVisibility('steel-dev', 'not-yet-monitored')).toBe('private');
+  });
+
+  test('reconciles collected commits against eligible and excluded groups', () => {
+    const ledger = quietWeekLedger();
+
+    expect(ledger.reconciliation.commitsCollected).toBe(QUIET_WEEK_COMMITS.length);
+    expect(ledger.reconciliation.eligible).toBe(0);
+    expect(ledger.reconciliation.excluded).toBe(ledger.exclusions.length);
+    expect(ledger.reconciliation.logicalChanges).toBe(ledger.reconciliation.excluded);
+    expect(ledger.reconciliation.unaccounted).toBe(0);
+  });
+
+  test('surfaces groups that vanished between grouping and classification', () => {
+    const groups = groupCommitsByPullRequest(QUIET_WEEK_COMMITS);
+    const { eligible, excluded } = filterEligibleChangeGroups(groups);
+    const ledger = buildEvidenceLedger({
+      changelogNumber: 36,
+      windowSelection: QUIET_WEEK_WINDOW,
+      commitsCollected: QUIET_WEEK_COMMITS.length,
+      authorSkipped: [],
+      logicalChanges: groups.length + 2,
+      eligibleGroups: eligible,
+      excludedGroups: excluded,
+      discardedItems: [],
+    });
+
+    expect(ledger.reconciliation.unaccounted).toBe(2);
+    expect(renderSourceFilteringSection(ledger).join('\n')).toContain('2 unaccounted');
+  });
+
+  test('records commits dropped by author before they reach a group', () => {
+    const groups = groupCommitsByPullRequest(QUIET_WEEK_COMMITS);
+    const { eligible, excluded } = filterEligibleChangeGroups(groups);
+    const ledger = buildEvidenceLedger({
+      changelogNumber: 36,
+      windowSelection: QUIET_WEEK_WINDOW,
+      commitsCollected: QUIET_WEEK_COMMITS.length,
+      authorSkipped: [
+        {
+          repo: 'steel-dev/docs',
+          sha: 'e'.repeat(40),
+          url: `https://github.com/steel-dev/docs/commit/${'e'.repeat(40)}`,
+          author: 'github-actions[bot]',
+        },
+      ],
+      logicalChanges: groups.length,
+      eligibleGroups: eligible,
+      excludedGroups: excluded,
+      discardedItems: [],
+    });
+
+    expect(ledger.reconciliation.authorSkippedCommits).toBe(1);
+    expect(ledger.authorSkipped[0].author).toBe('github-actions[bot]');
+    expect(renderSourceFilteringSection(ledger).join('\n')).toContain(
+      '1 skipped as an automated author before grouping',
+    );
+  });
+
+  test('carries the model discard list with its stated reasons', () => {
+    const groups = groupCommitsByPullRequest(QUIET_WEEK_COMMITS);
+    const { eligible, excluded } = filterEligibleChangeGroups(groups);
+    const ledger = buildEvidenceLedger({
+      changelogNumber: 36,
+      windowSelection: QUIET_WEEK_WINDOW,
+      commitsCollected: QUIET_WEEK_COMMITS.length,
+      authorSkipped: [],
+      logicalChanges: groups.length,
+      eligibleGroups: eligible,
+      excludedGroups: excluded,
+      discardedItems: [
+        {
+          text: 'Renamed an internal helper.',
+          reason: 'No user-facing effect.',
+          references: [
+            { label: 'docs d8dd806', url: 'https://github.com/steel-dev/docs/commit/d8dd806' },
+          ],
+        },
+      ],
+    });
+    const rendered = renderSourceFilteringSection(ledger).join('\n');
+
+    expect(ledger.modelDiscarded).toHaveLength(1);
+    expect(ledger.modelDiscarded[0].reason).toBe('No user-facing effect.');
+    expect(rendered).toContain('No user-facing effect.');
+  });
+
+  test('drops model discard prose that leans on private evidence', () => {
+    const groups = groupCommitsByPullRequest(QUIET_WEEK_COMMITS);
+    const { eligible, excluded } = filterEligibleChangeGroups(groups);
+    const ledger = buildEvidenceLedger({
+      changelogNumber: 36,
+      windowSelection: QUIET_WEEK_WINDOW,
+      commitsCollected: QUIET_WEEK_COMMITS.length,
+      authorSkipped: [],
+      logicalChanges: groups.length,
+      eligibleGroups: eligible,
+      excludedGroups: excluded,
+      discardedItems: [
+        {
+          text: 'Reworked the PuppetMaster fleet controller.',
+          reason: 'Internal plumbing.',
+          references: [
+            { label: 'steel 12d54db', url: 'https://github.com/0xnenlabs/steel/commit/12d54db' },
+          ],
+        },
+      ],
+    });
+
+    expect(ledger.modelDiscarded[0].redacted).toBe(true);
+    expect(ledger.modelDiscarded[0].text).toBeNull();
+    expect(ledger.modelDiscarded[0].reason).toBe('Internal plumbing.');
+    expect(JSON.stringify(ledger)).not.toContain('PuppetMaster fleet controller');
+  });
+
+  test('puts heuristic exclusions in an open list and structural ones behind a fold', () => {
+    const rendered = renderSourceFilteringSection(quietWeekLedger()).join('\n');
+    const foldIndex = rendered.indexOf('<details>');
+
+    expect(foldIndex).toBeGreaterThan(-1);
+    expect(rendered).toContain('### Needs review');
+    expect(rendered.slice(0, foldIndex)).toContain('`non_material_docs`');
+    expect(rendered.slice(foldIndex)).toContain('`ecosystem_listing`');
+    expect(rendered).not.toContain('Only aggregate counts are shown here');
+  });
+
+  test('caps the needs-review list and says how many it left out', () => {
+    const overflow = Array.from({ length: NEEDS_REVIEW_PR_BODY_LIMIT + 3 }, (_, index) =>
+      commitFixture('docs', {
+        repo: 'docs',
+        sha: `${index}`.padStart(40, 'a'),
+        shortSha: `${index}`.padStart(7, 'a'),
+        subject: `docs(seo): cross-link topic hub ${index}`,
+        changedFiles: [changedFile(`content/docs/guides/hub-${index}.mdx`)],
+      }),
+    );
+    const groups = groupCommitsByPullRequest(overflow);
+    const { eligible, excluded } = filterEligibleChangeGroups(groups);
+    const ledger = buildEvidenceLedger({
+      changelogNumber: 36,
+      windowSelection: QUIET_WEEK_WINDOW,
+      commitsCollected: overflow.length,
+      authorSkipped: [],
+      logicalChanges: groups.length,
+      eligibleGroups: eligible,
+      excludedGroups: excluded,
+      discardedItems: [],
+    });
+    const rendered = renderSourceFilteringSection(ledger).join('\n');
+
+    expect(excluded).toHaveLength(NEEDS_REVIEW_PR_BODY_LIMIT + 3);
+    expect(ledger.exclusions).toHaveLength(NEEDS_REVIEW_PR_BODY_LIMIT + 3);
+    expect(rendered).toContain(`3 more heuristic exclusions are in the ledger`);
+  });
+
+  test('points at a committed ledger path per changelog number', () => {
+    expect(getEvidenceLedgerPath(36)).toBe('scripts/changelog/audit/036.json');
+    expect(renderSourceFilteringSection(quietWeekLedger()).join('\n')).toContain(
+      'scripts/changelog/audit/036.json',
+    );
   });
 });
 
@@ -654,38 +930,68 @@ describe('changelog v2 release evidence recovery', () => {
     }
   });
 
-  test('preview workspace records excluded groups for local audit', async () => {
-    const { excluded } = filterEligibleChangeGroups(groupCommitsByPullRequest(QUIET_WEEK_COMMITS));
+  test('preview workspace records the evidence ledger for local audit', async () => {
+    const groups = groupCommitsByPullRequest(QUIET_WEEK_COMMITS);
+    const { eligible, excluded } = filterEligibleChangeGroups(groups);
+    const windowSelection = resolvePreviewWindow({
+      since: '2026-07-17T15:58:38.000Z',
+      until: PREVIOUS_CHANGELOG_CUTOFF,
+    });
     const workspace = await createPreviewWorkspace({
       number: 35,
-      windowSelection: resolvePreviewWindow({
-        since: '2026-07-17T15:58:38.000Z',
-        until: PREVIOUS_CHANGELOG_CUTOFF,
-      }),
+      windowSelection,
       applicationReleaseBaseSha: 'a'.repeat(40),
       applicationReleaseHeadSha: 'b'.repeat(40),
       eligibleGroups: [],
-      excludedGroups: excluded,
+      ledger: buildEvidenceLedger({
+        changelogNumber: 35,
+        windowSelection,
+        commitsCollected: QUIET_WEEK_COMMITS.length,
+        authorSkipped: [],
+        logicalChanges: groups.length,
+        eligibleGroups: eligible,
+        excludedGroups: excluded,
+        discardedItems: [],
+      }),
     });
 
     try {
-      const raw = await fs.readFile(path.join(workspace.directory, 'excluded-groups.json'), 'utf8');
-      const parsed = JSON.parse(raw) as Array<{ reason: string; key: string }>;
+      const raw = await fs.readFile(path.join(workspace.directory, 'ledger.json'), 'utf8');
+      const parsed = JSON.parse(raw) as {
+        exclusions: Array<{ reason: string; key: string }>;
+      };
 
-      expect(parsed).toHaveLength(excluded.length);
-      expect(parsed.every((item) => item.reason && item.key)).toBe(true);
+      expect(parsed.exclusions).toHaveLength(excluded.length);
+      expect(parsed.exclusions.every((item) => item.reason && item.key)).toBe(true);
     } finally {
       await fs.rm(workspace.directory, { recursive: true, force: true });
     }
   });
 
-  test('preview CLI writes excluded evidence before returning for a quiet week', async () => {
+  test('writes the ledger under the audit directory for a production run', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'steel-changelog-audit-'));
+
+    try {
+      const written = await writeEvidenceLedger(root, quietWeekLedger(36));
+      const parsed = JSON.parse(await fs.readFile(path.join(root, written), 'utf8')) as {
+        changelogNumber: number;
+      };
+
+      expect(written).toBe('scripts/changelog/audit/036.json');
+      expect(parsed.changelogNumber).toBe(36);
+    } finally {
+      await fs.rm(root, { recursive: true, force: true });
+    }
+  });
+
+  test('preview CLI writes the ledger before returning for a quiet week', async () => {
     const originalFetch = globalThis.fetch;
     const originalLog = console.log;
     const originalGithubToken = process.env.CHANGELOG_GITHUB_TOKEN;
     const originalOpenAiToken = process.env.OPENAI_API_KEY;
     const logs: string[] = [];
     const commitSha = 'c'.repeat(40);
+    const botSha = 'f'.repeat(40);
     const listCommit = {
       sha: commitSha,
       html_url: `https://github.com/0xnenlabs/steel/commit/${commitSha}`,
@@ -694,6 +1000,17 @@ describe('changelog v2 release evidence recovery', () => {
         message: 'chore: update dependencies',
         author: { name: 'Engineer', date: '2026-07-24T16:32:50.500Z' },
         committer: { date: '2026-07-24T16:32:50.500Z' },
+      },
+    };
+    // Author-skipped commits are dropped before grouping, so only the ledger can account for them.
+    const botCommit = {
+      sha: botSha,
+      html_url: `https://github.com/0xnenlabs/steel/commit/${botSha}`,
+      author: { login: 'github-actions[bot]' },
+      commit: {
+        message: 'chore: sync generated clients',
+        author: { name: 'github-actions[bot]', date: '2026-07-24T16:32:50.600Z' },
+        committer: { date: '2026-07-24T16:32:50.600Z' },
       },
     };
     let workspaceDirectory: string | undefined;
@@ -705,7 +1022,11 @@ describe('changelog v2 release evidence recovery', () => {
       const url = new URL(String(input));
 
       if (url.pathname.includes('/repos/0xnenlabs/steel/compare/')) {
-        return jsonResponse({ status: 'ahead', total_commits: 1, commits: [listCommit] });
+        return jsonResponse({
+          status: 'ahead',
+          total_commits: 2,
+          commits: [listCommit, botCommit],
+        });
       }
 
       if (url.pathname === `/repos/0xnenlabs/steel/commits/${commitSha}/pulls`) {
@@ -748,14 +1069,36 @@ describe('changelog v2 release evidence recovery', () => {
       expect(workspaceLog).toBeDefined();
       workspaceDirectory = workspaceLog?.replace('Prepared isolated preview evidence at ', '');
 
-      const excluded = JSON.parse(
-        await fs.readFile(path.join(workspaceDirectory as string, 'excluded-groups.json'), 'utf8'),
-      ) as Array<{ reason: string }>;
+      const ledger = JSON.parse(
+        await fs.readFile(path.join(workspaceDirectory as string, 'ledger.json'), 'utf8'),
+      ) as {
+        exclusions: Array<{ reason: string; redacted: boolean }>;
+        authorSkipped: Array<{ repo: string; sha: string; url: string; author: string }>;
+        reconciliation: {
+          commitsCollected: number;
+          authorSkippedCommits: number;
+          unaccounted: number;
+        };
+      };
       const sourceFacts = JSON.parse(
         await fs.readFile(path.join(workspaceDirectory as string, 'source-facts.json'), 'utf8'),
       ) as unknown[];
 
-      expect(excluded.map((item) => item.reason)).toEqual(['routine_maintenance']);
+      expect(ledger.exclusions.map((item) => item.reason)).toEqual(['routine_maintenance']);
+      expect(ledger.exclusions[0].redacted).toBe(true);
+      expect(ledger.reconciliation).toMatchObject({
+        commitsCollected: 1,
+        authorSkippedCommits: 1,
+        unaccounted: 0,
+      });
+      expect(ledger.authorSkipped).toEqual([
+        {
+          repo: '0xnenlabs/steel',
+          sha: botSha,
+          url: `https://github.com/0xnenlabs/steel/commit/${botSha}`,
+          author: 'github-actions[bot]',
+        },
+      ]);
       expect(sourceFacts).toEqual([]);
       expect(logs).toContain(
         'The source window contains no public changelog facts. Treating it as a quiet week.',

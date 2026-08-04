@@ -23,11 +23,16 @@ import {
 } from './changelog/config';
 import { type CoverResult, generateChangelogCover } from './changelog/cover';
 import {
+  buildEvidenceLedger,
+  type EvidenceLedger,
+  type LedgerAuthorSkip,
+  renderSourceFilteringSection,
+  writeEvidenceLedger,
+} from './changelog/ledger';
+import {
   type ChangedFile,
   type ChangeGroup,
   type CommitCandidate,
-  type ExcludedChangeGroup,
-  type ExclusionSummary,
   filterEligibleChangeGroups,
   formatChangeGroupForPrompt,
   groupCommitsByPullRequest,
@@ -348,11 +353,36 @@ async function fetchGithubJson<T>(url: URL, token: string): Promise<T> {
   return (await response.json()) as T;
 }
 
+/**
+ * Commits dropped by author never reach a change group, so without this record they would be
+ * missing from every exclusion count and the ledger could not reconcile.
+ */
+const authorSkippedCommits = new Map<string, LedgerAuthorSkip>();
+
+function getCommitAuthor(commit: GitHubListCommit): string {
+  return commit.author?.login || commit.commit.author.name || '';
+}
+
 function shouldSkipCommitAuthor(commit: GitHubListCommit): boolean {
-  const author = commit.author?.login || commit.commit.author.name || '';
-  const normalizedAuthor = author.toLowerCase();
+  const normalizedAuthor = getCommitAuthor(commit).toLowerCase();
 
   return SKIP_AUTHORS.some((skipAuthor) => normalizedAuthor.includes(skipAuthor.toLowerCase()));
+}
+
+function skipAsAutomatedAuthor(repoConfig: ChangelogRepository, commit: GitHubListCommit): boolean {
+  if (!shouldSkipCommitAuthor(commit)) {
+    return false;
+  }
+
+  const repo = `${repoConfig.owner}/${repoConfig.repo}`;
+  authorSkippedCommits.set(`${repo}@${commit.sha}`, {
+    repo,
+    sha: commit.sha,
+    url: commit.html_url,
+    author: getCommitAuthor(commit),
+  });
+
+  return true;
 }
 
 function truncateText(value: string, limit: number): string {
@@ -413,7 +443,7 @@ async function fetchRepositoryCommits(
     const response = await fetchGithubJson<GitHubListCommit[]>(url, token);
 
     for (const commit of response) {
-      if (shouldSkipCommitAuthor(commit)) {
+      if (skipAsAutomatedAuthor(repoConfig, commit)) {
         continue;
       }
 
@@ -658,7 +688,7 @@ export async function fetchApplicationReleaseCommits(
   );
 
   return commits
-    .filter((commit) => !shouldSkipCommitAuthor(commit))
+    .filter((commit) => !skipAsAutomatedAuthor(CHANGELOG_APPLICATION_REPOSITORY, commit))
     .map((commit) => normalizeCommit(CHANGELOG_APPLICATION_REPOSITORY, commit));
 }
 
@@ -720,7 +750,7 @@ export async function expandReleasedBrowserCommits(
       }
 
       for (const comparedCommit of comparedCommits) {
-        if (shouldSkipCommitAuthor(comparedCommit)) {
+        if (skipAsAutomatedAuthor(source.repository, comparedCommit)) {
           continue;
         }
 
@@ -928,7 +958,7 @@ function buildPrBody(
   draftPath: string,
   windowSelection: WindowSelection,
   draft: DraftResult,
-  sourceExclusions: ExclusionSummary[],
+  ledger: EvidenceLedger,
   cover: CoverResult | null = null,
 ): string {
   const sections = [
@@ -939,7 +969,7 @@ function buildPrBody(
     `- Window: \`${windowSelection.since}\` to \`${windowSelection.until}\``,
     `- Window source: \`${windowSelection.source}\``,
     `- Timezone reference: \`${CHANGELOG_TIMEZONE}\``,
-    '- The MDX draft is intentionally clean. Commit references for kept items are listed below for review.',
+    '- The MDX draft is intentionally clean. Commit references for kept and dropped items are listed below for review.',
     cover
       ? `- Cover image: \`${cover.src}\` (the undithered original is in the run artifacts for palette retries)`
       : `- Placeholder image: \`${CHANGELOG_PLACEHOLDER_IMAGE.src}\` (no cover was generated; see the run log)`,
@@ -966,21 +996,7 @@ function buildPrBody(
     }
   }
 
-  if (sourceExclusions.length > 0 || draft.discardedItems.length > 0) {
-    sections.push(
-      '## Source filtering',
-      '',
-      'Only aggregate counts are shown here so excluded internal source details are not copied into this public PR.',
-      '',
-    );
-    for (const item of sourceExclusions) {
-      sections.push(`- \`${item.reason}\`: ${item.count}`);
-    }
-
-    if (draft.discardedItems.length > 0) {
-      sections.push(`- \`model_discarded\`: ${draft.discardedItems.length}`);
-    }
-  }
+  sections.push('', ...renderSourceFilteringSection(ledger));
 
   return sections.join('\n').trimEnd() + '\n';
 }
@@ -1329,7 +1345,7 @@ export async function createPreviewWorkspace(input: {
   applicationReleaseBaseSha: string;
   applicationReleaseHeadSha: string;
   eligibleGroups: ChangeGroup[];
-  excludedGroups: ExcludedChangeGroup[];
+  ledger: EvidenceLedger;
 }): Promise<PreviewWorkspace> {
   const numberLabel = formatChangelogNumber(input.number);
   const directory = await fs.mkdtemp(
@@ -1337,17 +1353,6 @@ export async function createPreviewWorkspace(input: {
   );
   const draftFilename = `changelog-${numberLabel}-preview.mdx`;
   const sourceFacts = `[\n${input.eligibleGroups.map(formatChangeGroupForPrompt).join(',\n')}\n]\n`;
-  // Excluded details stay out of the public PR body; this local file is the audit trail for them.
-  const excludedGroups = input.excludedGroups.map((item) => ({
-    reason: item.reason,
-    key: item.group.key,
-    pullRequest: item.group.pullRequest,
-    commits: item.group.commits.map((commit) => ({
-      sha: commit.sha,
-      url: commit.url,
-      subject: commit.subject,
-    })),
-  }));
   const manifest = {
     changelogNumber: input.number,
     window: input.windowSelection,
@@ -1361,14 +1366,19 @@ export async function createPreviewWorkspace(input: {
 
   await Promise.all([
     fs.writeFile(path.join(directory, 'source-facts.json'), sourceFacts),
-    fs.writeFile(
-      path.join(directory, 'excluded-groups.json'),
-      `${JSON.stringify(excludedGroups, null, 2)}\n`,
-    ),
+    writePreviewLedger(directory, input.ledger),
     fs.writeFile(path.join(directory, 'run.json'), `${JSON.stringify(manifest, null, 2)}\n`),
   ]);
 
   return { directory, draftFilename };
+}
+
+/**
+ * Preview mode has no repository to commit the ledger into, so it lands beside the other evidence.
+ * It is written before the model runs and again afterwards, once the model's own discards are known.
+ */
+function writePreviewLedger(directory: string, ledger: EvidenceLedger): Promise<void> {
+  return fs.writeFile(path.join(directory, 'ledger.json'), `${JSON.stringify(ledger, null, 2)}\n`);
 }
 
 async function writePreviewDraftArtifacts(input: {
@@ -1377,19 +1387,20 @@ async function writePreviewDraftArtifacts(input: {
   windowSelection: WindowSelection;
   draft: DraftResult;
   mdx: string;
-  exclusionSummary: ExclusionSummary[];
+  ledger: EvidenceLedger;
 }) {
   const review = buildPrBody(
     input.number,
     input.workspace.draftFilename,
     input.windowSelection,
     input.draft,
-    input.exclusionSummary,
+    input.ledger,
   );
 
   await Promise.all([
     fs.writeFile(path.join(input.workspace.directory, input.workspace.draftFilename), input.mdx),
     fs.writeFile(path.join(input.workspace.directory, 'review.md'), review),
+    writePreviewLedger(input.workspace.directory, input.ledger),
     fs.writeFile(
       path.join(input.workspace.directory, 'model-output.json'),
       `${JSON.stringify(input.draft, null, 2)}\n`,
@@ -1400,6 +1411,7 @@ async function writePreviewDraftArtifacts(input: {
 export async function main(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   const githubToken = getGithubToken();
+  authorSkippedCommits.clear();
   let nextNumber: number;
   let windowSelection: WindowSelection;
   let applicationReleaseBaseSha: string;
@@ -1489,6 +1501,17 @@ export async function main(argv = process.argv.slice(2)) {
   const groups = groupCommitsByPullRequest(commits);
   const { eligible, excluded } = filterEligibleChangeGroups(groups);
   const exclusionSummary = summarizeExcludedChangeGroups(excluded);
+  const buildLedger = (discardedItems: DiscardedItem[]) =>
+    buildEvidenceLedger({
+      changelogNumber: nextNumber,
+      windowSelection,
+      commitsCollected: commits.length,
+      authorSkipped: [...authorSkippedCommits.values()],
+      logicalChanges: groups.length,
+      eligibleGroups: eligible,
+      excludedGroups: excluded,
+      discardedItems,
+    });
 
   console.log(
     `Collected ${commits.length} commits as ${groups.length} logical changes; ${eligible.length} are eligible.`,
@@ -1508,7 +1531,7 @@ export async function main(argv = process.argv.slice(2)) {
         applicationReleaseBaseSha,
         applicationReleaseHeadSha: applicationReleaseSha,
         eligibleGroups: eligible,
-        excludedGroups: excluded,
+        ledger: buildLedger([]),
       })
     : null;
   if (previewWorkspace) {
@@ -1519,6 +1542,8 @@ export async function main(argv = process.argv.slice(2)) {
     console.log(
       'The source window contains no public changelog facts. Treating it as a quiet week.',
     );
+    // A quiet week opens no pull request, so the run log is the only place the reasoning survives.
+    console.log(renderSourceFilteringSection(buildLedger([])).join('\n'));
     if (!options.preview) {
       await appendGithubOutput('has_changes', 'false');
     }
@@ -1527,8 +1552,10 @@ export async function main(argv = process.argv.slice(2)) {
 
   const openAiToken = getOpenAiToken();
   const draft = await requestDraftFromModel(eligible, nextNumber, windowSelection, openAiToken);
+  const ledger = buildLedger(draft.discardedItems);
   if (!draft.sections.some((section) => section.entries.length > 0)) {
     console.log('The model found no publishable changelog entries. Treating it as a quiet week.');
+    console.log(renderSourceFilteringSection(ledger).join('\n'));
     if (!options.preview) {
       await appendGithubOutput('has_changes', 'false');
     }
@@ -1544,7 +1571,7 @@ export async function main(argv = process.argv.slice(2)) {
       windowSelection,
       draft,
       mdx: buildMdxDocument(nextNumber, draft, publishedAt),
-      exclusionSummary,
+      ledger,
     });
     console.log(`Generated isolated preview at ${previewWorkspace.directory}`);
     return;
@@ -1573,15 +1600,9 @@ export async function main(argv = process.argv.slice(2)) {
   await updateChangelogMeta(slug);
   await updateChangelogLlms();
   await updateChangelogState(nextNumber, windowSelection.until, applicationReleaseSha);
+  const ledgerPath = await writeEvidenceLedger(process.cwd(), ledger);
 
-  const prBody = buildPrBody(
-    nextNumber,
-    draftPath,
-    windowSelection,
-    draft,
-    exclusionSummary,
-    cover,
-  );
+  const prBody = buildPrBody(nextNumber, draftPath, windowSelection, draft, ledger, cover);
   const prBodyPath =
     process.env.CHANGELOG_PR_BODY_PATH ||
     path.join(os.tmpdir(), `steel-changelog-pr-body-${slug}.md`);
@@ -1594,11 +1615,13 @@ export async function main(argv = process.argv.slice(2)) {
   await appendGithubOutput('commit_message', prTitle);
   await appendGithubOutput('pr_body_path', prBodyPath);
   await appendGithubOutput('draft_path', draftPath);
+  await appendGithubOutput('ledger_path', ledgerPath);
   if (cover) {
     await appendGithubOutput('cover_workdir', cover.workdir);
   }
 
   console.log(`Generated ${draftPath}`);
+  console.log(`Wrote the evidence ledger to ${ledgerPath}`);
   console.log(`Prepared PR body at ${prBodyPath}`);
 }
 

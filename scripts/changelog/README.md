@@ -52,10 +52,33 @@ published changelog revisions.
 
 ## Auditing filtered evidence
 
-The generated PR body and the Actions log only show aggregate exclusion counts, because both are
-public and excluded groups can reference private repositories. To audit individual exclusion
-decisions, run preview mode for the same window and inspect `excluded-groups.json` in the
-temporary directory it prints. `source-facts.json` holds the eligible groups sent to the model.
+Every run builds an evidence ledger recording each source group the filter dropped, and commits it
+to `scripts/changelog/audit/<n>.json` in the draft pull request. Actions artifacts expire, so the
+committed ledger is what makes an exclusion decision answerable months later.
+
+Each exclusion carries a `confidence`:
+
+- `heuristic`: a regex, a commit-type check, or missing changed-file data dropped the group, so a
+  real change can hide behind it. The PR body lists these in an open **Needs review** block for a
+  reviewer to confirm one by one.
+- `structural`: the group was dropped for what it is rather than what it says (an automated author,
+  a disabled source, a generated changelog, a submodule pointer). The PR body folds these away.
+
+The ledger also reconciles collected commits against logical changes, eligible groups, and excluded
+groups. Commits dropped by author never reach a group, so they are recorded separately in
+`authorSkipped`; a non-zero `unaccounted` means a group disappeared between grouping and
+classification and should be investigated.
+
+Repository visibility in `config.ts` decides how much of a source reaches the public PR body.
+Private sources keep their links, SHAs, and file counts but not their pull request titles, commit
+subjects, or file paths, and an unconfigured repository is treated as private. The same rule
+applies to the model's own discard list: its prose is kept only when every reference behind it is
+public.
+
+A quiet week opens no pull request, so its ledger is only rendered into the Actions run log. Run
+preview mode for the same window to reconstruct it. Preview writes `ledger.json` next to
+`source-facts.json` (the eligible groups sent to the model) and `model-output.json` in the
+temporary directory it prints.
 
 ## Recovering from a failed run
 

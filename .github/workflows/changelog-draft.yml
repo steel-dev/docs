@@ -107,6 +107,7 @@ jobs:
           path: |
             ${{ steps.generate.outputs.draft_path }}
             ${{ steps.generate.outputs.pr_body_path }}
+            ${{ steps.generate.outputs.ledger_path }}
             ${{ steps.generate.outputs.cover_workdir }}
 
       - name: Create draft pull request
@@ -128,4 +129,5 @@ jobs:
             content/docs/changelog/**
             public/changelog/llms.txt
             public/images/changelog/**
+            scripts/changelog/audit/**
             scripts/changelog/state.json
