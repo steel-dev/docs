@@ -59,6 +59,10 @@ function hasLinkRelation(response: Response, target: string, relation: string): 
     });
 }
 
+function classTokens(tag: string | undefined): string[] {
+  return (/class="([^"]*)"/.exec(tag ?? '')?.[1] ?? '').split(/\s+/).filter(Boolean);
+}
+
 function hasActiveNavLink(body: string, href: string): boolean {
   return [...body.matchAll(/<a\b[^>]*>/g)].some(
     ([tag]) => tag.includes(`href="${href}"`) && tag.includes('data-nav-active="true"'),
@@ -331,7 +335,9 @@ describe('.md suffix end-to-end', () => {
     expect(body.match(/<h1\b/g)).toHaveLength(1);
     expect(body.match(/<main\b/g)).toHaveLength(1);
     expect(body).toContain('<h1 class="text-3xl">Steel Documentation</h1>');
-    expect(animatedLogo).toContain('class="shrink-0"');
+    // The logo must keep shrink-0 so the hero's flex row cannot squash it. Responsive
+    // alignment classes come and go around it, so assert the token, not the whole attribute.
+    expect(classTokens(animatedLogo)).toContain('shrink-0');
     expect(body).toContain(
       'Steel is the open-source browser API for AI agents — managed cloud browsers with stealth, residential proxies, CAPTCHA solving, persistent profiles, session replays, and agent observability. Use these docs to create cloud browser sessions and connect your automation tools.',
     );
