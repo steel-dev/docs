@@ -325,12 +325,12 @@ See [CAPTCHA Solving](/overview/captchas-api/overview) for automatic and manual 
 
 ### Resource control
 
-Steel blocks requests to known advertising hosts by default. Use resource settings only when the
-task needs different behavior.
+Steel does not block ads by default. Use resource settings only when the task needs different
+behavior.
 
 | Requirement | Configuration |
 |---|---|
-| Allow requests to known advertising hosts | Set `blockAds` to `false`. |
+| Block ads | Set `blockAds` to `true`. |
 | Block images, media, and stylesheets | Set `optimizeBandwidth` to `true`. |
 | Select resource types, hosts, or URL patterns | Set `optimizeBandwidth` to an object. |
 | Load uploaded extensions | Set `extensionIds` to the uploaded extension IDs. See [Extensions](/overview/extensions-api/overview) for extension management. |
