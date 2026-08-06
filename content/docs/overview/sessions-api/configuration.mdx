@@ -10,7 +10,7 @@ optional settings. Add only the settings that the task needs.
 
 ## Start with the minimum
 
-```typescript !! TypeScript -wcn
+```typescript TypeScript -wcn
 import Steel from 'steel-sdk';
 
 const client = new Steel({
@@ -88,7 +88,7 @@ setting, use the REST API for that recipe.
 If Steel must release an idle session before `timeout`, use this recipe. Steel releases the session
 after 1 minute without a Chrome DevTools Protocol (CDP) command or remote input.
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "timeout": 600000,
   "inactivityTimeout": 60000
@@ -102,7 +102,7 @@ This request sets `timeout` to 10 minutes. Activity resets the 1-minute inactivi
 If an unattended task can run for several minutes, use this recipe. Steel releases the session after
 2 minutes without a CDP command or remote input.
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "headless": true,
   "timeout": 900000,
@@ -117,7 +117,7 @@ The task can run for up to 15 minutes. Activity resets the 2-minute inactivity t
 If the task needs a residential IP and automatic CAPTCHA solving, use these settings. Your account
 must have access to these features.
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "useProxy": true,
   "solveCaptcha": true,
@@ -137,7 +137,7 @@ task does not need.
 If Steel must detect a supported CAPTCHA and a person must respond in the live viewer, use this
 recipe. Your account must have access to CAPTCHA solving.
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "solveCaptcha": true,
   "stealthConfig": {
@@ -158,7 +158,7 @@ If the task needs profile state without saving changes, use this recipe. Before 
 confirm that the profile status is `READY`. Replace the example UUID with a profile UUID from your
 workspace.
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "profileId": "123e4567-e89b-12d3-a456-426614174000"
 }
@@ -173,7 +173,7 @@ Before you use these settings, confirm that the profile status is `READY`. Repla
 profile UUID with a profile UUID from your workspace. Replace the example dedicated IP ID with an ID
 from your workspace.
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "profileId": "123e4567-e89b-12d3-a456-426614174000",
   "persistProfile": true,
@@ -192,7 +192,7 @@ session. The recipe also uses one dedicated IP.
 If the site must show its mobile version for a selected country, use these settings. Your account
 must have access to Steel-provided proxies.
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "deviceConfig": {
     "device": "mobile"
@@ -306,7 +306,7 @@ complete mobile browser identity. See [Mobile Mode](/overview/sessions-api/mobil
 Set `solveCaptcha` to `true` to detect and solve supported CAPTCHA types. Use this recipe to detect a
 CAPTCHA without automatic solving:
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "solveCaptcha": true,
   "stealthConfig": {
