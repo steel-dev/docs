@@ -5,6 +5,7 @@
     "---Sessions API---",
     "overview",
     "quickstart",
+    "configuration",
     "session-lifecycle",
     "mobile-mode",
     "fullscreen-mode",

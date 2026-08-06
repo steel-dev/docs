@@ -1,0 +1,370 @@
+---
+title: Configure a Browser Session
+sidebarTitle: Configure a Session
+description: Select Steel session settings for browser tasks, stored state, regional access, mobile sites, and human control.
+llm: true
+---
+
+Use this guide to select stable, non-experimental session settings for a browser task. Start with no
+optional settings. Add only the settings that the task needs.
+
+## Start with the minimum
+
+```typescript TypeScript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel({
+  steelAPIKey: process.env.STEEL_API_KEY,
+});
+
+const session = await client.sessions.create();
+```
+
+Steel creates a desktop, headful session with a default `timeout` of 5 minutes. A headful session has
+a visible browser window. By default, Steel does not use a proxy or solve CAPTCHAs.
+
+## Choose a configuration
+
+### Recipes
+
+Select the recipe that is closest to your task. Remove any setting that the task does not need.
+
+| Task | Setting | Go to |
+|---|---|---|
+| Run standard browser automation | No optional setting | [Start with the minimum](#start-with-the-minimum) |
+| Release an idle session before `timeout` | `timeout`, `inactivityTimeout` | [Task with an inactivity timeout](#task-with-an-inactivity-timeout) |
+| Run a longer headless task and release it when idle | Headless and session life settings | [Long-running headless worker](#long-running-headless-worker) |
+| Extract text from a protected site | Proxy, CAPTCHA, and resource settings | [Text extraction on a protected site](#text-extraction-on-a-protected-site) |
+| Detect a CAPTCHA and let a person respond | CAPTCHA and interactive viewer settings | [CAPTCHA detection with human control](#captcha-detection-with-human-control) |
+| Use stored account state without saving changes | `profileId` | [Account task without saved changes](#account-task-without-saved-changes) |
+| Repeat an account task with one identity | Profile and dedicated IP settings | [Account task with stored state](#account-task-with-stored-state) |
+| Open a mobile site from a selected country | Device and proxy settings | [Mobile task in a selected country](#mobile-task-in-a-selected-country) |
+
+### Find a setting
+
+If you know the browser behavior that the task needs, use this table.
+
+| Requirement | Setting | Go to |
+|---|---|---|
+| Use a residential IP | `useProxy: true` | [Network identity](#network-identity) |
+| Select the IP location | `useProxy.geolocation` | [Network identity](#network-identity) |
+| Use the same dedicated IP | `useProxy: { type: "fixed", id: "fixed:…" }` | [Network identity](#network-identity) |
+| Run the browser in a selected region | `region` | [Network identity](#network-identity) |
+| Load saved browser state | `profileId` | [Stored state](#stored-state) |
+| Save profile changes after release | `persistProfile: true` | [Stored state](#stored-state) |
+| Add cookies or web storage | `sessionContext` | [Stored state](#stored-state) |
+| Use credentials that Steel stores | `credentials` | [Stored state](#stored-state) |
+| Detect or solve CAPTCHAs | `solveCaptcha` | [Page support](#page-support) |
+| Let a person control the browser | `debugConfig.interactive: true` | [Viewer and connection](#viewer-and-connection) |
+| Make the viewer read-only | `debugConfig.interactive: false` | [Viewer and connection](#viewer-and-connection) |
+| Connect with Selenium | `isSelenium: true` | [Viewer and connection](#viewer-and-connection) |
+| Block page resources | `optimizeBandwidth` | [Resource control](#resource-control) |
+| Load browser extensions | `extensionIds` | [Resource control](#resource-control) |
+| Set the browser window size | `dimensions` | [Browser interface](#browser-interface) |
+| Use fullscreen mode | `fullscreen: true` | [Browser interface](#browser-interface) |
+| Select the project context | `projectId`, `namespace` | [Project context](#project-context) |
+
+`useProxy` accepts `true`, `false`, or a configuration object. Properties such as `geolocation` are
+part of the `useProxy` object.
+
+## Common configurations
+
+Each recipe below is a JSON request body with only the settings for its task. Save a recipe as
+`session.json`. Send the file to `POST /v1/sessions` with curl.
+
+```bash cURL -wcn
+curl https://api.steel.dev/v1/sessions \
+  -H "steel-api-key: $STEEL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d @session.json
+```
+
+`@session.json` tells curl to read the request body from that file. For supported TypeScript SDK
+settings, pass the same object to `client.sessions.create(...)`. If the SDK type does not include a
+setting, use the REST API for that recipe.
+
+### Task with an inactivity timeout
+
+If Steel must release an idle session before `timeout`, use this recipe. Steel releases the session
+after 1 minute without a Chrome DevTools Protocol (CDP) command or remote input.
+
+```json JSON -wcn
+{
+  "timeout": 600000,
+  "inactivityTimeout": 60000
+}
+```
+
+This request sets `timeout` to 10 minutes. Activity resets the 1-minute inactivity timer.
+
+### Long-running headless worker
+
+If an unattended task can run for several minutes, use this recipe. Steel releases the session after
+2 minutes without a CDP command or remote input.
+
+```json JSON -wcn
+{
+  "headless": true,
+  "timeout": 900000,
+  "inactivityTimeout": 120000
+}
+```
+
+The task can run for up to 15 minutes. Activity resets the 2-minute inactivity timer.
+
+### Text extraction on a protected site
+
+If the task needs a residential IP and automatic CAPTCHA solving, use these settings. Your account
+must have access to these features.
+
+```json JSON -wcn
+{
+  "useProxy": true,
+  "solveCaptcha": true,
+  "optimizeBandwidth": {
+    "blockImages": true,
+    "blockMedia": true,
+    "blockStylesheets": false
+  }
+}
+```
+
+This recipe keeps stylesheets because they can affect page behavior. Remove each setting that the
+task does not need.
+
+### CAPTCHA detection with human control
+
+If Steel must detect a supported CAPTCHA and a person must respond in the live viewer, use this
+recipe. Your account must have access to CAPTCHA solving.
+
+```json JSON -wcn
+{
+  "solveCaptcha": true,
+  "stealthConfig": {
+    "autoCaptchaSolving": false
+  },
+  "debugConfig": {
+    "interactive": true
+  }
+}
+```
+
+Steel detects the CAPTCHA without solving it automatically. The live viewer accepts input because
+the session is interactive. Protect the debug URL before you share it.
+
+### Account task without saved changes
+
+If the task needs profile state without saving changes, use this recipe. Before you use the recipe,
+confirm that the profile status is `READY`. Replace the example UUID with a profile UUID from your
+workspace.
+
+```json JSON -wcn
+{
+  "profileId": "123e4567-e89b-12d3-a456-426614174000"
+}
+```
+
+Steel restores the profile state for the session. Because the request omits `persistProfile`, Steel
+does not save the session's profile changes after release.
+
+### Account task with stored state
+
+Before you use these settings, confirm that the profile status is `READY`. Replace the example
+profile UUID with a profile UUID from your workspace. Replace the example dedicated IP ID with an ID
+from your workspace.
+
+```json JSON -wcn
+{
+  "profileId": "123e4567-e89b-12d3-a456-426614174000",
+  "persistProfile": true,
+  "useProxy": {
+    "type": "fixed",
+    "id": "fixed:8SdfYs77me"
+  }
+}
+```
+
+This recipe restores stored browser state. Steel saves the new browser state after you release the
+session. The recipe also uses one dedicated IP.
+
+### Mobile task in a selected country
+
+If the site must show its mobile version for a selected country, use these settings. Your account
+must have access to Steel-provided proxies.
+
+```json JSON -wcn
+{
+  "deviceConfig": {
+    "device": "mobile"
+  },
+  "useProxy": {
+    "geolocation": {
+      "country": "DE"
+    }
+  }
+}
+```
+
+The mobile setting controls the browser fingerprint and input behavior. The proxy setting controls
+the public IP location.
+
+## Setting reference
+
+The following sections explain stable session settings by topic. Use
+[Find a setting](#find-a-setting) to open a section.
+
+### Session life
+
+Use these settings to control the total and idle session life.
+
+| Setting | Guidance |
+|---|---|
+| `timeout` | Sets the requested maximum session life. The default is 300000 ms (5 minutes). Set the value to 15000 ms or more. Your account limits set the maximum permitted value. |
+| `inactivityTimeout` | Releases an idle session before `timeout`. Set the value below `timeout`. If your SDK type does not include this field, use the REST API. |
+
+CDP commands and remote input reset the inactivity timer. After the task is complete, release the
+session. See [Session Lifecycle](/overview/sessions-api/session-lifecycle) for session states and
+release methods.
+
+### Network identity
+
+Use the smallest location scope that the task needs.
+
+| Requirement | Configuration |
+|---|---|
+| Use the browser machine IP | Set `useProxy` to `false`. Omit `proxyUrl`. |
+| Use a residential IP | Set `useProxy` to `true`. |
+| Select a country, state, or city | Set `useProxy.geolocation`. Include a country. |
+| Use one dedicated IP | Set `useProxy.type` to `fixed` and add the dedicated IP `id`. |
+| Use any active dedicated IP | Set `useProxy.type` to `fixed` and omit `id`. |
+| Use your proxy | Set `useProxy.server` or `proxyUrl`. |
+| Select the browser region | Set `region`. |
+
+- `region` selects the location of the browser process. Proxy geolocation selects the public IP
+  location that the site receives.
+- If you load a profile, `useProxy: false` overrides the proxy setting in that profile.
+- `proxyUrl` overrides `useProxy`. Use only one custom proxy method in a session request.
+
+See [Multi-Region Sessions](/overview/sessions-api/multi-region),
+[Proxies](/overview/stealth/proxies), and
+[Dedicated IPs](/overview/sessions-api/dedicated-ips).
+
+### Stored state
+
+Select the state methods that the task needs.
+
+| Available state | Method |
+|---|---|
+| A specific set of cookies or web storage | Use `sessionContext`. |
+| Browser state that must change across sessions | Use a profile. |
+| Credentials that Steel stores | Add a `credentials` object. |
+
+You can use more than one state method in a session. A request-level `sessionContext` replaces the
+profile session context. A request-level `credentials` object replaces the profile credentials.
+
+#### Save changes in a profile
+
+To create a profile from a session, set `persistProfile` to `true`. Before you use the new profile,
+complete these steps:
+
+1. Copy `profileId` from the first session response.
+2. Complete the browser task.
+3. Release the first session.
+4. Wait until the profile status is `READY`.
+5. Create the next session with `profileId`.
+6. If the next session must save its changes, set `persistProfile` to `true`.
+
+Profile and credential rules:
+
+- The API returns `409` if the profile status is `UPLOADING`.
+- A profile UUID must identify a profile in the same project.
+- Stored credentials must use the same project and namespace as the session.
+- The `credentials` object can submit stored values automatically, blur credential fields, and
+  require an exact origin match.
+
+See [Profiles](/overview/profiles-api/overview),
+[Reusing Auth Context](/overview/sessions-api/reusing-auth-context), and
+[Credentials](/overview/credentials-api/overview).
+
+### Browser interface
+
+Use these settings to select the window size, mobile identity, or display mode.
+
+| Requirement | Configuration |
+|---|---|
+| Set the browser window size | Set `dimensions`. |
+| Use a mobile browser identity | Set `deviceConfig.device` to `"mobile"`. If the request and profile omit `dimensions`, Steel uses 508×1074. |
+| Fill the browser screen | Set `fullscreen` to `true`. Fullscreen mode uses 1920×1080 and ignores `dimensions`. |
+| Set a specific user agent | Set `userAgent`. |
+
+Steel rejects custom mobile dimensions below 508×1074 (width × height). Use mobile mode for a
+complete mobile browser identity. See [Mobile Mode](/overview/sessions-api/mobile-mode) and
+[Fullscreen Mode](/overview/sessions-api/fullscreen-mode).
+
+### Page support
+
+Set `solveCaptcha` to `true` to detect and solve supported CAPTCHA types. Use this recipe to detect a
+CAPTCHA without automatic solving:
+
+```json JSON -wcn
+{
+  "solveCaptcha": true,
+  "stealthConfig": {
+    "autoCaptchaSolving": false
+  }
+}
+```
+
+- Set `stealthConfig.humanizeInteractions` to `true` to simulate human pointer movements and
+  keystrokes.
+- If the task controls the browser fingerprint, set `stealthConfig.skipFingerprintInjection` to
+  `true`.
+- For all other tasks, omit `stealthConfig.skipFingerprintInjection`.
+
+See [CAPTCHA Solving](/overview/captchas-api/overview) for automatic and manual solve methods.
+
+### Resource control
+
+Steel does not block ads by default. Use resource settings only when the task needs different
+behavior.
+
+| Requirement | Configuration |
+|---|---|
+| Block ads | Set `blockAds` to `true`. |
+| Block images, media, and stylesheets | Set `optimizeBandwidth` to `true`. |
+| Select resource types, hosts, or URL patterns | Set `optimizeBandwidth` to an object. |
+| Load uploaded extensions | Set `extensionIds` to the uploaded extension IDs. See [Extensions](/overview/extensions-api/overview) for extension management. |
+
+Block only the resources that the task does not use. If the task uses screenshots or visual
+analysis, do not block images. If layout or visibility is important, do not block stylesheets.
+
+### Viewer and connection
+
+Use these settings to control the viewer and browser connection.
+
+| Requirement | Configuration |
+|---|---|
+| Allow input from the live viewer | Set `debugConfig.interactive` to `true`. This is the default. |
+| Make the live viewer read-only | Set `debugConfig.interactive` to `false`, or add `interactive=false` to the viewer URL. |
+| Show the system cursor in a headful stream | Set `debugConfig.systemCursor` to `true`. This is the default and does not control viewer input. |
+| Use a headless browser | Set `headless` to `true`. |
+| Connect with Selenium | Set `isSelenium` to `true`. This forces `headless` to `true`, even if the request sets `headless` to `false`. |
+
+The viewer URL cannot make a read-only session interactive.
+
+:::callout
+type: warn
+### Protect the debug URL
+Anyone with the debug URL can view the session and control an interactive session. Before you share
+the debug URL, add application access controls.
+:::
+
+See [Live Sessions](/overview/sessions-api/embed-sessions/live-sessions),
+[Human-in-the-Loop Controls](/overview/sessions-api/human-in-the-loop), and
+[Selenium](/integrations/selenium).
+
+### Project context
+
+Use `projectId` and `namespace` only to select a different project context. Stored credentials must
+use the same project and namespace as the session. For exact request types and validation rules, see
+the [API Reference](/api-reference#tag/sessions).
