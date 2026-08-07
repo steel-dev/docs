@@ -1,0 +1,29 @@
+---
+title: "Changelog #036"
+sidebarTitle: "Changelog #036"
+llm: true
+image: "/images/changelog/36.png"
+imageAlt: "Announcing Changelog #036"
+publishedAt: "2026-08-07"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/36.png"
+  alt="Announcing Changelog #036"
+  width={800}
+  height={400}
+/>
+Hey everyone. This week focused on making the docs easier to navigate for developers and agents, with clearer session guidance and a canonical docs homepage.
+
+### 🔧 Improvements
+
+*   Session docs now cover reserving a session ID, installing the Python SDK, and the distinction between Python API request timeouts and session timeouts.
+
+*   Agent-facing docs now advertise per-page `.md` URLs, clarify how to use `llms-full.txt`, and exclude low-value cookbook author pages from LLM indexes.
+
+*   The docs root now serves the canonical homepage consistently, while the legacy `/overview` path permanently redirects to it and nested overview pages remain unchanged.
+
+### 🐛 Bug Fixes
+
+*   Corrected the Pi agent integration guide to install the extension from the `@steel-dev/pi-steel` package.
