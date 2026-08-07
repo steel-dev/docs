@@ -1,0 +1,1221 @@
+{
+  "changelogNumber": 36,
+  "window": {
+    "since": "2026-07-24T13:35:35.621Z",
+    "until": "2026-08-07T13:31:38.903Z",
+    "source": "state"
+  },
+  "reconciliation": {
+    "commitsCollected": 46,
+    "authorSkippedCommits": 0,
+    "logicalChanges": 46,
+    "eligible": 5,
+    "excluded": 41,
+    "unaccounted": 0
+  },
+  "exclusions": [
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs@17baa9a2fca8bd947a4498114c8bfa02f6e41825",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": null,
+      "commits": [
+        {
+          "shortSha": "17baa9a",
+          "url": "https://github.com/steel-dev/docs/commit/17baa9a2fca8bd947a4498114c8bfa02f6e41825",
+          "subject": "chore(images): compress changelog covers 22-34 (72% smaller)"
+        }
+      ],
+      "changedFileCount": 13,
+      "changedFiles": [
+        "public/images/changelog/22.png",
+        "public/images/changelog/23.png",
+        "public/images/changelog/24.png",
+        "public/images/changelog/25.png",
+        "public/images/changelog/26.png",
+        "public/images/changelog/27.png",
+        "public/images/changelog/28.png",
+        "public/images/changelog/29.png",
+        "public/images/changelog/30.png",
+        "public/images/changelog/31.png",
+        "public/images/changelog/32.png",
+        "public/images/changelog/33.png",
+        "public/images/changelog/34.png"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs@69bb24f2e7bbc6f45072f568b47781c99d16349c",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": null,
+      "commits": [
+        {
+          "shortSha": "69bb24f",
+          "url": "https://github.com/steel-dev/docs/commit/69bb24f2e7bbc6f45072f568b47781c99d16349c",
+          "subject": "refactor(llms): serve agent instructions in the llms-full.txt bundle"
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": [
+        "app/llms-full.txt/route.ts",
+        "lib/agent-instructions.ts",
+        "scripts/generate-llms-txt.ts"
+      ]
+    },
+    {
+      "reason": "ignored_files_only",
+      "confidence": "structural",
+      "key": "steel-dev/docs@c4b82949a740bce89645e4ab86e6430840e738d2",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": null,
+      "commits": [
+        {
+          "shortSha": "c4b8294",
+          "url": "https://github.com/steel-dev/docs/commit/c4b82949a740bce89645e4ab86e6430840e738d2",
+          "subject": "ci: run workflow actions on Node 24"
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": [
+        ".github/workflows/changelog-draft.yml",
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "reason": "routine_maintenance",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs@e4a543af088cdf33eb9d406def8f882d06949332",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": null,
+      "commits": [
+        {
+          "shortSha": "e4a543a",
+          "url": "https://github.com/steel-dev/docs/commit/e4a543af088cdf33eb9d406def8f882d06949332",
+          "subject": "chore(deps): bump next to 15.5.21"
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": [
+        "bun.lock",
+        "package.json"
+      ]
+    },
+    {
+      "reason": "self_generated",
+      "confidence": "structural",
+      "key": "steel-dev/docs@f0c3feae12b0e0f6088634a2b363029e5d6355da",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": null,
+      "commits": [
+        {
+          "shortSha": "f0c3fea",
+          "url": "https://github.com/steel-dev/docs/commit/f0c3feae12b0e0f6088634a2b363029e5d6355da",
+          "subject": "docs(changelog): remove internal infrastructure updates"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        "content/docs/changelog/changelog-035.mdx"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#100",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 100,
+        "url": "https://github.com/steel-dev/docs/pull/100",
+        "title": "fix(api): advertise the API catalog relation"
+      },
+      "commits": [
+        {
+          "shortSha": "8b42e22",
+          "url": "https://github.com/steel-dev/docs/commit/8b42e223b1b3497b0f133245e0391a33d8fef4df",
+          "subject": "fix(api): advertise the API catalog relation (#100)"
+        }
+      ],
+      "changedFileCount": 4,
+      "changedFiles": [
+        "next.config.mjs",
+        "public/.well-known/api-catalog",
+        "tests/api-catalog.test.ts",
+        "tests/e2e/llm-endpoints.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#101",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 101,
+        "url": "https://github.com/steel-dev/docs/pull/101",
+        "title": "fix(robots): test shared user-agent groups"
+      },
+      "commits": [
+        {
+          "shortSha": "e3ac900",
+          "url": "https://github.com/steel-dev/docs/commit/e3ac90060a5642523243907564c9fff41fa4709e",
+          "subject": "fix(robots): test shared user-agent groups (#101)"
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": [
+        "public/robots.txt",
+        "tests/robots-txt.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#103",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 103,
+        "url": "https://github.com/steel-dev/docs/pull/103",
+        "title": "fix(tests): bound e2e dev-server teardown so CI stops failing"
+      },
+      "commits": [
+        {
+          "shortSha": "245148b",
+          "url": "https://github.com/steel-dev/docs/commit/245148b19b60ff851d71ad769bd3b7d4a4b5881d",
+          "subject": "fix(tests): bound e2e dev-server teardown so afterAll can't hang CI (#103)"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        "tests/e2e/llm-endpoints.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#104",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 104,
+        "url": "https://github.com/steel-dev/docs/pull/104",
+        "title": "fix(home): keep a single main landmark on the homepage"
+      },
+      "commits": [
+        {
+          "shortSha": "b25f575",
+          "url": "https://github.com/steel-dev/docs/commit/b25f575906185ec5bea4580d38b157f466e5dedd",
+          "subject": "fix(home): keep a single main landmark on the homepage (#104)"
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": [
+        "app/(home)/_pages/page.en.tsx",
+        "tests/e2e/llm-endpoints.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#105",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 105,
+        "url": "https://github.com/steel-dev/docs/pull/105",
+        "title": "test(middleware,robots): guard the vary header and crawl allowlist"
+      },
+      "commits": [
+        {
+          "shortSha": "248d756",
+          "url": "https://github.com/steel-dev/docs/commit/248d756a82a35b83e99ac2bd4d56f3d4db8ecfe5",
+          "subject": "test(middleware,robots): guard the vary header and crawl allowlist (#105)"
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": [
+        "tests/middleware.test.ts",
+        "tests/robots-txt.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#106",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 106,
+        "url": "https://github.com/steel-dev/docs/pull/106",
+        "title": "feat(seo): add organization logo, article images, and stable author ids to JSON-LD"
+      },
+      "commits": [
+        {
+          "shortSha": "0049665",
+          "url": "https://github.com/steel-dev/docs/commit/0049665f2f82dac81e7c30856c2a37db49e5a0b3",
+          "subject": "feat(seo): add organization logo, article images, and stable author ids to JSON-LD (#106)"
+        }
+      ],
+      "changedFileCount": 6,
+      "changedFiles": [
+        "app/[...slug]/page.tsx",
+        "components/author-profile.tsx",
+        "components/page-jsonld.tsx",
+        "components/recipe-jsonld.tsx",
+        "lib/structured-data.ts",
+        "tests/structured-data.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#107",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 107,
+        "url": "https://github.com/steel-dev/docs/pull/107",
+        "title": "fix(llm): honor llm:false on markdown routes and share the public .md url"
+      },
+      "commits": [
+        {
+          "shortSha": "9437e27",
+          "url": "https://github.com/steel-dev/docs/commit/9437e27c8933e8f7caae6fbdd32c64fb48d5ccab",
+          "subject": "fix(llm): honor llm:false on markdown routes and share the public .md url (#107)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        "app/llms.mdx/[[...slug]]/route.ts",
+        "hooks/use-llms-txt.ts",
+        "tests/e2e/llm-endpoints.test.ts",
+        "tests/get-llm-text.test.ts",
+        "tests/use-llms-txt.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#108",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 108,
+        "url": "https://github.com/steel-dev/docs/pull/108",
+        "title": "fix(skills): skip the index on GitHub transport errors instead of failing the build"
+      },
+      "commits": [
+        {
+          "shortSha": "6f04299",
+          "url": "https://github.com/steel-dev/docs/commit/6f04299c6e9217841b0206eec2357a8482ff8be6",
+          "subject": "fix(skills): skip the index on GitHub transport errors instead of failing the build (#108)"
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": [
+        "scripts/generate-agent-skills-index.ts",
+        "tests/agent-skills-index.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#109",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 109,
+        "url": "https://github.com/steel-dev/docs/pull/109",
+        "title": "fix(tests): route the fetch mock cast through unknown to satisfy tsc"
+      },
+      "commits": [
+        {
+          "shortSha": "ae1a928",
+          "url": "https://github.com/steel-dev/docs/commit/ae1a9281915fd531102dc5dbd385cc387500cbd9",
+          "subject": "fix(tests): route the fetch mock cast through unknown to satisfy tsc (#109)"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        "tests/agent-skills-index.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#110",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 110,
+        "url": "https://github.com/steel-dev/docs/pull/110",
+        "title": "test(imagegen): double the chromium timeout headroom for loaded CI runners"
+      },
+      "commits": [
+        {
+          "shortSha": "633f914",
+          "url": "https://github.com/steel-dev/docs/commit/633f914e736ae31e88e74007730c748349461c54",
+          "subject": "test(imagegen): double the chromium timeout headroom for loaded CI runners (#110)"
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": [
+        "tests/imagegen/e2e/cli.test.ts",
+        "tests/imagegen/integration/render.test.ts",
+        "tests/imagegen/integration/run.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#111",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 111,
+        "url": "https://github.com/steel-dev/docs/pull/111",
+        "title": "fix(imagegen): share one chromium across test renders to avoid spawn deadlocks"
+      },
+      "commits": [
+        {
+          "shortSha": "ee9b0e5",
+          "url": "https://github.com/steel-dev/docs/commit/ee9b0e56827851b48b5a9c103810d5214dc45cc1",
+          "subject": "fix(imagegen): share one chromium across test renders to avoid spawn deadlocks (#111)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        "scripts/changelog/imagegen/index.ts",
+        "scripts/changelog/imagegen/render.ts",
+        "tests/imagegen/helpers/browser.ts",
+        "tests/imagegen/integration/render.test.ts",
+        "tests/imagegen/integration/run.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#114",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 114,
+        "url": "https://github.com/steel-dev/docs/pull/114",
+        "title": "fix(llms): restore homepage markdown negotiation"
+      },
+      "commits": [
+        {
+          "shortSha": "c40b7bb",
+          "url": "https://github.com/steel-dev/docs/commit/c40b7bb52b87da013b97f385f354d33a6a6add4c",
+          "subject": "fix(llms): restore homepage markdown negotiation (#114)"
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": [
+        "middleware.ts",
+        "tests/e2e/llm-endpoints.test.ts",
+        "tests/middleware.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#115",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 115,
+        "url": "https://github.com/steel-dev/docs/pull/115",
+        "title": "fix(home): stack hero content on mobile"
+      },
+      "commits": [
+        {
+          "shortSha": "9258122",
+          "url": "https://github.com/steel-dev/docs/commit/92581223387880b4a19594ec2e42f6a5892ba7af",
+          "subject": "fix(home): stack hero content on mobile (#115)"
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": [
+        ".impeccable/live/config.json",
+        "app/(home)/_pages/page.en.tsx",
+        "PRODUCT.md"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#116",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 116,
+        "url": "https://github.com/steel-dev/docs/pull/116",
+        "title": "feat(changelog): commit an auditable evidence ledger for filtered sources"
+      },
+      "commits": [
+        {
+          "shortSha": "c19b0bc",
+          "url": "https://github.com/steel-dev/docs/commit/c19b0bcda97f963acc32674ceb0ff44bcd9d3876",
+          "subject": "feat(changelog): commit an auditable evidence ledger for filtered sources (#116)"
+        }
+      ],
+      "changedFileCount": 6,
+      "changedFiles": [
+        ".github/workflows/changelog-draft.yml",
+        "scripts/changelog/config.ts",
+        "scripts/changelog/ledger.ts",
+        "scripts/changelog/README.md",
+        "scripts/generate-changelog-draft.ts",
+        "tests/changelog-v2.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#117",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 117,
+        "url": "https://github.com/steel-dev/docs/pull/117",
+        "title": "test(home): assert the hero logo keeps shrink-0 by class token"
+      },
+      "commits": [
+        {
+          "shortSha": "5239f32",
+          "url": "https://github.com/steel-dev/docs/commit/5239f3207375b180c9d104f2c8fe8eddf3b9cedb",
+          "subject": "test(home): assert the hero logo keeps shrink-0 by class token (#117)"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        "tests/e2e/llm-endpoints.test.ts"
+      ]
+    },
+    {
+      "reason": "self_generated",
+      "confidence": "structural",
+      "key": "steel-dev/docs#74",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 74,
+        "url": "https://github.com/steel-dev/docs/pull/74",
+        "title": "docs: draft changelog #035"
+      },
+      "commits": [
+        {
+          "shortSha": "24d47ea",
+          "url": "https://github.com/steel-dev/docs/commit/24d47ea1d736abb9ccd86dc4a4c10571bfcdaa13",
+          "subject": "docs: draft changelog #035 (#74)"
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": [
+        "content/docs/changelog/changelog-035.mdx",
+        "content/docs/changelog/meta.json",
+        "public/images/changelog/35.png"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#75",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 75,
+        "url": "https://github.com/steel-dev/docs/pull/75",
+        "title": "docs(seo): cross-link integrations, cookbook recipes, and topic hubs"
+      },
+      "commits": [
+        {
+          "shortSha": "4f0304b",
+          "url": "https://github.com/steel-dev/docs/commit/4f0304bef65f21ae998a6107a8f1fb65c276ecca",
+          "subject": "docs(seo): cross-link integrations, cookbook recipes, and topic hubs (#75)"
+        }
+      ],
+      "changedFileCount": 82,
+      "changedFiles": [
+        "content/docs/cookbook/agentkit.mdx",
+        "content/docs/cookbook/agno.mdx",
+        "content/docs/cookbook/auth-context.mdx",
+        "content/docs/cookbook/browser-use-captcha-auto.mdx",
+        "content/docs/cookbook/browser-use-captcha-manual.mdx",
+        "content/docs/cookbook/browser-use.mdx",
+        "content/docs/cookbook/chromedp.mdx",
+        "content/docs/cookbook/chromiumoxide.mdx",
+        "content/docs/cookbook/claude-agent-sdk.mdx",
+        "content/docs/cookbook/claude-computer-use-mobile.mdx",
+        "content/docs/cookbook/claude-computer-use.mdx",
+        "content/docs/cookbook/convex-chat-with-page.mdx",
+        "content/docs/cookbook/convex-price-watch.mdx",
+        "content/docs/cookbook/credentials.mdx",
+        "content/docs/cookbook/crewai.mdx",
+        "content/docs/cookbook/deep-research.mdx",
+        "content/docs/cookbook/eino.mdx",
+        "content/docs/cookbook/extensions.mdx",
+        "content/docs/cookbook/files.mdx",
+        "content/docs/cookbook/gemini-computer-use.mdx",
+        "content/docs/cookbook/genkit.mdx",
+        "content/docs/cookbook/google-adk.mdx",
+        "content/docs/cookbook/headless-chrome.mdx",
+        "content/docs/cookbook/langchaingo.mdx",
+        "content/docs/cookbook/langgraph.mdx",
+        "content/docs/cookbook/magnitude.mdx",
+        "content/docs/cookbook/mastra.mdx",
+        "content/docs/cookbook/mcp.mdx",
+        "content/docs/cookbook/microsoft-agent-framework.mdx",
+        "content/docs/cookbook/notte.mdx",
+        "content/docs/cookbook/openai-agents.mdx",
+        "content/docs/cookbook/openai-computer-use.mdx",
+        "content/docs/cookbook/playwright.mdx",
+        "content/docs/cookbook/profiles.mdx",
+        "content/docs/cookbook/pydantic-ai.mdx",
+        "content/docs/cookbook/restate-agent.mdx",
+        "content/docs/cookbook/rig.mdx",
+        "content/docs/cookbook/rod.mdx",
+        "content/docs/cookbook/scrape.mdx",
+        "content/docs/cookbook/selenium.mdx",
+        "content/docs/cookbook/stagehand.mdx",
+        "content/docs/cookbook/swiftide.mdx",
+        "content/docs/cookbook/temporal-browser-workflow.mdx",
+        "content/docs/cookbook/topics/browser-automation.mdx",
+        "content/docs/cookbook/topics/browser-use.mdx",
+        "content/docs/cookbook/topics/captchas.mdx",
+        "content/docs/cookbook/topics/computer-use.mdx",
+        "content/docs/cookbook/topics/mobile.mdx",
+        "content/docs/cookbook/topics/playwright.mdx",
+        "content/docs/cookbook/topics/subagents.mdx",
+        "content/docs/cookbook/topics/typed-output.mdx",
+        "content/docs/cookbook/trigger-dev-browser-job.mdx",
+        "content/docs/cookbook/vercel-ai-sdk-nextjs.mdx",
+        "content/docs/cookbook/vercel-ai-sdk.mdx",
+        "content/docs/cookbook/you-com-search.mdx",
+        "content/docs/integrations/agentkit.mdx",
+        "content/docs/integrations/agno.mdx",
+        "content/docs/integrations/ai-sdk.mdx",
+        "content/docs/integrations/browser-use.mdx",
+        "content/docs/integrations/claude-agent-sdk.mdx",
+        "content/docs/integrations/claude-code.mdx",
+        "content/docs/integrations/claude-computer-use.mdx",
+        "content/docs/integrations/codex.mdx",
+        "content/docs/integrations/crewai.mdx",
+        "content/docs/integrations/gemini-computer-use.mdx",
+        "content/docs/integrations/hermes-agent.mdx",
+        "content/docs/integrations/langgraph.mdx",
+        "content/docs/integrations/magnitude.mdx",
+        "content/docs/integrations/mastra.mdx",
+        "content/docs/integrations/notte.mdx",
+        "content/docs/integrations/openai-agents-sdk.mdx",
+        "content/docs/integrations/openai-computer-use.mdx",
+        "content/docs/integrations/openclaw.mdx",
+        "content/docs/integrations/pi-agent.mdx",
+        "content/docs/integrations/playwright.mdx",
+        "content/docs/integrations/puppeteer.mdx",
+        "content/docs/integrations/pydantic-ai.mdx",
+        "content/docs/integrations/replit.mdx",
+        "content/docs/integrations/selenium.mdx",
+        "content/docs/integrations/stackblitz-bolt.new.mdx",
+        "content/docs/integrations/stagehand.mdx",
+        "content/docs/integrations/x402.mdx"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#77",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 77,
+        "url": "https://github.com/steel-dev/docs/pull/77",
+        "title": "feat(changelog): stronger release evidence and generated cover images"
+      },
+      "commits": [
+        {
+          "shortSha": "060d6dc",
+          "url": "https://github.com/steel-dev/docs/commit/060d6dc28dc4463472542d60160e9d0189982ec5",
+          "subject": "feat(changelog): stronger release evidence and generated cover images (#77)"
+        }
+      ],
+      "changedFileCount": 36,
+      "changedFiles": [
+        ".github/workflows/changelog-draft.yml",
+        ".github/workflows/ci.yml",
+        "bun.lock",
+        "package.json",
+        "scripts/changelog/config.ts",
+        "scripts/changelog/cover.ts",
+        "scripts/changelog/imagegen/assets/fonts/Geist-SemiBold.ttf",
+        "scripts/changelog/imagegen/assets/grid.svg",
+        "scripts/changelog/imagegen/assets/steel-logo.svg",
+        "scripts/changelog/imagegen/background.ts",
+        "scripts/changelog/imagegen/cli.ts",
+        "scripts/changelog/imagegen/dither.ts",
+        "scripts/changelog/imagegen/index.ts",
+        "scripts/changelog/imagegen/openai.ts",
+        "scripts/changelog/imagegen/options.ts",
+        "scripts/changelog/imagegen/palettes.ts",
+        "scripts/changelog/imagegen/prompt.ts",
+        "scripts/changelog/imagegen/README.md",
+        "scripts/changelog/imagegen/render.ts",
+        "scripts/changelog/imagegen/template.ts",
+        "scripts/changelog/imagegen/text.ts",
+        "scripts/changelog/prompt.md",
+        "scripts/changelog/README.md",
+        "scripts/changelog/source.ts",
+        "scripts/changelog/state.json",
+        "scripts/generate-changelog-draft.ts",
+        "tests/changelog-v2.test.ts",
+        "tests/fixtures/changelog-v2.ts",
+        "tests/imagegen/e2e/cli.test.ts",
+        "tests/imagegen/integration/background.test.ts",
+        "tests/imagegen/integration/render.test.ts",
+        "tests/imagegen/integration/run.test.ts",
+        "tests/imagegen/unit/dither.test.ts",
+        "tests/imagegen/unit/options.test.ts",
+        "tests/imagegen/unit/prompt.test.ts",
+        "tests/imagegen/unit/text.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#80",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 80,
+        "url": "https://github.com/steel-dev/docs/pull/80",
+        "title": "fix(llms): exclude changelog entries from llms.txt"
+      },
+      "commits": [
+        {
+          "shortSha": "a4d2505",
+          "url": "https://github.com/steel-dev/docs/commit/a4d2505de8ddf6e0c7aee0c3c56351d29247f9b3",
+          "subject": "fix(llms): exclude changelog entries from llms.txt (#80)"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        "scripts/generate-llms-txt.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#81",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 81,
+        "url": "https://github.com/steel-dev/docs/pull/81",
+        "title": "feat(llms): serve markdown at .md-suffixed docs URLs"
+      },
+      "commits": [
+        {
+          "shortSha": "4b6631a",
+          "url": "https://github.com/steel-dev/docs/commit/4b6631aef5f350edbfdd950f837449afe722ad23",
+          "subject": "feat(llms): serve markdown at .md-suffixed docs URLs (#81)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        "lib/markdown-negotiation.ts",
+        "middleware.ts",
+        "tests/e2e/md-suffix.test.ts",
+        "tests/markdown-negotiation.test.ts",
+        "tests/middleware.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#82",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 82,
+        "url": "https://github.com/steel-dev/docs/pull/82",
+        "title": "feat(llms): point markdown pages at the llms.txt index"
+      },
+      "commits": [
+        {
+          "shortSha": "445f569",
+          "url": "https://github.com/steel-dev/docs/commit/445f56979b4910af765f81a8253af47636382128",
+          "subject": "feat(llms): point markdown pages at the llms.txt index (#82)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        "app/llms-full.txt/route.ts",
+        "app/llms.mdx/[[...slug]]/route.ts",
+        "lib/get-llm-text.ts",
+        "tests/e2e/llm-endpoints.test.ts",
+        "tests/get-llm-text.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#83",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 83,
+        "url": "https://github.com/steel-dev/docs/pull/83",
+        "title": "feat(llms): strip MDX noise from LLM-served markdown"
+      },
+      "commits": [
+        {
+          "shortSha": "dd6093b",
+          "url": "https://github.com/steel-dev/docs/commit/dd6093b0b8e588919579e7b9b01a68939e19b5ca",
+          "subject": "feat(llms): strip MDX noise from LLM-served markdown (#83)"
+        }
+      ],
+      "changedFileCount": 7,
+      "changedFiles": [
+        "lib/get-llm-text.ts",
+        "lib/llm-markdown.ts",
+        "lib/strip-faq-fences.ts",
+        "tests/e2e/llm-endpoints.test.ts",
+        "tests/get-llm-text.test.ts",
+        "tests/llm-markdown.test.ts",
+        "tests/strip-faq-fences.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#85",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 85,
+        "url": "https://github.com/steel-dev/docs/pull/85",
+        "title": "feat(llms): serve an /AGENTS.md agent guide"
+      },
+      "commits": [
+        {
+          "shortSha": "0371edd",
+          "url": "https://github.com/steel-dev/docs/commit/0371edd0139f56018597323fe875bd7c9df9ea5a",
+          "subject": "feat(llms): serve an /AGENTS.md agent guide (#85)"
+        }
+      ],
+      "changedFileCount": 7,
+      "changedFiles": [
+        "app/AGENTS.md/route.ts",
+        "lib/agent-instructions.ts",
+        "lib/markdown-negotiation.ts",
+        "next.config.mjs",
+        "tests/e2e/llm-endpoints.test.ts",
+        "tests/markdown-negotiation.test.ts",
+        "tests/middleware.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#86",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 86,
+        "url": "https://github.com/steel-dev/docs/pull/86",
+        "title": "fix(llms): serve markdown in place at the docs root"
+      },
+      "commits": [
+        {
+          "shortSha": "bf3a6d5",
+          "url": "https://github.com/steel-dev/docs/commit/bf3a6d5f1ac22e48d8f5a0780d65dbbad6ef3d4f",
+          "subject": "fix(llms): serve markdown in place at the docs root (#86)"
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": [
+        "middleware.ts",
+        "tests/e2e/llm-endpoints.test.ts",
+        "tests/middleware.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#87",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 87,
+        "url": "https://github.com/steel-dev/docs/pull/87",
+        "title": "fix(tests): give the Chromium imagegen suites room on CI"
+      },
+      "commits": [
+        {
+          "shortSha": "6a89b01",
+          "url": "https://github.com/steel-dev/docs/commit/6a89b01fe0be64e5ef452eb4b32cf630120f23bc",
+          "subject": "fix(tests): give the Chromium imagegen suites room on CI (#87)"
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": [
+        "tests/imagegen/e2e/cli.test.ts",
+        "tests/imagegen/integration/render.test.ts",
+        "tests/imagegen/integration/run.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#88",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 88,
+        "url": "https://github.com/steel-dev/docs/pull/88",
+        "title": "feat(robots): declare Content Signals for AI crawlers"
+      },
+      "commits": [
+        {
+          "shortSha": "e8c22d7",
+          "url": "https://github.com/steel-dev/docs/commit/e8c22d7ba89dbfe29242ce07633deeb92ec832e5",
+          "subject": "feat(robots): declare Content Signals for AI crawlers (#88)"
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": [
+        "public/robots.txt",
+        "tests/robots-txt.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#89",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 89,
+        "url": "https://github.com/steel-dev/docs/pull/89",
+        "title": "feat(skills): publish an Agent Skills discovery index"
+      },
+      "commits": [
+        {
+          "shortSha": "0da5617",
+          "url": "https://github.com/steel-dev/docs/commit/0da561773a1e948c874fe44eea5ebcd80d5a1dba",
+          "subject": "feat(skills): publish an Agent Skills discovery index (#89)"
+        }
+      ],
+      "changedFileCount": 4,
+      "changedFiles": [
+        ".gitignore",
+        "package.json",
+        "scripts/generate-agent-skills-index.ts",
+        "tests/agent-skills-index.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#90",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 90,
+        "url": "https://github.com/steel-dev/docs/pull/90",
+        "title": "feat(api): publish an RFC 9727 API catalog"
+      },
+      "commits": [
+        {
+          "shortSha": "b4d2ff0",
+          "url": "https://github.com/steel-dev/docs/commit/b4d2ff07b0c35d62a83e33102e58058617dd5abf",
+          "subject": "feat(api): publish an RFC 9727 API catalog (#90)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        "lib/markdown-negotiation.ts",
+        "next.config.mjs",
+        "public/.well-known/api-catalog",
+        "tests/api-catalog.test.ts",
+        "tests/e2e/llm-endpoints.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#91",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 91,
+        "url": "https://github.com/steel-dev/docs/pull/91",
+        "title": "docs(seo): scope Railway self-hosting page to Steel"
+      },
+      "commits": [
+        {
+          "shortSha": "54bc646",
+          "url": "https://github.com/steel-dev/docs/commit/54bc6464e9e7f54d72783b5fc352aa737e1090be",
+          "subject": "docs(seo): scope Railway self-hosting page to Steel (#91)"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        "content/docs/overview/self-hosting/railway.mdx"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#92",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 92,
+        "url": "https://github.com/steel-dev/docs/pull/92",
+        "title": "feat(seo): noindex LLM text endpoints"
+      },
+      "commits": [
+        {
+          "shortSha": "248aa75",
+          "url": "https://github.com/steel-dev/docs/commit/248aa75cd8e2e91dc306a9a449795b7056092777",
+          "subject": "feat(seo): noindex LLM text endpoints (#92)"
+        }
+      ],
+      "changedFileCount": 4,
+      "changedFiles": [
+        "app/llms-full.txt/route.ts",
+        "app/llms.mdx/[[...slug]]/route.ts",
+        "next.config.mjs",
+        "tests/e2e/llm-endpoints.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#93",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 93,
+        "url": "https://github.com/steel-dev/docs/pull/93",
+        "title": "chore(seo): add ex-sinks baseline to pulse reports"
+      },
+      "commits": [
+        {
+          "shortSha": "d6a338c",
+          "url": "https://github.com/steel-dev/docs/commit/d6a338cc1802d4c8c59945d74598a74273ca6d9a",
+          "subject": "chore(seo): add ex-sinks baseline to pulse reports (#93)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        ".claude/skills/seo/config.json",
+        ".claude/skills/seo/scripts/gsc-perf.mjs",
+        ".claude/skills/seo/SKILL.md",
+        "scripts/seo/pulse/reports/seo-2026-07.md",
+        "tests/seo-ex-sinks.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#94",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 94,
+        "url": "https://github.com/steel-dev/docs/pull/94",
+        "title": "docs(seo): answer definitional CAPTCHA intent on captcha-solving page"
+      },
+      "commits": [
+        {
+          "shortSha": "0c92546",
+          "url": "https://github.com/steel-dev/docs/commit/0c9254612339afcfcf4e759e1219827dcc9d031b",
+          "subject": "docs(seo): answer definitional CAPTCHA intent on captcha-solving page (#94)"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        "content/docs/overview/stealth/captcha-solving.mdx"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#95",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 95,
+        "url": "https://github.com/steel-dev/docs/pull/95",
+        "title": "feat(skills): publish complete skill archives with hardened generation"
+      },
+      "commits": [
+        {
+          "shortSha": "bb24bf5",
+          "url": "https://github.com/steel-dev/docs/commit/bb24bf571af63fc561874132f1786480dd20e456",
+          "subject": "feat(skills): publish complete skill archives with hardened generation (#95)"
+        }
+      ],
+      "changedFileCount": 7,
+      "changedFiles": [
+        ".env-example",
+        ".github/workflows/ci.yml",
+        "lib/markdown-negotiation.ts",
+        "next.config.mjs",
+        "scripts/generate-agent-skills-index.ts",
+        "tests/agent-skills-index.test.ts",
+        "tests/markdown-negotiation.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#96",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 96,
+        "url": "https://github.com/steel-dev/docs/pull/96",
+        "title": "fix(llms): serve canonical HTML to crawlers"
+      },
+      "commits": [
+        {
+          "shortSha": "96fbf2a",
+          "url": "https://github.com/steel-dev/docs/commit/96fbf2af599b1417fe4cee2ca59e73be23259b0d",
+          "subject": "fix(llms): serve canonical HTML to crawlers (#96)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        "lib/markdown-negotiation.ts",
+        "middleware.ts",
+        "tests/e2e/llm-endpoints.test.ts",
+        "tests/markdown-negotiation.test.ts",
+        "tests/middleware.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#98",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 98,
+        "url": "https://github.com/steel-dev/docs/pull/98",
+        "title": "fix(home): improve homepage semantics"
+      },
+      "commits": [
+        {
+          "shortSha": "9eefa07",
+          "url": "https://github.com/steel-dev/docs/commit/9eefa07d03be2a6d8810eaf7b1b2e63396d29650",
+          "subject": "fix(home): improve homepage semantics (#98)"
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": [
+        "app/(home)/_pages/page.en.tsx",
+        "app/layout.tsx",
+        "tests/e2e/llm-endpoints.test.ts"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#99",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 99,
+        "url": "https://github.com/steel-dev/docs/pull/99",
+        "title": "feat(seo): complete structured data entity graph"
+      },
+      "commits": [
+        {
+          "shortSha": "692e71e",
+          "url": "https://github.com/steel-dev/docs/commit/692e71e91b8df696b1f03c77078250e7c54dddc5",
+          "subject": "feat(seo): complete structured data entity graph (#99)"
+        }
+      ],
+      "changedFileCount": 10,
+      "changedFiles": [
+        "app/(home)/page.tsx",
+        "app/[...slug]/page.tsx",
+        "app/layout.tsx",
+        "components/page-jsonld.tsx",
+        "components/recipe-jsonld.tsx",
+        "lib/last-modified.ts",
+        "lib/structured-data.ts",
+        "tests/e2e/llm-endpoints.test.ts",
+        "tests/last-modified.test.ts",
+        "tests/structured-data.test.ts"
+      ]
+    }
+  ],
+  "authorSkipped": [],
+  "modelDiscarded": [
+    {
+      "text": "Updated canonical product descriptions and the pricing page snippet across docs metadata and agent-facing surfaces.",
+      "reason": "This was primarily positioning and retrieval-copy maintenance rather than a change to product behavior or documentation workflows.",
+      "redacted": false,
+      "references": [
+        {
+          "label": "docs 50fb203",
+          "url": "https://github.com/steel-dev/docs/commit/50fb2033f7aeaf0bd83c2bb70c4218a527065b05"
+        }
+      ]
+    }
+  ]
+}
