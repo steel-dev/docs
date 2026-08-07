@@ -90,6 +90,14 @@ export const CHANGELOG_REPOSITORIES: ChangelogRepository[] = [
   },
   {
     owner: 'steel-dev',
+    repo: 'pi-steel',
+    branch: 'main',
+    kind: 'browser',
+    mode: 'direct',
+    visibility: 'public',
+  },
+  {
+    owner: 'steel-dev',
     repo: 'steel-mcp-server',
     branch: 'main',
     kind: 'inactive',
