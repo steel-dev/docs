@@ -16,6 +16,7 @@ export const AGENT_INSTRUCTIONS = `# Steel Documentation
 - API base URL: \`https://api.steel.dev\`
 - WebSocket: \`wss://connect.steel.dev?apiKey=<key>&sessionId=<id>\`
 - API reference: https://steel.apidocumentation.com/api-reference
+- Brand design language (DESIGN.md): https://docs.steel.dev/DESIGN.md
 
 ## Agent Instructions
 

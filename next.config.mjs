@@ -30,6 +30,11 @@ const config = {
         permanent: true,
       },
       {
+        source: "/.well-known/design.md",
+        destination: "/DESIGN.md",
+        permanent: true,
+      },
+      {
         source: "/overview/llms-full.txt",
         destination: "/llms-full.txt",
         permanent: true,
@@ -269,11 +274,20 @@ const config = {
         ],
       },
       {
+        source: "/DESIGN.md",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex",
+          },
+        ],
+      },
+      {
         source: "/(.*)",
         headers: [
           {
             key: "Link",
-            value: '</llms.txt>; rel="alternate"; type="text/markdown", </llms-full.txt>; rel="alternate"; type="text/markdown", </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"',
+            value: '</llms.txt>; rel="alternate"; type="text/markdown", </llms-full.txt>; rel="alternate"; type="text/markdown", </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </DESIGN.md>; rel="design"; type="text/markdown"',
           },
         ],
       },
