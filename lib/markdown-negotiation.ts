@@ -34,6 +34,8 @@ const MARKDOWN_VARY_HEADERS = ['Accept', 'User-Agent'];
 const EXCLUDED_EXACT_PATHS = new Set([
   '/AGENTS',
   '/AGENTS.md',
+  '/DESIGN',
+  '/DESIGN.md',
   '/favicon.ico',
   '/llms-full.txt',
   '/llms.txt',
