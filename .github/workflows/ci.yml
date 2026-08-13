@@ -52,7 +52,7 @@ jobs:
           version: 3.17.1
           files: content/docs
           filter_mode: added
-          fail_level: none
+          fail_level: warning
 
       - name: Generate llms.txt files
         run: bun run generate-llms

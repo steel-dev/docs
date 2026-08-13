@@ -9,7 +9,7 @@ description: "Convex app that streams an AI agent's answer about any URL. The ag
 
 <RecipeQuickstart slug="convex-chat-with-page" />
 
-A [Convex](/cookbook/topics/convex) app where the user pastes a URL, asks a question, and an [AI agent](/cookbook/topics/agents) answers from the live page. The agent runs server-side as a `pageAgent` defined in `convex/agent.ts`, with a single tool, `scrapePage`, that fetches the URL through the `@steel-dev/convex` component and serves the markdown back in chunks. Tokens stream into the UI over websockets via `@convex-dev/agent`'s delta sync.
+A [Convex](/cookbook/topics/convex) app where the user pastes a URL, asks a question, and an [AI agent](/cookbook/topics/agents) answers from the live page. The agent runs server-side as a `pageAgent` defined in `convex/agent.ts`, with a single tool, `scrapePage`, that fetches the URL through the `@steel-dev/convex` component and serves the markdown back in chunks. Tokens stream into the UI over WebSockets via `@convex-dev/agent`'s delta sync.
 
 ```
 convex/
@@ -98,7 +98,7 @@ The result is then chunked at paragraph boundaries into ~25k-character pieces (`
 
 - **Plug in real auth.** `ownerId` is a single string. Replace the hardcoded `alice` / `bob` toggle in `App.tsx` with the user id from Clerk, WorkOS, or your auth provider, and the app becomes multi-tenant against real users.
 - **Add login walls.** Compose with the [`credentials`](/cookbook/credentials) recipe to log in to a real account before scraping, and the [`profiles`](/cookbook/profiles) recipe to keep cookies across sessions.
-- **Solve captchas in-session.** Steel's `solveCaptcha` flag handles the common challenges. Pass it through `commandArgs` on `steel.steel.scrape`.
+- **Solve CAPTCHAs in-session.** Steel's `solveCaptcha` flag handles the common challenges. Pass it through `commandArgs` on `steel.steel.scrape`.
 - **Swap models.** `openai.chat("gpt-5.4-mini")` is one line in `convex/agent.ts`. Any `@ai-sdk/openai` model that supports tool calls works.
 - **Adjust the cache TTL.** `CACHE_TTL_MS` is 10 minutes in `scrape.ts`. Lower for fast-moving content, raise for static articles.
 

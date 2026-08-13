@@ -7,6 +7,7 @@ action:
   name: replace
 swap:
   '\bCaptcha\b|\bcaptcha\b': CAPTCHA
+  '\bCaptchas\b|\bcaptchas\b': CAPTCHAs
   '\bGithub\b': GitHub
   '\bJavascript\b': JavaScript
   '\bNodeJS\b|\bNodejs\b|\bnodejs\b|\bnode\.js\b': Node.js
@@ -16,3 +17,4 @@ swap:
   '\bSteel skills\b|\bsteel Skills\b': Steel Skills
   '\bTypescript\b': TypeScript
   '\bWebsocket\b|\bwebsocket\b': WebSocket
+  '\bWebsockets\b|\bwebsockets\b': WebSockets
