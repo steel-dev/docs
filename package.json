@@ -16,6 +16,8 @@
     "validate-external-links": "lychee --config lychee.toml 'content/docs/**/*.mdx'",
     "spell": "cspell --no-progress --no-summary 'content/**/*.{md,mdx}'",
     "spell:full": "cspell --show-context 'content/**/*.{md,mdx}'",
+    "prose": "vale --no-exit content/docs",
+    "prose:sync": "vale sync",
     "generate-openapi": "bun run ./scripts/fetch-openapi-specs.mts",
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
     "generate-agent-skills": "bun run ./scripts/generate-agent-skills-index.ts",

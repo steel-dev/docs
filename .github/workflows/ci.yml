@@ -43,6 +43,17 @@ jobs:
       - name: Run cspell
         run: bun run spell
 
+      - name: Install MDX parser
+        run: bun add --global mdx2vast@0.5.0
+
+      - name: Run Vale prose checks
+        uses: vale-cli/vale-action@v3
+        with:
+          version: 3.17.1
+          files: content/docs
+          filter_mode: added
+          fail_level: none
+
       - name: Generate llms.txt files
         run: bun run generate-llms
         env:

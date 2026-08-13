@@ -20,6 +20,20 @@ Example structure:
 
 ### Writing Guidelines
 
+After installing dependencies, install [Vale](https://vale.sh/docs/install), sync the pinned style
+packages, and run the prose checks before submitting documentation changes:
+
+```bash
+brew install vale
+bun add --global mdx2vast@0.5.0
+bun run prose:sync
+bun run prose
+```
+
+Vale checks MDX-aware editorial and Steel terminology rules. `cspell` remains the source of truth
+for spelling and project vocabulary. During the initial rollout, Vale reports warnings without
+failing the command or CI.
+
 Follow our content rhythm pattern:
 
 ```

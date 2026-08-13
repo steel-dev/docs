@@ -1,0 +1,18 @@
+extends: substitution
+message: "Use '%s' instead of '%s'."
+link: https://github.com/steel-dev/docs
+level: warning
+ignorecase: false
+action:
+  name: replace
+swap:
+  '\bCaptcha\b|\bcaptcha\b': CAPTCHA
+  '\bGithub\b': GitHub
+  '\bJavascript\b': JavaScript
+  '\bNodeJS\b|\bNodejs\b|\bnodejs\b|\bnode\.js\b': Node.js
+  '\bOpenai\b': OpenAI
+  '\bSteel api\b|\bsteel API\b|\bsteel api\b': Steel API
+  '\bSteel cli\b|\bsteel CLI\b|\bsteel cli\b': Steel CLI
+  '\bSteel skills\b|\bsteel Skills\b': Steel Skills
+  '\bTypescript\b': TypeScript
+  '\bWebsocket\b|\bwebsocket\b': WebSocket
