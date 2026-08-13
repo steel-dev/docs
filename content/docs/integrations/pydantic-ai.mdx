@@ -64,7 +64,7 @@ Create a session with `steel.sessions.create()`, connect via `chromium.connect_o
 
 ### Does Pydantic AI work with Steel's proxies, stealth mode, and CAPTCHA solving?
 
-Yes — set them on `sessions.create()` (e.g. `use_proxy`, `solve_captcha`, `stealth_config`). The agent only sees a Playwright `Page` through `ctx.deps`, so session options never leak into tool code.
+Yes — set them on `sessions.create()` (for example `use_proxy`, `solve_captcha`, `stealth_config`). The agent only sees a Playwright `Page` through `ctx.deps`, so session options never leak into tool code.
 :::
 
 

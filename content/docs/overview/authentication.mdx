@@ -21,7 +21,7 @@ A single key grants access to your entire organization's Steel resources: sessio
 
 1. Sign in at [app.steel.dev](https://app.steel.dev).
 2. Open **Settings → API Keys** ([direct link](https://app.steel.dev/settings/api-keys)).
-3. Click **Create API Key**, give it a descriptive name (e.g. `production`, `local-dev`, `ci`), and copy the value.
+3. Click **Create API Key**, give it a descriptive name (for example `production`, `local-dev`, `ci`), and copy the value.
 
 You can also provision a Steel project and `STEEL_API_KEY` from the Stripe CLI with
 [`stripe projects add steel/browser`](/overview/stripe-projects).
@@ -165,7 +165,7 @@ To rotate a key without downtime:
 3. Verify traffic is flowing under the new key (the "Last used" timestamp in the dashboard will update).
 4. Delete the old key.
 
-We recommend using separate keys per environment (e.g. `production`, `staging`, `local-dev`) so you can rotate them independently and narrow the blast radius of a leak.
+We recommend using separate keys per environment (for example `production`, `staging`, `local-dev`) so you can rotate them independently and narrow the blast radius of a leak.
 
 ### Security Best Practices
 

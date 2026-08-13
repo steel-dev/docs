@@ -9,7 +9,7 @@ description: Use Steel with chromiumoxide to connect over CDP, drive the handler
 
 <RecipeQuickstart slug="chromiumoxide" />
 
-chromiumoxide speaks the Chrome DevTools Protocol over a websocket, which is exactly what a Steel session exposes. `Browser::connect` takes the session's websocket URL and hands back a connected browser plus a `Handler`. From there you get plain async chromiumoxide: `new_page`, `content`, `get_title`, `find_elements`, `evaluate`, `screenshot`. No local Chrome, no `chromedriver`, no display, just [browser automation](/cookbook/topics/browser-automation) over CDP against a cloud browser.
+chromiumoxide speaks the Chrome DevTools Protocol over a WebSocket, which is exactly what a Steel session exposes. `Browser::connect` takes the session's WebSocket URL and hands back a connected browser plus a `Handler`. From there you get plain async chromiumoxide: `new_page`, `content`, `get_title`, `find_elements`, `evaluate`, `screenshot`. No local Chrome, no `chromedriver`, no display, just [browser automation](/cookbook/topics/browser-automation) over CDP against a cloud browser.
 
 The connection is one line, but it returns a tuple, and the second half is the part that trips everyone up:
 

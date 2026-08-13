@@ -100,7 +100,7 @@ You can easily target countries, states (US only), or cities:
 
 **Quality vs. Specificity**
 
-The more specific your targeting, the smaller the IP pool. For the best performance and highest quality IPs, use the broadest targeting that meets your needs (e.g., prefer country-level over city-level). Generally, we’ve seen US and GB proxies have the highest quality.
+The more specific your targeting, the smaller the IP pool. For the best performance and highest quality IPs, use the broadest targeting that meets your needs (for example, prefer country-level over city-level). Generally, we’ve seen US and GB proxies have the highest quality.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -241,7 +241,7 @@ Follow these guidelines to get the most out of your proxies and build more resil
     For the best performance, always start with country-level targeting. The larger IP pool provides higher quality and better success rates. Only use state or city-level targeting when it is a strict requirement for your use case.
 
 3.  **Build Fallback Logic in Your Code**
-    Proxy connections can sometimes fail (e.g., `ERR_TUNNEL_CONNECTION_FAILED`). This is normal. Your code should anticipate this by including retry logic. For critical tasks, consider having a fallback plan, such as retrying the request without a proxy or with a different proxy configuration.
+    Proxy connections can sometimes fail (for example, `ERR_TUNNEL_CONNECTION_FAILED`). This is normal. Your code should anticipate this by including retry logic. For critical tasks, consider having a fallback plan, such as retrying the request without a proxy or with a different proxy configuration.
 
 4.  **Monitor Success Rates with Narrow Targeting**
     If you must use city-level targeting, closely monitor your job success rates. A high rate of failure could mean the local IP pool is too small or contains IPs that have been blocked or are of lower quality.

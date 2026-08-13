@@ -9,7 +9,7 @@ description: "Use Steel with Rod's fluent, chainable API to connect over CDP and
 
 <RecipeQuickstart slug="rod" />
 
-Rod talks the Chrome DevTools Protocol directly and exposes it through a chainable, panic-on-error API. A Steel session is a Chrome instance reachable over a websocket, so `ControlURL` is the only seam you need: hand Rod the session's websocket URL with your key appended, and the rest of your code is ordinary Rod against a browser that runs in Steel's cloud with stealth, proxies, and a live viewer. Nothing about the queries below knows or cares that the browser is remote. It is the same connect-over-CDP [browser automation](/cookbook/topics/browser-automation) the rest of the cookbook uses.
+Rod talks the Chrome DevTools Protocol directly and exposes it through a chainable, panic-on-error API. A Steel session is a Chrome instance reachable over a WebSocket, so `ControlURL` is the only seam you need: hand Rod the session's WebSocket URL with your key appended, and the rest of your code is ordinary Rod against a browser that runs in Steel's cloud with stealth, proxies, and a live viewer. Nothing about the queries below knows or cares that the browser is remote. It is the same connect-over-CDP [browser automation](/cookbook/topics/browser-automation) the rest of the cookbook uses.
 
 ```go
 cdpURL := fmt.Sprintf("%s&apiKey=%s", session.WebsocketURL, apiKey)
@@ -23,9 +23,9 @@ page := browser.MustPage("https://quotes.toscrape.com").MustWaitStable()
 
 ## The connect URL
 
-`session.WebsocketURL` already carries Steel's session identifier. The one thing you add is your API key as a query parameter, which is why the code formats `%s&apiKey=%s` rather than passing the URL through untouched. Rod connects to exactly the URL you give it and does not rewrite the address, so the key has to be in the string before `ControlURL` sees it. If you forget it, the websocket handshake is rejected and `MustConnect` panics before the first page loads.
+`session.WebsocketURL` already carries Steel's session identifier. The one thing you add is your API key as a query parameter, which is why the code formats `%s&apiKey=%s` rather than passing the URL through untouched. Rod connects to exactly the URL you give it and does not rewrite the address, so the key has to be in the string before `ControlURL` sees it. If you forget it, the WebSocket handshake is rejected and `MustConnect` panics before the first page loads.
 
-The session itself comes from the Steel SDK. `client.Sessions.Create` returns a `*Session` whose `WebsocketURL`, `SessionViewerURL`, and `ID` fields drive the rest of the program: the websocket URL to connect, the viewer URL to print, and the ID to release at the end.
+The session itself comes from the Steel SDK. `client.Sessions.Create` returns a `*Session` whose `WebsocketURL`, `SessionViewerURL`, and `ID` fields drive the rest of the program: the WebSocket URL to connect, the viewer URL to print, and the ID to release at the end.
 
 ```go
 session, err := client.Sessions.Create(ctx, steel.SessionCreateParams{

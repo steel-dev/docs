@@ -13,7 +13,7 @@ Pair the agent with a Next.js chat UI and embed Steel's Live View iframe alongsi
 
 *   **Steel API Key**: Active Steel subscription
 *   **Node.js**: v20+
-*   **Packages**: `ai`, a provider package (e.g., `@ai-sdk/anthropic`), `steel-sdk`, `playwright`, `zod`
+*   **Packages**: `ai`, a provider package (for example, `@ai-sdk/anthropic`), `steel-sdk`, `playwright`, `zod`
 *   **Model provider key**: Anthropic, OpenAI, or any AI SDK-supported provider
 
 ### Connect Steel to the Vercel AI SDK
@@ -59,7 +59,7 @@ Inside a `tool()`'s `execute`, call `steel.sessions.create()` and connect with `
 
 ### Does the Vercel AI SDK work with Steel's proxies, stealth mode, and CAPTCHA solving?
 
-Yes — pass them to `sessions.create()` (e.g. `useProxy`, `solveCaptcha`, `stealthConfig`). They're session-creation options and don't touch the AI SDK's tool or streaming layers.
+Yes — pass them to `sessions.create()` (for example `useProxy`, `solveCaptcha`, `stealthConfig`). They're session-creation options and don't touch the AI SDK's tool or streaming layers.
 
 ### Can users watch the browser while the agent runs in a chat UI?
 
