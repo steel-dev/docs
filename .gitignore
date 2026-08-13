@@ -29,3 +29,7 @@ tsconfig.tsbuildinfo
 
 # seo-pulse runtime state (regenerable; keep reports/, ignore raw snapshots/)
 scripts/seo/pulse/snapshots/
+
+# Vale downloads third-party packages here; keep only the local Steel style.
+.github/styles/*
+!.github/styles/Steel/
