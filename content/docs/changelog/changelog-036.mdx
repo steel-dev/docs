@@ -1,0 +1,47 @@
+---
+title: "Changelog #036"
+sidebarTitle: "Changelog #036"
+llm: true
+image: "/images/changelog/36.png"
+imageAlt: "Announcing Changelog #036"
+publishedAt: "2026-08-14"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/36.png"
+  alt="Announcing Changelog #036"
+  width={800}
+  height={400}
+/>
+Hey everyone. This release adds better session visibility and quota metadata, expands Pi’s browser tooling, and includes reliability fixes across session cleanup and WebSocket connections.
+
+### ⭐ New
+
+#### Accessibility-first browser tools for Pi
+
+The official Pi extension now supports accessibility snapshots, semantic targeting by role, name, or text, and locally saved artifacts across its browser tools.
+
+*   Session create responses now include concurrency limit, active session, and remaining capacity headers, including on concurrency-limit 429 responses.
+
+*   The session viewer now supports a fullscreen live view.
+
+*   Managed browser sessions can now access extension pages while Steel’s internal extension pages remain protected.
+
+### 🔧 Improvements
+
+*   Session release now retries failed browser cleanup in the background, with a managed-browser watchdog as a final backstop against orphaned browsers and leaked concurrency slots.
+
+*   Extension archives are now copied server-side into session storage with retries for transient storage failures.
+
+*   The console received a broader UI refresh across the session viewer, agent traces, billing, settings, and onboarding, including keyboard seeking and improved session details.
+
+*   Docs now include a task-based session configuration guide and examples for reserving session IDs in Node and Python.
+
+### 🐛 Bug Fixes
+
+*   Fixed WebSocket proxy cleanup so abandoned or closed connections no longer retain file descriptors and degrade API availability.
+
+*   Fixed log redaction so credentials embedded in URL values, including proxy URLs, are removed before logging.
+
+*   Fixed agent traces so scroll actions use the correct icon and alignment.
