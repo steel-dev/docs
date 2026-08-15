@@ -7,6 +7,8 @@
     "quickstart",
     "configuration",
     "session-lifecycle",
+    "session-logs",
+    "session-audit-export",
     "mobile-mode",
     "fullscreen-mode",
     "multi-region",
