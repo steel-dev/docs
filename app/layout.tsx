@@ -15,6 +15,7 @@ const OG_IMAGE = docsPath('/og/overview');
 
 export const metadata: Metadata = {
   metadataBase: new URL(DOCS_ORIGIN),
+  icons: { icon: docsPath('/favicon.ico') },
   applicationName: DOCS_SITE_NAME,
   title: {
     template: `%s | ${DOCS_SITE_NAME}`,
