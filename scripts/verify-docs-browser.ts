@@ -49,7 +49,8 @@ try {
     await page.waitForURL('**/docs/overview/authentication');
     await page.getByRole('heading', { name: 'Authentication', exact: true }).waitFor();
     if (name === 'mobile') await page.locator('[aria-label="Search"]:visible').first().click();
-    else await page.getByText('Search...', { exact: true }).filter({ visible: true }).first().click();
+    else
+      await page.getByText('Search...', { exact: true }).filter({ visible: true }).first().click();
     const dialog = page.getByRole('dialog');
     await dialog.locator('input').fill('Steel CLI');
     await dialog.getByRole('button', { name: 'Steel CLI', exact: true }).first().click();
