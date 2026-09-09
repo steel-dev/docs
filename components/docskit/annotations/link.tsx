@@ -1,5 +1,5 @@
 import type { AnnotationHandler } from 'codehike/code';
-import Link from 'next/link';
+import { DocsLink as Link } from '@/components/docs-link';
 
 export const link: AnnotationHandler = {
   name: 'link',

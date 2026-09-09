@@ -16,6 +16,7 @@ import {
   RustIcon,
   TSIcon,
 } from '@/components/ui/icon';
+import { docsUrl } from '@/lib/docs-path';
 import SteelLogo from '@/public/images/logo.png';
 
 export default function HomePage() {
@@ -203,7 +204,7 @@ export default function HomePage() {
                 icon={<Sparkles />}
                 href="/llms.txt"
                 title="Instructions for AI Agents"
-                description="Point your agent to docs.steel.dev/llms.txt for a fast start with Steel."
+                description={`Point your agent to ${docsUrl('/llms.txt').replace('https://', '')} for a fast start with Steel.`}
               />
             </Cards>
           </section>

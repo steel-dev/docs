@@ -3,8 +3,8 @@
 import { cva } from 'class-variance-authority';
 import { isWithinInterval, parseISO } from 'date-fns';
 import { X } from 'lucide-react';
-import Link from 'next/link';
 import { type HTMLAttributes, useCallback, useEffect, useState } from 'react';
+import { DocsLink as Link } from '@/components/docs-link';
 import { cn } from '@/lib/utils';
 import { Button } from './button';
 

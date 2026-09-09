@@ -1,9 +1,10 @@
-import Link, { type LinkProps } from 'fumadocs-core/link';
 import { ChevronRight } from 'lucide-react';
 import type { HTMLAttributes, ReactNode } from 'react';
+import { DocsFumadocsLink as Link, type LinkProps } from '@/components/docs-link';
 import { CopyButton } from '@/components/docskit/copy-button';
 import { InteractiveBadge } from '@/components/interactive-badge';
 import { Badge } from '@/components/ui/badge';
+import { docsPath } from '@/lib/docs-path';
 import { cn } from '@/lib/utils';
 
 export function Cards(props: HTMLAttributes<HTMLDivElement>): React.ReactElement {
@@ -313,7 +314,7 @@ export function ToolCard({ icon, title, href, className }: ToolCardProps): React
 
   if (href) {
     return (
-      <a href={href} className={cn('col-span-6 md:col-span-4', className)}>
+      <a href={docsPath(href)} className={cn('col-span-6 md:col-span-4', className)}>
         {content}
       </a>
     );

@@ -1,8 +1,8 @@
 'use client';
 
 import { Check, Copy } from 'lucide-react';
-import Link from 'next/link';
 import { useState } from 'react';
+import { DocsLink as Link } from '@/components/docs-link';
 
 interface Props {
   // CLI-facing identifier (basename of registry.yaml's `path`, e.g.

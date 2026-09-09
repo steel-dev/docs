@@ -1,4 +1,5 @@
 import type { Metadata } from 'next/types';
+import { docsPath, docsUrl, stripDocsPath } from '@/lib/docs-path';
 
 const defaultMetadata: Metadata = {
   title: 'Steel Docs',
@@ -8,11 +9,11 @@ const defaultMetadata: Metadata = {
     title: 'Steel Docs',
     description:
       "Find all the guides and resources you need to build with Steel's browser automation platform",
-    url: 'https://docs.steel.dev',
+    url: docsUrl('/'),
     siteName: 'Steel Docs',
     images: [
       {
-        url: '/images/logo.png',
+        url: docsPath('/images/logo.png'),
         width: 800,
         height: 600,
       },
@@ -26,7 +27,7 @@ const defaultMetadata: Metadata = {
     description:
       "Find all the guides and resources you need to build with Steel's browser automation platform",
     creator: '@steelsystems',
-    images: ['/images/logo.png'],
+    images: [docsPath('/images/logo.png')],
   },
 };
 
@@ -38,13 +39,13 @@ const overviewMetadata: Partial<Metadata> = {
     title: 'Steel Documentation',
     description:
       "Find all the guides and resources you need to build with Steel's browser automation platform.",
-    images: [{ url: '/images/logo.png', width: 800, height: 600 }],
+    images: [{ url: docsPath('/images/logo.png'), width: 800, height: 600 }],
   },
   twitter: {
     title: 'Steel Documentation',
     description:
       "Find all the guides and resources you need to build with Steel's browser automation platform.",
-    images: ['/images/logo.png'],
+    images: [docsPath('/images/logo.png')],
   },
 };
 
@@ -54,12 +55,12 @@ const integrationsMetadata: Partial<Metadata> = {
   openGraph: {
     title: 'Integrations',
     description: 'Learn how to integrate Steel with popular browser agents and automation tools.',
-    images: [{ url: '/images/logo.png', width: 800, height: 600 }],
+    images: [{ url: docsPath('/images/logo.png'), width: 800, height: 600 }],
   },
   twitter: {
     title: 'Integrations',
     description: 'Learn how to integrate Steel with popular browser agents and automation tools.',
-    images: ['/images/logo.png'],
+    images: [docsPath('/images/logo.png')],
   },
 };
 
@@ -69,12 +70,12 @@ const cookbookMetadata: Partial<Metadata> = {
   openGraph: {
     title: 'Cookbook',
     description: 'Practical recipes and examples for automating browsers and workflows with Steel.',
-    images: [{ url: '/images/logo.png', width: 800, height: 600 }],
+    images: [{ url: docsPath('/images/logo.png'), width: 800, height: 600 }],
   },
   twitter: {
     title: 'Cookbook',
     description: 'Practical recipes and examples for automating browsers and workflows with Steel.',
-    images: ['/images/logo.png'],
+    images: [docsPath('/images/logo.png')],
   },
 };
 
@@ -84,12 +85,12 @@ const changelogMetadata: Partial<Metadata> = {
   openGraph: {
     title: 'Changelog',
     description: 'Stay up to date with the latest features, improvements, and fixes in Steel.',
-    images: [{ url: '/images/logo.png', width: 800, height: 600 }],
+    images: [{ url: docsPath('/images/logo.png'), width: 800, height: 600 }],
   },
   twitter: {
     title: 'Changelog',
     description: 'Stay up to date with the latest features, improvements, and fixes in Steel.',
-    images: ['/images/logo.png'],
+    images: [docsPath('/images/logo.png')],
   },
 };
 
@@ -114,6 +115,7 @@ export const baseUrl =
     : new URL(`https://${process.env.NEXT_PUBLIC_VERCEL_URL!}`);
 
 export function getRouteMetadata(path: string): Partial<Metadata> {
+  path = stripDocsPath(path);
   if (path.startsWith('/overview')) return overviewMetadata;
   if (path.startsWith('/integrations')) return integrationsMetadata;
   if (path.startsWith('/cookbook')) return cookbookMetadata;

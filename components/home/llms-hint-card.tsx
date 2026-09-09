@@ -4,9 +4,10 @@
 
 import { Check, Copy, Sparkles } from 'lucide-react';
 import * as React from 'react';
+import { docsUrl } from '@/lib/docs-path';
 import { cn } from '@/lib/utils';
 
-const LLMS_URL = 'https://docs.steel.dev/llms-full.txt';
+const LLMS_URL = docsUrl('/llms-full.txt');
 
 export function LlmsHintCard() {
   const [copied, setCopied] = React.useState(false);
@@ -20,7 +21,8 @@ export function LlmsHintCard() {
             Building with an AI agent?
           </h3>
           <p className="text-muted-foreground text-sm text-stone-500">
-            Point your coding agent to docs.steel.dev/llms-full.txt for a fast start with Steel.
+            Point your coding agent to {LLMS_URL.replace('https://', '')} for a fast start with
+            Steel.
           </p>
         </div>
         <button

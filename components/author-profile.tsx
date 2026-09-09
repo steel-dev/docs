@@ -1,8 +1,6 @@
 import { Github, Globe } from 'lucide-react';
-import Link from 'next/link';
-import { getAuthorPersonId } from '@/lib/structured-data';
-
-const SITE_URL = 'https://docs.steel.dev';
+import { DocsLink as Link } from '@/components/docs-link';
+import { getAuthorPersonId, DOCS_URL as SITE_URL } from '@/lib/structured-data';
 
 interface Props {
   handle: string;

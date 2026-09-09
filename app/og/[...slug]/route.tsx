@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import type { NextRequest } from 'next/server';
+import { stripDocsPath } from '@/lib/docs-path';
 import { source } from '@/lib/source';
 
 export const dynamic = 'force-static';
@@ -144,6 +145,6 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ slug: st
 
 export function generateStaticParams() {
   return source.getPages().map((page) => ({
-    slug: page.url.split('/').filter(Boolean),
+    slug: stripDocsPath(page.url).split('/').filter(Boolean),
   }));
 }

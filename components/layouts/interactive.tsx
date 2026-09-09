@@ -1,8 +1,8 @@
 'use client';
 
 import { Check } from 'lucide-react';
-import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { DocsLink as Link } from '@/components/docs-link';
 import { cn } from '@/lib/utils';
 import { usePageData } from './page';
 

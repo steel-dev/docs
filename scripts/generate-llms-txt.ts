@@ -3,6 +3,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import matter from 'gray-matter';
 import { AGENT_INSTRUCTIONS } from '../lib/agent-instructions';
+import { DOCS_ORIGIN, DOCS_PATH_PREFIX, stripDocsPath } from '../lib/docs-path';
 import { source } from '../lib/source';
 
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
@@ -16,7 +17,7 @@ interface GenerationConfig {
 // Environment variables (optional):
 // LLMS_BASE_URL - URL for llms.txt (default: "https://docs.steel.dev")
 const config: GenerationConfig = {
-  productionUrl: process.env.LLMS_BASE_URL || 'https://docs.steel.dev',
+  productionUrl: process.env.LLMS_BASE_URL || `${DOCS_ORIGIN}${DOCS_PATH_PREFIX}`,
 };
 
 interface PageMetadata {
@@ -54,11 +55,12 @@ function getAllPages(): PageMetadata[] {
     .filter(shouldIncludePage)
     .map((page) => {
       // Extract section from URL (split by / and filter out empty strings)
-      const urlParts = page.url.split('/').filter(Boolean);
+      const internalPath = stripDocsPath(page.url);
+      const urlParts = internalPath.split('/').filter(Boolean);
       const section = urlParts.slice(0, -1); // All parts except the last one
 
       // Clean URL for content links (remove locale prefix)
-      let cleanUrl = page.url;
+      let cleanUrl = internalPath;
       const locales = ['en', 'es']; // Add your supported locales here
       if (urlParts.length > 0 && locales.includes(urlParts[0])) {
         // Remove the locale prefix for content links
@@ -93,7 +95,7 @@ function getAllPages(): PageMetadata[] {
       return {
         title,
         description: ((frontmatter as any)?.description as string | undefined) || '',
-        url: page.url, // Keep original URL for file path generation
+        url: internalPath, // File paths remain unprefixed; routing owns /docs.
         cleanUrl: cleanUrl, // Add clean URL for content links
         section: section,
       };

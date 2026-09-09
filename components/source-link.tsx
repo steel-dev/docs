@@ -1,5 +1,5 @@
 import { Github } from 'lucide-react';
-import Link from 'next/link';
+import { DocsLink as Link } from '@/components/docs-link';
 
 interface Props {
   href: string;

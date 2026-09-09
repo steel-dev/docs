@@ -6,6 +6,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { gzipSync } from 'node:zlib';
 import matter from 'gray-matter';
+import { docsPath } from '../lib/docs-path';
 
 /** Discovery schema this index conforms to: cloudflare/agent-skills-discovery-rfc. */
 export const AGENT_SKILLS_SCHEMA = 'https://schemas.agentskills.io/discovery/0.2.0/schema.json';
@@ -182,7 +183,7 @@ export function buildAgentSkillsIndex(artifacts: SkillArtifact[]): AgentSkillsIn
         name: artifact.name,
         type: 'archive' as const,
         description: artifact.description,
-        url: `/.well-known/agent-skills/${artifact.name}.tar.gz`,
+        url: docsPath(`/.well-known/agent-skills/${artifact.name}.tar.gz`),
         digest: `sha256:${createHash('sha256').update(artifact.content).digest('hex')}`,
       };
     }),

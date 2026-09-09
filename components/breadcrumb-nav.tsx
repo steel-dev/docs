@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { Fragment } from 'react';
+import { DocsLink as Link } from '@/components/docs-link';
 import {
   Breadcrumb,
   BreadcrumbItem,

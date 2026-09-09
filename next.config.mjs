@@ -14,7 +14,10 @@ const config = {
     // Add any Turbopack-specific options here (currently optional)
   },
   async rewrites() {
-    return prefix ? { beforeFiles: [{ source: `${prefix}/:path*`, destination: "/:path*" }] } : [];
+    return prefix ? { beforeFiles: [
+      { source: `${prefix}/.well-known/api-catalog`, destination: "/api/docs-catalog" },
+      { source: `${prefix}/:path*`, destination: "/:path*" },
+    ] } : [];
   },
   redirects: async () => {
     return [
@@ -301,5 +304,25 @@ const config = {
     domains: ["cdn.openai.com", "github.com", "avatars.githubusercontent.com"],
   },
 };
+
+if (prefix) {
+  const redirects = config.redirects;
+  config.redirects = async () => (await redirects()).map((route) => ({
+    ...route,
+    source: `${prefix}${route.source}`,
+    destination: route.destination.startsWith('/') ? `${prefix}${route.destination === '/' ? '' : route.destination}` : route.destination,
+  }));
+  const headers = config.headers;
+  config.headers = async () => (await headers()).flatMap((route) => {
+    const mapped = {
+    ...route,
+    source: `${prefix}${route.source}`,
+    headers: route.headers.map((header) => header.key === 'Link'
+      ? { ...header, value: header.value.replaceAll('</', `<${prefix}/`) }
+      : header),
+    };
+    return route.source === '/(.*)' ? [mapped, { ...mapped, source: prefix }] : [mapped];
+  });
+}
 
 export default prefix ? withMicrofrontends(withMDX(config)) : withMDX(config);

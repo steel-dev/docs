@@ -7,14 +7,14 @@ import type { ReactNode } from 'react';
 import { SiteIdentityJsonLd } from '@/components/page-jsonld';
 import { inter, jetBrainsMono } from '@/fonts';
 import { KeyboardShortcutsProvider } from '@/hooks/use-keyboard-shortcuts';
-import { docsPath } from '@/lib/docs-path';
+import { DOCS_ORIGIN, docsPath } from '@/lib/docs-path';
 import { DOCS_SITE_DESCRIPTION, DOCS_SITE_NAME } from '@/lib/structured-data';
 import { QueryProvider } from '@/providers/query-provider';
 
-const OG_IMAGE = '/og/overview';
+const OG_IMAGE = docsPath('/og/overview');
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://docs.steel.dev'),
+  metadataBase: new URL(DOCS_ORIGIN),
   applicationName: DOCS_SITE_NAME,
   title: {
     template: `%s | ${DOCS_SITE_NAME}`,
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description: DOCS_SITE_DESCRIPTION,
   alternates: {
     types: {
-      'text/plain': '/llms.txt',
+      'text/plain': docsPath('/llms.txt'),
     },
   },
   openGraph: {

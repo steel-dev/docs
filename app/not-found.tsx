@@ -3,12 +3,12 @@
 import type { Metadata } from 'next';
 import { Card, Cards } from '@/components/card';
 import { LlmsHintCard } from '@/components/home/llms-hint-card';
+import { docsUrl } from '@/lib/docs-path';
 
 export const metadata: Metadata = {
   title: 'Page not found',
   other: {
-    'ai-context':
-      'Steel documentation 404. For an LLM-optimized index of all Steel docs (Sessions API, CAPTCHAs, proxies, SDKs), fetch https://docs.steel.dev/llms.txt',
+    'ai-context': `Steel documentation 404. For an LLM-optimized index of all Steel docs (Sessions API, CAPTCHAs, proxies, SDKs), fetch ${docsUrl('/llms.txt')}`,
   },
 };
 

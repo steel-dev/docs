@@ -1,6 +1,6 @@
 'use client';
-import Link, { type LinkProps } from 'fumadocs-core/link';
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { DocsFumadocsLink as Link, type LinkProps } from '@/components/docs-link';
 import { cn } from '../../lib/utils';
 
 export interface NavProviderProps {
