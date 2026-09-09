@@ -31,6 +31,8 @@ try {
       const headers = route.request().headers();
       if (new URL(route.request().url()).origin === origin && bypass) {
         headers['x-vercel-protection-bypass'] = bypass;
+      } else {
+        delete headers['x-vercel-protection-bypass'];
       }
       return route.continue({ headers });
     });
@@ -47,12 +49,13 @@ try {
     await page.waitForURL('**/docs/overview/authentication');
     await page.getByRole('heading', { name: 'Authentication', exact: true }).waitFor();
     if (name === 'mobile') await page.locator('[aria-label="Search"]:visible').first().click();
-    else await page.getByText('Search...', { exact: true }).first().click();
+    else await page.getByText('Search...', { exact: true }).filter({ visible: true }).first().click();
     const dialog = page.getByRole('dialog');
     await dialog.locator('input').fill('Steel CLI');
-    await dialog.locator('a[href^="/docs/overview/steel-cli"]').first().click();
+    await dialog.getByRole('button', { name: 'Steel CLI', exact: true }).first().click();
     await page.waitForURL('**/docs/overview/steel-cli*');
-    const anchor = await page.locator('h2[id]').first().getAttribute('id');
+    await page.getByRole('heading', { name: 'Steel CLI', exact: true }).waitFor();
+    const anchor = await page.locator('article h2[id]').first().getAttribute('id');
     if (!anchor) throw new Error('Expected a heading anchor');
     await page.goto(`${origin}/docs/overview/steel-cli#${encodeURIComponent(anchor)}`);
     await page.reload();
