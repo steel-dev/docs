@@ -33,3 +33,5 @@ scripts/seo/pulse/snapshots/
 # Vale downloads third-party packages here; keep only the local Steel style.
 .github/styles/*
 !.github/styles/Steel/
+.vercel
+.env.local

@@ -1,4 +1,8 @@
 import { createMDX } from "fumadocs-mdx/next";
+import { withMicrofrontends } from "@vercel/microfrontends/next/config";
+
+const prefix = process.env.NEXT_PUBLIC_DOCS_PATH_PREFIX || "";
+if (prefix !== "" && prefix !== "/docs") throw new Error("Invalid docs path prefix");
 
 const withMDX = createMDX();
 
@@ -10,7 +14,7 @@ const config = {
     // Add any Turbopack-specific options here (currently optional)
   },
   async rewrites() {
-    return [];
+    return prefix ? { beforeFiles: [{ source: `${prefix}/:path*`, destination: "/:path*" }] } : [];
   },
   redirects: async () => {
     return [
@@ -298,4 +302,4 @@ const config = {
   },
 };
 
-export default withMDX(config);
+export default prefix ? withMicrofrontends(withMDX(config)) : withMDX(config);

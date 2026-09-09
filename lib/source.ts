@@ -765,7 +765,7 @@ export const source = loader({
       return processedNode;
     },
   },
-  baseUrl: '/',
+  baseUrl: process.env.NEXT_PUBLIC_DOCS_PATH_PREFIX || '/',
   source: docs.toFumadocsSource(),
   icon(icon) {
     if (icon && icon in icons) return create({ icon: icons[icon as keyof typeof icons] });
