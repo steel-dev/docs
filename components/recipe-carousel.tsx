@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import * as React from 'react';
+import { DocsLink as Link } from '@/components/docs-link';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import {

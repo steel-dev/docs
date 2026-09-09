@@ -9,6 +9,10 @@ if (new URL(DOCS_ORIGIN).origin !== DOCS_ORIGIN) {
 }
 
 export function docsPath(path: string): string {
+  if (DOCS_PATH_PREFIX && /^https:\/\/docs\.steel\.dev(?:[/?#]|$)/.test(path)) {
+    const url = new URL(path);
+    path = `${url.pathname}${url.search}${url.hash}`;
+  }
   if (!path.startsWith('/') || path.startsWith('//')) return path;
   if (
     !DOCS_PATH_PREFIX ||

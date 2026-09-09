@@ -2,6 +2,7 @@
 
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import { useCallback, useState } from 'react';
+import { docsPath, docsUrl } from '@/lib/docs-path';
 import { cn } from '@/lib/utils';
 import type { FeedbackResponse } from '@/types/feedback';
 
@@ -25,12 +26,9 @@ export function FeedbackWrapper({ pageTitle, pagePath, className }: FeedbackWrap
       setError(null);
 
       try {
-        const pageUrl =
-          typeof window !== 'undefined'
-            ? window.location.href
-            : `https://docs.steel.dev${pagePath}`;
+        const pageUrl = typeof window !== 'undefined' ? window.location.href : docsUrl(pagePath);
 
-        const response = await fetch('/api/feedback', {
+        const response = await fetch(docsPath('/api/feedback'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import type { ReactNode, SVGProps } from 'react';
+import { DocsLink as Link } from '@/components/docs-link';
 import { GoIcon, PythonIcon, RustIcon, TSIcon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 

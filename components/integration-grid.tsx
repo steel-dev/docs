@@ -1,5 +1,5 @@
-import Link from 'fumadocs-core/link';
 import type { ReactNode } from 'react';
+import { DocsFumadocsLink as Link } from '@/components/docs-link';
 import { Badge } from '@/components/ui/badge';
 import {
   BashIcon,

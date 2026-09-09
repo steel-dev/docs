@@ -2,7 +2,6 @@
 
 import { type BreadcrumbOptions, getBreadcrumbItemsFromPath } from 'fumadocs-core/breadcrumb';
 import { createContext, usePathname } from 'fumadocs-core/framework';
-import Link from 'fumadocs-core/link';
 import type { PageTree } from 'fumadocs-core/server';
 import { useActiveAnchor } from 'fumadocs-core/toc';
 import { useEffectEvent } from 'fumadocs-core/utils/use-effect-event';
@@ -12,6 +11,7 @@ import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
 import { useTreeContext, useTreePath } from 'fumadocs-ui/contexts/tree';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { type ComponentProps, Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { DocsFumadocsLink as Link } from '@/components/docs-link';
 import { cn } from '../../../lib/cn';
 import { isActive } from '../../../lib/is-active';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../ui/collapsible';

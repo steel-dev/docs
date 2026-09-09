@@ -1,4 +1,4 @@
-import Link from 'fumadocs-core/link';
+import { DocsFumadocsLink as Link } from '@/components/docs-link';
 import { Badge } from '@/components/ui/badge';
 
 const SKILLS = [

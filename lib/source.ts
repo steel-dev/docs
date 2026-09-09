@@ -7,6 +7,7 @@ import { icons as lucideIcons } from 'lucide-react';
 import type { ThemeRegistrationResolved } from 'shiki';
 import { docs } from '@/.source';
 import { API, create, Js, Py } from '@/components/ui/icon';
+import { docsPath, stripDocsPath } from '@/lib/docs-path';
 import { extractTagsAndLabels } from './utils/frontmatter-parser';
 import type { FilterablePage } from './utils/tag-filtering';
 
@@ -239,7 +240,7 @@ function getFolderMeta(folderPath: string): Record<string, unknown> {
  */
 function extractSectionFromUrl(url: string): string {
   // Remove leading slash and split by slash
-  const pathParts = url.replace(/^\//, '').split('/');
+  const pathParts = stripDocsPath(url).replace(/^\//, '').split('/');
 
   if (pathParts.length >= 2) {
     return pathParts[1];
@@ -639,6 +640,7 @@ export const source = loader({
     },
     attachFile: (node, file) => {
       let processedNode = attachFile(node, file);
+      if (processedNode.type === 'page') processedNode.url = docsPath(processedNode.url);
 
       // Fumadocs' source loader doesn't set `$id` on external-link nodes
       // (the `[Label](url)` meta.json syntax), which makes React flag the

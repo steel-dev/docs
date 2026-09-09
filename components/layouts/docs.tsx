@@ -3,14 +3,15 @@
 import { cva } from 'class-variance-authority';
 import { CopyLLMSButton } from 'components/llmsbutton';
 import { usePathname } from 'fumadocs-core/framework';
-import Link from 'fumadocs-core/link';
 import type { PageTree } from 'fumadocs-core/server';
 import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
 import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree';
 import { ArrowUpRight, ChevronDown, ChevronRight, SidebarIcon } from 'lucide-react';
 import React, { type ButtonHTMLAttributes, type ReactNode, useMemo } from 'react';
+import { DocsFumadocsLink as Link } from '@/components/docs-link';
 import { MobileMenuProvider } from '@/contexts/mobile-menu';
 import { useLocalizedNavigation } from '@/hooks/use-localized-navigation';
+import { stripDocsPath } from '@/lib/docs-path';
 import { cn } from '@/lib/utils';
 import { MobileMenuButton } from '../layout/mobile-menu-button';
 import { SearchToggle } from '../layout/search-toggle';
@@ -184,7 +185,7 @@ export function Sidebar() {
 
   const children = useMemo(() => {
     const filterCriteria = ['overview', 'integrations', 'cookbook', 'changelog'];
-    const sectionPathname = pathname === '/' ? '/overview' : pathname;
+    const sectionPathname = stripDocsPath(pathname) === '/' ? '/overview' : stripDocsPath(pathname);
 
     const shouldFilterItem = (item: PageTree.Node, owningSection?: string): boolean => {
       // Link nodes from meta.json `[Label](url)` syntax — both external

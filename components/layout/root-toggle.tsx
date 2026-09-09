@@ -1,9 +1,9 @@
 'use client';
 import { useSidebar } from 'fumadocs-ui/provider';
 import { ChevronsUpDown } from 'lucide-react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type HTMLAttributes, type ReactNode, useMemo, useState } from 'react';
+import { DocsLink as Link } from '@/components/docs-link';
 import { isActive } from '@/lib/is-active';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
