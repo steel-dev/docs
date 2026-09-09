@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "applications": {
+    "steel-web": {
+      "development": { "local": 4321, "fallback": "http://localhost:4321" }
+    },
+    "docs": {
+      "packageName": "steel-docs",
+      "development": { "local": 3030 },
+      "routing": [{ "group": "docs", "paths": ["/docs/:path*"] }]
+    }
+  }
+}

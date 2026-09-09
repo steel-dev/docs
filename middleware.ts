@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { stripDocsPath } from '@/lib/docs-path';
 import {
   appendMarkdownVaryHeader,
   isNegotiableDocsPath,
@@ -17,7 +18,7 @@ function withMarkdownVary(response: NextResponse): NextResponse {
 }
 
 export default function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const pathname = stripDocsPath(request.nextUrl.pathname);
 
   if (!isNegotiableMethod(request.method)) {
     return NextResponse.next();

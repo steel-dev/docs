@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import { SiteIdentityJsonLd } from '@/components/page-jsonld';
 import { inter, jetBrainsMono } from '@/fonts';
 import { KeyboardShortcutsProvider } from '@/hooks/use-keyboard-shortcuts';
+import { docsPath } from '@/lib/docs-path';
 import { DOCS_SITE_DESCRIPTION, DOCS_SITE_NAME } from '@/lib/structured-data';
 import { QueryProvider } from '@/providers/query-provider';
 
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <RootProvider
               search={{
                 enabled: true,
+                options: { api: docsPath('/api/search') },
               }}
               theme={{
                 enabled: false,
