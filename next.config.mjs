@@ -92,6 +92,13 @@ const config = {
         destination: "https://www.val.town/x/steel/steel_puppeteer_starter",
         permanent: true,
       },
+      // The multi-region page is retired: Steel serves browsers from one
+      // region, so `region` is documented with the other session settings.
+      {
+        source: "/overview/sessions-api/multi-region",
+        destination: "/overview/sessions-api/configuration#network-identity",
+        permanent: true,
+      },
       // Legacy cookbook URLs. Concept pages now merge language variants via
       // a hash-driven Fumadocs Tabs component, so old language-suffixed
       // slugs redirect to `/cookbook/<concept>#<lang>`.
