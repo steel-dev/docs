@@ -1,7 +1,7 @@
 ---
 title: Configure a Browser Session
 sidebarTitle: Configure a Session
-description: Select Steel session settings for browser tasks, stored state, regional access, mobile sites, and human control.
+description: Select Steel session settings for browser tasks, stored state, mobile sites, and human control.
 llm: true
 ---
 
@@ -49,7 +49,6 @@ If you know the browser behavior that the task needs, use this table.
 | Use a residential IP | `useProxy: true` | [Network identity](#network-identity) |
 | Select the IP location | `useProxy.geolocation` | [Network identity](#network-identity) |
 | Use the same dedicated IP | `useProxy: { type: "fixed", id: "fixed:…" }` | [Network identity](#network-identity) |
-| Run the browser in a selected region | `region` | [Network identity](#network-identity) |
 | Load saved browser state | `profileId` | [Stored state](#stored-state) |
 | Save profile changes after release | `persistProfile: true` | [Stored state](#stored-state) |
 | Add cookies or web storage | `sessionContext` | [Stored state](#stored-state) |
@@ -238,15 +237,14 @@ Use the smallest location scope that the task needs.
 | Use one dedicated IP | Set `useProxy.type` to `fixed` and add the dedicated IP `id`. |
 | Use any active dedicated IP | Set `useProxy.type` to `fixed` and omit `id`. |
 | Use your proxy | Set `useProxy.server` or `proxyUrl`. |
-| Select the browser region | Set `region`. |
 
-- `region` selects the location of the browser process. Proxy geolocation selects the public IP
-  location that the site receives.
+- Steel runs browsers in one region, `us-east`. The `region` parameter is still accepted, and
+  any other value is rejected.
+- Proxy geolocation, not `region`, selects the public IP location that the site receives.
 - If you load a profile, `useProxy: false` overrides the proxy setting in that profile.
 - `proxyUrl` overrides `useProxy`. Use only one custom proxy method in a session request.
 
-See [Multi-Region Sessions](/overview/sessions-api/multi-region),
-[Proxies](/overview/stealth/proxies), and
+See [Proxies](/overview/stealth/proxies) and
 [Dedicated IPs](/overview/sessions-api/dedicated-ips).
 
 ### Stored state
