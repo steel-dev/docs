@@ -63,7 +63,7 @@ The value must be a valid UUID such as `123e4567-e89b-12d3-a456-426614174000`. O
 
 *   `client.sessions.files.list(sessionId)` and the rest of the Files API
 
-*   `wss://connect.steel.dev?apiKey=<key>&sessionId=<id>` to attach Playwright or Puppeteer
+*   The returned `session.websocketUrl` to attach Playwright or Puppeteer. It contains a temporary JWT for the session, so no API key needs to be appended. See [authentication](/overview/authentication#temporary-session-jwts).
 
 
 ### Session Lifetime and Timeout

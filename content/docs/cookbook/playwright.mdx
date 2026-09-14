@@ -19,7 +19,7 @@ Playwright exposes `chromium.connectOverCDP()`, which attaches to any Chrome spe
 session = await client.sessions.create();
 
 const browser = await chromium.connectOverCDP(
-  `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+  session.websocketUrl,
 );
 
 const page = browser.contexts()[0].pages()[0];
@@ -94,7 +94,7 @@ session = client.sessions.create()
 
 playwright = sync_playwright().start()
 browser = playwright.chromium.connect_over_cdp(
-    f"{session.websocket_url}&apiKey={STEEL_API_KEY}"
+    session.websocket_url
 )
 
 page = browser.contexts[0].new_page()
@@ -160,10 +160,10 @@ One run costs a few cents of session time. Steel bills per session-minute, which
 
 <RecipeQuickstart slug="playwright-go" />
 
-playwright-go exposes `pw.Chromium.ConnectOverCDP`, which attaches to any Chrome speaking the DevTools Protocol. A Steel session is exactly that: a remote Chrome reachable over a websocket. Hand the connect call the session's websocket URL with your key appended and the rest is ordinary Playwright, running against a browser in Steel's cloud with stealth, proxies, and a live viewer.
+playwright-go exposes `pw.Chromium.ConnectOverCDP`, which attaches to any Chrome speaking the DevTools Protocol. A Steel session is exactly that: a remote Chrome reachable over a websocket. Hand the connect call the session's returned websocket URL directly and the rest is ordinary Playwright, running against a browser in Steel's cloud with stealth, proxies, and a live viewer.
 
 ```go
-cdpURL := fmt.Sprintf("%s&apiKey=%s", sess.WebsocketURL, apiKey)
+cdpURL := sess.WebsocketURL
 browser, err := pw.Chromium.ConnectOverCDP(cdpURL)
 
 page := browser.Contexts()[0].Pages()[0]

@@ -29,7 +29,7 @@ const session = await client.sessions.create({});
 const stagehand = new Stagehand({
   env: "LOCAL",
   localBrowserLaunchOptions: {
-    cdpUrl: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+    cdpUrl: session.websocketUrl,
   },
   model: { modelName: "openai/gpt-5", apiKey: OPENAI_API_KEY },
 });
@@ -47,7 +47,7 @@ No — your `act`, `extract`, and `observe` calls stay the same. The only change
 
 ### How do I connect Stagehand to a Steel browser session?
 
-Create a session with `client.sessions.create()`, then set `cdpUrl` inside `localBrowserLaunchOptions` to the session's `websocketUrl` with your `apiKey` appended, and call `stagehand.init()`.
+Create a session with `client.sessions.create()`, then set `cdpUrl` inside `localBrowserLaunchOptions` to the session's `websocketUrl` directly, and call `stagehand.init()`.
 
 ### Does Stagehand work with Steel's proxies, stealth mode, and CAPTCHA solving?
 

@@ -13,7 +13,7 @@ description: Integrate Steel with the browser-use framework for AI-driven web au
 
 ```python
 session = client.sessions.create()
-cdp_url = f"{session.websocket_url}&apiKey={STEEL_API_KEY}"
+cdp_url = session.websocket_url
 
 model = ChatOpenAI(model="gpt-5", api_key=OPENAI_API_KEY)
 agent = Agent(

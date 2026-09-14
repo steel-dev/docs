@@ -24,6 +24,14 @@ familiar IP instead of a fresh browser from a new network every run.
 - There is a 300 MB limit on the size of a profile, if the upload fails after a session, the profile will be set to a `FAILED` state and cannot be used
 - If a profile is not used after 30 days, it will be automatically deleted
 
+### Profiles, Credentials, and Shared Accounts
+
+Use a profile when you want a user to log in once and restore that browser state in future sessions. A profile is optional when using the [Credentials API](/overview/credentials-api/overview), which fills supported login forms in fresh sessions. Multiple users sharing one live browser already share its state; profiles provide persistence across new sessions.
+
+Profiles belong to a Steel project and are not bound to credential namespaces. Your backend must authorize access before selecting a profile. Keep each profile dedicated to its connected account: changing a session's namespace does not remove cookies or other authentication already saved in the profile.
+
+Reusing a profile restores a snapshot. To save later changes, pass `persistProfile: true`; this overwrites the stored snapshot when the session ends. Coordinate writes if concurrent sessions share a profile. For browser access without sharing your API key, return the session's [temporary JWT URL](/overview/authentication#temporary-session-jwts) to the authorized client.
+
 ### How Profiles Work
 
 Profiles work by storing a snapshot of the browser's User Data Directory. This includes all the data that is stored in the browser, such as cookies, extensions, credentials, and browser settings.

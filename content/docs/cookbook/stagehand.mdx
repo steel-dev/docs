@@ -24,7 +24,7 @@ Both run against a Steel session over CDP, so Stagehand handles the reasoning an
 stagehand = new Stagehand({
   env: "LOCAL",
   localBrowserLaunchOptions: {
-    cdpUrl: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+    cdpUrl: session.websocketUrl,
   },
   model: { modelName: "openai/gpt-5", apiKey: OPENAI_API_KEY },
 });
@@ -128,7 +128,7 @@ stagehand_session = await stagehand.sessions.start(
     browser={
         "type": "local",
         "launchOptions": {
-            "cdpUrl": f"{session.websocket_url}&apiKey={STEEL_API_KEY}",
+            "cdpUrl": session.websocket_url,
         },
     },
 )

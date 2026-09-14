@@ -27,7 +27,7 @@ const client = new Steel({ steelAPIKey: STEEL_API_KEY });
 const session = await client.sessions.create();
 
 const browser = await puppeteer.connect({
-  browserWSEndpoint: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+  browserWSEndpoint: session.websocketUrl,
 });
 const page = await browser.newPage();
 ```
@@ -43,7 +43,7 @@ No — replace `puppeteer.launch()` with `puppeteer.connect()` and pass Steel's 
 
 ### How do I connect Puppeteer to a Steel browser session?
 
-Create a session with `client.sessions.create()`, then call `puppeteer.connect()` with `browserWSEndpoint` set to the session's `websocketUrl` (with your `apiKey` appended) and open a tab with `browser.newPage()`.
+Create a session with `client.sessions.create()`, then call `puppeteer.connect()` with `browserWSEndpoint` set to the session's `websocketUrl` directly and open a tab with `browser.newPage()`.
 :::
 
 

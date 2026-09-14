@@ -29,7 +29,7 @@ The one seam worth understanding is that the two halves of this program disagree
 The bridge is `spawn_blocking`, which hands the synchronous work to a thread pool meant for exactly this:
 
 ```rust
-let result = tokio::task::spawn_blocking(move || scrape(&websocket_url, &key)).await?;
+let result = tokio::task::spawn_blocking(move || scrape(&websocket_url)).await?;
 ```
 
 That is also why `scrape` returns `Box<dyn Error + Send + Sync>` rather than the bare `Box<dyn Error>` you would reach for first: `spawn_blocking` moves the closure to another thread, so its return type has to be `Send`. The session is created before the blocking call and released after it, so the browser work sits between two `await` points and the async SDK never blocks.
