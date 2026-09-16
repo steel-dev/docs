@@ -262,6 +262,10 @@ Reach out to us on the <span className="font-bold">#help</span> channel on [Disc
 
 Steel-managed residential proxies are billed per GB of usage, while the default behavior (no proxy, Steel's datacenter IPs) is free and included in all plans. Bring Your Own Proxy carries no charge from Steel — you only pay your own proxy provider.
 
+### Why is my proxy bandwidth higher than the content I downloaded?
+
+Bandwidth is measured on the wire at the proxy, so it covers every byte the session moves in both directions: TLS handshakes, request and response headers, and every subresource the page pulls, not just the response bodies your code reads. That overhead is normally a small percentage. The bigger difference is usually traffic the browser asked for but never used. If a download is still in flight when the session is released, or a page starts fetching a large asset before you navigate away, those bytes have already crossed the proxy and count even though nothing consumed them. Block what you don't need with [`optimizeBandwidth`](/overview/sessions-api/configuration#resource-control) or `blockAds`, and release sessions once you have what you came for.
+
 ### Do Steel sessions use a proxy by default?
 
 No — proxies are disabled by default (`useProxy: false` is the implicit setting), so traffic originates from Steel's own datacenter IPs at no proxy-bandwidth cost. Set `useProxy: true` to route through a Steel-managed residential IP (US-based by default).

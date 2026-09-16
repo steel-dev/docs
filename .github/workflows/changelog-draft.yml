@@ -68,7 +68,9 @@ jobs:
         if: steps.gate.outputs.should_run == 'true'
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          # Keep in step with ci.yml: an unpinned bun changes the lockfile
+          # version and breaks --frozen-lockfile with no repo change.
+          bun-version: 1.4.2
 
       - name: Install dependencies
         if: steps.gate.outputs.should_run == 'true'
