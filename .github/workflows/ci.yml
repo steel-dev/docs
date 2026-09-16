@@ -23,7 +23,9 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          # Pinned: `latest` silently moved to a bun that writes a different
+          # lockfile version, breaking --frozen-lockfile with no repo change.
+          bun-version: 1.4.2
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
