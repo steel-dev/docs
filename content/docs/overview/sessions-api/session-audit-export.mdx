@@ -1,0 +1,187 @@
+---
+title: Session Audit Export
+sidebarTitle: Audit Export
+description: Export session metadata, finalized cost, browser logs, and agent traces after a Steel session ends.
+llm: true
+publishedAt: "2026-07-23"
+---
+
+A session audit export is an application-owned snapshot of one completed run. Wait for the session to finish, capture its final details and cost, drain browser logs and agent traces, then write three versioned datasets to storage you control.
+
+:::callout
+type: warning
+### Not a compliance audit log
+This export is **not** a tamper-evident compliance audit log. Steel does not sign the files, chain their hashes, or prove that an exported event was never changed or omitted. If your policy requires immutable, independently verifiable records, send the export into a purpose-built WORM or compliance logging system and add your own integrity controls.
+:::
+
+### Post-session workflow
+
+1. End the session with `sessions.release()` or wait for it to end naturally.
+2. Poll session details until `status` is `released` or `failed`.
+3. Request the finalized cost, browser logs, and agent traces. A `409` from any endpoint means the data is still finalizing; retry with backoff.
+4. Paginate [browser logs](/overview/sessions-api/session-logs) and [agent traces](/overview/agent-traces/api) with fixed filters until `nextCursor` is `null`.
+5. Persist these three datasets:
+   - `session.json` — export metadata, final session details, and finalized cost.
+   - `browser-logs.jsonl` — one versioned browser log record per line.
+   - `agent-traces.jsonl` — one versioned agent activity per line.
+
+Do not begin an audit export while the session is live. New events can shift later pages and produce gaps or duplicates.
+
+:::callout
+type: info
+### SDK availability
+The example targets the upcoming Node SDK release that adds `sessions.logs()`, `sessions.traces()`, and `sessions.cost()`.
+:::
+
+### Example
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+import { mkdir, writeFile } from 'node:fs/promises';
+
+const client = new Steel();
+const schemaVersion = '1.0';
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function waitForAuditReady(sessionId: string) {
+  const deadline = Date.now() + 60_000;
+
+  while (Date.now() < deadline) {
+    const session = await client.sessions.retrieve(sessionId);
+
+    if (session.status !== 'live') {
+      try {
+        const cost = await client.sessions.cost(sessionId);
+        return { session, cost };
+      } catch (error) {
+        if (!(error instanceof Steel.APIError) || error.status !== 409) throw error;
+      }
+    }
+
+    await sleep(1_000);
+  }
+
+  throw new Error(`Session ${sessionId} did not become audit-ready`);
+}
+
+async function collectPages(
+  fetchPage: (cursor?: string) => Promise<{
+    events: unknown[];
+    hasMore: boolean;
+    nextCursor: string | null;
+  }>,
+) {
+  const events: unknown[] = [];
+  let cursor: string | undefined;
+
+  while (true) {
+    let page;
+    try {
+      page = await fetchPage(cursor);
+    } catch (error) {
+      if (error instanceof Steel.APIError && error.status === 409) {
+        await sleep(1_000);
+        continue;
+      }
+      throw error;
+    }
+    events.push(...page.events);
+
+    if (!page.nextCursor) {
+      if (page.hasMore) throw new Error('Pagination stalled without a next cursor');
+      return events;
+    }
+    if (page.events.length === 0) throw new Error('Pagination stalled');
+
+    cursor = page.nextCursor;
+  }
+}
+
+type Dataset = 'browser-log' | 'agent-trace';
+type RedactionPolicy = {
+  version: string;
+  apply: (dataset: Dataset | 'session', value: unknown) => unknown;
+};
+
+function toJsonLines(
+  dataset: Dataset,
+  sessionId: string,
+  events: unknown[],
+  redaction: RedactionPolicy,
+) {
+  const lines = events.map((event) =>
+    JSON.stringify({
+      schemaVersion,
+      dataset,
+      sessionId,
+      event: redaction.apply(dataset, event),
+    }),
+  );
+
+  return lines.length > 0 ? `${lines.join('\n')}\n` : '';
+}
+
+async function exportSessionAudit(
+  sessionId: string,
+  outputDirectory: string,
+  redaction: RedactionPolicy,
+) {
+  const { session, cost } = await waitForAuditReady(sessionId);
+  const [browserLogs, agentTraces] = await Promise.all([
+    collectPages((cursor) => client.sessions.logs(sessionId, { limit: 1_000, cursor })),
+    collectPages((cursor) => client.sessions.traces(sessionId, { limit: 1_000, cursor })),
+  ]);
+
+  const manifest = {
+    schemaVersion,
+    exportedAt: new Date().toISOString(),
+    redactionPolicyVersion: redaction.version,
+    session: redaction.apply('session', session),
+    cost,
+    counts: {
+      browserLogs: browserLogs.length,
+      agentTraces: agentTraces.length,
+    },
+  };
+
+  await mkdir(outputDirectory, { recursive: true });
+  await Promise.all([
+    writeFile(`${outputDirectory}/session.json`, `${JSON.stringify(manifest, null, 2)}\n`),
+    writeFile(
+      `${outputDirectory}/browser-logs.jsonl`,
+      toJsonLines('browser-log', sessionId, browserLogs, redaction),
+    ),
+    writeFile(
+      `${outputDirectory}/agent-traces.jsonl`,
+      toJsonLines('agent-trace', sessionId, agentTraces, redaction),
+    ),
+  ]);
+}
+```
+
+Pass a redaction policy that handles your application's secrets and personal data. In production, retry `429` and transient `5xx` responses with bounded exponential backoff and fail the export if any page cannot be persisted.
+
+If Agent Traces returns `413`, export the session in non-overlapping time windows. Each window must remain below the documented synchronous trace limits; persist the window bounds in `session.json` so consumers can verify complete coverage.
+
+### Schema and versioning
+
+Each paginated Steel response includes its own `schemaVersion`. The example also versions the application-owned export envelope separately. Keep upstream objects nested under `session`, `cost`, or `event` so additive Steel fields do not require a migration. Increment your export's major version when file names, envelope fields, or field meanings change; increment the minor version for backward-compatible additions. Consumers should reject unsupported major versions rather than silently dropping evidence.
+
+Record the SDK version, export code version, and redaction policy version in `session.json` if you need reproducible exports.
+
+### Redaction
+
+Agent Traces automatically mark known-sensitive input fields, such as passwords and credit-card inputs, as redacted. That is not a complete data-loss-prevention boundary. URLs, page text, console output, request metadata, and ordinary form fields can still contain tokens or personal data.
+
+Apply redaction before writing any dataset, test it against representative events, and restrict access to both exports and encryption keys. If you retain an original without redaction, isolate it under a stricter policy and identify sanitized copies as derived data.
+
+### Retention
+
+Export promptly after the session ends. Source data remains available only for your organization's current retention entitlement, which can differ for custom and grandfathered plans. Confirm that value in your Steel plan or contract rather than hard-coding a plan name. Your copies are outside Steel's retention lifecycle, so define separate expiration and deletion rules for the destination. Deleting or expiring data in Steel does not remove an export you already persisted.
+
+### Pagination checks
+
+- Use `nextCursor` until it is `null`. Do not construct or modify cursors.
+- Keep `namespace`, time bounds, and other filters identical across pages; cursors are scoped to those filters.
+- Treat `hasMore: true` without a `nextCursor`, or an empty page with `hasMore: true`, as an error.
+- Store the final counts and alert if a retry produces different counts for the same completed session.
