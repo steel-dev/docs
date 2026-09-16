@@ -264,7 +264,7 @@ Steel-managed residential proxies are billed per GB of usage, while the default 
 
 ### Why is my proxy bandwidth higher than the content I downloaded?
 
-Bandwidth is measured on the wire at the proxy, so it covers every byte the session moves in both directions: TLS handshakes, request and response headers, and every subresource the page pulls, not just the response bodies your code reads. That overhead is normally a small percentage. The bigger difference is usually traffic the browser asked for but never used. If a download is still in flight when the session is released, or a page starts fetching a large asset before you navigate away, those bytes have already crossed the proxy and count even though nothing consumed them. Block what you don't need with [`optimizeBandwidth`](/overview/sessions-api/configuration#resource-control) or `blockAds`, and release sessions once you have what you came for.
+Bandwidth is measured on the wire at the proxy, so it covers every byte the session moves in both directions: TLS handshakes, request and response headers, and every file the page loads, not just the response bodies your code reads. That overhead is normally a small percentage. The bigger difference is usually traffic the browser asked for but never used. If a download is still in flight when the session is released, or a page starts fetching a large asset before you navigate away, those bytes have already crossed the proxy and count even though nothing consumed them. Block what you don't need with [`optimizeBandwidth`](/overview/sessions-api/configuration#resource-control) or `blockAds`, and release sessions once you have what you came for.
 
 ### Do Steel sessions use a proxy by default?
 
