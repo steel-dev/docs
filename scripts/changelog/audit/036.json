@@ -254,10 +254,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        "Cargo.lock",
-        "Cargo.toml"
-      ]
+      "changedFiles": ["Cargo.lock", "Cargo.toml"]
     },
     {
       "reason": "routine_maintenance",
@@ -279,10 +276,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        "Cargo.lock",
-        "deny.toml"
-      ]
+      "changedFiles": ["Cargo.lock", "deny.toml"]
     },
     {
       "reason": "non_material_docs",
@@ -463,10 +457,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        ".github/workflows/changelog-draft.yml",
-        ".github/workflows/ci.yml"
-      ]
+      "changedFiles": [".github/workflows/changelog-draft.yml", ".github/workflows/ci.yml"]
     },
     {
       "reason": "routine_maintenance",
@@ -484,10 +475,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        "bun.lock",
-        "package.json"
-      ]
+      "changedFiles": ["bun.lock", "package.json"]
     },
     {
       "reason": "self_generated",
@@ -505,9 +493,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "content/docs/changelog/changelog-035.mdx"
-      ]
+      "changedFiles": ["content/docs/changelog/changelog-035.mdx"]
     },
     {
       "reason": "non_material_docs",
@@ -556,10 +542,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        "public/robots.txt",
-        "tests/robots-txt.test.ts"
-      ]
+      "changedFiles": ["public/robots.txt", "tests/robots-txt.test.ts"]
     },
     {
       "reason": "non_material_docs",
@@ -581,9 +564,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "tests/e2e/llm-endpoints.test.ts"
-      ]
+      "changedFiles": ["tests/e2e/llm-endpoints.test.ts"]
     },
     {
       "reason": "non_material_docs",
@@ -605,10 +586,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        "app/(home)/_pages/page.en.tsx",
-        "tests/e2e/llm-endpoints.test.ts"
-      ]
+      "changedFiles": ["app/(home)/_pages/page.en.tsx", "tests/e2e/llm-endpoints.test.ts"]
     },
     {
       "reason": "non_material_docs",
@@ -630,10 +608,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        "tests/middleware.test.ts",
-        "tests/robots-txt.test.ts"
-      ]
+      "changedFiles": ["tests/middleware.test.ts", "tests/robots-txt.test.ts"]
     },
     {
       "reason": "non_material_docs",
@@ -712,10 +687,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        "scripts/generate-agent-skills-index.ts",
-        "tests/agent-skills-index.test.ts"
-      ]
+      "changedFiles": ["scripts/generate-agent-skills-index.ts", "tests/agent-skills-index.test.ts"]
     },
     {
       "reason": "non_material_docs",
@@ -737,9 +709,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "tests/agent-skills-index.test.ts"
-      ]
+      "changedFiles": ["tests/agent-skills-index.test.ts"]
     },
     {
       "reason": "non_material_docs",
@@ -896,9 +866,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "tests/e2e/llm-endpoints.test.ts"
-      ]
+      "changedFiles": ["tests/e2e/llm-endpoints.test.ts"]
     },
     {
       "reason": "non_material_docs",
@@ -1138,9 +1106,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "scripts/generate-llms-txt.ts"
-      ]
+      "changedFiles": ["scripts/generate-llms-txt.ts"]
     },
     {
       "reason": "non_material_docs",
@@ -1330,10 +1296,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        "public/robots.txt",
-        "tests/robots-txt.test.ts"
-      ]
+      "changedFiles": ["public/robots.txt", "tests/robots-txt.test.ts"]
     },
     {
       "reason": "non_material_docs",
@@ -1410,9 +1373,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "content/docs/overview/self-hosting/railway.mdx"
-      ]
+      "changedFiles": ["content/docs/overview/self-hosting/railway.mdx"]
     },
     {
       "reason": "non_material_docs",
@@ -1489,9 +1450,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "content/docs/overview/stealth/captcha-solving.mdx"
-      ]
+      "changedFiles": ["content/docs/overview/stealth/captcha-solving.mdx"]
     },
     {
       "reason": "non_material_docs",
@@ -1672,9 +1631,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "src/data/webvoyager.json"
-      ]
+      "changedFiles": ["src/data/webvoyager.json"]
     },
     {
       "reason": "benchmark_maintenance",
@@ -1766,11 +1723,7 @@
         }
       ],
       "changedFileCount": 3,
-      "changedFiles": [
-        "README.md",
-        "src/data/tauBench.json",
-        "src/lib/benchmark-hub.ts"
-      ]
+      "changedFiles": ["README.md", "src/data/tauBench.json", "src/lib/benchmark-hub.ts"]
     },
     {
       "reason": "benchmark_maintenance",
@@ -1802,10 +1755,7 @@
         }
       ],
       "changedFileCount": 2,
-      "changedFiles": [
-        ".github/workflows/update-readme.yml",
-        "src/scripts/discover-results.ts"
-      ]
+      "changedFiles": [".github/workflows/update-readme.yml", "src/scripts/discover-results.ts"]
     },
     {
       "reason": "benchmark_maintenance",
@@ -1832,9 +1782,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "src/lib/benchmark-hub.ts"
-      ]
+      "changedFiles": ["src/lib/benchmark-hub.ts"]
     },
     {
       "reason": "routine_maintenance",
@@ -1879,9 +1827,7 @@
         }
       ],
       "changedFileCount": 1,
-      "changedFiles": [
-        "package.json"
-      ]
+      "changedFiles": ["package.json"]
     }
   ],
   "authorSkipped": [
