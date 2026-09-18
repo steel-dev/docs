@@ -14,19 +14,13 @@ import Image from 'next/image';
   width={800}
   height={400}
 />
-Hey everyone. This release introduces Steel Computers, expands billing and session visibility, and includes reliability fixes across session routing, archives, and browser connections.
+Hey everyone. This release expands billing and session visibility and includes reliability fixes across session routing, archives, and browser connections.
 
 ### ⭐ New
-
-#### Steel Computers
-
-Introduced persistent cloud computers with lifecycle controls, checkpoints, command execution, SSH and terminal access, plus project-scoped Secrets and Environments for runtime configuration.
 
 *   Added purchase history and payment-method management to Wallet, including printable invoices and receipts, default-card selection, and removal of non-default payment methods.
 
 ### 🔧 Improvements
-
-*   Computer creation now supports idle timeouts, environment variables, templates, and stop, start, and restart lifecycle controls across the API and CLI.
 
 *   The Sessions API now returns active, remaining, and total concurrency quota headers on successful session creation and concurrency-limit responses.
 
