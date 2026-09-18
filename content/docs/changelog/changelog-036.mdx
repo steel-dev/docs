@@ -14,34 +14,34 @@ import Image from 'next/image';
   width={800}
   height={400}
 />
-Hey everyone. This release expands billing and session visibility and includes reliability fixes across session routing, archives, and browser connections.
+Hey everyone. This one covers a longer stretch than usual: mostly billing and Wallet work, more detail in the session viewer, and a run of reliability fixes across session routing, archives, and browser connections.
 
 ### ⭐ New
 
-*   Added purchase history and payment-method management to Wallet, including printable invoices and receipts, default-card selection, and removal of non-default payment methods.
+*   Wallet now has purchase history and payment-method management: printable invoices and receipts, default-card selection, and removal of any card that is not the default.
 
 ### 🔧 Improvements
 
-*   The Sessions API now returns active, remaining, and total concurrency quota headers on successful session creation and concurrency-limit responses.
+*   The Sessions API now returns active, remaining, and total concurrency quota as response headers, both when a session is created and when a request hits the concurrency limit.
 
-*   The session viewer now supports a fullscreen live view, keyboard seeking, and refreshed session details and timeline controls.
+*   The session viewer has a fullscreen live view and keyboard seeking, plus reworked session details and timeline controls.
 
-*   Added a Sessions API configuration guide with task-based recipes for proxies, CAPTCHA solving, timeouts, browser behavior, and network identity.
+*   A new Sessions API configuration guide collects recipes for proxies, CAPTCHA solving, timeouts, browser behavior, and network identity.
 
-*   The billing dashboard now shows assigned Enterprise credits and usage rates, and session details include per-session proxy analytics.
+*   The billing dashboard shows assigned Enterprise credits and usage rates, and session details now include proxy analytics per session.
 
 ### 🐛 Bug Fixes
 
-*   Fixed session log and agent-trace routing, authentication, and WebSocket forwarding for Box-backed sessions.
+*   Fixed routing, authentication, and WebSocket forwarding for session logs and agent traces on Box-backed sessions.
 
-*   Fixed WebSocket proxy cleanup and connection-pressure handling that could exhaust API file descriptors and cause timeouts or failed upgrades.
+*   Fixed WebSocket proxy cleanup so heavy connection load no longer exhausts API file descriptors, which caused timeouts and failed upgrades.
 
 *   Fixed session archive downloads so file changes trigger a fresh archive and concurrent downloads wait for the latest rebuild.
 
-*   Fixed repeated `/context` polling that could saturate browser file operations and slow down the entire browser machine.
+*   Fixed repeated `/context` polling that could saturate browser file operations and slow down the whole browser machine.
 
-*   Fixed billing recovery so restored balances automatically remove funds-based blocks, temporary Metronome failures no longer blank the full billing dashboard, and concurrent signup provisioning no longer leaves organizations blocked.
+*   Fixed three billing problems: a restored balance now clears funds-based blocks automatically, a temporary Metronome failure no longer blanks the full billing dashboard, and concurrent signups no longer leave organizations blocked.
 
 *   Corrected region validation so requests targeting regions without live capacity return a clear validation error instead of a retryable 503.
 
-*   Fixed log redaction so credentials embedded in URL values are removed before API and managed-browser telemetry is recorded.
+*   Fixed log redaction so credentials inside URL values are stripped before API and managed-browser telemetry is recorded.
