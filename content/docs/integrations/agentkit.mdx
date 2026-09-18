@@ -27,7 +27,7 @@ import Steel from "steel-sdk";
 const steel = new Steel({ steelAPIKey: process.env.STEEL_API_KEY! });
 const session = await steel.sessions.create({});
 const browser = await chromium.connectOverCDP(
-  `${session.websocketUrl}&apiKey=${process.env.STEEL_API_KEY}`,
+  session.websocketUrl,
 );
 const page = browser.contexts()[0].pages()[0];
 // `page` is your Steel browser. Call it from AgentKit tool handlers
@@ -44,7 +44,7 @@ No — AgentKit keeps handling orchestration, routing, and shared state. Inside 
 
 ### How do I connect AgentKit to a Steel browser session?
 
-Call `steel.sessions.create()`, connect with `chromium.connectOverCDP()` using the session's `websocketUrl` plus your `apiKey`, and take the first page of `browser.contexts()[0]` as the page your AgentKit tool handlers drive.
+Call `steel.sessions.create()`, connect with `chromium.connectOverCDP()` using the session's `websocketUrl` directly, and take the first page of `browser.contexts()[0]` as the page your AgentKit tool handlers drive.
 
 ### Does AgentKit work with Steel's proxies, stealth mode, and CAPTCHA solving?
 

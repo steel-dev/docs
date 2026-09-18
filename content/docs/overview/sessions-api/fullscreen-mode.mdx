@@ -29,7 +29,7 @@ const session = await client.sessions.create({
 
 // Connect to the fullscreen session
 const browser = await chromium.connectOverCDP(
-  `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`
+  session.websocketUrl
 );
 
 const page = await browser.contexts()[0].pages()[0];
@@ -51,7 +51,7 @@ session = client.sessions.create(
 # Connect to the fullscreen session
 async with async_playwright() as p:
     browser = await p.chromium.connect_over_cdp(
-        f"wss://connect.steel.dev?apiKey={os.environ.get('STEEL_API_KEY')}&sessionId={session.id}"
+        session.websocket_url
     )
 
     page = browser.contexts[0].pages[0]

@@ -422,7 +422,7 @@ async function main() {
 
     // Connect browser and use the file
     browser = await chromium.connectOverCDP(
-      `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`
+      session.websocketUrl
     );
 
     const currentContext = browser.contexts()[0];

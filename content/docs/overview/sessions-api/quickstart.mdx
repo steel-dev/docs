@@ -84,7 +84,7 @@ Now that you have a session, you can connect to it using your preferred automati
 import puppeteer from 'puppeteer';
 
 const browser = await puppeteer.connect({
-    browserWSEndpoint: `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`,
+    browserWSEndpoint: session.websocketUrl,
 });
 
 const page = await browser.newPage();

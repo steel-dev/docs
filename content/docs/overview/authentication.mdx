@@ -1,21 +1,21 @@
 ---
 title: Authentication
 sidebarTitle: Authentication
-description: Authenticate requests to the Steel API and Steel SDKs using an API key.
+description: Authenticate API requests with an API key and connect to browsers with temporary session JWTs.
 llm: true
 ---
 
-Every request to Steel is authenticated with an API key tied to your organization. This page covers how to get a key, how to use it with the REST API, SDKs, and WebSocket connections, and how to manage and rotate keys over time.
+Use an API key on your backend to create and manage Steel resources. To connect an agent to an existing browser, pass the session's returned `websocketUrl` directly to your browser framework. The URL includes a temporary JWT for that session, so the agent does not need your API key.
 
 ### Overview
 
-Steel uses API key authentication. Once you've created a key in the dashboard, you pass it to Steel one of three ways depending on the interface you're using:
+Use the appropriate authentication method for each interface:
 
 - **REST API**: as the `steel-api-key` HTTP header
 - **SDKs (Node.js / Python)**: as a client option, or via the `STEEL_API_KEY` environment variable
-- **Browser connections (CDP over WebSocket)**: as the `apiKey` query parameter on `wss://connect.steel.dev`
+- **Browser connections (CDP over WebSocket)**: use the returned `websocketUrl`, which includes a temporary session JWT in its `token` query parameter
 
-A single key grants access to your entire organization's Steel resources: sessions, files, credentials, profiles, and everything else. Treat it like a password.
+An organization API key can access resources across your organization. A project API key is bound to its Steel project. Neither is limited to one browser session. Keep API keys in trusted server-side code and use a session JWT when delegating access to one browser.
 
 ### Getting Your API Key
 
@@ -110,31 +110,84 @@ The same header works for every authenticated endpoint: sessions, files, credent
 
 #### Browser Connections (CDP over WebSocket)
 
-When connecting an automation framework (Playwright, Puppeteer, Selenium) to a live Steel session over the Chrome DevTools Protocol, pass your key as the `apiKey` query parameter on the `wss://connect.steel.dev` endpoint:
+Creating a session, or retrieving a running session, returns a `websocketUrl` containing a temporary session JWT. Use the complete URL as returned. Do not append `apiKey` or rebuild the URL from a session ID.
 
 <CodeTabs storage="languageSwitcher">
 
 ```typescript !! Typescript -wcn
 import { chromium } from "playwright";
+import Steel from "steel-sdk";
 
-const browser = await chromium.connectOverCDP(
-  `wss://connect.steel.dev?apiKey=${process.env.STEEL_API_KEY}&sessionId=${session.id}`,
-);
+const client = new Steel(); // Reads STEEL_API_KEY on your backend
+const session = await client.sessions.create();
+let browser;
+
+try {
+  browser = await chromium.connectOverCDP(session.websocketUrl);
+  const context = browser.contexts()[0];
+  const page = context.pages()[0] ?? (await context.newPage());
+  await page.goto("https://example.com");
+} finally {
+  try {
+    await browser?.close();
+  } finally {
+    await client.sessions.release(session.id);
+  }
+}
 ```
 
 ```python !! Python -wcn
-import os
 from playwright.sync_api import sync_playwright
+from steel import Steel
 
-playwright = sync_playwright().start()
-browser = playwright.chromium.connect_over_cdp(
-    f"wss://connect.steel.dev?apiKey={os.environ['STEEL_API_KEY']}&sessionId={session.id}"
-)
+client = Steel()  # Reads STEEL_API_KEY on your backend
+session = client.sessions.create()
+
+try:
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.connect_over_cdp(session.websocket_url)
+        try:
+            context = browser.contexts[0]
+            page = context.pages[0] if context.pages else context.new_page()
+            page.goto("https://example.com")
+        finally:
+            browser.close()
+finally:
+    client.sessions.release(session.id)
 ```
 
 </CodeTabs>
 
-The `sessionId` parameter is optional: if omitted, Steel will start a new session with default settings and connect you to it. See the framework-specific guides for full examples: [Puppeteer](/cookbook/puppeteer), [Playwright](/cookbook/playwright), [Playwright (Python)](/cookbook/playwright-python), [Selenium](/cookbook/selenium).
+Python exposes the same response field as `session.websocket_url`. Puppeteer accepts the URL as `browserWSEndpoint`; [Playwright MCP](https://github.com/microsoft/playwright-mcp#configuration) accepts it through `--cdp-endpoint`. See the [Playwright](/integrations/playwright), [Puppeteer](/integrations/puppeteer), and [MCP](/cookbook/mcp) examples.
+
+Retrieve the individual running session before connecting if you found it through the list endpoint. Session list responses do not mint connect tokens. The live-details endpoint also returns a tokenized connection URL in `wsUrl`.
+
+#### Temporary Session JWTs
+
+The JWT contains the organization ID, session ID, and `session:connect` scope. Steel verifies its signature, issuer, audience, expiry, and the requested session. Replacing `sessionId` in the URL does not grant access to another browser.
+
+- **Lifetime:** The token expires with the session's remaining configured lifetime. Retrieving the session again can issue a new token, but does not extend the browser's lifetime.
+- **Availability:** Tokens are issued only for running sessions with time remaining. An ended session cannot be reconnected by requesting another token.
+- **Access:** The token grants access to that browser session. It is not an API key for listing or managing your organization's profiles, credentials, or other sessions.
+- **Browser authority:** The token is scoped to a session, not a website, tab, user, or individual action. Anyone holding it can use the authenticated browser state available in that session.
+
+Treat the full WebSocket URL as a bearer credential. Share it only with the agent or user authorized to control that session, and keep it out of logs and public responses. Release the session from your backend when access should end. The JWT is signed independently of the API key, so API-key rotation is not a session-token revocation mechanism.
+
+If a live-session response has no `token` parameter, token issuance may have failed. Retrieve the live session again or contact support. A backend delegating browser access should fail the handoff rather than append its API key as a fallback.
+
+#### Delegating Browser Access to an Agent
+
+1. Your backend authenticates the caller and checks your application's workspace/project permissions.
+2. It selects the authorized [credential namespace](/overview/credentials-api/overview#namespaces) and, optionally, a [profile](/overview/profiles-api/overview).
+3. It creates or retrieves the running session using its API key.
+4. It returns only the tokenized `websocketUrl` to the authorized agent, which connects directly over CDP.
+5. Your backend manages session release and any later requests for browser access.
+
+Steel does not infer your application's membership rules from namespace names. Enforce those rules before choosing credentials, a profile, or a live session.
+
+#### API-Key Connections
+
+Direct CDP connections using `apiKey` remain supported for trusted server-side clients. Prefer the returned `websocketUrl` for an existing session. Adding `sessionId` to an API-key URL chooses a browser but does not restrict the key's permissions. Do not use an API-key URL as a session-scoped secret.
 
 #### Steel CLI
 
@@ -205,7 +258,15 @@ Ping us in the **#help** channel on [Discord](https://discord.gg/steel-dev) unde
 :::faq
 ### How do I authenticate requests to the Steel API?
 
-Every request uses an API key tied to your organization. Pass it as the `steel-api-key` HTTP header for the REST API, via the `STEEL_API_KEY` environment variable (or client option) for the SDKs, or as the `apiKey` query parameter on `wss://connect.steel.dev` for CDP browser connections.
+Use the `steel-api-key` HTTP header for REST requests, or the `STEEL_API_KEY` environment variable or client option for the SDKs. For CDP browser connections, use the session's returned `websocketUrl` directly. It includes a temporary JWT, so you do not need to append an API key.
+
+### Can an agent connect without my Steel API key?
+
+Yes. Have your backend authorize the request, create or retrieve a running session, and return its tokenized `websocketUrl`. The agent can connect to that browser directly. The JWT is valid for that session's remaining lifetime and cannot be used to connect to a different session.
+
+### Does a session JWT restrict the agent to one domain?
+
+No. It grants browser access to one session, including the authenticated state loaded into it. Use a dedicated credential namespace and profile for the connected account, and enforce any domain or action restrictions separately.
 
 ### Where do I get a Steel API key?
 

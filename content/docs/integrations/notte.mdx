@@ -25,7 +25,7 @@ from steel import Steel
 
 client = Steel(steel_api_key=STEEL_API_KEY)
 session = client.sessions.create()
-cdp_url = f"{session.websocket_url}&apiKey={STEEL_API_KEY}"
+cdp_url = session.websocket_url
 
 with notte.Session(cdp_url=cdp_url) as notte_session:
     agent = notte.Agent(
@@ -46,7 +46,7 @@ No — pass `cdp_url` into `notte.Session` and Notte runs its agent loop against
 
 ### How do I connect Notte to a Steel browser session?
 
-Create a session with `client.sessions.create()`, build `cdp_url = f"{session.websocket_url}&apiKey={STEEL_API_KEY}"`, and open `notte.Session(cdp_url=cdp_url)` as a context manager, passing it to `notte.Agent(session=notte_session)`.
+Create a session with `client.sessions.create()`, build `cdp_url = session.websocket_url`, and open `notte.Session(cdp_url=cdp_url)` as a context manager, passing it to `notte.Agent(session=notte_session)`.
 
 ### Does Notte work with Steel's proxies, stealth mode, and CAPTCHA solving?
 
