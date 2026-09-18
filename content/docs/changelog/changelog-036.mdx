@@ -1,0 +1,53 @@
+---
+title: "Changelog #036"
+sidebarTitle: "Changelog #036"
+llm: true
+image: "/images/changelog/36.png"
+imageAlt: "Announcing Changelog #036"
+publishedAt: "2026-09-18"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/36.png"
+  alt="Announcing Changelog #036"
+  width={800}
+  height={400}
+/>
+Hey everyone. This release introduces Steel Computers, expands billing and session visibility, and includes reliability fixes across session routing, archives, and browser connections.
+
+### ⭐ New
+
+#### Steel Computers
+
+Introduced persistent cloud computers with lifecycle controls, checkpoints, command execution, SSH and terminal access, plus project-scoped Secrets and Environments for runtime configuration.
+
+*   Added purchase history and payment-method management to Wallet, including printable invoices and receipts, default-card selection, and removal of non-default payment methods.
+
+### 🔧 Improvements
+
+*   Computer creation now supports idle timeouts, environment variables, templates, and stop, start, and restart lifecycle controls across the API and CLI.
+
+*   The Sessions API now returns active, remaining, and total concurrency quota headers on successful session creation and concurrency-limit responses.
+
+*   The session viewer now supports a fullscreen live view, keyboard seeking, and refreshed session details and timeline controls.
+
+*   Added a Sessions API configuration guide with task-based recipes for proxies, CAPTCHA solving, timeouts, browser behavior, and network identity.
+
+*   The billing dashboard now shows assigned Enterprise credits and usage rates, and session details include per-session proxy analytics.
+
+### 🐛 Bug Fixes
+
+*   Fixed session log and agent-trace routing, authentication, and WebSocket forwarding for Box-backed sessions.
+
+*   Fixed WebSocket proxy cleanup and connection-pressure handling that could exhaust API file descriptors and cause timeouts or failed upgrades.
+
+*   Fixed session archive downloads so file changes trigger a fresh archive and concurrent downloads wait for the latest rebuild.
+
+*   Fixed repeated `/context` polling that could saturate browser file operations and slow down the entire browser machine.
+
+*   Fixed billing recovery so restored balances automatically remove funds-based blocks, temporary Metronome failures no longer blank the full billing dashboard, and concurrent signup provisioning no longer leaves organizations blocked.
+
+*   Corrected region validation so requests targeting regions without live capacity return a clear validation error instead of a retryable 503.
+
+*   Fixed log redaction so credentials embedded in URL values are removed before API and managed-browser telemetry is recorded.
