@@ -1,0 +1,505 @@
+---
+title: Understand your usage
+sidebarTitle: Usage intelligence (preview)
+description: Investigate bandwidth, session behavior and CAPTCHA outcomes with scoped analytics APIs.
+llm: true
+---
+
+## Availability
+
+This page describes the **preview API contract**. Customer rollout and live end-to-end
+verification are still in progress. Confirm that analytics is enabled for your deployment
+before relying on these endpoints. Daily spending limits are not available for general use.
+
+The investigation starts with three questions:
+
+1. Which sessions account for the change?
+2. Which domains, requests or CAPTCHA outcomes explain those sessions?
+3. Which changes could reduce usage without breaking the workflow?
+
+## Authenticate with your Steel API key
+
+Send your normal API key in the `Steel-Api-Key` header. Analytics does not require
+Tinybird credentials or a short-lived browser token. Session credentials cannot access
+analytics or export jobs.
+
+Organization keys can filter by `project_id`. Project keys can only retrieve their own
+project's data. Historical records without project attribution are excluded from
+project-scoped reports. Keep keys on your server when building your own dashboard.
+
+See [Authentication](/overview/authentication) for managing API keys.
+
+## Find the sessions using the most bandwidth
+
+Choose an explicit UTC window. `start` is inclusive and `end` is exclusive: the example
+below covers September 1 through September 7. To investigate the last seven days,
+calculate one end timestamp and subtract seven days for the start. Reuse those exact
+values for each drill-down and export.
+
+```sh
+export START='2026-09-01T00:00:00Z'
+export END='2026-09-08T00:00:00Z'
+
+curl --fail-with-body --get 'https://api.steel.dev/v1/analytics/proxy/sessions' \
+  -H "Steel-Api-Key: $STEEL_API_KEY" \
+  --data-urlencode "start=$START" \
+  --data-urlencode "end=$END" \
+  --data-urlencode 'sort_by=total_bandwidth' \
+  --data-urlencode 'limit=100'
+```
+
+Rows contain `session_id`, `total_bandwidth`, `bytes_sent`, `bytes_received`,
+`closed_connections` and `last_seen`. Rankings sort bandwidth from largest to smallest.
+Counters are decimal strings: use Python `int(value)` or JavaScript `BigInt(value)`
+for exact arithmetic. JavaScript `Number` can lose precision.
+
+The response also includes `window`, `coverage` and `next_offset`. Repeat the request
+with `offset` equal to `next_offset` until it is `null`. Retain the same filters and
+window. Separate pages are live queries; late data can change rankings between calls.
+
+## Explain a high-bandwidth session
+
+Set `SESSION_ID` to a session returned by the ranking. Start with its domains:
+
+```sh
+curl --fail-with-body --get 'https://api.steel.dev/v1/analytics/proxy/domains' \
+  -H "Steel-Api-Key: $STEEL_API_KEY" \
+  --data-urlencode "start=$START" \
+  --data-urlencode "end=$END" \
+  --data-urlencode "session_id=$SESSION_ID"
+```
+
+Then inspect observed browser requests:
+
+```sh
+curl --fail-with-body --get 'https://api.steel.dev/v1/analytics/requests' \
+  -H "Steel-Api-Key: $STEEL_API_KEY" \
+  --data-urlencode "start=$START" \
+  --data-urlencode "end=$END" \
+  --data-urlencode "session_id=$SESSION_ID"
+```
+
+Request rows group observations by sanitized domain, resource path and resource type.
+They include measured transfer bytes and counts of observed, unmeasured, incomplete,
+failed and cached requests. Add `domain` to focus on one host. Credentials, query
+strings, fragments and request bodies are not part of the request-path report.
+
+Look for large media files, repeated downloads and domains unrelated to the task.
+Test candidate blocking rules against your workflow before applying them broadly:
+a large resource may still be required for navigation, rendering or authentication.
+
+### Compare the right measurements
+
+| Measurement | What it represents | Interpretation limit |
+| --- | --- | --- |
+| Proxy bandwidth | Bytes on proxy connections completed in the window | Open connections are absent; some bytes may have transferred before the window. An HTTPS tunnel can contain many requests. |
+| Browser transfer | Observed encoded response transfer | It is not billed proxy traffic. Unknown measurements remain unknown rather than becoming zero. |
+| Session duration | Recorded lifetime of terminal sessions created in the window | It is neither time spent inside that window nor necessarily billable time. |
+| Spend | Rated usage charges | Rating can lag and draft charges can change. Credits, fixed fees, taxes and adjustments have separate semantics. |
+
+These measurements need not have equal totals. Empty results and
+`coverage.completeness: "not_guaranteed"` do not establish zero usage or complete
+collection. Preserve coverage alongside values in your own dashboards.
+
+### Filter by observed outcome
+
+In the dashboard's **What drove this usage?** section, choose **Request outcome** or
+**CAPTCHA outcome**. The selection applies to the current report and both export
+options. Choose **All outcomes** to restore the full report. Opening recommendation
+evidence clears the outcome selection so that supporting observations remain visible.
+
+Use `request_outcome=completed`, `failed` or `incomplete` on
+`/v1/analytics/requests` to isolate transport outcomes. HTTP error responses such as
+404 or 500 are completed transports; `failed` means a browser transport failure.
+Conflicting outcomes for the same request event are treated as incomplete.
+
+Use `captcha_outcome=solved`, `failed` or `unresolved` on
+`/v1/analytics/captchas` and `/v1/analytics/captcha-sessions`. Filtering happens after
+combining a task's observed updates: a later successful recovery wins over an earlier
+failure, even when the recovery arrives after the selected cohort window.
+
+```bash
+curl --fail-with-body --get 'https://api.steel.dev/v1/analytics/captcha-sessions' \
+  --header "steel-api-key: $STEEL_API_KEY" \
+  --data-urlencode 'captcha_outcome=failed' \
+  --data-urlencode 'start=2026-09-08T00:00:00Z' \
+  --data-urlencode 'end=2026-09-15T00:00:00Z'
+```
+
+Counts and rates describe **only the matching observations**, not all traffic in the
+window. A failed-only CAPTCHA report has a failure rate of 1; unresolved-only tasks
+have no resolved denominator, so rates are `null`. Omit the outcome filter when you
+want the overall solve/failure rate. Anomaly comparisons retain their full denominator.
+
+These filters combine with project, session, domain and metadata filters before
+aggregation and pagination. The same parameters work on the corresponding `/export`
+CSV routes and inside `filters` when creating an asynchronous export. An outcome
+filter for the wrong report returns `400`.
+
+## Attach and filter by your metadata
+
+Attach metadata when creating a session with `POST /v1/sessions`:
+
+```json
+{
+  "metadata": {
+    "customer": "chainpatrol",
+    "batch": 42,
+    "retry": false
+  }
+}
+```
+
+Metadata values are strings, numbers or booleans; nested objects and null are not
+supported. Do not store secrets. To replace an existing session's metadata, send
+`{ "metadata": { ... } }` to `PUT /v1/sessions/{session_id}/metadata`. This replaces
+the entire object; `{ "metadata": {} }` clears it.
+
+
+Check `GET /v1/analytics/metadata/availability` before offering metadata controls.
+An available response means query support is configured; it is not a freshness guarantee.
+
+For supported reports, add a URL-encoded JSON object:
+
+```sh
+curl --fail-with-body --get 'https://api.steel.dev/v1/analytics/proxy/sessions' \
+  -H "Steel-Api-Key: $STEEL_API_KEY" \
+  --data-urlencode "start=$START" \
+  --data-urlencode "end=$END" \
+  --data-urlencode 'metadata={"customer":"chainpatrol","batch":42,"retry":false}'
+```
+
+Values match by type: `42` differs from `"42"`, and `false` differs from a missing
+field. Filters use **current** session metadata, not a historical snapshot as of the
+report window. Missing metadata snapshots are excluded, even with `{}`. Apply the same
+metadata filter throughout the investigation. Organization spend is not segmented by
+these metadata filters.
+
+## Investigate CAPTCHA outcomes and automatic tags
+
+`GET /v1/analytics/captchas` groups CAPTCHA tasks by type and domain.
+`GET /v1/analytics/captcha-sessions` identifies affected sessions. Both accept the
+same time, project, session, domain and metadata filters as the request report.
+
+Solve and failure rates use resolved tasks as their denominator. Unresolved tasks are
+reported separately. A task that fails and later succeeds is classified as solved.
+These are task outcomes, not counts of underlying solver-provider retries. Windows
+select task creation time, so later outcomes can update an earlier report.
+
+For a selected session, `GET /v1/sessions/{session_id}/tags` returns current public
+tags. Refresh this endpoint to retrieve later observations. Tags can
+include CAPTCHA, parking-page, login-form and detected-technology signals. They can
+arrive after release and describe observations at any point in the session. Missing
+tags do not prove that a page feature was absent; delivery and detection are distinct.
+
+### Filter reports by public tags
+
+First call `GET /v1/analytics/tags/availability` with your normal Steel API key.
+The response includes `available`, `limits.max_tags`, and a `tags` catalog containing
+each supported public tag's `value`, `label` and `description`. Use `value` in filters
+and `label` in your dashboard. Admin-only tags are excluded from the catalog.
+
+```bash
+curl 'https://api.steel.dev/v1/analytics/tags/availability' \
+  --header "Steel-Api-Key: $STEEL_API_KEY"
+```
+
+Only offer tag filtering when `available` is true. Keep a failed availability request
+visible as an error rather than interpreting it as an empty catalog. The endpoint
+reports query capability, not warehouse health or complete tag coverage; tags may
+still be arriving. Organization and project keys can use it, but session credentials
+cannot. Responses are marked `Cache-Control: no-store`.
+
+When tag analytics is enabled, pass `tags` as a JSON array of 1–20 public tag names.
+Every requested tag must match the session's **current** tag snapshot. For example,
+find high-bandwidth sessions where a login form was detected:
+
+```bash
+curl --get 'https://api.steel.dev/v1/analytics/proxy/sessions' \
+  --header "Steel-Api-Key: $STEEL_API_KEY" \
+  --data-urlencode "start=$START" \
+  --data-urlencode "end=$END" \
+  --data-urlencode 'tags=["login_form_detected"]'
+```
+
+Tag filters are supported on the request, CAPTCHA summary, CAPTCHA session, proxy
+usage, proxy session and proxy domain reports, including their `/export` CSV routes.
+They combine with project, session, domain, metadata and supported outcome filters
+before aggregation and pagination. The JSON response's `coverage.tags` describes
+all-tag matching, current snapshot semantics and excluded missing snapshots.
+
+Use the same selection inside `filters.tags` when creating an asynchronous export:
+
+```json
+{
+  "report": "proxy-sessions",
+  "format": "csv",
+  "filters": {
+    "tags": "[\"login_form_detected\",\"parking_page_detected\"]"
+  }
+}
+```
+
+This example requires **both** tags. Duplicate names and their order do not change
+the selection. A job retains its selection across retries; changing or removing it
+requires a new idempotency key. Keep explicit `start` and `end` values in export
+filters when reproducing a dashboard window.
+
+Tag-filtered requests return `503` while tag analytics is unavailable. Invalid,
+admin-only or unknown names, empty arrays and more than 20 entries return `400`.
+Missing snapshots are excluded; no matches does not prove the detector found no such
+pages. Tags can arrive after release, so a later query over the same time window can
+change. `GET /v1/analytics/sessions/durations` and
+`GET /v1/analytics/recommendations/sessions` also accept `tags`: rankings, cohort
+coverage and long-session comparisons use the same selection, and recommendation
+drill-downs preserve it. These duration reports select sessions by creation time and
+compare recorded lifetime, not billable time or time spent only within the window.
+Asset recommendations at `GET /v1/analytics/recommendations` and CAPTCHA
+recommendations at `GET /v1/analytics/recommendations/captchas` also accept `tags`.
+Their evidence and affected-session links retain the selection, and response coverage
+identifies the tagged cohort. Recommendations remain bounded scans, so check their
+scan-truncation fields. Duration anomalies at `GET /v1/analytics/anomalies/durations`
+also accept `tags`: the same current tag selection applies to the 14-day baseline and
+target day, and is retained in the drill-down. Insufficient tagged cohorts remain
+explicitly marked as insufficient data. Bandwidth anomalies at
+`GET /v1/analytics/anomalies/proxy-bandwidth` also accept `tags`; the baseline,
+target-day session contributors and their domain drill-downs retain the selection.
+Contributor totals explain observed usage on that day, not each session's individual
+increase. Failure-rate anomaly queries also accept `tags` for both request and CAPTCHA
+comparisons. The same current-tag cohort applies to the 14-day baseline, evaluated
+day and contributing sessions; investigation links preserve the selection. Tags do
+not change the resolved-outcome denominator. Missing history remains insufficient
+data rather than zero failures. Spend anomaly endpoints do not accept tag filters.
+
+## Alerts, explanations and recommendations
+
+| Endpoint under `/v1/analytics` | Purpose |
+| --- | --- |
+| `spend` | Organization-level rated usage spending |
+| `sessions/durations` | Rank terminal sessions by recorded lifetime |
+| `anomalies/spend` | Explain a completed day's spending increase |
+| `anomalies/proxy-bandwidth` | Compare a completed day's bandwidth with its historical baseline |
+| `anomalies/failures` | Compare request or CAPTCHA failure rates |
+| `anomalies/durations` | Compare a completed day’s median session lifetime with the preceding 14 days |
+| `recommendations` | Review large or repeatedly transferred assets |
+| `recommendations/captchas` | Review cohorts with frequent CAPTCHA failures |
+| `recommendations/sessions` | Review unusually long sessions |
+| `alerts/availability` | Check alert configuration and delivery readiness |
+| `alerts/rules` | List alert rules; individual rule IDs support create/update and archival |
+| `alerts/history` | Retrieve saved findings and delivery state |
+
+These endpoints have their own query contracts; do not assume all accept the same
+filters. Spend and alert configuration require organization-level credentials.
+Historical comparisons need sufficient data and complete comparison periods. Keep
+insufficient-data states visible rather than displaying them as “no anomaly.”
+
+Explanations identify observed contributors, not proven root causes. Recommendations
+link to supporting observations; they do not automatically modify sessions or guarantee
+savings. Notifications can arrive after usage has occurred. **Spend alerts are not
+hard spending limits.** Daily-limit enforcement remains unreleased while coverage of
+all paid work, termination and charge reconciliation are being verified.
+
+### Configure and retrieve spend alerts through the API
+
+Use an organization-scoped Steel API key. First check processing and email configuration:
+
+```sh
+curl --fail-with-body https://api.steel.dev/v1/analytics/alerts/availability \
+  -H "Steel-Api-Key: $STEEL_API_KEY"
+```
+
+`evaluation.status` describes spend-check configuration. `delivery.status` distinguishes
+`configured`, `missing_contact` and `unavailable`. Email goes to the organization's billing
+contact; this request does not select a recipient. Configuration availability does not
+guarantee that a worker has run or an email has arrived.
+
+Choose a UUID for the rule and keep it with your request. This example creates an enabled
+alert when reported gross usage reaches **USD 50 in a UTC day**:
+
+```sh
+RULE_ID="$(python3 -c 'import uuid; print(uuid.uuid4())')"
+curl --fail-with-body --request PUT \
+  "https://api.steel.dev/v1/analytics/alerts/rules/$RULE_ID" \
+  -H "Steel-Api-Key: $STEEL_API_KEY" \
+  -H 'Content-Type: application/json' \
+  --data '{
+    "name": "Daily usage reached USD 50",
+    "enabled": true,
+    "configuration": {"kind": "daily_spend", "threshold_cents": "5000"},
+    "cooldown_seconds": 86400,
+    "channel": "billing_email",
+    "expected_revision": 0
+  }'
+```
+
+The threshold is a string of positive whole USD cents. It compares reported usage before
+credits and excludes fixed fees, taxes and adjustments. Billing can arrive late, so an
+alert can arrive after the threshold was crossed. This rule does not stop sessions.
+
+`expected_revision: 0` creates a new rule. For updates, send the complete rule body with
+the current `revision` as `expected_revision`. A `409` means the rule changed: retrieve
+`GET /v1/analytics/alerts/rules`, inspect the current rule, and apply your intended change
+against its revision. If a creation response is lost, look up your saved rule ID before
+creating another rule; a new UUID would create a duplicate alert. Set `enabled: false`
+through the same revision-checked update to pause the rule.
+
+Read findings for that rule:
+
+```sh
+curl --fail-with-body --get https://api.steel.dev/v1/analytics/alerts/history \
+  -H "Steel-Api-Key: $STEEL_API_KEY" \
+  --data-urlencode "rule_id=$RULE_ID" \
+  --data-urlencode 'limit=100'
+```
+
+Pass a non-null `next_cursor` as `cursor` on the next request, retaining `rule_id`.
+Keep each event's `rule_revision`, saved `rule.configuration`, `finding` and
+`delivery_status` in your dashboard. Later rule edits do not rewrite saved findings.
+`pending`, `delivered`, `cancelled` and `needs_attention` are distinct states; an empty
+history does not prove that evaluation is healthy. Check the rule's
+`last_evaluation_status` and `last_evaluated_at` as well.
+
+### Create an anomaly alert
+
+Use the same rule endpoint and revision handling, replacing `configuration` with one
+of these objects:
+
+| Configuration | Finding |
+| --- | --- |
+| `{"kind":"spend_increase"}` | An unusual increase in organization spending |
+| `{"kind":"proxy_bandwidth_increase"}` | An unusual increase in observed proxy bytes |
+| `{"kind":"duration_increase"}` | An unusual increase in session duration |
+| `{"kind":"request_failure_increase"}` | An unusual increase in request failure rate |
+| `{"kind":"captcha_failure_increase"}` | An unusual increase in CAPTCHA failure rate |
+
+For the four session-metric rules, optional `project_id`, `metadata` and `tags`
+belong inside `configuration`. Metadata and tags are JSON-encoded strings, matching
+the query filters above. For example:
+
+```json
+{
+  "kind": "proxy_bandwidth_increase",
+  "metadata": "{\"customer\":\"chainpatrol\"}",
+  "tags": "[\"login_form_detected\"]"
+}
+```
+
+Spend rules operate across the organization and do not accept these cohort filters.
+Check `bandwidth_evaluation`, `duration_evaluation` or `failure_evaluation` in the
+availability response for the corresponding metric. An enabled rule can report
+`insufficient_data`; saving a rule does not create historical observations. Use the
+saved finding's explanation and supporting measurements to investigate a change.
+
+### Investigate longer sessions
+
+Use the normal Steel API key to compare a completed UTC creation day:
+
+```sh
+curl --fail-with-body --get https://api.steel.dev/v1/analytics/anomalies/durations \
+  -H "Steel-Api-Key: $STEEL_API_KEY" \
+  --data-urlencode 'date=2026-09-14' \
+  --data-urlencode 'metadata={"customer":"chainpatrol"}'
+```
+
+`date` defaults to yesterday. Optional `project_id`, `session_id` and current `metadata`
+filters apply before comparison. Project keys remain scoped to their project. Duration
+analytics must be enabled; metadata filtering also requires metadata availability.
+
+The response contains exact decimal-string milliseconds for `observed_median_ms`,
+`baseline_median_ms`, `baseline_mad_ms` and `threshold_ms`, plus `daily_cohorts` and a
+filter-preserving `drilldown` to duration-ranked sessions. Preserve these strings when
+importing them; converting large measurements to floating-point numbers loses precision.
+
+The comparison needs the target day and all 14 preceding days, each with at least 20
+sessions and a positive terminal duration for every observed session. Missing days,
+unfinished cohorts and insufficient samples suppress the comparison and have separate
+statuses. Missing sessions that never reached telemetry cannot be detected this way.
+
+Each historical daily median has equal weight. An increase must strictly exceed all
+three thresholds: twice the historical median, that median plus one minute, and that
+median plus six median absolute deviations. This is a review signal, not proof of a
+cause. Lifetime is not billable time or idle time; later completions and metadata edits
+can change the result. The dashboard's lifetime comparison shows these values and
+supporting daily cohorts, then links to sessions created on the selected day.
+
+To receive notifications, save an organization-wide alert with configuration
+`{"kind":"duration_increase"}` using the existing alert rule API or dashboard controls.
+Rules are independent of dashboard filters. For duration, bandwidth, request-failure
+and CAPTCHA-failure rules, add `tags` to `configuration` to monitor an explicit
+selection—for example `{"kind":"duration_increase","tags":"[\"login_form_detected\"]"}`.
+Anomaly rules also accept `project_id` and `metadata` alongside `tags`. For example,
+`{"kind":"request_failure_increase","project_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","metadata":"{\"batch\":42}"}`
+monitors numeric batch `42` within that project. Metadata values retain their types;
+all supplied keys must match current session metadata. An explicit `"{}"` requires a
+metadata snapshot, while omitting `metadata` leaves metadata unfiltered. These filters
+combine with the rule's organization scope and selected tags. Alert management still
+requires organization-scoped credentials.
+
+The dashboard alert editor offers project, metadata and session-tag controls. All selected tags must
+match the current session snapshot. Changes to tags can change historical comparisons;
+sessions missing tag snapshots are excluded. Spend rules do not accept project, metadata or tag filters.
+
+Saved findings and email investigation links retain the selection evaluated at that
+rule revision, even after the rule is edited. An unavailable tag analytics query marks
+evaluation as an error; it does not fall back to all sessions. Check `duration_evaluation` and `delivery`
+on `alerts/availability`: saving a rule does not enable processing, and an absent
+availability field during an upgrade does not mean it is ready. Findings retain their
+comparison evidence in alert history. Emails report lifetime in milliseconds and
+reuse the saved payload when delivery is retried.
+
+### Spending alerts and limits
+
+Spend alerts notify you about usage; they do not stop work or guarantee a maximum
+charge. Strict daily spending caps are deferred. Browser duration and Steel proxy
+usage continue to be metered at session release.
+
+## Export into your own dashboard
+
+The six proxy, request and CAPTCHA reports support an `/export` suffix for a CSV page.
+For example, `/v1/analytics/proxy/sessions/export` accepts the same ranking filters.
+Follow `X-Next-Offset` to retrieve additional pages. CSV protects spreadsheet consumers
+from formula injection. Keep byte counters as exact integers when importing them.
+
+For larger exports, check `GET /v1/analytics/exports/availability`. When enabled,
+create a job with `POST /v1/analytics/exports`, an `Idempotency-Key` header and a body:
+
+```json
+{
+  "report": "proxy-sessions",
+  "format": "ndjson",
+  "filters": {
+    "start": "2026-09-01T00:00:00Z",
+    "end": "2026-09-08T00:00:00Z"
+  }
+}
+```
+
+Save both the key and body before sending. If the outcome is unknown, retry the same
+key with the same body. Poll `GET /v1/analytics/exports/{export_id}` and download only
+completed jobs from `/v1/analytics/exports/{export_id}/download`, using your API key.
+Recent jobs are listed at `/v1/analytics/exports`; cancellation uses
+`POST /v1/analytics/exports/{export_id}/cancel`.
+
+Verify downloaded bytes against the job's published byte count. When the response
+includes `X-Analytics-Sha256`, also verify its SHA-256 digest before accepting the file.
+A digest verifies artifact integrity, not completeness of the original telemetry.
+Artifacts expire; consult job status before downloading. Background exports are bounded
+to one million rows and 256 MiB and do not establish a snapshot across independent reports.
+
+## Handle errors explicitly
+
+Errors use a `message` field. Handle HTTP status before parsing a successful report:
+
+| Status | Action |
+| --- | --- |
+| `400` | Correct the time window or filters. |
+| `401` | Supply a valid Steel API key. |
+| `403` | Use credentials authorized for the requested scope. |
+| `502` | The upstream report failed; retry with backoff. |
+| `503` | The capability is unavailable or its dependency is not ready. |
+
+Proxy windows are limited to 186 days; request and CAPTCHA windows to 91 days.
+Pages accept `limit` from 1 to 1,000 and `offset` through 100,000. Use background
+exports for larger result sets. Availability endpoints describe configured support,
+not ingestion completeness or guaranteed delivery. A deployment without the preview
+routes may return `404`; confirm rollout before integrating.
