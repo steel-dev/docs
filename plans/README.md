@@ -10,6 +10,9 @@ established the homepage's visible semantics and answerable introduction.
 Plan 008 was added from commit `92581223` after live probes of
 `https://docs.steel.dev` confirmed three negotiation defects and disproved two
 findings from an external agent-readiness scan.
+Plan 009 was added from commit `a5d319f9` after an agent-readiness review
+confirmed that missing Markdown pages returned real 404 statuses with empty
+bodies, leaving agents without recovery links.
 
 ## Execution order & status
 
@@ -21,6 +24,7 @@ findings from an external agent-readiness scan.
 | 006 | Make `/` the canonical docs homepage | P2 | S | 002 | DONE |
 | 007 | Complete the structured-data entity graph | P2 | M | 006, PR #98 | DONE |
 | 008 | Deliver a correct content-negotiation contract | P1 | M | 002, 006 | TODO |
+| 009 | Make Markdown 404 responses agent-recoverable | P2 | S | 002 | DONE |
 | 004 | Make the robots test parser faithful | P3 | S | — | DONE |
 | 005 | Bound CI runtime and preserve the spawn flake investigation | P3 | S | — | IN PROGRESS |
 
@@ -40,6 +44,8 @@ REJECTED (with one-line rationale)
   those plans settled. It touches `lib/markdown-negotiation.ts`, which both
   earlier plans deliberately left alone, and it must not reopen the
   crawler-gets-HTML decision they made.
+- Plan 009 follows Plan 002's existing Markdown route and negotiation policy but
+  does not depend on the broader refinements proposed by Plan 008.
 
 ## Findings considered and rejected
 

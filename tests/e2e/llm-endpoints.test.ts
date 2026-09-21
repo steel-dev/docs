@@ -41,6 +41,23 @@ function varyTokens(response: Response): string[] {
     .filter(Boolean);
 }
 
+async function expectAgentRecoverable404(response: Response): Promise<string> {
+  expect(response.status).toBe(404);
+  expect(response.headers.get('content-type')).toStartWith('text/markdown');
+  expect(response.headers.get('x-robots-tag')).toContain('noindex');
+  expect(varyTokens(response)).toEqual(expect.arrayContaining(['accept', 'user-agent']));
+
+  const body = await response.text();
+  expect(body).toStartWith('# Page not found');
+  expect(body).toContain('[Documentation home](/)');
+  expect(body).toContain('[Documentation index](/llms.txt)');
+  expect(body).toContain('[Sitemap](/sitemap.xml)');
+  expect(body).toContain('[API catalog](/.well-known/api-catalog)');
+  expect(body).not.toContain('<html');
+  expect(body).not.toContain('<!DOCTYPE');
+  return body;
+}
+
 function hasLinkRelation(response: Response, target: string, relation: string): boolean {
   return (response.headers.get('Link') ?? '')
     .split(',')
@@ -477,18 +494,47 @@ describe('.md suffix end-to-end', () => {
     expect(response.headers.get('location')).toBe('https://api.steel.dev/sdk-openapi.json');
   });
 
-  test('returns 404 for a .md URL with no matching page', async () => {
+  test('returns an agent-recoverable 404 for a .md URL with no matching page', async () => {
     const response = await fetch(`${BASE_URL}/nonexistent-page.md`, {
       headers: BROWSER_HEADERS,
     });
-    expect(response.status).toBe(404);
+    await expectAgentRecoverable404(response);
   });
 
-  test('returns 404 for an llm: false page at its .md URL', async () => {
+  test('returns an agent-recoverable 404 for negotiated missing pages', async () => {
+    const markdown = await fetch(`${BASE_URL}/nonexistent-negotiated-page`, {
+      headers: { accept: 'text/markdown', 'user-agent': 'curl/8.7.1' },
+    });
+    await expectAgentRecoverable404(markdown);
+  });
+
+  test('returns the generic recovery 404 for an llm: false page at its .md URL', async () => {
     const response = await fetch(`${BASE_URL}/cookbook/authors/hussufo.md`, {
       headers: BROWSER_HEADERS,
     });
+    const body = await expectAgentRecoverable404(response);
+    expect(body).not.toContain('Hussien Hussien');
+    expect(body).not.toContain('4 recipes contributed');
+  });
+
+  test('keeps the branded HTML 404 for browsers', async () => {
+    const response = await fetch(`${BASE_URL}/nonexistent-browser-page`, {
+      headers: BROWSER_HEADERS,
+    });
     expect(response.status).toBe(404);
+    expect(response.headers.get('content-type')).toStartWith('text/html');
+    expect(await response.text()).toContain('Page not found');
+  });
+
+  test('returns negotiated 404 headers without a body on HEAD', async () => {
+    const response = await fetch(`${BASE_URL}/nonexistent-head-page`, {
+      method: 'HEAD',
+      headers: { accept: 'text/markdown', 'user-agent': 'curl/8.7.1' },
+    });
+    expect(response.status).toBe(404);
+    expect(response.headers.get('content-type')).toStartWith('text/markdown');
+    expect(response.headers.get('x-robots-tag')).toContain('noindex');
+    expect(await response.text()).toBe('');
   });
 
   test('still serves HTML at the canonical URL for browsers', async () => {
