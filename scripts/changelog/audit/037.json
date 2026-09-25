@@ -1,0 +1,422 @@
+{
+  "changelogNumber": 37,
+  "window": {
+    "since": "2026-09-18T13:16:33.865Z",
+    "until": "2026-09-25T13:17:53.102Z",
+    "source": "state"
+  },
+  "reconciliation": {
+    "commitsCollected": 67,
+    "authorSkippedCommits": 1,
+    "logicalChanges": 67,
+    "eligible": 55,
+    "excluded": 12,
+    "unaccounted": 0
+  },
+  "exclusions": [
+    {
+      "reason": "internal_only",
+      "confidence": "heuristic",
+      "key": "0xnenlabs/steel#2046",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2046,
+        "url": "https://github.com/0xnenlabs/steel/pull/2046",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "7d16ddc",
+          "url": "https://github.com/0xnenlabs/steel/commit/7d16ddc7007fe137185c979326cee08608935538",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": null
+    },
+    {
+      "reason": "internal_only",
+      "confidence": "heuristic",
+      "key": "0xnenlabs/steel#2051",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2051,
+        "url": "https://github.com/0xnenlabs/steel/pull/2051",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "bcd5f01",
+          "url": "https://github.com/0xnenlabs/steel/commit/bcd5f01805ec74ee2ed0c5811823e46509daa062",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": null
+    },
+    {
+      "reason": "internal_only",
+      "confidence": "heuristic",
+      "key": "0xnenlabs/steel#2052",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2052,
+        "url": "https://github.com/0xnenlabs/steel/pull/2052",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "4f1b53d",
+          "url": "https://github.com/0xnenlabs/steel/commit/4f1b53d77e33bd98a8cda7f82b693a7cf13225b3",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": null
+    },
+    {
+      "reason": "internal_only",
+      "confidence": "heuristic",
+      "key": "0xnenlabs/steel#2056",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2056,
+        "url": "https://github.com/0xnenlabs/steel/pull/2056",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "6406ec8",
+          "url": "https://github.com/0xnenlabs/steel/commit/6406ec8f94684fa00114399c10f6516b7ee8b33e",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": null
+    },
+    {
+      "reason": "internal_only",
+      "confidence": "heuristic",
+      "key": "0xnenlabs/steel#2084",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2084,
+        "url": "https://github.com/0xnenlabs/steel/pull/2084",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "02a6fca",
+          "url": "https://github.com/0xnenlabs/steel/commit/02a6fca761959d38674c50c12081d75501826088",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": null
+    },
+    {
+      "reason": "internal_only",
+      "confidence": "heuristic",
+      "key": "0xnenlabs/steel#2088",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2088,
+        "url": "https://github.com/0xnenlabs/steel/pull/2088",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "7b11c9d",
+          "url": "https://github.com/0xnenlabs/steel/commit/7b11c9def5db6c9f56ece185ad46aa39712775f5",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 4,
+      "changedFiles": null
+    },
+    {
+      "reason": "self_generated",
+      "confidence": "structural",
+      "key": "steel-dev/docs#127",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 127,
+        "url": "https://github.com/steel-dev/docs/pull/127",
+        "title": "docs: draft changelog #036"
+      },
+      "commits": [
+        {
+          "shortSha": "9310ee5",
+          "url": "https://github.com/steel-dev/docs/commit/9310ee5d96fc7f52bd45b2bbff3525570ca2fc7b",
+          "subject": "docs: draft changelog #036 (#127)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        "content/docs/changelog/changelog-036.mdx",
+        "content/docs/changelog/meta.json",
+        "public/images/changelog/36.png",
+        "scripts/changelog/audit/036.json",
+        "scripts/changelog/state.json"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#128",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 128,
+        "url": "https://github.com/steel-dev/docs/pull/128",
+        "title": "chore: exclude generated changelog audit ledgers from Biome"
+      },
+      "commits": [
+        {
+          "shortSha": "3615536",
+          "url": "https://github.com/steel-dev/docs/commit/36155368cfd146351b2b22eb9c4e0acd46e039aa",
+          "subject": "chore: exclude generated changelog audit ledgers from Biome (#128)"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        "biome.json"
+      ]
+    },
+    {
+      "reason": "benchmark_maintenance",
+      "confidence": "heuristic",
+      "key": "steel-dev/leaderboard@33aaee5bf46a492e0ff9a84eb7643f8d0def66d6",
+      "repo": "steel-dev/leaderboard",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": null,
+      "commits": [
+        {
+          "shortSha": "33aaee5",
+          "url": "https://github.com/steel-dev/leaderboard/commit/33aaee5bf46a492e0ff9a84eb7643f8d0def66d6",
+          "subject": "Merge branch 'discovery/deact-biweekly-pdf-fix'"
+        }
+      ],
+      "changedFileCount": 17,
+      "changedFiles": [
+        ".claude/skills/benchmark-discovery/SKILL.md",
+        ".discovery/astra-release-review-2026-09-21.json",
+        ".github/discovery-review-prompt.md",
+        ".github/discovery-review-settings.json",
+        ".github/discovery-verify.sh",
+        ".github/workflows/discover-results.yml",
+        ".github/workflows/discovery-scheduler.yml",
+        "package.json",
+        "pnpm-lock.yaml",
+        "src/lib/discovery-map.ts",
+        "src/lib/ssrf-guard.ts",
+        "src/lib/zai-model.ts",
+        "src/scripts/discover-apply.ts",
+        "src/scripts/discover-judge.ts",
+        "src/scripts/discover-research.ts",
+        "src/scripts/discover-results.ts",
+        "src/scripts/discover-verify.ts"
+      ]
+    },
+    {
+      "reason": "benchmark_maintenance",
+      "confidence": "heuristic",
+      "key": "steel-dev/leaderboard@4ee4e50b7531946dfa4e0a476b77c10f60d82a25",
+      "repo": "steel-dev/leaderboard",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": null,
+      "commits": [
+        {
+          "shortSha": "4ee4e50",
+          "url": "https://github.com/steel-dev/leaderboard/commit/4ee4e50b7531946dfa4e0a476b77c10f60d82a25",
+          "subject": "Track discovery pipeline outputs on main"
+        }
+      ],
+      "changedFileCount": 55,
+      "changedFiles": [
+        ".discovery/agentbench.candidates.json",
+        ".discovery/aider.candidates.json",
+        ".discovery/apply/manifest-2026-06-28.json",
+        ".discovery/apply/manifest-2026-09-04.json",
+        ".discovery/apply/webarena-2026-06-19.json",
+        ".discovery/apply/webarena-2026-06-19.md",
+        ".discovery/atlas-candidates.fixture.bak",
+        ".discovery/atlas-candidates.json",
+        ".discovery/atlas-candidates.recovery-hab.json",
+        ".discovery/atlas-candidates.recovery-rest.json",
+        ".discovery/atlas-errors.json",
+        ".discovery/atlas-report.md",
+        ".discovery/atlas-run.log",
+        ".discovery/atlas-trace.jsonl",
+        ".discovery/atlas-trace.run1.bak",
+        ".discovery/browsecomp.candidates.json",
+        ".discovery/clawbench.candidates.json",
+        ".discovery/COMMENT.md",
+        ".discovery/draco.candidates.json",
+        ".discovery/gaia.candidates.json",
+        ".discovery/healthadminbench.candidates.json",
+        ".discovery/judge-usage.json",
+        ".discovery/judgment-prompt.txt",
+        ".discovery/online-mind2web.candidates.json",
+        ".discovery/osworld.candidates.json",
+        ".discovery/proposals/agentBench-2026-06-19.json",
+        ".discovery/proposals/aiderPolyglot-2026-06-19.json",
+        ".discovery/proposals/browsecomp-2026-06-19.json",
+        ".discovery/proposals/clawbench-2026-06-19.json",
+        ".discovery/proposals/draco-2026-06-19.json",
+        ".discovery/proposals/gaia-2026-06-19.json",
+        ".discovery/proposals/healthAdminBench-2026-06-19.json",
+        ".discovery/proposals/mind2web-2026-06-19.json",
+        ".discovery/proposals/osworld-2026-06-19.json",
+        ".discovery/proposals/sweBenchVerified-2026-06-19.json",
+        ".discovery/proposals/tauBench-2026-06-19.json",
+        ".discovery/proposals/webarena-2026-06-19.json",
+        ".discovery/proposals/webvoyager-2026-06-19.json",
+        ".discovery/reviewed/aiderPolyglot-2026-06-19.json",
+        ".discovery/reviewed/clawbench-2026-06-19.json",
+        ".discovery/reviewed/webarena-2026-06-19.json",
+        ".discovery/run-judge-recover.log",
+        ".discovery/run-judge-swe.log",
+        ".discovery/run-judge.log",
+        ".discovery/run-recovery.log",
+        ".discovery/run-research.log",
+        ".discovery/run-research.run1.bak",
+        ".discovery/run.json",
+        ".discovery/run.log",
+        ".discovery/SUMMARY.md",
+        ".discovery/swe-bench-verified.candidates.json",
+        ".discovery/tau-bench.candidates.json",
+        ".discovery/webarena.candidates.json",
+        ".discovery/webvoyager.candidates.json",
+        ".gitignore"
+      ]
+    },
+    {
+      "reason": "benchmark_maintenance",
+      "confidence": "heuristic",
+      "key": "steel-dev/leaderboard@5bae6f64a599f4bcd510941a09c6a68bec4e47d0",
+      "repo": "steel-dev/leaderboard",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": null,
+      "commits": [
+        {
+          "shortSha": "5bae6f6",
+          "url": "https://github.com/steel-dev/leaderboard/commit/5bae6f64a599f4bcd510941a09c6a68bec4e47d0",
+          "subject": "Track the Astra release review JSON"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        ".discovery/astra-release-review-2026-09-21.json"
+      ]
+    },
+    {
+      "reason": "benchmark_maintenance",
+      "confidence": "heuristic",
+      "key": "steel-dev/leaderboard@770831fc793e118873bfe859ba3b32d3fb71a974",
+      "repo": "steel-dev/leaderboard",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": null,
+      "commits": [
+        {
+          "shortSha": "770831f",
+          "url": "https://github.com/steel-dev/leaderboard/commit/770831fc793e118873bfe859ba3b32d3fb71a974",
+          "subject": "Add leaderboard review and lifecycle proposal"
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": [
+        "docs/2026-09-22-leaderboard-review-and-lifecycle-proposal.md"
+      ]
+    }
+  ],
+  "authorSkipped": [
+    {
+      "repo": "0xnenlabs/steel",
+      "sha": "30f9f6022676bd14ef556e4e757194b76c1e3bb7",
+      "url": "https://github.com/0xnenlabs/steel/commit/30f9f6022676bd14ef556e4e757194b76c1e3bb7",
+      "author": "dependabot[bot]"
+    }
+  ],
+  "modelDiscarded": [
+    {
+      "text": null,
+      "reason": "These changes primarily affect internal operational tooling rather than the customer-facing Steel product.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel c9a6608",
+          "url": "https://github.com/0xnenlabs/steel/commit/c9a6608bed143be40b1e896102beac1a57255800"
+        },
+        {
+          "label": "0xnenlabs/steel 9b798ef",
+          "url": "https://github.com/0xnenlabs/steel/commit/9b798ef7a75561dc78ebfcf3061795ec88fd8409"
+        },
+        {
+          "label": "0xnenlabs/steel 08e947b",
+          "url": "https://github.com/0xnenlabs/steel/commit/08e947b437932a6e0ba6f320f911dffe1711793f"
+        }
+      ]
+    },
+    {
+      "text": null,
+      "reason": "These were internal deployment and migration changes without a distinct user-facing capability.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel ea3272f",
+          "url": "https://github.com/0xnenlabs/steel/commit/ea3272fe8a28f372bae8de2ab35b388407bdd72c"
+        },
+        {
+          "label": "0xnenlabs/steel 5531a6f",
+          "url": "https://github.com/0xnenlabs/steel/commit/5531a6fcc50f5e8aa4bb5017890c152a125f6c15"
+        },
+        {
+          "label": "0xnenlabs/steel 98d45b2",
+          "url": "https://github.com/0xnenlabs/steel/commit/98d45b2b80ab09bb015230d6b57cff8e28c996e7"
+        }
+      ]
+    },
+    {
+      "text": "Human-in-the-loop guide link updates",
+      "reason": "This was a small editorial navigation change rather than a material documentation expansion.",
+      "redacted": false,
+      "references": [
+        {
+          "label": "steel-dev/docs a38d9e6",
+          "url": "https://github.com/steel-dev/docs/commit/a38d9e6741bdb5c27eee243ad8b7ac8638668253"
+        }
+      ]
+    },
+    {
+      "text": null,
+      "reason": "The test runner already blocked failed releases, so this only corrected internal report wording.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel 0a17dac",
+          "url": "https://github.com/0xnenlabs/steel/commit/0a17dac84ea44f1f8caa543e4dec428cb78a6df7"
+        }
+      ]
+    }
+  ]
+}
