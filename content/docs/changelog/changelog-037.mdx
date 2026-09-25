@@ -14,28 +14,22 @@ import Image from 'next/image';
   width={800}
   height={400}
 />
-Hey everyone. This release improves billing visibility and performance, tightens the Computers experience, and fixes several reliability gaps across Inferno sessions and session recording.
+Hey everyone. This release improves billing visibility and performance, and fixes several reliability gaps in payments, session settings, and session recording.
 
 ### 🔧 Improvements
 
-*   The Computers UI now lazy-loads pages, polls based on computer state, retries desktop connections sooner, debounces terminal resizing, and handles desktop scrolling more consistently.
-
-*   Billing usage pages now load daily breakdowns from cached usage buckets, create Stripe billing portal sessions only when requested, and show placeholders instead of provisional zero values.
-
-*   Edge routing now sends requests above Inferno's body-size limit through the legacy path instead of exceeding the NATS payload limit.
+*   Billing usage pages now load daily breakdowns faster, open the Stripe billing portal only when requested, and show placeholders instead of provisional zero values.
 
 ### 🐛 Bug Fixes
 
 *   Fixed Wallet purchases so declined or canceled payments show a terminal failure instead of remaining in a processing state.
 
-*   Fixed auto top-up status reconciliation when Metronome disables a recharge policy after a declined charge, including notifying the customer when this happens.
+*   Fixed auto top-up status when a recharge policy is disabled after a declined charge, including notifying the customer when this happens.
 
-*   Fixed the Proxy & Network dashboard's Top domains query so it returns usage data instead of failing date parsing.
+*   Fixed the Proxy & Network dashboard's Top domains query so it returns usage data instead of failing.
 
-*   Fixed Inferno session creation after NATS reconnects by refreshing stale session KV handles before the next browser assignment.
+*   Fixed per-organization maximum session timeout overrides not applying to some sessions.
 
-*   Fixed Inferno sessions so per-organization maximum session timeout overrides are honored consistently with the legacy path.
+*   Fixed session replay recordings missing for some sessions.
 
-*   Fixed session replay recording on Inferno browsers by allowing the recorder extension to connect through the local browser API address.
-
-*   Fixed tag derivation for long-running legacy sessions by retaining the organization ID through release.
+*   Fixed tags on long-running sessions.
