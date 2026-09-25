@@ -1,0 +1,35 @@
+---
+title: "Changelog #037"
+sidebarTitle: "Changelog #037"
+llm: true
+image: "/images/changelog/37.png"
+imageAlt: "Announcing Changelog #037"
+publishedAt: "2026-09-25"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/37.png"
+  alt="Announcing Changelog #037"
+  width={800}
+  height={400}
+/>
+Hey everyone. This release makes the billing pages faster and clearer, and fixes bugs in payments, session settings, and session recording.
+
+### 🔧 Improvements
+
+*   Billing usage pages load daily breakdowns faster and show placeholders while data loads instead of showing zero. The page also connects to the Stripe billing portal only when you open it.
+
+### 🐛 Bug Fixes
+
+*   Fixed Wallet purchases with a declined or canceled payment staying in processing. They now show as failed.
+
+*   Fixed auto top-up status when a declined charge disables the recharge policy. The customer now gets a notification when this happens.
+
+*   Fixed the Proxy & Network dashboard's Top domains query so it returns usage data again.
+
+*   Fixed per-organization maximum session timeout overrides not applying to some sessions.
+
+*   Fixed missing session replay recordings for some sessions.
+
+*   Fixed tagging for long-running sessions.
