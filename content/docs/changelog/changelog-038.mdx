@@ -1,0 +1,55 @@
+---
+title: "Changelog #038"
+sidebarTitle: "Changelog #038"
+llm: true
+image: "/images/changelog/38.png"
+imageAlt: "Announcing Changelog #038"
+publishedAt: "2026-10-02"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/38.png"
+  alt="Announcing Changelog #038"
+  width={800}
+  height={400}
+/>
+Hey everyone. This release adds a light theme, optional session recordings, and clipboard paste for Computer desktops, alongside billing notifications and reliability fixes across sessions, browser actions, and the CLI.
+
+### ⭐ New
+
+#### Light theme
+
+The dashboard now supports Light, Dark, and System themes from the account menu, with the selected theme applied across authentication, billing, charts, and code blocks.
+
+*   The Sessions API now accepts `recordings: false` to keep live streaming enabled without saving a session recording.
+
+*   Computer desktops now support pasting content from your local clipboard.
+
+### 🔧 Improvements
+
+*   Billing now sends notifications when a budget cap is reached, a prepaid balance is depleted or low, or a payment requires additional action.
+
+*   New and rotated API keys are now shown once, while saved keys use a masked preview in Quickstart and API key settings.
+
+*   The console can now export logs, agent logs, and agent traces individually or together in JSON or CSV.
+
+*   Managed browser sessions now run Chromium 154 with updated desktop and mobile fingerprints.
+
+*   The leaderboard added Gemini 4 Argon to OSWorld 2.0 and MiMo V2.6 Pro and Flash to OSWorld-Verified.
+
+### 🐛 Bug Fixes
+
+*   Fixed API memory growth caused by slow WebSocket consumers and unbounded registry and unreachable-session caches.
+
+*   Fixed legacy browsers continuing to run outside an organization's concurrency limit after the API had timed out their session creation.
+
+*   Fixed mobile emulation so viewport dimensions, client hints, and touch capabilities match the selected device.
+
+*   Browser action endpoints now reject unsupported schemes, localhost, and non-public destinations before allocating a browser.
+
+*   Fixed Steel CLI browser commands parsing `--session` after text values, and named sessions now fail clearly instead of silently starting a different session when their daemon is unavailable.
+
+*   Fixed completed onboarding questionnaires appearing again when the production feature flag was disabled.
+
+*   Disabled Chrome's password leak warning in managed browsers so its native dialog no longer interrupts automated login flows.
