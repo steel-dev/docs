@@ -16,7 +16,7 @@ import {
   RustIcon,
   TSIcon,
 } from '@/components/ui/icon';
-import SteelLogo from '@/public/images/logo.png';
+import SteelMark from '@/public/images/steel-mark.png';
 
 export default function HomePage() {
   return (
@@ -27,7 +27,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end">
               <LiquidMetal1
                 className="shrink-0 self-center sm:self-auto"
-                image={SteelLogo as HTMLImageElement}
+                image={SteelMark as HTMLImageElement}
                 speed={1}
                 colorBack="#00000000"
                 colorTint="#FFFFFF"
@@ -37,7 +37,7 @@ export default function HomePage() {
                 shiftBlue={0.3}
                 distortion={0.07}
                 contour={0.4}
-                scale={1}
+                scale={1.04}
                 rotation={0}
                 angle={70}
                 style={{
