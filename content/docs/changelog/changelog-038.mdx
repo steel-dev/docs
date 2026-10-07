@@ -14,40 +14,40 @@ import Image from 'next/image';
   width={800}
   height={400}
 />
-Hey everyone. This release adds a light theme and optional session recordings, alongside billing notifications and reliability fixes across sessions, browser actions, and the CLI.
+Hey everyone. This release adds a light theme and optional session recordings, plus billing notifications and fixes for sessions, browser actions, and the CLI.
 
 ### ⭐ New
 
 #### Light theme
 
-The dashboard now supports Light, Dark, and System themes from the account menu, with the selected theme applied across authentication, billing, charts, and code blocks.
+Pick Light, Dark, or System from the account menu. The theme applies across the dashboard, including sign-in, billing, charts, and code blocks.
 
-*   The Sessions API now accepts `recordings: false` to keep live streaming enabled without saving a session recording.
+*   Set `recordings: false` when you create a session to keep live streaming without saving a recording.
 
 ### 🔧 Improvements
 
-*   Billing now sends notifications when a budget cap is reached, a prepaid balance is depleted or low, or a payment requires additional action.
+*   Billing now notifies you when you reach a budget cap, your prepaid balance runs low or out, or a payment needs action.
 
-*   New and rotated API keys are now shown once, while saved keys use a masked preview in Quickstart and API key settings.
+*   New and rotated API keys show in full only once. After that, Quickstart and API key settings show a masked preview.
 
-*   The console can now export logs, agent logs, and agent traces individually or together in JSON or CSV.
+*   Export logs, agent logs, and agent traces from the console as JSON or CSV, one at a time or together.
 
 *   Managed browser sessions now run Chromium 154 with updated desktop and mobile fingerprints.
 
-*   The leaderboard added Gemini 4 Argon to OSWorld 2.0 and MiMo V2.6 Pro and Flash to OSWorld-Verified.
+*   The leaderboard now includes Gemini 4 Argon on OSWorld 2.0, and MiMo V2.6 Pro and Flash on OSWorld-Verified.
 
 ### 🐛 Bug Fixes
 
-*   Fixed API memory growth caused by slow WebSocket consumers and unbounded registry and unreachable-session caches.
+*   Fixed API memory growth caused by slow WebSocket clients and unbounded internal caches.
 
-*   Fixed some browsers continuing to run outside an organization's concurrency limit after the API had timed out their session creation.
+*   Fixed browsers that kept running outside an organization's concurrency limit after session creation timed out.
 
-*   Fixed mobile emulation so viewport dimensions, client hints, and touch capabilities match the selected device.
+*   Fixed mobile emulation so viewport size, client hints, and touch support match the selected device.
 
-*   Browser action endpoints now reject unsupported schemes, localhost, and non-public destinations before allocating a browser.
+*   Browser action endpoints now reject unsupported URL schemes, localhost, and private addresses before they start a browser.
 
-*   Fixed Steel CLI browser commands parsing `--session` after text values, and named sessions now fail clearly instead of silently starting a different session when their daemon is unavailable.
+*   Fixed Steel CLI browser commands not reading `--session` when it comes after a text value. Named sessions now fail with a clear error when their daemon is unavailable, instead of silently starting a different session.
 
-*   Fixed completed onboarding questionnaires appearing again when the production feature flag was disabled.
+*   Fixed the onboarding questionnaire showing again after you completed it.
 
-*   Disabled Chrome's password leak warning in managed browsers so its native dialog no longer interrupts automated login flows.
+*   Chrome's password leak warning is now off in managed browsers, so its dialog no longer interrupts automated logins.
