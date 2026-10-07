@@ -1,0 +1,55 @@
+---
+title: "Changelog #038"
+sidebarTitle: "Changelog #038"
+llm: true
+image: "/images/changelog/38.png"
+imageAlt: "Announcing Changelog #038"
+publishedAt: "2026-10-02"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/38.png"
+  alt="Announcing Changelog #038"
+  width={800}
+  height={400}
+/>
+Hey everyone. This release adds a light theme and optional session recordings, plus billing notifications and fixes for sessions, browser actions, and the CLI.
+
+### ⭐ New
+
+#### Light theme
+
+Pick Light, Dark, or System from the account menu. The theme applies across the dashboard, including sign-in, billing, charts, and code blocks.
+
+#### Optional session recordings
+
+Set `recordings: false` when you create a session to keep live streaming without saving a recording.
+
+### 🔧 Improvements
+
+*   Billing now notifies you when you reach a budget cap, your prepaid balance runs low or out, or a payment needs action.
+
+*   New and rotated API keys show in full only once. After that, Quickstart and API key settings show a masked preview.
+
+*   Export logs, agent logs, and agent traces from the console as JSON or CSV, one at a time or together.
+
+*   Managed browser sessions now run Chromium 154 with updated desktop and mobile fingerprints.
+
+*   The leaderboard now includes Gemini 4 Argon on OSWorld 2.0, and MiMo V2.6 Pro and Flash on OSWorld-Verified.
+
+### 🐛 Bug Fixes
+
+*   Fixed API memory growth caused by slow WebSocket clients and unbounded internal caches.
+
+*   Fixed browsers that kept running outside an organization's concurrency limit after session creation timed out.
+
+*   Fixed mobile emulation so viewport size, client hints, and touch support match the selected device.
+
+*   Browser action endpoints now reject unsupported URL schemes, localhost, and private addresses before they start a browser.
+
+*   Fixed Steel CLI browser commands not reading `--session` when it comes after a text value. Named sessions now fail with a clear error when their daemon is unavailable, instead of silently starting a different session.
+
+*   Fixed the onboarding questionnaire showing again after you completed it.
+
+*   Chrome's password leak warning is now off in managed browsers, so its dialog no longer interrupts automated logins.

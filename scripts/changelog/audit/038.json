@@ -1,0 +1,295 @@
+{
+  "changelogNumber": 38,
+  "window": {
+    "since": "2026-09-25T13:17:53.102Z",
+    "until": "2026-10-02T13:19:47.276Z",
+    "source": "state"
+  },
+  "reconciliation": {
+    "commitsCollected": 60,
+    "authorSkippedCommits": 1,
+    "logicalChanges": 56,
+    "eligible": 48,
+    "excluded": 8,
+    "unaccounted": 0
+  },
+  "exclusions": [
+    {
+      "reason": "internal_only",
+      "confidence": "heuristic",
+      "key": "0xnenlabs/steel#2103",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2103,
+        "url": "https://github.com/0xnenlabs/steel/pull/2103",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "6986390",
+          "url": "https://github.com/0xnenlabs/steel/commit/698639017dfcf62be738d7af82641309db54b198",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 9,
+      "changedFiles": null
+    },
+    {
+      "reason": "submodule_pointer_only",
+      "confidence": "structural",
+      "key": "0xnenlabs/steel#2114",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2114,
+        "url": "https://github.com/0xnenlabs/steel/pull/2114",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "e302c8c",
+          "url": "https://github.com/0xnenlabs/steel/commit/e302c8c7c88f69b86957e858fc50b3e1a5bcf4af",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": null
+    },
+    {
+      "reason": "internal_only",
+      "confidence": "heuristic",
+      "key": "0xnenlabs/steel#2129",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2129,
+        "url": "https://github.com/0xnenlabs/steel/pull/2129",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "54a66f0",
+          "url": "https://github.com/0xnenlabs/steel/commit/54a66f0d27e08a0c441e1c7958914c58c0d5295e",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 9,
+      "changedFiles": null
+    },
+    {
+      "reason": "ignored_files_only",
+      "confidence": "structural",
+      "key": "0xnenlabs/steel#2145",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2145,
+        "url": "https://github.com/0xnenlabs/steel/pull/2145",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "7d6917d",
+          "url": "https://github.com/0xnenlabs/steel/commit/7d6917d7888ce8f06e8035dc57be7b0404d80420",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": null
+    },
+    {
+      "reason": "ignored_files_only",
+      "confidence": "structural",
+      "key": "0xnenlabs/steel#2148",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2148,
+        "url": "https://github.com/0xnenlabs/steel/pull/2148",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "2a400d8",
+          "url": "https://github.com/0xnenlabs/steel/commit/2a400d84756d0be2f7bd2b56c7c0ce9b8b3170c0",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": null
+    },
+    {
+      "reason": "self_generated",
+      "confidence": "structural",
+      "key": "steel-dev/docs#137",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 137,
+        "url": "https://github.com/steel-dev/docs/pull/137",
+        "title": "docs: draft changelog #037"
+      },
+      "commits": [
+        {
+          "shortSha": "279aeb6",
+          "url": "https://github.com/steel-dev/docs/commit/279aeb66d7d819bf49866ebf535c7474dd310f2c",
+          "subject": "docs: draft changelog #037 (#137)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        "content/docs/changelog/changelog-037.mdx",
+        "content/docs/changelog/meta.json",
+        "public/images/changelog/37.png",
+        "scripts/changelog/audit/037.json",
+        "scripts/changelog/state.json"
+      ]
+    },
+    {
+      "reason": "benchmark_maintenance",
+      "confidence": "heuristic",
+      "key": "steel-dev/leaderboard#66",
+      "repo": "steel-dev/leaderboard",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 66,
+        "url": "https://github.com/steel-dev/leaderboard/pull/66",
+        "title": "feat(data): Add GPT-6.1 Sol score"
+      },
+      "commits": [
+        {
+          "shortSha": "6eea3b9",
+          "url": "https://github.com/steel-dev/leaderboard/commit/6eea3b994a167bed8a5c61726ab75ef464d8c687",
+          "subject": "feat(data): Add GPT-6.1 Sol score"
+        },
+        {
+          "shortSha": "613e88e",
+          "url": "https://github.com/steel-dev/leaderboard/commit/613e88e7fb40037cd88b04320900d951e0a31629",
+          "subject": "Merge Sol score update (#66)"
+        }
+      ],
+      "changedFileCount": 2,
+      "changedFiles": [
+        "README.md",
+        "src/data/osworld2.json"
+      ]
+    },
+    {
+      "reason": "benchmark_maintenance",
+      "confidence": "heuristic",
+      "key": "steel-dev/leaderboard#67",
+      "repo": "steel-dev/leaderboard",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 67,
+        "url": "https://github.com/steel-dev/leaderboard/pull/67",
+        "title": "feat(data): Add Sonnet 5.5 DRACO score"
+      },
+      "commits": [
+        {
+          "shortSha": "4753410",
+          "url": "https://github.com/steel-dev/leaderboard/commit/4753410e2fa32e183c1bbc48cb34b301598a416e",
+          "subject": "feat(data): Add Sonnet 5.5 DRACO score"
+        },
+        {
+          "shortSha": "c21257d",
+          "url": "https://github.com/steel-dev/leaderboard/commit/c21257d8d1c0148436fd0da8051536ee70eee3d5",
+          "subject": "Merge Sonnet score update (#67)"
+        }
+      ],
+      "changedFileCount": 3,
+      "changedFiles": [
+        "README.md",
+        "src/data/draco.json",
+        "src/lib/benchmark-hub.ts"
+      ]
+    }
+  ],
+  "authorSkipped": [
+    {
+      "repo": "0xnenlabs/steel",
+      "sha": "a0d7abd7b5ef62b9b51997713f3dc2336cfe7ecc",
+      "url": "https://github.com/0xnenlabs/steel/commit/a0d7abd7b5ef62b9b51997713f3dc2336cfe7ecc",
+      "author": "dependabot[bot]"
+    }
+  ],
+  "modelDiscarded": [
+    {
+      "text": null,
+      "reason": "The fingerprint changes were reverted in the same release, and the remaining CDP stealth change is gated for testing.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel 86b1c5a",
+          "url": "https://github.com/0xnenlabs/steel/commit/86b1c5a462514f9242ff0efd09603f34d5db7ce7"
+        },
+        {
+          "label": "0xnenlabs/steel f0db36a",
+          "url": "https://github.com/0xnenlabs/steel/commit/f0db36af5cf58f0c871747a3138e4ec5c4151e8f"
+        },
+        {
+          "label": "0xnenlabs/steel 7c71f76",
+          "url": "https://github.com/0xnenlabs/steel/commit/7c71f768c1bf3a13c9e8c2ae4015b9714e3d0143"
+        },
+        {
+          "label": "0xnenlabs/steel 8c94f8a",
+          "url": "https://github.com/0xnenlabs/steel/commit/8c94f8a8677172e001d917ebbbc4dcfbea61da91"
+        }
+      ]
+    },
+    {
+      "text": null,
+      "reason": "These are internal maintenance changes without a distinct user-facing behavior change.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel 97e29e4",
+          "url": "https://github.com/0xnenlabs/steel/commit/97e29e415442c3007e8c41663ed2f7f513fbef48"
+        }
+      ]
+    },
+    {
+      "text": null,
+      "reason": "These changes affect internal release and build infrastructure rather than the product experience.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel 340631b",
+          "url": "https://github.com/0xnenlabs/steel/commit/340631b7bda9e6bb3c88881515a68f01dae54076"
+        },
+        {
+          "label": "0xnenlabs/steel 346c759",
+          "url": "https://github.com/0xnenlabs/steel/commit/346c759b412a0d765d9d1a7b04959eddb2299bee"
+        },
+        {
+          "label": "0xnenlabs/steel f225cfc",
+          "url": "https://github.com/0xnenlabs/steel/commit/f225cfc88bad2aaa832b466a23548a44b7223056"
+        },
+        {
+          "label": "0xnenlabs/steel 927df3c",
+          "url": "https://github.com/0xnenlabs/steel/commit/927df3cb5e7a5790b96ebe88aa00a8602e32cde3"
+        }
+      ]
+    },
+    {
+      "text": null,
+      "reason": "The work improves internal analytics and request logging without changing supported product behavior.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel 0967e43",
+          "url": "https://github.com/0xnenlabs/steel/commit/0967e438c0e9dbaa6b98e3445407303ccf1feabc"
+        }
+      ]
+    }
+  ]
+}
