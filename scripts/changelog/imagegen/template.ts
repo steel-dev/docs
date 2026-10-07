@@ -109,7 +109,7 @@ export function renderCardHtml(content: CardContent): string {
 
   .logo {
     display: block;
-    width: 54.286px;
+    width: 40px;
     height: 40px;
   }
 
