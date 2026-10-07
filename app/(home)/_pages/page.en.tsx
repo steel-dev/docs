@@ -37,7 +37,7 @@ export default function HomePage() {
                 shiftBlue={0.3}
                 distortion={0.07}
                 contour={0.4}
-                scale={0.79}
+                scale={1.04}
                 rotation={0}
                 angle={70}
                 style={{
