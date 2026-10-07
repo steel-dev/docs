@@ -14,7 +14,7 @@ import Image from 'next/image';
   width={800}
   height={400}
 />
-Hey everyone. This release adds a light theme, optional session recordings, and clipboard paste for Computer desktops, alongside billing notifications and reliability fixes across sessions, browser actions, and the CLI.
+Hey everyone. This release adds a light theme and optional session recordings, alongside billing notifications and reliability fixes across sessions, browser actions, and the CLI.
 
 ### ⭐ New
 
@@ -23,8 +23,6 @@ Hey everyone. This release adds a light theme, optional session recordings, and 
 The dashboard now supports Light, Dark, and System themes from the account menu, with the selected theme applied across authentication, billing, charts, and code blocks.
 
 *   The Sessions API now accepts `recordings: false` to keep live streaming enabled without saving a session recording.
-
-*   Computer desktops now support pasting content from your local clipboard.
 
 ### 🔧 Improvements
 
@@ -42,7 +40,7 @@ The dashboard now supports Light, Dark, and System themes from the account menu,
 
 *   Fixed API memory growth caused by slow WebSocket consumers and unbounded registry and unreachable-session caches.
 
-*   Fixed legacy browsers continuing to run outside an organization's concurrency limit after the API had timed out their session creation.
+*   Fixed some browsers continuing to run outside an organization's concurrency limit after the API had timed out their session creation.
 
 *   Fixed mobile emulation so viewport dimensions, client hints, and touch capabilities match the selected device.
 
