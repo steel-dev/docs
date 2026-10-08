@@ -1,0 +1,3311 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "",
+  "buildCommand": "",
+  "outputDirectory": "public",
+  "trailingSlash": false,
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- .",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://steel.dev/docs",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/agent-skills/index.json",
+      "destination": "https://steel.dev/docs/.well-known/agent-skills/index.json",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/agent-skills/steel-browser.tar.gz",
+      "destination": "https://steel.dev/docs/.well-known/agent-skills/steel-browser.tar.gz",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/agent-skills/steel-developer.tar.gz",
+      "destination": "https://steel.dev/docs/.well-known/agent-skills/steel-developer.tar.gz",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/agent-skills/steel-reliability.tar.gz",
+      "destination": "https://steel.dev/docs/.well-known/agent-skills/steel-reliability.tar.gz",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/agent-skills/steel-session-debugging.tar.gz",
+      "destination": "https://steel.dev/docs/.well-known/agent-skills/steel-session-debugging.tar.gz",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/agent-skills/steel-skill-creator.tar.gz",
+      "destination": "https://steel.dev/docs/.well-known/agent-skills/steel-skill-creator.tar.gz",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/agents.md",
+      "destination": "https://steel.dev/docs/AGENTS.md",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/api-catalog",
+      "destination": "https://steel.dev/docs/.well-known/api-catalog",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/design.md",
+      "destination": "https://steel.dev/docs/DESIGN.md",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/llms.txt",
+      "destination": "https://steel.dev/docs/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/21a10fefb8713c3f667a2e94460f9357.txt",
+      "destination": "https://steel.dev/docs/21a10fefb8713c3f667a2e94460f9357.txt",
+      "permanent": true
+    },
+    {
+      "source": "/AGENTS.md",
+      "destination": "https://steel.dev/docs/AGENTS.md",
+      "permanent": true
+    },
+    {
+      "source": "/DESIGN.md",
+      "destination": "https://steel.dev/docs/DESIGN.md",
+      "permanent": true
+    },
+    {
+      "source": "/api-reference",
+      "destination": "https://steel.apidocumentation.com/api-reference",
+      "permanent": true
+    },
+    {
+      "source": "/api/search",
+      "destination": "https://steel.dev/docs/api/search",
+      "permanent": true
+    },
+    {
+      "source": "/changelog",
+      "destination": "https://steel.dev/docs/changelog",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-000",
+      "destination": "https://steel.dev/docs/changelog/changelog-000",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-001",
+      "destination": "https://steel.dev/docs/changelog/changelog-001",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-002",
+      "destination": "https://steel.dev/docs/changelog/changelog-002",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-003",
+      "destination": "https://steel.dev/docs/changelog/changelog-003",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-004",
+      "destination": "https://steel.dev/docs/changelog/changelog-004",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-005",
+      "destination": "https://steel.dev/docs/changelog/changelog-005",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-006",
+      "destination": "https://steel.dev/docs/changelog/changelog-006",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-007",
+      "destination": "https://steel.dev/docs/changelog/changelog-007",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-008",
+      "destination": "https://steel.dev/docs/changelog/changelog-008",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-009",
+      "destination": "https://steel.dev/docs/changelog/changelog-009",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-010",
+      "destination": "https://steel.dev/docs/changelog/changelog-010",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-011",
+      "destination": "https://steel.dev/docs/changelog/changelog-011",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-012",
+      "destination": "https://steel.dev/docs/changelog/changelog-012",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-013",
+      "destination": "https://steel.dev/docs/changelog/changelog-013",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-014",
+      "destination": "https://steel.dev/docs/changelog/changelog-014",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-015",
+      "destination": "https://steel.dev/docs/changelog/changelog-015",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-016",
+      "destination": "https://steel.dev/docs/changelog/changelog-016",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-017",
+      "destination": "https://steel.dev/docs/changelog/changelog-017",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-018",
+      "destination": "https://steel.dev/docs/changelog/changelog-018",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-019",
+      "destination": "https://steel.dev/docs/changelog/changelog-019",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-020",
+      "destination": "https://steel.dev/docs/changelog/changelog-020",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-021",
+      "destination": "https://steel.dev/docs/changelog/changelog-021",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-022",
+      "destination": "https://steel.dev/docs/changelog/changelog-022",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-022.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-022.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-023",
+      "destination": "https://steel.dev/docs/changelog/changelog-023",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-023.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-023.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-024",
+      "destination": "https://steel.dev/docs/changelog/changelog-024",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-024.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-024.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-025",
+      "destination": "https://steel.dev/docs/changelog/changelog-025",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-025.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-025.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-026",
+      "destination": "https://steel.dev/docs/changelog/changelog-026",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-026.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-026.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-027",
+      "destination": "https://steel.dev/docs/changelog/changelog-027",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-027.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-027.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-028",
+      "destination": "https://steel.dev/docs/changelog/changelog-028",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-028.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-028.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-029",
+      "destination": "https://steel.dev/docs/changelog/changelog-029",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-029.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-029.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-030",
+      "destination": "https://steel.dev/docs/changelog/changelog-030",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-030.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-030.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-031",
+      "destination": "https://steel.dev/docs/changelog/changelog-031",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-031.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-031.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-032",
+      "destination": "https://steel.dev/docs/changelog/changelog-032",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-032.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-032.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-033",
+      "destination": "https://steel.dev/docs/changelog/changelog-033",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-033.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-033.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-034",
+      "destination": "https://steel.dev/docs/changelog/changelog-034",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-034.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-034.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-035",
+      "destination": "https://steel.dev/docs/changelog/changelog-035",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-035.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-035.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-036",
+      "destination": "https://steel.dev/docs/changelog/changelog-036",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-036.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-036.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-037",
+      "destination": "https://steel.dev/docs/changelog/changelog-037",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-037.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-037.md",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-038",
+      "destination": "https://steel.dev/docs/changelog/changelog-038",
+      "permanent": true
+    },
+    {
+      "source": "/changelog/changelog-038.md",
+      "destination": "https://steel.dev/docs/changelog/changelog-038.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook",
+      "destination": "https://steel.dev/docs/cookbook",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook.md",
+      "destination": "https://steel.dev/docs/cookbook.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/agentkit",
+      "destination": "https://steel.dev/docs/cookbook/agentkit",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/agentkit.md",
+      "destination": "https://steel.dev/docs/cookbook/agentkit.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/agno",
+      "destination": "https://steel.dev/docs/cookbook/agno",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/agno.md",
+      "destination": "https://steel.dev/docs/cookbook/agno.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/auth-context",
+      "destination": "https://steel.dev/docs/cookbook/auth-context",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/auth-context-starter",
+      "destination": "https://steel.dev/docs/cookbook/auth-context",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/auth-context.md",
+      "destination": "https://steel.dev/docs/cookbook/auth-context.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/authors/aspectrr",
+      "destination": "https://steel.dev/docs/cookbook/authors/aspectrr",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/authors/bsparker",
+      "destination": "https://steel.dev/docs/cookbook/authors/bsparker",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/authors/danew",
+      "destination": "https://steel.dev/docs/cookbook/authors/danew",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/authors/hussufo",
+      "destination": "https://steel.dev/docs/cookbook/authors/hussufo",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/authors/jagadeshjai",
+      "destination": "https://steel.dev/docs/cookbook/authors/jagadeshjai",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/authors/junhsss",
+      "destination": "https://steel.dev/docs/cookbook/authors/junhsss",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/authors/nibzard",
+      "destination": "https://steel.dev/docs/cookbook/authors/nibzard",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/browser-use",
+      "destination": "https://steel.dev/docs/cookbook/browser-use",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/browser-use-captcha-auto",
+      "destination": "https://steel.dev/docs/cookbook/browser-use-captcha-auto",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/browser-use-captcha-auto.md",
+      "destination": "https://steel.dev/docs/cookbook/browser-use-captcha-auto.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/browser-use-captcha-manual",
+      "destination": "https://steel.dev/docs/cookbook/browser-use-captcha-manual",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/browser-use-captcha-manual.md",
+      "destination": "https://steel.dev/docs/cookbook/browser-use-captcha-manual.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/browser-use.md",
+      "destination": "https://steel.dev/docs/cookbook/browser-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/chromedp",
+      "destination": "https://steel.dev/docs/cookbook/chromedp",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/chromedp.md",
+      "destination": "https://steel.dev/docs/cookbook/chromedp.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/chromiumoxide",
+      "destination": "https://steel.dev/docs/cookbook/chromiumoxide",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/chromiumoxide.md",
+      "destination": "https://steel.dev/docs/cookbook/chromiumoxide.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/claude-agent-sdk",
+      "destination": "https://steel.dev/docs/cookbook/claude-agent-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/claude-agent-sdk.md",
+      "destination": "https://steel.dev/docs/cookbook/claude-agent-sdk.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/claude-computer-use",
+      "destination": "https://steel.dev/docs/cookbook/claude-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/claude-computer-use-mobile",
+      "destination": "https://steel.dev/docs/cookbook/claude-computer-use-mobile",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/claude-computer-use-mobile.md",
+      "destination": "https://steel.dev/docs/cookbook/claude-computer-use-mobile.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/claude-computer-use-py",
+      "destination": "https://steel.dev/docs/cookbook/claude-computer-use#python",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/claude-computer-use-ts",
+      "destination": "https://steel.dev/docs/cookbook/claude-computer-use#typescript",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/claude-computer-use.md",
+      "destination": "https://steel.dev/docs/cookbook/claude-computer-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/convex-chat-with-page",
+      "destination": "https://steel.dev/docs/cookbook/convex-chat-with-page",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/convex-chat-with-page.md",
+      "destination": "https://steel.dev/docs/cookbook/convex-chat-with-page.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/convex-price-watch",
+      "destination": "https://steel.dev/docs/cookbook/convex-price-watch",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/convex-price-watch.md",
+      "destination": "https://steel.dev/docs/cookbook/convex-price-watch.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/credentials",
+      "destination": "https://steel.dev/docs/cookbook/credentials",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/credentials-starter",
+      "destination": "https://steel.dev/docs/cookbook/credentials",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/credentials.md",
+      "destination": "https://steel.dev/docs/cookbook/credentials.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/crewai",
+      "destination": "https://steel.dev/docs/cookbook/crewai",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/crewai.md",
+      "destination": "https://steel.dev/docs/cookbook/crewai.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/deep-research",
+      "destination": "https://steel.dev/docs/cookbook/deep-research",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/deep-research.md",
+      "destination": "https://steel.dev/docs/cookbook/deep-research.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/eino",
+      "destination": "https://steel.dev/docs/cookbook/eino",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/eino.md",
+      "destination": "https://steel.dev/docs/cookbook/eino.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/extensions",
+      "destination": "https://steel.dev/docs/cookbook/extensions",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/extensions-starter",
+      "destination": "https://steel.dev/docs/cookbook/extensions",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/extensions.md",
+      "destination": "https://steel.dev/docs/cookbook/extensions.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/files",
+      "destination": "https://steel.dev/docs/cookbook/files",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/files-api",
+      "destination": "https://steel.dev/docs/cookbook/files",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/files-starter",
+      "destination": "https://steel.dev/docs/cookbook/files",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/files.md",
+      "destination": "https://steel.dev/docs/cookbook/files.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/gemini-computer-use",
+      "destination": "https://steel.dev/docs/cookbook/gemini-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/gemini-computer-use-py",
+      "destination": "https://steel.dev/docs/cookbook/gemini-computer-use#python",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/gemini-computer-use-ts",
+      "destination": "https://steel.dev/docs/cookbook/gemini-computer-use#typescript",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/gemini-computer-use.md",
+      "destination": "https://steel.dev/docs/cookbook/gemini-computer-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/genkit",
+      "destination": "https://steel.dev/docs/cookbook/genkit",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/genkit.md",
+      "destination": "https://steel.dev/docs/cookbook/genkit.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/google-adk",
+      "destination": "https://steel.dev/docs/cookbook/google-adk",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/google-adk.md",
+      "destination": "https://steel.dev/docs/cookbook/google-adk.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/headless-chrome",
+      "destination": "https://steel.dev/docs/cookbook/headless-chrome",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/headless-chrome.md",
+      "destination": "https://steel.dev/docs/cookbook/headless-chrome.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/langchaingo",
+      "destination": "https://steel.dev/docs/cookbook/langchaingo",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/langchaingo.md",
+      "destination": "https://steel.dev/docs/cookbook/langchaingo.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/langgraph",
+      "destination": "https://steel.dev/docs/cookbook/langgraph",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/langgraph.md",
+      "destination": "https://steel.dev/docs/cookbook/langgraph.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/llms.txt",
+      "destination": "https://steel.dev/docs/cookbook/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/magnitude",
+      "destination": "https://steel.dev/docs/cookbook/magnitude",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/magnitude.md",
+      "destination": "https://steel.dev/docs/cookbook/magnitude.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/mastra",
+      "destination": "https://steel.dev/docs/cookbook/mastra",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/mastra.md",
+      "destination": "https://steel.dev/docs/cookbook/mastra.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/mcp",
+      "destination": "https://steel.dev/docs/cookbook/mcp",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/mcp.md",
+      "destination": "https://steel.dev/docs/cookbook/mcp.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/microsoft-agent-framework",
+      "destination": "https://steel.dev/docs/cookbook/microsoft-agent-framework",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/microsoft-agent-framework.md",
+      "destination": "https://steel.dev/docs/cookbook/microsoft-agent-framework.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/notte",
+      "destination": "https://steel.dev/docs/cookbook/notte",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/notte.md",
+      "destination": "https://steel.dev/docs/cookbook/notte.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/openai-agents",
+      "destination": "https://steel.dev/docs/cookbook/openai-agents",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/openai-agents-py",
+      "destination": "https://steel.dev/docs/cookbook/openai-agents#python",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/openai-agents-ts",
+      "destination": "https://steel.dev/docs/cookbook/openai-agents#typescript",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/openai-agents.md",
+      "destination": "https://steel.dev/docs/cookbook/openai-agents.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/openai-computer-use",
+      "destination": "https://steel.dev/docs/cookbook/openai-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/openai-computer-use-py",
+      "destination": "https://steel.dev/docs/cookbook/openai-computer-use#python",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/openai-computer-use-ts",
+      "destination": "https://steel.dev/docs/cookbook/openai-computer-use#typescript",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/openai-computer-use.md",
+      "destination": "https://steel.dev/docs/cookbook/openai-computer-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/playwright",
+      "destination": "https://steel.dev/docs/cookbook/playwright",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/playwright-py",
+      "destination": "https://steel.dev/docs/cookbook/playwright#python",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/playwright-python",
+      "destination": "https://steel.dev/docs/cookbook/playwright#python",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/playwright-ts",
+      "destination": "https://steel.dev/docs/cookbook/playwright#typescript",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/playwright.md",
+      "destination": "https://steel.dev/docs/cookbook/playwright.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/profiles",
+      "destination": "https://steel.dev/docs/cookbook/profiles",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/profiles.md",
+      "destination": "https://steel.dev/docs/cookbook/profiles.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/puppeteer",
+      "destination": "https://steel.dev/docs/cookbook/puppeteer",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/puppeteer-ts",
+      "destination": "https://steel.dev/docs/cookbook/puppeteer",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/puppeteer.md",
+      "destination": "https://steel.dev/docs/cookbook/puppeteer.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/pydantic-ai",
+      "destination": "https://steel.dev/docs/cookbook/pydantic-ai",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/pydantic-ai.md",
+      "destination": "https://steel.dev/docs/cookbook/pydantic-ai.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/restate-agent",
+      "destination": "https://steel.dev/docs/cookbook/restate-agent",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/restate-agent.md",
+      "destination": "https://steel.dev/docs/cookbook/restate-agent.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/rig",
+      "destination": "https://steel.dev/docs/cookbook/rig",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/rig.md",
+      "destination": "https://steel.dev/docs/cookbook/rig.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/rod",
+      "destination": "https://steel.dev/docs/cookbook/rod",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/rod.md",
+      "destination": "https://steel.dev/docs/cookbook/rod.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/scrape",
+      "destination": "https://steel.dev/docs/cookbook/scrape",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/scrape.md",
+      "destination": "https://steel.dev/docs/cookbook/scrape.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/selenium",
+      "destination": "https://steel.dev/docs/cookbook/selenium",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/selenium.md",
+      "destination": "https://steel.dev/docs/cookbook/selenium.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/stagehand",
+      "destination": "https://steel.dev/docs/cookbook/stagehand",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/stagehand-py",
+      "destination": "https://steel.dev/docs/cookbook/stagehand#python",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/stagehand-ts",
+      "destination": "https://steel.dev/docs/cookbook/stagehand#typescript",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/stagehand.md",
+      "destination": "https://steel.dev/docs/cookbook/stagehand.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/steel-browser-use-starter",
+      "destination": "https://steel.dev/docs/cookbook/browser-use",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/swiftide",
+      "destination": "https://steel.dev/docs/cookbook/swiftide",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/swiftide.md",
+      "destination": "https://steel.dev/docs/cookbook/swiftide.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/temporal-browser-workflow",
+      "destination": "https://steel.dev/docs/cookbook/temporal-browser-workflow",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/temporal-browser-workflow.md",
+      "destination": "https://steel.dev/docs/cookbook/temporal-browser-workflow.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/agents",
+      "destination": "https://steel.dev/docs/cookbook/topics/agents",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/agents.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/agents.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/authentication",
+      "destination": "https://steel.dev/docs/cookbook/topics/authentication",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/authentication.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/authentication.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/browser-automation",
+      "destination": "https://steel.dev/docs/cookbook/topics/browser-automation",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/browser-automation.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/browser-automation.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/browser-use",
+      "destination": "https://steel.dev/docs/cookbook/topics/browser-use",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/browser-use.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/browser-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/captchas",
+      "destination": "https://steel.dev/docs/cookbook/topics/captchas",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/captchas.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/captchas.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/computer-use",
+      "destination": "https://steel.dev/docs/cookbook/topics/computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/computer-use.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/computer-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/convex",
+      "destination": "https://steel.dev/docs/cookbook/topics/convex",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/convex.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/convex.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/llms.txt",
+      "destination": "https://steel.dev/docs/cookbook/topics/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/mcp",
+      "destination": "https://steel.dev/docs/cookbook/topics/mcp",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/mcp.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/mcp.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/mobile",
+      "destination": "https://steel.dev/docs/cookbook/topics/mobile",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/mobile.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/mobile.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/nextjs",
+      "destination": "https://steel.dev/docs/cookbook/topics/nextjs",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/nextjs.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/nextjs.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/playwright",
+      "destination": "https://steel.dev/docs/cookbook/topics/playwright",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/playwright.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/playwright.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/restate",
+      "destination": "https://steel.dev/docs/cookbook/topics/restate",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/restate.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/restate.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/search",
+      "destination": "https://steel.dev/docs/cookbook/topics/search",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/search.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/search.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/steel-apis",
+      "destination": "https://steel.dev/docs/cookbook/topics/steel-apis",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/steel-apis.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/steel-apis.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/subagents",
+      "destination": "https://steel.dev/docs/cookbook/topics/subagents",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/subagents.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/subagents.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/temporal",
+      "destination": "https://steel.dev/docs/cookbook/topics/temporal",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/temporal.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/temporal.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/triggerdev",
+      "destination": "https://steel.dev/docs/cookbook/topics/triggerdev",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/triggerdev.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/triggerdev.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/typed-output",
+      "destination": "https://steel.dev/docs/cookbook/topics/typed-output",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/topics/typed-output.md",
+      "destination": "https://steel.dev/docs/cookbook/topics/typed-output.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/trigger-dev-browser-job",
+      "destination": "https://steel.dev/docs/cookbook/trigger-dev-browser-job",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/trigger-dev-browser-job.md",
+      "destination": "https://steel.dev/docs/cookbook/trigger-dev-browser-job.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/vercel-ai-sdk",
+      "destination": "https://steel.dev/docs/cookbook/vercel-ai-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/vercel-ai-sdk-nextjs",
+      "destination": "https://steel.dev/docs/cookbook/vercel-ai-sdk-nextjs",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/vercel-ai-sdk-nextjs.md",
+      "destination": "https://steel.dev/docs/cookbook/vercel-ai-sdk-nextjs.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/vercel-ai-sdk-ts",
+      "destination": "https://steel.dev/docs/cookbook/vercel-ai-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/vercel-ai-sdk.md",
+      "destination": "https://steel.dev/docs/cookbook/vercel-ai-sdk.md",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/you-com-search",
+      "destination": "https://steel.dev/docs/cookbook/you-com-search",
+      "permanent": true
+    },
+    {
+      "source": "/cookbook/you-com-search.md",
+      "destination": "https://steel.dev/docs/cookbook/you-com-search.md",
+      "permanent": true
+    },
+    {
+      "source": "/favicon.ico",
+      "destination": "https://steel.dev/docs/favicon.ico",
+      "permanent": true
+    },
+    {
+      "source": "/images/1qPnwADZHqUbfaVWwOTmc.png",
+      "destination": "https://steel.dev/docs/images/1qPnwADZHqUbfaVWwOTmc.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/3Ih08HgMtUZuZeoyvEERp.png",
+      "destination": "https://steel.dev/docs/images/3Ih08HgMtUZuZeoyvEERp.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/4-p00Zg3pQ_zsmXrbSfZE.png",
+      "destination": "https://steel.dev/docs/images/4-p00Zg3pQ_zsmXrbSfZE.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/409251245-cc50c603-1cb8-49b1-8910-251b6beec228.mp4",
+      "destination": "https://steel.dev/docs/images/409251245-cc50c603-1cb8-49b1-8910-251b6beec228.mp4",
+      "permanent": true
+    },
+    {
+      "source": "/images/6-qmg3uQon_NBbndvw340.png",
+      "destination": "https://steel.dev/docs/images/6-qmg3uQon_NBbndvw340.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/740kXiKjNNK1O_xf12uE5.png",
+      "destination": "https://steel.dev/docs/images/740kXiKjNNK1O_xf12uE5.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/8LAdzG-x1Li9Nf3Q6VB4P.png",
+      "destination": "https://steel.dev/docs/images/8LAdzG-x1Li9Nf3Q6VB4P.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/AKYFQrDhCB_2-dd2MY_si.png",
+      "destination": "https://steel.dev/docs/images/AKYFQrDhCB_2-dd2MY_si.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/AZtqJmCS-b3Skd0l83dcH.png",
+      "destination": "https://steel.dev/docs/images/AZtqJmCS-b3Skd0l83dcH.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/Bn_vj6cr558fhVAl0PJPX.png",
+      "destination": "https://steel.dev/docs/images/Bn_vj6cr558fhVAl0PJPX.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/ByP4qtaUIR447nJaZqbPS.png",
+      "destination": "https://steel.dev/docs/images/ByP4qtaUIR447nJaZqbPS.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/D-Yt182xdIQAAQph6XjuT.png",
+      "destination": "https://steel.dev/docs/images/D-Yt182xdIQAAQph6XjuT.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/FLSc3KPyPAskPqpEp6oio.png",
+      "destination": "https://steel.dev/docs/images/FLSc3KPyPAskPqpEp6oio.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/LKGCuYzD7oa22Qe7zC0Xv.png",
+      "destination": "https://steel.dev/docs/images/LKGCuYzD7oa22Qe7zC0Xv.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/UgqXSnOj7YuKyieypFDU2.png",
+      "destination": "https://steel.dev/docs/images/UgqXSnOj7YuKyieypFDU2.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/Untitled.png",
+      "destination": "https://steel.dev/docs/images/Untitled.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/a66PwdLRsuZhh62rlIczG.png",
+      "destination": "https://steel.dev/docs/images/a66PwdLRsuZhh62rlIczG.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/aDM_u6zJ-T_yBeJYgkvRh.png",
+      "destination": "https://steel.dev/docs/images/aDM_u6zJ-T_yBeJYgkvRh.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog-placeholder-white.jpeg",
+      "destination": "https://steel.dev/docs/images/changelog-placeholder-white.jpeg",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/22.png",
+      "destination": "https://steel.dev/docs/images/changelog/22.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/23.png",
+      "destination": "https://steel.dev/docs/images/changelog/23.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/24.png",
+      "destination": "https://steel.dev/docs/images/changelog/24.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/25.png",
+      "destination": "https://steel.dev/docs/images/changelog/25.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/26.png",
+      "destination": "https://steel.dev/docs/images/changelog/26.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/27.png",
+      "destination": "https://steel.dev/docs/images/changelog/27.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/28.png",
+      "destination": "https://steel.dev/docs/images/changelog/28.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/29.png",
+      "destination": "https://steel.dev/docs/images/changelog/29.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/30.png",
+      "destination": "https://steel.dev/docs/images/changelog/30.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/31.png",
+      "destination": "https://steel.dev/docs/images/changelog/31.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/32.png",
+      "destination": "https://steel.dev/docs/images/changelog/32.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/33.png",
+      "destination": "https://steel.dev/docs/images/changelog/33.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/34.png",
+      "destination": "https://steel.dev/docs/images/changelog/34.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/35.png",
+      "destination": "https://steel.dev/docs/images/changelog/35.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/36.png",
+      "destination": "https://steel.dev/docs/images/changelog/36.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/37.png",
+      "destination": "https://steel.dev/docs/images/changelog/37.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/changelog/38.png",
+      "destination": "https://steel.dev/docs/images/changelog/38.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/cmbf8zotk0gk8120j8adtmpfu.png",
+      "destination": "https://steel.dev/docs/images/cmbf8zotk0gk8120j8adtmpfu.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/cmbf8zv4x0g1d2b0j2nrm1cwu.png",
+      "destination": "https://steel.dev/docs/images/cmbf8zv4x0g1d2b0j2nrm1cwu.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/cmbf902g80gky2f0ib0zfzqiy.png",
+      "destination": "https://steel.dev/docs/images/cmbf902g80gky2f0ib0zfzqiy.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/cmbf90lm40gslym0i1arf4ivq.png",
+      "destination": "https://steel.dev/docs/images/cmbf90lm40gslym0i1arf4ivq.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/cmbf90t3z0h4k4g0hiqrhnqb2.png",
+      "destination": "https://steel.dev/docs/images/cmbf90t3z0h4k4g0hiqrhnqb2.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/elSgEf1Rrn7oVtsyq2ZGy.png",
+      "destination": "https://steel.dev/docs/images/elSgEf1Rrn7oVtsyq2ZGy.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/etXHsy_awCwDv2MZrMHbX.png",
+      "destination": "https://steel.dev/docs/images/etXHsy_awCwDv2MZrMHbX.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/fYgqRSCjhbqLejUq4fjy8.jpeg",
+      "destination": "https://steel.dev/docs/images/fYgqRSCjhbqLejUq4fjy8.jpeg",
+      "permanent": true
+    },
+    {
+      "source": "/images/jEdp6vzjOSMWbz2ePv3gO.png",
+      "destination": "https://steel.dev/docs/images/jEdp6vzjOSMWbz2ePv3gO.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/lLdC9xMtNw1cihp5shpLU.png",
+      "destination": "https://steel.dev/docs/images/lLdC9xMtNw1cihp5shpLU.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/logo.png",
+      "destination": "https://steel.dev/docs/images/logo.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/oWlREKD5nejyDprfYbiGM.png",
+      "destination": "https://steel.dev/docs/images/oWlREKD5nejyDprfYbiGM.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/rkcB3za0kbZkorDRjHbnV.png",
+      "destination": "https://steel.dev/docs/images/rkcB3za0kbZkorDRjHbnV.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/sYSAX3Mir1aRwCamEtADU.png",
+      "destination": "https://steel.dev/docs/images/sYSAX3Mir1aRwCamEtADU.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/steel-mark.png",
+      "destination": "https://steel.dev/docs/images/steel-mark.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/steel-onboarding.mp4",
+      "destination": "https://steel.dev/docs/images/steel-onboarding.mp4",
+      "permanent": true
+    },
+    {
+      "source": "/images/t61KyxNNN0LQhh_DqvYjp.png",
+      "destination": "https://steel.dev/docs/images/t61KyxNNN0LQhh_DqvYjp.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/x6qu00vtJfpmIZk6aXJZI.png",
+      "destination": "https://steel.dev/docs/images/x6qu00vtJfpmIZk6aXJZI.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/xabZ_F1PSsw-1OaFnvEuE.png",
+      "destination": "https://steel.dev/docs/images/xabZ_F1PSsw-1OaFnvEuE.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/z5OTGZtJklIIs1XG3vPVB.png",
+      "destination": "https://steel.dev/docs/images/z5OTGZtJklIIs1XG3vPVB.png",
+      "permanent": true
+    },
+    {
+      "source": "/integrations",
+      "destination": "https://steel.dev/docs/integrations",
+      "permanent": true
+    },
+    {
+      "source": "/integrations.md",
+      "destination": "https://steel.dev/docs/integrations.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/agentkit",
+      "destination": "https://steel.dev/docs/integrations/agentkit",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/agentkit.md",
+      "destination": "https://steel.dev/docs/integrations/agentkit.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/agno",
+      "destination": "https://steel.dev/docs/integrations/agno",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/agno.md",
+      "destination": "https://steel.dev/docs/integrations/agno.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/ai-sdk",
+      "destination": "https://steel.dev/docs/integrations/ai-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/ai-sdk.md",
+      "destination": "https://steel.dev/docs/integrations/ai-sdk.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/browser-use",
+      "destination": "https://steel.dev/docs/integrations/browser-use",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/browser-use.md",
+      "destination": "https://steel.dev/docs/integrations/browser-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/claude-agent-sdk",
+      "destination": "https://steel.dev/docs/integrations/claude-agent-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/claude-agent-sdk.md",
+      "destination": "https://steel.dev/docs/integrations/claude-agent-sdk.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/claude-code",
+      "destination": "https://steel.dev/docs/integrations/claude-code",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/claude-code.md",
+      "destination": "https://steel.dev/docs/integrations/claude-code.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/claude-computer-use",
+      "destination": "https://steel.dev/docs/integrations/claude-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/claude-computer-use.md",
+      "destination": "https://steel.dev/docs/integrations/claude-computer-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/codex",
+      "destination": "https://steel.dev/docs/integrations/codex",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/codex.md",
+      "destination": "https://steel.dev/docs/integrations/codex.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/crewai",
+      "destination": "https://steel.dev/docs/integrations/crewai",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/crewai.md",
+      "destination": "https://steel.dev/docs/integrations/crewai.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/gemini-computer-use",
+      "destination": "https://steel.dev/docs/integrations/gemini-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/gemini-computer-use.md",
+      "destination": "https://steel.dev/docs/integrations/gemini-computer-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/hermes-agent",
+      "destination": "https://steel.dev/docs/integrations/hermes-agent",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/hermes-agent.md",
+      "destination": "https://steel.dev/docs/integrations/hermes-agent.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/langgraph",
+      "destination": "https://steel.dev/docs/integrations/langgraph",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/langgraph.md",
+      "destination": "https://steel.dev/docs/integrations/langgraph.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/llms.txt",
+      "destination": "https://steel.dev/docs/integrations/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/magnitude",
+      "destination": "https://steel.dev/docs/integrations/magnitude",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/magnitude.md",
+      "destination": "https://steel.dev/docs/integrations/magnitude.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/mastra",
+      "destination": "https://steel.dev/docs/integrations/mastra",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/mastra.md",
+      "destination": "https://steel.dev/docs/integrations/mastra.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/notte",
+      "destination": "https://steel.dev/docs/integrations/notte",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/notte.md",
+      "destination": "https://steel.dev/docs/integrations/notte.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/openai-agents-sdk",
+      "destination": "https://steel.dev/docs/integrations/openai-agents-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/openai-agents-sdk.md",
+      "destination": "https://steel.dev/docs/integrations/openai-agents-sdk.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/openai-computer-use",
+      "destination": "https://steel.dev/docs/integrations/openai-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/openai-computer-use.md",
+      "destination": "https://steel.dev/docs/integrations/openai-computer-use.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/openclaw",
+      "destination": "https://steel.dev/docs/integrations/openclaw",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/openclaw.md",
+      "destination": "https://steel.dev/docs/integrations/openclaw.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/pi-agent",
+      "destination": "https://steel.dev/docs/integrations/pi-agent",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/pi-agent.md",
+      "destination": "https://steel.dev/docs/integrations/pi-agent.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/playwright",
+      "destination": "https://steel.dev/docs/integrations/playwright",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/playwright.md",
+      "destination": "https://steel.dev/docs/integrations/playwright.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/puppeteer",
+      "destination": "https://steel.dev/docs/integrations/puppeteer",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/puppeteer.md",
+      "destination": "https://steel.dev/docs/integrations/puppeteer.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/pydantic-ai",
+      "destination": "https://steel.dev/docs/integrations/pydantic-ai",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/pydantic-ai.md",
+      "destination": "https://steel.dev/docs/integrations/pydantic-ai.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/replit",
+      "destination": "https://steel.dev/docs/integrations/replit",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/replit.md",
+      "destination": "https://steel.dev/docs/integrations/replit.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/selenium",
+      "destination": "https://steel.dev/docs/integrations/selenium",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/selenium.md",
+      "destination": "https://steel.dev/docs/integrations/selenium.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/stackblitz-bolt.new",
+      "destination": "https://steel.dev/docs/integrations/stackblitz-bolt.new",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/stackblitz-bolt.new.md",
+      "destination": "https://steel.dev/docs/integrations/stackblitz-bolt.new.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/stagehand",
+      "destination": "https://steel.dev/docs/integrations/stagehand",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/stagehand.md",
+      "destination": "https://steel.dev/docs/integrations/stagehand.md",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/valtown/quickstart",
+      "destination": "https://www.val.town/x/steel/steel_puppeteer_starter",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/x402",
+      "destination": "https://steel.dev/docs/integrations/x402",
+      "permanent": true
+    },
+    {
+      "source": "/integrations/x402.md",
+      "destination": "https://steel.dev/docs/integrations/x402.md",
+      "permanent": true
+    },
+    {
+      "source": "/llms-full.txt",
+      "destination": "https://steel.dev/docs/llms-full.txt",
+      "permanent": true
+    },
+    {
+      "source": "/llms.txt",
+      "destination": "https://steel.dev/docs/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-000",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-000",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-001",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-001",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-002",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-002",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-003",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-003",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-004",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-004",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-005",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-005",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-006",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-006",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-007",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-007",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-008",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-008",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-009",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-009",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-010",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-010",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-011",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-011",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-012",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-012",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-013",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-013",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-014",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-014",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-015",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-015",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-016",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-016",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-017",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-017",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-018",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-018",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-019",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-019",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-020",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-020",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-021",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-021",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-022",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-022",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-023",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-023",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-024",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-024",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-025",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-025",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-026",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-026",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-027",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-027",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-028",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-028",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-029",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-029",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-030",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-030",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-031",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-031",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-032",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-032",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-033",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-033",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-034",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-034",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-035",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-035",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-036",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-036",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-037",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-037",
+      "permanent": true
+    },
+    {
+      "source": "/og/changelog/changelog-038",
+      "destination": "https://steel.dev/docs/og/changelog/changelog-038",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook",
+      "destination": "https://steel.dev/docs/og/cookbook",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/agentkit",
+      "destination": "https://steel.dev/docs/og/cookbook/agentkit",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/agno",
+      "destination": "https://steel.dev/docs/og/cookbook/agno",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/auth-context",
+      "destination": "https://steel.dev/docs/og/cookbook/auth-context",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/authors/aspectrr",
+      "destination": "https://steel.dev/docs/og/cookbook/authors/aspectrr",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/authors/bsparker",
+      "destination": "https://steel.dev/docs/og/cookbook/authors/bsparker",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/authors/danew",
+      "destination": "https://steel.dev/docs/og/cookbook/authors/danew",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/authors/hussufo",
+      "destination": "https://steel.dev/docs/og/cookbook/authors/hussufo",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/authors/jagadeshjai",
+      "destination": "https://steel.dev/docs/og/cookbook/authors/jagadeshjai",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/authors/junhsss",
+      "destination": "https://steel.dev/docs/og/cookbook/authors/junhsss",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/authors/nibzard",
+      "destination": "https://steel.dev/docs/og/cookbook/authors/nibzard",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/browser-use",
+      "destination": "https://steel.dev/docs/og/cookbook/browser-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/browser-use-captcha-auto",
+      "destination": "https://steel.dev/docs/og/cookbook/browser-use-captcha-auto",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/browser-use-captcha-manual",
+      "destination": "https://steel.dev/docs/og/cookbook/browser-use-captcha-manual",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/chromedp",
+      "destination": "https://steel.dev/docs/og/cookbook/chromedp",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/chromiumoxide",
+      "destination": "https://steel.dev/docs/og/cookbook/chromiumoxide",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/claude-agent-sdk",
+      "destination": "https://steel.dev/docs/og/cookbook/claude-agent-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/claude-computer-use",
+      "destination": "https://steel.dev/docs/og/cookbook/claude-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/claude-computer-use-mobile",
+      "destination": "https://steel.dev/docs/og/cookbook/claude-computer-use-mobile",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/convex-chat-with-page",
+      "destination": "https://steel.dev/docs/og/cookbook/convex-chat-with-page",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/convex-price-watch",
+      "destination": "https://steel.dev/docs/og/cookbook/convex-price-watch",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/credentials",
+      "destination": "https://steel.dev/docs/og/cookbook/credentials",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/crewai",
+      "destination": "https://steel.dev/docs/og/cookbook/crewai",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/deep-research",
+      "destination": "https://steel.dev/docs/og/cookbook/deep-research",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/eino",
+      "destination": "https://steel.dev/docs/og/cookbook/eino",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/extensions",
+      "destination": "https://steel.dev/docs/og/cookbook/extensions",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/files",
+      "destination": "https://steel.dev/docs/og/cookbook/files",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/gemini-computer-use",
+      "destination": "https://steel.dev/docs/og/cookbook/gemini-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/genkit",
+      "destination": "https://steel.dev/docs/og/cookbook/genkit",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/google-adk",
+      "destination": "https://steel.dev/docs/og/cookbook/google-adk",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/headless-chrome",
+      "destination": "https://steel.dev/docs/og/cookbook/headless-chrome",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/langchaingo",
+      "destination": "https://steel.dev/docs/og/cookbook/langchaingo",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/langgraph",
+      "destination": "https://steel.dev/docs/og/cookbook/langgraph",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/magnitude",
+      "destination": "https://steel.dev/docs/og/cookbook/magnitude",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/mastra",
+      "destination": "https://steel.dev/docs/og/cookbook/mastra",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/mcp",
+      "destination": "https://steel.dev/docs/og/cookbook/mcp",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/microsoft-agent-framework",
+      "destination": "https://steel.dev/docs/og/cookbook/microsoft-agent-framework",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/notte",
+      "destination": "https://steel.dev/docs/og/cookbook/notte",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/openai-agents",
+      "destination": "https://steel.dev/docs/og/cookbook/openai-agents",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/openai-computer-use",
+      "destination": "https://steel.dev/docs/og/cookbook/openai-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/playwright",
+      "destination": "https://steel.dev/docs/og/cookbook/playwright",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/profiles",
+      "destination": "https://steel.dev/docs/og/cookbook/profiles",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/puppeteer",
+      "destination": "https://steel.dev/docs/og/cookbook/puppeteer",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/pydantic-ai",
+      "destination": "https://steel.dev/docs/og/cookbook/pydantic-ai",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/restate-agent",
+      "destination": "https://steel.dev/docs/og/cookbook/restate-agent",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/rig",
+      "destination": "https://steel.dev/docs/og/cookbook/rig",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/rod",
+      "destination": "https://steel.dev/docs/og/cookbook/rod",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/scrape",
+      "destination": "https://steel.dev/docs/og/cookbook/scrape",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/selenium",
+      "destination": "https://steel.dev/docs/og/cookbook/selenium",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/stagehand",
+      "destination": "https://steel.dev/docs/og/cookbook/stagehand",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/swiftide",
+      "destination": "https://steel.dev/docs/og/cookbook/swiftide",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/temporal-browser-workflow",
+      "destination": "https://steel.dev/docs/og/cookbook/temporal-browser-workflow",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/agents",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/agents",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/authentication",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/authentication",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/browser-automation",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/browser-automation",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/browser-use",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/browser-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/captchas",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/captchas",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/computer-use",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/convex",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/convex",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/mcp",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/mcp",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/mobile",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/mobile",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/nextjs",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/nextjs",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/playwright",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/playwright",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/restate",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/restate",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/search",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/search",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/steel-apis",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/steel-apis",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/subagents",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/subagents",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/temporal",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/temporal",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/triggerdev",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/triggerdev",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/topics/typed-output",
+      "destination": "https://steel.dev/docs/og/cookbook/topics/typed-output",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/trigger-dev-browser-job",
+      "destination": "https://steel.dev/docs/og/cookbook/trigger-dev-browser-job",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/vercel-ai-sdk",
+      "destination": "https://steel.dev/docs/og/cookbook/vercel-ai-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/vercel-ai-sdk-nextjs",
+      "destination": "https://steel.dev/docs/og/cookbook/vercel-ai-sdk-nextjs",
+      "permanent": true
+    },
+    {
+      "source": "/og/cookbook/you-com-search",
+      "destination": "https://steel.dev/docs/og/cookbook/you-com-search",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations",
+      "destination": "https://steel.dev/docs/og/integrations",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/agentkit",
+      "destination": "https://steel.dev/docs/og/integrations/agentkit",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/agno",
+      "destination": "https://steel.dev/docs/og/integrations/agno",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/ai-sdk",
+      "destination": "https://steel.dev/docs/og/integrations/ai-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/browser-use",
+      "destination": "https://steel.dev/docs/og/integrations/browser-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/claude-agent-sdk",
+      "destination": "https://steel.dev/docs/og/integrations/claude-agent-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/claude-code",
+      "destination": "https://steel.dev/docs/og/integrations/claude-code",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/claude-computer-use",
+      "destination": "https://steel.dev/docs/og/integrations/claude-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/codex",
+      "destination": "https://steel.dev/docs/og/integrations/codex",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/crewai",
+      "destination": "https://steel.dev/docs/og/integrations/crewai",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/gemini-computer-use",
+      "destination": "https://steel.dev/docs/og/integrations/gemini-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/hermes-agent",
+      "destination": "https://steel.dev/docs/og/integrations/hermes-agent",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/langgraph",
+      "destination": "https://steel.dev/docs/og/integrations/langgraph",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/magnitude",
+      "destination": "https://steel.dev/docs/og/integrations/magnitude",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/mastra",
+      "destination": "https://steel.dev/docs/og/integrations/mastra",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/notte",
+      "destination": "https://steel.dev/docs/og/integrations/notte",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/openai-agents-sdk",
+      "destination": "https://steel.dev/docs/og/integrations/openai-agents-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/openai-computer-use",
+      "destination": "https://steel.dev/docs/og/integrations/openai-computer-use",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/openclaw",
+      "destination": "https://steel.dev/docs/og/integrations/openclaw",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/pi-agent",
+      "destination": "https://steel.dev/docs/og/integrations/pi-agent",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/playwright",
+      "destination": "https://steel.dev/docs/og/integrations/playwright",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/puppeteer",
+      "destination": "https://steel.dev/docs/og/integrations/puppeteer",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/pydantic-ai",
+      "destination": "https://steel.dev/docs/og/integrations/pydantic-ai",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/replit",
+      "destination": "https://steel.dev/docs/og/integrations/replit",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/selenium",
+      "destination": "https://steel.dev/docs/og/integrations/selenium",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/stackblitz-bolt.new",
+      "destination": "https://steel.dev/docs/og/integrations/stackblitz-bolt.new",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/stagehand",
+      "destination": "https://steel.dev/docs/og/integrations/stagehand",
+      "permanent": true
+    },
+    {
+      "source": "/og/integrations/x402",
+      "destination": "https://steel.dev/docs/og/integrations/x402",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/agent-traces/api",
+      "destination": "https://steel.dev/docs/og/overview/agent-traces/api",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/agent-traces/overview",
+      "destination": "https://steel.dev/docs/og/overview/agent-traces/overview",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/agent-traces/timeline",
+      "destination": "https://steel.dev/docs/og/overview/agent-traces/timeline",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/authentication",
+      "destination": "https://steel.dev/docs/og/overview/authentication",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/browser-tools/overview",
+      "destination": "https://steel.dev/docs/og/overview/browser-tools/overview",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/captchas-api/overview",
+      "destination": "https://steel.dev/docs/og/overview/captchas-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/credentials-api/overview",
+      "destination": "https://steel.dev/docs/og/overview/credentials-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/extensions-api/overview",
+      "destination": "https://steel.dev/docs/og/overview/extensions-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/files-api/overview",
+      "destination": "https://steel.dev/docs/og/overview/files-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/intro-to-steel",
+      "destination": "https://steel.dev/docs/og/overview/intro-to-steel",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/legal",
+      "destination": "https://steel.dev/docs/og/overview/legal",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/llms-full.txt",
+      "destination": "https://steel.dev/docs/og/overview/llms-full.txt",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/need-help",
+      "destination": "https://steel.dev/docs/og/overview/need-help",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/pricinglimits",
+      "destination": "https://steel.dev/docs/og/overview/pricinglimits",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/profiles-api/overview",
+      "destination": "https://steel.dev/docs/og/overview/profiles-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/self-hosting/clustering",
+      "destination": "https://steel.dev/docs/og/overview/self-hosting/clustering",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/self-hosting/docker",
+      "destination": "https://steel.dev/docs/og/overview/self-hosting/docker",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/self-hosting/extensions",
+      "destination": "https://steel.dev/docs/og/overview/self-hosting/extensions",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/self-hosting/profiles",
+      "destination": "https://steel.dev/docs/og/overview/self-hosting/profiles",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/self-hosting/railway",
+      "destination": "https://steel.dev/docs/og/overview/self-hosting/railway",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/self-hosting/render",
+      "destination": "https://steel.dev/docs/og/overview/self-hosting/render",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/self-hosting/steel-local-vs-steel-cloud",
+      "destination": "https://steel.dev/docs/og/overview/self-hosting/steel-local-vs-steel-cloud",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/self-hosting/webrtc",
+      "destination": "https://steel.dev/docs/og/overview/self-hosting/webrtc",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/configuration",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/configuration",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/dedicated-ips",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/dedicated-ips",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/embed-sessions",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/embed-sessions",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/embed-sessions/live-sessions",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/embed-sessions/live-sessions",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/embed-sessions/past-sessions",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/embed-sessions/past-sessions",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/fullscreen-mode",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/fullscreen-mode",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/human-in-the-loop",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/human-in-the-loop",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/mobile-mode",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/mobile-mode",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/overview",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/quickstart",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/quickstart",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/reusing-auth-context",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/reusing-auth-context",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/sessions-api/session-lifecycle",
+      "destination": "https://steel.dev/docs/og/overview/sessions-api/session-lifecycle",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/skills",
+      "destination": "https://steel.dev/docs/og/overview/skills",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/skills/available-skills",
+      "destination": "https://steel.dev/docs/og/overview/skills/available-skills",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/skills/available-skills/steel-browser",
+      "destination": "https://steel.dev/docs/og/overview/skills/available-skills/steel-browser",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/skills/available-skills/steel-developer",
+      "destination": "https://steel.dev/docs/og/overview/skills/available-skills/steel-developer",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/skills/available-skills/steel-reliability",
+      "destination": "https://steel.dev/docs/og/overview/skills/available-skills/steel-reliability",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/skills/available-skills/steel-session-debugging",
+      "destination": "https://steel.dev/docs/og/overview/skills/available-skills/steel-session-debugging",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/skills/available-skills/steel-skill-creator",
+      "destination": "https://steel.dev/docs/og/overview/skills/available-skills/steel-skill-creator",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/skills/troubleshooting",
+      "destination": "https://steel.dev/docs/og/overview/skills/troubleshooting",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/stealth/captcha-solving",
+      "destination": "https://steel.dev/docs/og/overview/stealth/captcha-solving",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/stealth/proxies",
+      "destination": "https://steel.dev/docs/og/overview/stealth/proxies",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/steel-cli",
+      "destination": "https://steel.dev/docs/og/overview/steel-cli",
+      "permanent": true
+    },
+    {
+      "source": "/og/overview/stripe-projects",
+      "destination": "https://steel.dev/docs/og/overview/stripe-projects",
+      "permanent": true
+    },
+    {
+      "source": "/openapi.json",
+      "destination": "https://api.steel.dev/sdk-openapi.json",
+      "permanent": true
+    },
+    {
+      "source": "/overview",
+      "destination": "https://steel.dev/docs",
+      "permanent": true
+    },
+    {
+      "source": "/overview/agent-traces/api",
+      "destination": "https://steel.dev/docs/overview/agent-traces/api",
+      "permanent": true
+    },
+    {
+      "source": "/overview/agent-traces/api.md",
+      "destination": "https://steel.dev/docs/overview/agent-traces/api.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/agent-traces/llms.txt",
+      "destination": "https://steel.dev/docs/overview/agent-traces/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/agent-traces/overview",
+      "destination": "https://steel.dev/docs/overview/agent-traces/overview",
+      "permanent": true
+    },
+    {
+      "source": "/overview/agent-traces/overview.md",
+      "destination": "https://steel.dev/docs/overview/agent-traces/overview.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/agent-traces/timeline",
+      "destination": "https://steel.dev/docs/overview/agent-traces/timeline",
+      "permanent": true
+    },
+    {
+      "source": "/overview/agent-traces/timeline.md",
+      "destination": "https://steel.dev/docs/overview/agent-traces/timeline.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/authentication",
+      "destination": "https://steel.dev/docs/overview/authentication",
+      "permanent": true
+    },
+    {
+      "source": "/overview/authentication.md",
+      "destination": "https://steel.dev/docs/overview/authentication.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/browser-tools/llms.txt",
+      "destination": "https://steel.dev/docs/overview/browser-tools/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/browser-tools/overview",
+      "destination": "https://steel.dev/docs/overview/browser-tools/overview",
+      "permanent": true
+    },
+    {
+      "source": "/overview/browser-tools/overview.md",
+      "destination": "https://steel.dev/docs/overview/browser-tools/overview.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/captchas-api/llms.txt",
+      "destination": "https://steel.dev/docs/overview/captchas-api/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/captchas-api/overview",
+      "destination": "https://steel.dev/docs/overview/captchas-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/overview/captchas-api/overview.md",
+      "destination": "https://steel.dev/docs/overview/captchas-api/overview.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/credentials-api/llms.txt",
+      "destination": "https://steel.dev/docs/overview/credentials-api/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/credentials-api/overview",
+      "destination": "https://steel.dev/docs/overview/credentials-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/overview/credentials-api/overview.md",
+      "destination": "https://steel.dev/docs/overview/credentials-api/overview.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/extensions-api/llms.txt",
+      "destination": "https://steel.dev/docs/overview/extensions-api/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/extensions-api/overview",
+      "destination": "https://steel.dev/docs/overview/extensions-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/overview/extensions-api/overview.md",
+      "destination": "https://steel.dev/docs/overview/extensions-api/overview.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/files-api/llms.txt",
+      "destination": "https://steel.dev/docs/overview/files-api/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/files-api/overview",
+      "destination": "https://steel.dev/docs/overview/files-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/overview/files-api/overview.md",
+      "destination": "https://steel.dev/docs/overview/files-api/overview.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/guides/playwright-node",
+      "destination": "https://steel.dev/docs/cookbook/playwright#typescript",
+      "permanent": true
+    },
+    {
+      "source": "/overview/guides/playwright-python",
+      "destination": "https://steel.dev/docs/cookbook/playwright#python",
+      "permanent": true
+    },
+    {
+      "source": "/overview/guides/puppeteer",
+      "destination": "https://steel.dev/docs/cookbook/puppeteer",
+      "permanent": true
+    },
+    {
+      "source": "/overview/guides/selenium",
+      "destination": "https://steel.dev/docs/cookbook/selenium",
+      "permanent": true
+    },
+    {
+      "source": "/overview/intro-to-steel",
+      "destination": "https://steel.dev/docs/overview/intro-to-steel",
+      "permanent": true
+    },
+    {
+      "source": "/overview/intro-to-steel.md",
+      "destination": "https://steel.dev/docs/overview/intro-to-steel.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/legal",
+      "destination": "https://steel.dev/docs/overview/legal",
+      "permanent": true
+    },
+    {
+      "source": "/overview/legal.md",
+      "destination": "https://steel.dev/docs/overview/legal.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/llms-full.txt",
+      "destination": "https://steel.dev/docs/llms-full.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/llms.txt",
+      "destination": "https://steel.dev/docs/overview/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/need-help",
+      "destination": "https://steel.dev/docs/overview/need-help",
+      "permanent": true
+    },
+    {
+      "source": "/overview/need-help.md",
+      "destination": "https://steel.dev/docs/overview/need-help.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/pricinglimits",
+      "destination": "https://steel.dev/docs/overview/pricinglimits",
+      "permanent": true
+    },
+    {
+      "source": "/overview/pricinglimits.md",
+      "destination": "https://steel.dev/docs/overview/pricinglimits.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/profiles-api/llms.txt",
+      "destination": "https://steel.dev/docs/overview/profiles-api/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/profiles-api/overview",
+      "destination": "https://steel.dev/docs/overview/profiles-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/overview/profiles-api/overview.md",
+      "destination": "https://steel.dev/docs/overview/profiles-api/overview.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/clustering",
+      "destination": "https://steel.dev/docs/overview/self-hosting/clustering",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/clustering.md",
+      "destination": "https://steel.dev/docs/overview/self-hosting/clustering.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/docker",
+      "destination": "https://steel.dev/docs/overview/self-hosting/docker",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/docker.md",
+      "destination": "https://steel.dev/docs/overview/self-hosting/docker.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/extensions",
+      "destination": "https://steel.dev/docs/overview/self-hosting/extensions",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/extensions.md",
+      "destination": "https://steel.dev/docs/overview/self-hosting/extensions.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/llms.txt",
+      "destination": "https://steel.dev/docs/overview/self-hosting/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/profiles",
+      "destination": "https://steel.dev/docs/overview/self-hosting/profiles",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/profiles.md",
+      "destination": "https://steel.dev/docs/overview/self-hosting/profiles.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/railway",
+      "destination": "https://steel.dev/docs/overview/self-hosting/railway",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/railway.md",
+      "destination": "https://steel.dev/docs/overview/self-hosting/railway.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/render",
+      "destination": "https://render.com/deploy?image=steeldev/steel",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/steel-local-vs-steel-cloud",
+      "destination": "https://steel.dev/docs/overview/self-hosting/steel-local-vs-steel-cloud",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/steel-local-vs-steel-cloud.md",
+      "destination": "https://steel.dev/docs/overview/self-hosting/steel-local-vs-steel-cloud.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/webrtc",
+      "destination": "https://steel.dev/docs/overview/self-hosting/webrtc",
+      "permanent": true
+    },
+    {
+      "source": "/overview/self-hosting/webrtc.md",
+      "destination": "https://steel.dev/docs/overview/self-hosting/webrtc.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/configuration",
+      "destination": "https://steel.dev/docs/overview/sessions-api/configuration",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/configuration.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/configuration.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/dedicated-ips",
+      "destination": "https://steel.dev/docs/overview/sessions-api/dedicated-ips",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/dedicated-ips.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/dedicated-ips.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/embed-sessions",
+      "destination": "https://steel.dev/docs/overview/sessions-api/embed-sessions",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/embed-sessions.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/embed-sessions.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/embed-sessions/live-sessions",
+      "destination": "https://steel.dev/docs/overview/sessions-api/embed-sessions/live-sessions",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/embed-sessions/live-sessions.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/embed-sessions/live-sessions.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/embed-sessions/llms.txt",
+      "destination": "https://steel.dev/docs/overview/sessions-api/embed-sessions/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/embed-sessions/past-sessions",
+      "destination": "https://steel.dev/docs/overview/sessions-api/embed-sessions/past-sessions",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/embed-sessions/past-sessions.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/embed-sessions/past-sessions.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/fullscreen-mode",
+      "destination": "https://steel.dev/docs/overview/sessions-api/fullscreen-mode",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/fullscreen-mode.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/fullscreen-mode.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/human-in-the-loop",
+      "destination": "https://steel.dev/docs/overview/sessions-api/human-in-the-loop",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/human-in-the-loop.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/human-in-the-loop.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/llms.txt",
+      "destination": "https://steel.dev/docs/overview/sessions-api/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/mobile-mode",
+      "destination": "https://steel.dev/docs/overview/sessions-api/mobile-mode",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/mobile-mode.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/mobile-mode.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/multi-region",
+      "destination": "https://steel.dev/docs/overview/sessions-api/configuration#network-identity",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/overview",
+      "destination": "https://steel.dev/docs/overview/sessions-api/overview",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/overview.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/overview.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/quickstart",
+      "destination": "https://steel.dev/docs/overview/sessions-api/quickstart",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/quickstart.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/quickstart.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/reusing-auth-context",
+      "destination": "https://steel.dev/docs/overview/sessions-api/reusing-auth-context",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/reusing-auth-context.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/reusing-auth-context.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/session-lifecycle",
+      "destination": "https://steel.dev/docs/overview/sessions-api/session-lifecycle",
+      "permanent": true
+    },
+    {
+      "source": "/overview/sessions-api/session-lifecycle.md",
+      "destination": "https://steel.dev/docs/overview/sessions-api/session-lifecycle.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills",
+      "destination": "https://steel.dev/docs/overview/skills",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills.md",
+      "destination": "https://steel.dev/docs/overview/skills.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills.md",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/llms.txt",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-browser",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-browser",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-browser.md",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-browser.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-developer",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-developer",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-developer.md",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-developer.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-reliability",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-reliability",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-reliability.md",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-reliability.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-session-debugging",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-session-debugging",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-session-debugging.md",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-session-debugging.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-skill-creator",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-skill-creator",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/available-skills/steel-skill-creator.md",
+      "destination": "https://steel.dev/docs/overview/skills/available-skills/steel-skill-creator.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/llms.txt",
+      "destination": "https://steel.dev/docs/overview/skills/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/troubleshooting",
+      "destination": "https://steel.dev/docs/overview/skills/troubleshooting",
+      "permanent": true
+    },
+    {
+      "source": "/overview/skills/troubleshooting.md",
+      "destination": "https://steel.dev/docs/overview/skills/troubleshooting.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/stealth/captcha-solving",
+      "destination": "https://steel.dev/docs/overview/stealth/captcha-solving",
+      "permanent": true
+    },
+    {
+      "source": "/overview/stealth/captcha-solving.md",
+      "destination": "https://steel.dev/docs/overview/stealth/captcha-solving.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/stealth/llms.txt",
+      "destination": "https://steel.dev/docs/overview/stealth/llms.txt",
+      "permanent": true
+    },
+    {
+      "source": "/overview/stealth/proxies",
+      "destination": "https://steel.dev/docs/overview/stealth/proxies",
+      "permanent": true
+    },
+    {
+      "source": "/overview/stealth/proxies.md",
+      "destination": "https://steel.dev/docs/overview/stealth/proxies.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/steel-cli",
+      "destination": "https://steel.dev/docs/overview/steel-cli",
+      "permanent": true
+    },
+    {
+      "source": "/overview/steel-cli.md",
+      "destination": "https://steel.dev/docs/overview/steel-cli.md",
+      "permanent": true
+    },
+    {
+      "source": "/overview/stripe-projects",
+      "destination": "https://steel.dev/docs/overview/stripe-projects",
+      "permanent": true
+    },
+    {
+      "source": "/overview/stripe-projects.md",
+      "destination": "https://steel.dev/docs/overview/stripe-projects.md",
+      "permanent": true
+    },
+    {
+      "source": "/start",
+      "destination": "https://steel.dev/docs",
+      "permanent": false
+    },
+    {
+      "source": "/steel-go-sdk",
+      "destination": "https://pkg.go.dev/github.com/steel-dev/steel-go",
+      "permanent": true
+    },
+    {
+      "source": "/steel-js-sdk",
+      "destination": "https://www.npmjs.com/package/steel-sdk",
+      "permanent": true
+    },
+    {
+      "source": "/steel-python-sdk",
+      "destination": "https://pypi.org/project/steel-sdk/",
+      "permanent": true
+    },
+    {
+      "source": "/steel-rust-sdk",
+      "destination": "https://crates.io/crates/steel-rs",
+      "permanent": true
+    }
+  ]
+}

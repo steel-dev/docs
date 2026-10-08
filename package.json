@@ -21,6 +21,7 @@
     "generate-openapi": "bun run ./scripts/fetch-openapi-specs.mts",
     "generate-llms": "bun run ./scripts/generate-llms-txt.ts",
     "generate-agent-skills": "bun run ./scripts/generate-agent-skills-index.ts",
+    "generate-docs-host-redirects": "bun run ./scripts/generate-docs-host-redirects.ts",
     "sync-cookbook": "bun run ./scripts/sync-cookbook.ts",
     "generate-changelog-draft": "bun run ./scripts/generate-changelog-draft.ts",
     "preview-changelog": "bun run ./scripts/generate-changelog-draft.ts --preview",
