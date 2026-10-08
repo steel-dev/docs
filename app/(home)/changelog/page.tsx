@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { redirect } from 'next/navigation';
+import { docsPath } from '@/lib/docs-path';
 
 // Resolve the highest-numbered changelog entry so /changelog always lands on the latest.
 function getLatestChangelogSlug() {
@@ -21,5 +22,5 @@ function getLatestChangelogSlug() {
 
 export default function ChangelogPage() {
   const latest = getLatestChangelogSlug();
-  redirect(`/changelog/${latest}`);
+  redirect(docsPath(`/changelog/${latest}`));
 }

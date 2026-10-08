@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
+import { docsPath } from '@/lib/docs-path';
 
 interface InteractiveBadgeProps {
   href: string;
@@ -13,7 +14,7 @@ export function InteractiveBadge({ href, label }: InteractiveBadgeProps) {
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        window.location.href = href;
+        window.location.href = docsPath(href);
       }}
       type="button"
       className="hover:no-underline"
