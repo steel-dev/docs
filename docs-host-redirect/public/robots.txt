@@ -1,0 +1,6 @@
+# docs.steel.dev moved to https://steel.dev/docs. Each old URL redirects there.
+User-agent: *
+Allow: /
+
+Sitemap: https://docs.steel.dev/sitemap.xml
+Sitemap: https://steel.dev/docs/sitemap.xml

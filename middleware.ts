@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { DOCS_PATH_PREFIX, stripDocsPath } from '@/lib/docs-path';
 import {
   appendMarkdownVaryHeader,
   isNegotiableDocsPath,
@@ -13,11 +14,18 @@ function isNegotiableMethod(method: string): boolean {
 
 function withMarkdownVary(response: NextResponse): NextResponse {
   appendMarkdownVaryHeader(response.headers);
+  if (DOCS_PATH_PREFIX) {
+    // Negotiated HTML/Markdown must not share a CDN cache entry. Keep Next's
+    // router Vary tokens; do not assume Vary alone configures Vercel's cache.
+    response.headers.set('Cache-Control', 'private, no-store');
+    response.headers.set('CDN-Cache-Control', 'no-store');
+    response.headers.set('Vercel-CDN-Cache-Control', 'no-store');
+  }
   return response;
 }
 
 export default function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const pathname = stripDocsPath(request.nextUrl.pathname);
 
   if (!isNegotiableMethod(request.method)) {
     return NextResponse.next();

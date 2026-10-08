@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from '@/components/layouts/shared';
+import { docsPath } from '@/lib/docs-path';
 /**
  * Shared layout configurations
  *
@@ -13,27 +14,27 @@ export const baseOptions: BaseLayoutProps = {
   links: [
     {
       text: 'Overview',
-      url: '/',
+      url: docsPath('/'),
       active: 'url',
     },
     {
       text: 'Integrations',
-      url: '/integrations',
+      url: docsPath('/integrations'),
       active: 'nested-url',
     },
     {
       text: 'Cookbook',
-      url: '/cookbook',
+      url: docsPath('/cookbook'),
       active: 'nested-url',
     },
     {
       text: 'Changelog',
-      url: '/changelog',
+      url: docsPath('/changelog'),
       active: 'nested-url',
     },
     {
       text: 'API Reference',
-      url: '/api-reference',
+      url: docsPath('/api-reference'),
     },
     // {
     //   type: "menu",

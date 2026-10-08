@@ -1,6 +1,5 @@
 'use client';
 import { usePathname } from 'fumadocs-core/framework';
-import Link from 'fumadocs-core/link';
 import { ChevronDown } from 'lucide-react';
 import React, {
   type AnchorHTMLAttributes,
@@ -11,6 +10,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { DocsFumadocsLink as Link } from '@/components/docs-link';
 import { isActive } from '../../lib/is-active';
 import { cn } from '../../lib/utils';
 import {

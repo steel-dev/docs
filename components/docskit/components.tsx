@@ -1,7 +1,7 @@
 import { Block, CodeBlock } from 'codehike/blocks';
 import type { RawCode } from 'codehike/code';
-import Link from 'fumadocs-core/link';
 import { z } from 'zod';
+import { DocsFumadocsLink as Link } from '@/components/docs-link';
 import { Code } from './code';
 import { SimpleCode } from './code-simple';
 import { InlineCode } from './inline-code';

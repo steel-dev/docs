@@ -27,6 +27,7 @@ import { BreadcrumbJsonLd, TechArticleJsonLd, WebPageJsonLd } from '@/components
 import { Badge } from '@/components/ui/badge';
 import * as customIcons from '@/components/ui/icon';
 import { TagFilterSystem } from '@/components/ui/tag-filter-system';
+import { docsPath, stripDocsPath } from '@/lib/docs-path';
 import { getGitLastModified } from '@/lib/last-modified';
 import { getAllFilterablePages, source } from '@/lib/source';
 import { DOCS_URL } from '@/lib/structured-data';
@@ -69,7 +70,7 @@ export default async function Page(props: {
   const allFilterablePages = getAllFilterablePages();
 
   // Extract section from current page URL for scoped filtering
-  const currentSection = page.url.split('/').filter(Boolean)[1] || 'general';
+  const currentSection = stripDocsPath(page.url).split('/').filter(Boolean)[1] || 'general';
 
   // Helper function to get icon component
   const getIconComponent = (iconName: string) => {
@@ -108,10 +109,11 @@ export default async function Page(props: {
   // Convert icon names to React components
   const interactiveLinks = page.data.interactiveLinks?.map((link) => ({
     ...link,
+    href: docsPath(link.href),
     icon: link.icon ? getIconComponent(link.icon) : undefined,
   }));
 
-  const canonicalPath = page.url.replace(/^\/en(\/|$)/, '/');
+  const canonicalPath = stripDocsPath(page.url).replace(/^\/en(\/|$)/, '/');
 
   // BreadcrumbList JSON-LD trail: home + section hub + ancestor folders that
   // have their own page + the page itself. Fumadocs resets the trail at
@@ -120,7 +122,7 @@ export default async function Page(props: {
   // section index sidebarTitles are generic like "Home"). Folder nodes without
   // an index page carry no url and are dropped: Google requires `item` on
   // every ListItem except the last.
-  const stripEn = (url: string) => url.replace(/^\/en(\/|$)/, '/');
+  const stripEn = (url: string) => stripDocsPath(url).replace(/^\/en(\/|$)/, '/');
   const sectionSlug = canonicalPath.split('/').filter(Boolean)[0];
   const sectionPage = sectionSlug
     ? (source.getPage([sectionSlug]) ?? source.getPage(['en', sectionSlug]))
@@ -257,8 +259,10 @@ export default async function Page(props: {
                   )}
                 </div>
                 {page.data.llm !== false &&
-                  page.url !== '/cookbook' &&
-                  !page.url.startsWith('/cookbook/topics/') && <LLMShare content={LLMContent} />}
+                  stripDocsPath(page.url) !== '/cookbook' &&
+                  !stripDocsPath(page.url).startsWith('/cookbook/topics/') && (
+                    <LLMShare content={LLMContent} />
+                  )}
               </div>
               <DocsPageDescription />
 
@@ -363,9 +367,9 @@ export async function generateMetadata(props: {
   }
   if (!page) notFound();
 
-  const canonicalPath = page.url.replace(/^\/en(\/|$)/, '/');
+  const canonicalPath = stripDocsPath(page.url).replace(/^\/en(\/|$)/, '/');
   const ogSlug = slug[0] === 'en' ? slug.slice(1) : slug;
-  const ogImageUrl = `/og/${ogSlug.join('/')}`;
+  const ogImageUrl = docsPath(`/og/${ogSlug.join('/')}`);
   const isChangelogEntry = /^\/changelog\/.+/.test(canonicalPath);
 
   const publishedAt = (page.data as { publishedAt?: string }).publishedAt;
@@ -376,13 +380,13 @@ export async function generateMetadata(props: {
     description: page.data.description,
     authors: [{ name: 'Steel', url: 'https://steel.dev' }],
     alternates: {
-      canonical: canonicalPath,
+      canonical: docsPath(canonicalPath),
     },
     ...(isChangelogEntry && { robots: { index: false, follow: true } }),
     openGraph: {
       title: page.data.title,
       description: page.data.description,
-      url: canonicalPath,
+      url: docsPath(canonicalPath),
       siteName: 'Steel Docs',
       type: 'article',
       authors: ['https://steel.dev'],

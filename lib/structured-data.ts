@@ -1,6 +1,8 @@
 // ABOUTME: Shared schema.org entity IDs and pure builders for Steel documentation pages.
 // ABOUTME: Keeps site identity and page references consistent across JSON-LD renderers.
-export const DOCS_URL = 'https://docs.steel.dev';
+import { DOCS_ORIGIN, DOCS_PATH_PREFIX, docsUrl, stripDocsPath } from '@/lib/docs-path';
+
+export const DOCS_URL = `${DOCS_ORIGIN}${DOCS_PATH_PREFIX}`;
 export const STEEL_URL = 'https://steel.dev/';
 export const STEEL_ORGANIZATION_ID = `${DOCS_URL}/#organization`;
 export const DOCS_WEBSITE_ID = `${DOCS_URL}/#website`;
@@ -23,7 +25,8 @@ interface TechArticleSchemaOptions extends WebPageSchemaOptions {
 }
 
 export function getCanonicalPageUrl(path: string): string {
-  return path === '/' ? `${DOCS_URL}/` : `${DOCS_URL}${path}`;
+  path = stripDocsPath(path);
+  return path === '/' ? docsUrl('/') : `${DOCS_URL}${path}`;
 }
 
 export function getWebPageId(path: string): string {
@@ -51,7 +54,7 @@ export function buildSiteIdentitySchema() {
       {
         '@type': 'WebSite',
         '@id': DOCS_WEBSITE_ID,
-        url: `${DOCS_URL}/`,
+        url: docsUrl('/'),
         name: DOCS_SITE_NAME,
         description: DOCS_SITE_DESCRIPTION,
         publisher: { '@id': STEEL_ORGANIZATION_ID },

@@ -409,3 +409,35 @@ export function cleanMdxForLLM(content: string): string {
     ),
   );
 }
+
+/** Adjust link destinations without modifying fenced or inline code examples. */
+export function mapMarkdownLinks(content: string, mapUrl: (url: string) => string): string {
+  let fence: Fence | null = null;
+  return content
+    .split('\n')
+    .map((line) => {
+      if (fence) {
+        if (closesFence(line, fence)) fence = null;
+        return line;
+      }
+      const parsed = parseFenceLine(line);
+      if (parsed) {
+        fence = toFence(parsed);
+        return line;
+      }
+      return line
+        .split(/(`+[^`]*`+)/g)
+        .map((part) =>
+          part.startsWith('`')
+            ? part
+            : part
+                .replace(/(\]\()([^\s)]+)(?=[\s)])/g, (_, before, url) => `${before}${mapUrl(url)}`)
+                .replace(
+                  /^(\s*\[[^\]]+\]:\s*)(\S+)/,
+                  (_, before, url) => `${before}${mapUrl(url)}`,
+                ),
+        )
+        .join('');
+    })
+    .join('\n');
+}

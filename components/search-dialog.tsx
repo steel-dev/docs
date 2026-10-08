@@ -26,6 +26,7 @@ import {
   CommandSeparator,
 } from '@/components/ui/command';
 import { useSearch } from '@/hooks/use-search';
+import { docsPath } from '@/lib/docs-path';
 
 const stopWords = new Set([
   'a',
@@ -302,7 +303,7 @@ export default function SearchDialog() {
     query: currentQuery,
   } = useDocsSearch({
     type: 'fetch',
-    api: '/api/search',
+    api: docsPath('/api/search'),
   });
 
   const [pendingQuery, setPendingQuery] = React.useState('');
@@ -358,11 +359,11 @@ export default function SearchDialog() {
     callback();
   };
   const goToDoc = (slug: string) => {
-    router.push(slug);
+    router.push(docsPath(slug));
     handleOpenChange(false);
   };
   const goToHref = (href: string) => {
-    router.push(href);
+    router.push(docsPath(href));
     handleOpenChange(false);
   };
   const handleAiAction = (actionId: string) => {

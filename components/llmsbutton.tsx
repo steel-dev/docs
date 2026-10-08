@@ -1,11 +1,12 @@
 import { Copy } from 'lucide-react';
 import React, { useState } from 'react';
+import { docsPath } from '@/lib/docs-path';
 
 export function CopyLLMSButton() {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    const url = `${window.location.origin}/llms-full.txt`;
+    const url = `${window.location.origin}${docsPath('/llms-full.txt')}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);

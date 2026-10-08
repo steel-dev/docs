@@ -3,10 +3,10 @@
 import type { PageTree } from 'fumadocs-core/server';
 import { TreeContextProvider } from 'fumadocs-ui/contexts/tree';
 import { ChevronRight, X } from 'lucide-react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 import { baseOptions } from '@/app/layout.config';
+import { DocsLink as Link } from '@/components/docs-link';
 import { Sidebar } from '@/components/layouts/docs';
 import { isNavItemActive } from '@/components/layouts/links';
 import {
