@@ -1,3 +1,5 @@
+// ABOUTME: Tests the MDX and Markdown link transforms in root mode and in /docs path mode.
+// ABOUTME: Each case runs in a child process so that the prefix environment variable applies.
 import { describe, expect, test } from 'bun:test';
 import { spawnSync } from 'node:child_process';
 

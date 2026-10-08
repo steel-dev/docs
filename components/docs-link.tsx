@@ -1,3 +1,5 @@
+// ABOUTME: Next.js and Fumadocs link components that add the docs path prefix to root-relative hrefs.
+// ABOUTME: Use them for internal docs links so that path mode keeps navigation under /docs.
 import FumadocsLink, { type LinkProps as FumadocsLinkProps } from 'fumadocs-core/link';
 import NextLink from 'next/link';
 import type { ComponentProps } from 'react';

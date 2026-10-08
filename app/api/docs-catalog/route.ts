@@ -1,3 +1,5 @@
+// ABOUTME: Serves the RFC 9727 API catalog with its URLs on the configured docs origin and prefix.
+// ABOUTME: Path mode rewrites /docs/.well-known/api-catalog here; root mode serves the public file.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { DOCS_ORIGIN, DOCS_PATH_PREFIX } from '@/lib/docs-path';

@@ -1,3 +1,5 @@
+// ABOUTME: Drives desktop and mobile browsers through a composed docs preview with Playwright.
+// ABOUTME: It fails on JS errors, failed assets, or docs links that leave /docs.
 import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
 

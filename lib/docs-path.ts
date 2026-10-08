@@ -1,3 +1,5 @@
+// ABOUTME: Holds the public docs URL boundary: the path prefix (empty or /docs) and the public origin.
+// ABOUTME: docsPath, stripDocsPath and docsUrl are the only place that knows how docs URLs look.
 /** Public URL boundary; an empty prefix preserves the existing subdomain build. */
 export const DOCS_PATH_PREFIX = process.env.NEXT_PUBLIC_DOCS_PATH_PREFIX || '';
 if (DOCS_PATH_PREFIX !== '' && DOCS_PATH_PREFIX !== '/docs') {
