@@ -20,6 +20,7 @@ import {
   rootMarkdownPageUrls,
   rootPageUrls,
 } from '@/scripts/generate-docs-host-redirects';
+import { locationProblem } from '@/scripts/verify-docs-host-redirect';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const read = (path: string) => readFileSync(`${ROOT}${path}`, 'utf8');
@@ -182,5 +183,43 @@ describe('checked-in docs-host-redirect project', () => {
     expect(sitemap).toContain('<loc>https://docs.steel.dev/overview/stealth/captcha-solving</loc>');
     expect(sitemap).not.toContain('steel.dev/docs');
     expect(renderOldSitemap(['/a'])).toContain('<loc>https://docs.steel.dev/a</loc>');
+  });
+});
+
+describe('locationProblem', () => {
+  const query = 'utm_source=redirect-check';
+
+  test('accepts the destination with the request query, before the fragment', () => {
+    expect(
+      locationProblem(
+        'https://steel.dev/docs/cookbook/playwright?utm_source=redirect-check#python',
+        'https://steel.dev/docs/cookbook/playwright#python',
+        query,
+      ),
+    ).toBeNull();
+    expect(
+      locationProblem(
+        'https://render.com/deploy?image=steeldev%2Fsteel&utm_source=redirect-check',
+        'https://render.com/deploy?image=steeldev/steel',
+        query,
+      ),
+    ).toBeNull();
+  });
+
+  test('finds a lost query, a lost fragment and a wrong path', () => {
+    expect(
+      locationProblem('https://steel.dev/docs/a', 'https://steel.dev/docs/a', query),
+    ).toContain('lost');
+    expect(
+      locationProblem(
+        'https://steel.dev/docs/a?utm_source=redirect-check',
+        'https://steel.dev/docs/a#b',
+        query,
+      ),
+    ).toContain('fragment');
+    expect(locationProblem('https://steel.dev/b', 'https://steel.dev/docs/a', query)).toContain(
+      'is not',
+    );
+    expect(locationProblem(null, 'https://steel.dev/docs/a', query)).toBe('no Location header');
   });
 });
