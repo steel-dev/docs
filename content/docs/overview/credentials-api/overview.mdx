@@ -8,26 +8,26 @@ import Image from 'next/image'
 
 # Overview
 
-Securely store and inject login credentials into browser sessions without exposing them to agents or the page.
+Store login credentials and automatically fill supported login forms in browser sessions. Use namespaces to choose which connected accounts a session can use.
 
 :::callout
 Steel's Credential system is currently in beta and is subject to improvements, updates, and changes. It will be free to use and store credentials during this period.
 If you have feedback, join our Discord or open an issue on GitHub.
 :::
 
-Steel's Credentials system is designed to allow developers to securely store credentials, inject them into sessions, and automatically sign-into websites. All without leaking sensitive data back to the agents, programs, or humans viewing a live session.
+Steel's Credentials system encrypts stored credentials and fills them into matching login forms. Your agent does not need to receive the username and password in its prompt to request a login. Browser access still grants authority over the resulting page and authenticated session.
 
 Some of the most important use-cases for AI agents are hidden behind an auth wall. Some of the data most important to both our work and personal lives live inside sign-in-protected applications. If we want browser agents to help us automate the most tedious aspects of our lives, they need access to those same applications.
 
 The problem is sending your personal credentials (username/passwords, etc) to a browser-agent, powered by an opaque LLM API that may or may not be training on your data, represents a non-trivial security risk. Further, the process of logging in can be error prone and keeping/storing credentials on behalf of users, as an application developer, can represent a ton of responsibility and overhead.
 
-That is the motivation behind Steel's Credentials system. Credentials are stored globally against your organization, so once created, you can reuse them in any session going forward – no need to constantly re-enter or re-provision them.
+Credentials belong to an organization, a Steel project, and a namespace. Store a connected account once, then reuse it in sessions created in the same Steel project and namespace.
 
 Steel's Credentials system is built around three core goals:
 
 - Secure storage of credentials using enterprise-grade encryption.
-- Controlled injection into browser sessions without exposing sensitive fields.
-- Isolation mechanisms to prevent agents from extracting secrets post-injection.
+- Selection of credentials by project, namespace, and website origin.
+- Automatic form filling with optional submission and visual masking.
 
 ### Table of Contents
 - [Getting Started](#getting-started)
@@ -35,13 +35,15 @@ Steel's Credentials system is built around three core goals:
 - [TOTP Support](#totp-support)
 - [How credentials are injected](#how-credentials-are-injected)
 - [Envelope encryption](#envelope-encryption)
+- [Namespaces](#namespaces)
+- [Profiles and saved login state](#profiles-and-saved-login-state)
 - [Using with Agent Frameworks](#using-with-agent-frameworks)
 
 ## Getting Started
 Before credentials can be used in a browser session, they must first be uploaded and stored securely.
 
 :::callout
-All credentials are stored globally against your organization. You only need to create them once.
+Create a credential once per connected account and origin. Use the same Steel project and explicit namespace when storing the credential and starting a session.
 :::
 
 To upload credentials:
@@ -50,6 +52,7 @@ To upload credentials:
 
 ```typescript !! Typescript -wcn
 await client.credentials.create({
+  namespace: "example:account:shared",
   origin: "https://app.example.com",
   value: {
     username: "test@example.com",
@@ -60,6 +63,7 @@ await client.credentials.create({
 
 ```python !! Python -wcn
 client.credentials.create(
+    namespace="example:account:shared",
     origin="https://app.example.com",
     value={
         "username": "test@example.com",
@@ -78,20 +82,20 @@ When starting a session via `POST /sessions`, you can request credential injecti
 
 ```typescript !! Typescript -wcn
 const session = await client.sessions.create({
-  namespace: "default",
+  namespace: "example:account:shared",
   credentials: {}
 });
 ```
 
 ```python !! Python -wcn
 client.sessions.create(
-  namespace="default",
+  namespace="example:account:shared",
   credentials={}
 )
 ```
 </CodeTabs>
 
-If the `credentials` object is omitted, no credentials will be injected. If included as an empty object (`credentials: {}`), the default options apply:
+For a fresh session, omitting `credentials` leaves managed credential injection disabled. A reused profile can supply a saved credentials configuration, so omitting the field does not disable configuration inherited from that profile. An empty object (`credentials: {}`) enables injection with the default options:
 
 ```json JSON
 {
@@ -103,11 +107,11 @@ If the `credentials` object is omitted, no credentials will be injected. If incl
 
 - `autoSubmit`: If `true`, the form will automatically submit once filled.
 
-- `blurFields`: If `true`, each filled field is blurred immediately after input, preventing access.
+- `blurFields`: If `true`, filled username/password fields are visually masked. This does not prevent page scripts or a client with CDP access from reading input values.
 
 - `exactOrigin`: If `true`, credentials will only inject into pages that match the exact origin.
 
-You can override any of these to suit your use-case. Remember to match the `namespace` with the one used in your credential creation, if omitted, it defaults to `"default"`.
+You can override these options. Always select the same Steel project and namespace used to store the credentials; see [namespace defaults](#namespace-defaults) if either is omitted.
 
 Once the session is active and on the login page, credentials are typically injected within **2 seconds**. If `autoSubmit` is disabled, the agent or user must manually click the login button.
 
@@ -122,7 +126,7 @@ Steel supports auto-filling TOTP (Time-based One-Time Passwords). To use this fe
 }
 ```
 
-The secret is securely stored and never exposed to the page. When a one-time password field is detected, Steel generates a valid code on-demand and injects it directly.
+When a supported one-time password field is detected, the extension generates a valid code from the stored TOTP secret and fills the code into the form. This does not handle SMS codes, push approvals, or other interactive MFA steps.
 
 ## How Credentials are Injected
 The system is responsible for securely retrieving and injecting them into service webpages. This happens through a general background communication layer that connects to a secure credential service.
@@ -130,7 +134,7 @@ The system is responsible for securely retrieving and injecting them into servic
 ### Overview: how the service fills credentials in a page
 1. The credential service loads a lightweight script into each active page and frame.
 
-2. On startup, it watches for forms or login components using mutation observers and shadow DOM traversal.
+2. On startup, it scans for supported login forms and watches for changes using mutation observers.
 
 3. When a valid credential target is detected, it is validated and ranked.
 
@@ -138,86 +142,128 @@ The system is responsible for securely retrieving and injecting them into servic
 
 5. Observers are attached to the relevant input fields and forms.
 
-6. The credential service requests credentials matching the current org, namespace, and target origin.
+6. At session creation, Steel loads the credentials from the selected organization, Steel project, and namespace. The extension selects the credential matching the current page origin.
 
-7. Once decrypted, credentials are injected directly into the selected form fields.
+7. Credentials are filled directly into the selected form fields.
 
 8. Inputs are updated programmatically, preserving synthetic events and page behavior.
     1. We detect and only inject credentials into a username, password, and one-time password field. The username field is generic and we try our best to map any identifier to this property (email, identifier, username, etc.).
     2. inputs are blurred once a value is inserted (configurable) to prevent vision agents from reading PII
 
-9. The form is submitted either natively or via simulated interaction, depending on the form structure if autoSubmit is configured.
+9. The form is submitted once the fields are valid if `autoSubmit` is enabled.
 
 10. Updates to the DOM are continuously monitored to adapt to dynamic changes in the page.
 
 ## Envelope encryption
 Envelope encryption is a secure and scalable pattern where data is encrypted using a randomly generated data key (usually with a symmetric algorithm like AES), and that data key is then encrypted with a master key managed by a key management store (KMS).
 
-Each credential is protected with its own short‑lived AES‑256‑GCM key. The key is then encrypted with a private KMS key specific to an organization. The encrypted data and the encrypted key travel together.
+Credential values are encrypted with AES-256-GCM. Encryption keys are managed within the organization, project, and namespace context and protected by the configured key management service.
 
 <Image src="/images/x6qu00vtJfpmIZk6aXJZI.png" width={800} height={500}/>
 
 
-At decryption time, the inverse happens where we then get the encrypted AES key, decrypt it using the specific key pair for the KMS and then use this decrypted AES key to decrypt the credential. The clear-text credentials are placed directly into the in-memory session and sent to the target service over our private WireGuard backbone ensuring end-to-end encryption and safe keeping of your credentials.
+At session creation, Steel decrypts the selected credentials and makes them available to the browser's credential extension for form filling. Encryption at rest and visual field masking do not make credentials inaccessible to a client controlling the browser.
 <Image src="/images/t61KyxNNN0LQhh_DqvYjp.png" width={800} height={500}/>
 
 #### Additional authenticated data (AAD)
-We bind the cipher-text to its context by including the org ID and credential origin as AAD. A mismatch during decrypt causes the operation to fail which blocks replay attacks across orgs.
+The organization ID is included as additional authenticated data (AAD). A mismatch causes decryption to fail. Project, namespace, and origin matching also govern which credential records are selected for a session.
 
 ## Namespaces
-Namespaces allow you to differentiate between multiple credentials for the same origin. This is useful when you need to store and use separate login details for different users or use cases.
+Namespaces separate connected accounts, including multiple logins for the same website. A credential is unique within **organization + Steel project + namespace + origin**. Reusing a namespace string in another Steel project does not share its credentials.
 
-By default, all credentials and sessions are created under the `default` namespace. If you don’t specify a namespace, this is what will be used.
+When credential injection is enabled, a session loads **all credentials in its selected namespace**. The extension then selects by page origin. With `exactOrigin: true`, the scheme, host, and port must match, so `https://example.com` and `https://app.example.com` are different origins. This selects credentials for form filling; it does not restrict browser navigation to those origins.
 
-#### Why Use Namespaces?
-If you have multiple credentials for the same website, namespaces help you control which one is used in a given session.
+Namespace matching is exact. Colons or slashes are naming conventions, not a hierarchy. There is no wildcard matching or inheritance, and a session selects one namespace rather than a list of namespaces.
 
-For example, say you have two users who log in to the same domain:
+### Shared Accounts and Application Permissions
 
-```json JSON
-// Credential A
-{
-  "namespace": "example:fred",
-  "origin": "https://app.example.com",
-  "value": {
-    "username": "fred@example.com",
-    "password": "hunter2"
-  }
-}
+Choose namespaces according to the access you intend to grant:
 
-// Credential B
-{
-  "namespace": "example:jane",
-  "origin": "https://app.example.com",
-  "value": {
-    "username": "jane@example.com",
-    "password": "letmein"
-  }
-}
+| Connected account | Example namespace |
+| --- | --- |
+| A user's personal login | `user:123:example:personal` |
+| One account shared by a workspace | `workspace:456:example:shared` |
+| An account restricted to one application project | `workspace:456:project:789:example` |
+
+If an agent should receive only one connected account, put that account's required login origins in a dedicated namespace. A workspace-wide namespace containing unrelated site credentials would make all of them available to the session.
+
+Your backend must check who can use a connected account before choosing its namespace or issuing browser access. Steel does not infer workspace membership from a namespace name. Multiple projects in your application can map to the same connected account within one Steel project; your application projects do not have to map one-to-one to Steel projects.
+
+For example, use the same explicit namespace and Steel project in both requests:
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const projectId = process.env.STEEL_PROJECT_ID!;
+const namespace = "workspace:456:example:shared";
+
+// Trusted setup code stores the login once.
+await client.credentials.create({
+  projectId,
+  namespace,
+  origin: "https://app.example.com",
+  value: {
+    username: process.env.APP_USERNAME!,
+    password: process.env.APP_PASSWORD!,
+  },
+});
+
+// After your backend authorizes access to this connected account:
+const session = await client.sessions.create({
+  projectId,
+  namespace,
+  credentials: { exactOrigin: true, autoSubmit: true },
+});
+// Pass session.websocketUrl to the authorized browser client.
+// Your backend releases the session when the task is finished.
 ```
 
-To use **Fred’s** credentials in a session:
+```python !! Python -wcn
+import os
 
-```json JSON
-POST /sessions
-{
-  "namespace": "example:fred",
-  "credentials": {}
-}
+project_id = os.environ["STEEL_PROJECT_ID"]
+namespace = "workspace:456:example:shared"
+
+# Trusted setup code stores the login once.
+client.credentials.create(
+    project_id=project_id,
+    namespace=namespace,
+    origin="https://app.example.com",
+    value={
+        "username": os.environ["APP_USERNAME"],
+        "password": os.environ["APP_PASSWORD"],
+    },
+)
+
+# After your backend authorizes access to this connected account:
+session = client.sessions.create(
+    project_id=project_id,
+    namespace=namespace,
+    credentials={"exact_origin": True, "auto_submit": True},
+)
+# Pass session.websocket_url to the authorized browser client.
+# Your backend releases the session when the task is finished.
 ```
 
-This ensures only the credentials created under `example:fred` will be injected.
+</CodeTabs>
 
-#### Best Practices
-- Use simple, descriptive namespaces like `example:fred` or `test:jane`.
+Use an organization API key with an explicit `projectId`, or a project API key bound to that same Steel project. A project API key cannot select another project by changing the request's `projectId`.
 
-- Stick to a consistent pattern (for example, `org:user`) for better organization.
+### Namespace Defaults
 
-- Always match the `namespace` in your session with the one used to create the credentials.
+Credential creation defaults to `"default"` when `namespace` is omitted. Session creation uses the selected Steel project's namespace when no namespace is supplied; the default project commonly uses `"default"`. List, update, and delete operations should also specify the intended namespace explicitly. Set it in both credential and session requests to avoid relying on different defaults.
 
-:::callout
-Namespace matching is exact. There is no inheritance or wildcard matching—only credentials in the exact namespace provided will be used.
-:::
+Use the update operation to rotate the credential for an existing project/namespace/origin combination. Creating the same combination again returns a conflict. Credential values are loaded when a session starts, so create a new session to use updated credentials.
+
+## Profiles and Saved Login State
+
+[Profiles](/overview/profiles-api/overview) restore an existing browser's cookies, storage, and other saved state. They are useful when a user should log in once and reuse that authenticated browser in future sessions. Managed credentials can log in a fresh session without a profile. You can use both when you want saved login state plus autofill when a supported login form appears.
+
+Profiles belong to a Steel project and have no credential namespace binding. Changing the namespace on a session does not clear cookies or other authentication already present in its profile. Keep a profile dedicated to the same connected account instead of switching it between unrelated accounts or namespaces.
+
+Reusing a profile does not save subsequent changes unless `persistProfile: true` is set. Saving replaces the stored snapshot, so coordinate writes when multiple sessions use the same profile. Multiple users sharing one live browser already share that session's state; profiles are for reuse across new sessions.
+
+To delegate access, keep your API key on the backend and give the authorized agent only the returned `websocketUrl`. See [temporary session JWTs](/overview/authentication#temporary-session-jwts).
 
 ## Using with Agent Frameworks
 Steel is designed to integrate seamlessly with browser automation tools and agent frameworks such as `browser-use` and similar libraries.
@@ -225,11 +271,11 @@ Steel is designed to integrate seamlessly with browser automation tools and agen
 While we don’t yet expose framework-specific SDKs or utilities, the process is straightforward and works out of the box with minimal setup.
 
 #### How it Works
-Once credentials are linked to your session, injection and login will occur automatically as part of the page lifecycle. To make use of this in your agent or script, follow this basic pattern:
+Once credentials are linked to your session, Steel can fill and submit supported login forms as they appear. To use this in your agent or script:
 
 1. **Navigate** to the login page of the target website.
 
-2. **Wait** at least 2 seconds to allow Steel to detect and fill the form.
+2. **Wait** for an element or URL that confirms login succeeded.
 
 3. **Continue** once logged in.
 
@@ -245,19 +291,18 @@ await page.goto("https://app.example.com/login");
 // Optional: ensure login form is present
 await page.waitForSelector("form");
 
-// Wait for Steel to inject and (optionally) submit the form
-await page.waitForTimeout(2000);
-
-// Recommended: confirm login succeeded
-await page.waitForSelector(".dashboard"); // or some element/text that confirms login
+// Confirm login succeeded after Steel fills and submits the form.
+await page.waitForSelector(".dashboard");
 ```
 
 #### Notes
-- Credential injection is bound to the session's namespace and the origin provided when the credential was created.
+- Credential injection uses the session's Steel project and namespace, then matches the origin provided when the credential was created.
 
 - Injection will only occur on exact origins if `exactOrigin: true` (default).
 
 - The page must be fully loaded and interactive for injection to proceed reliably.
+
+- After logout, your application or agent must return to a supported login form and verify success. Form autofill is not a guarantee of automatic logout detection, session renewal, or handling every site's authentication challenges.
 
 We plan to release official helpers and utilities for common frameworks like `browser-use`, `Playwright`, and `Puppeteer` soon. For now, you can build on this guide to integrate Steel into your existing automation workflows.
 
@@ -274,13 +319,21 @@ Reach out to us on the <span className="font-bold">#help</span> channel on [Disc
 :::faq
 ### How does Steel keep stored credentials secure?
 
-With envelope encryption — each credential is protected by its own short-lived AES-256-GCM key, which is in turn encrypted with an organization-specific KMS key. The ciphertext is also bound to your org ID and credential origin as additional authenticated data (AAD), which blocks replay attacks across orgs.
+Stored values use AES-256-GCM encryption with encryption keys protected by a key management service. The organization ID is included as additional authenticated data. Credentials are selected by Steel project, namespace, and origin before use.
 
 ### Can AI agents see the passwords Steel injects?
 
-No — credentials are injected into login forms without being exposed to agents, programs, or humans viewing a live session, and each filled field is blurred immediately after input (`blurFields: true` by default) to prevent vision agents from reading PII.
+An agent does not need the password in its prompt for Steel to fill a form. However, `blurFields` is visual masking, not an isolation boundary against page scripts or CDP clients reading input values. Treat a client controlling the browser as having access to the page and its authenticated state.
 
 ### Does Steel's Credentials API support 2FA / TOTP logins?
 
-Yes — include a `totpSecret` in the credential's `value` object and Steel generates a valid time-based one-time password on demand when a TOTP field is detected. The secret is securely stored and never exposed to the page.
+Yes. Include a `totpSecret` in the credential's `value` object and Steel generates a time-based one-time password when a supported TOTP field is detected. SMS codes, push approvals, and other interactive MFA steps require separate handling.
+
+### Do namespaces enforce my application's user permissions?
+
+No. They select credential sets within a Steel project. Your backend must authorize the user or agent before selecting the namespace and returning browser access. A session with credential injection enabled loads all credentials in that namespace.
+
+### Do I need a profile to use saved credentials?
+
+No. Enable credentials on a fresh session to fill supported login forms. Add a profile if you also want to restore previously authenticated browser state across sessions.
 :::

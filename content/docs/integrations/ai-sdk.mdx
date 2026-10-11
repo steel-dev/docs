@@ -34,7 +34,7 @@ const openSession = tool({
   execute: async () => {
     const session = await steel.sessions.create({});
     const browser = await chromium.connectOverCDP(
-      `${session.websocketUrl}&apiKey=${process.env.STEEL_API_KEY}`,
+      session.websocketUrl,
     );
     return { sessionId: session.id, liveViewUrl: session.sessionViewerUrl };
   },
@@ -55,7 +55,7 @@ No — Steel slots in as a typed `tool()` from the `ai` package. The tool's `exe
 
 ### How do I connect the Vercel AI SDK to a Steel browser session?
 
-Inside a `tool()`'s `execute`, call `steel.sessions.create()` and connect with `chromium.connectOverCDP()` using the session's `websocketUrl` plus your `apiKey`. Subsequent tools (navigate, snapshot, extract) drive that browser and return typed results.
+Inside a `tool()`'s `execute`, call `steel.sessions.create()` and connect with `chromium.connectOverCDP()` using the session's `websocketUrl` directly. Subsequent tools (navigate, snapshot, extract) drive that browser and return typed results.
 
 ### Does the Vercel AI SDK work with Steel's proxies, stealth mode, and CAPTCHA solving?
 

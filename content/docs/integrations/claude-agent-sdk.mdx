@@ -34,7 +34,7 @@ const openSession = tool(
   async () => {
     const session = await steel.sessions.create({});
     const browser = await chromium.connectOverCDP(
-      `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+      session.websocketUrl,
     );
     return {
       content: [
@@ -66,7 +66,7 @@ No — Steel is exposed as in-process MCP tools. Wrap a Steel session in a `tool
 
 ### How do I connect the Claude Agent SDK to a Steel browser session?
 
-Define a `tool()` that calls `steel.sessions.create()` and connects via `chromium.connectOverCDP()` with the session's `websocketUrl` plus `apiKey`, bundle it into an in-process MCP server with `createSdkMcpServer`, then pass that server to `query()` via `mcpServers` and pre-approve calls with `allowedTools`.
+Define a `tool()` that calls `steel.sessions.create()` and connects via `chromium.connectOverCDP()` with the session's `websocketUrl` directly, bundle it into an in-process MCP server with `createSdkMcpServer`, then pass that server to `query()` via `mcpServers` and pre-approve calls with `allowedTools`.
 
 ### Does the Claude Agent SDK work with Steel's proxies, stealth mode, and CAPTCHA solving?
 

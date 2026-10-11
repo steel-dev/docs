@@ -24,7 +24,7 @@ from steel import Steel
 
 client = Steel(steel_api_key=STEEL_API_KEY)
 session = client.sessions.create()
-cdp_url = f"{session.websocket_url}&apiKey={STEEL_API_KEY}"
+cdp_url = session.websocket_url
 
 agent = Agent(
     task="Find the latest news on Steel.dev",
@@ -49,7 +49,7 @@ No — pass a `BrowserSession(cdp_url=...)` into your `Agent` and Browser Use dr
 
 ### How do I connect Browser Use to a Steel browser session?
 
-Create a session with `client.sessions.create()`, build the CDP URL as `f"{session.websocket_url}&apiKey={STEEL_API_KEY}"`, and pass it to `BrowserSession(cdp_url=cdp_url)` on the `Agent`.
+Create a session with `client.sessions.create()`, build the CDP URL as `session.websocket_url`, and pass it to `BrowserSession(cdp_url=cdp_url)` on the `Agent`.
 
 ### Does Browser Use work with Steel's proxies, stealth mode, and CAPTCHA solving?
 

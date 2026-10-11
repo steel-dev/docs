@@ -17,7 +17,7 @@ No `playwright install`, no headful display, no Chrome on your machine.
 
 ### Connect Steel to Playwright
 
-Pass Steel's CDP URL into `chromium.connectOverCDP()`. Steel returns a context with a page already open, so reuse `browser.contexts()[0]` instead of creating a new one:
+Pass the returned `session.websocketUrl` directly into `chromium.connectOverCDP()`. It includes a [temporary session JWT](/overview/authentication#temporary-session-jwts), so no API key needs to be appended. Steel returns a context with a page already open, so reuse `browser.contexts()[0]` instead of creating a new one:
 
 ```typescript Typescript -wc
 import { chromium } from "playwright";
@@ -27,7 +27,7 @@ const client = new Steel({ steelAPIKey: STEEL_API_KEY });
 const session = await client.sessions.create();
 
 const browser = await chromium.connectOverCDP(
-  `${session.websocketUrl}&apiKey=${STEEL_API_KEY}`,
+  session.websocketUrl,
 );
 const page = browser.contexts()[0].pages()[0];
 ```
@@ -41,7 +41,7 @@ session = client.sessions.create()
 
 playwright = sync_playwright().start()
 browser = playwright.chromium.connect_over_cdp(
-    f"{session.websocket_url}&apiKey={STEEL_API_KEY}"
+    session.websocket_url
 )
 page = browser.contexts[0].new_page()
 ```
@@ -57,7 +57,7 @@ No — swap your local launch for `chromium.connectOverCDP()` (or `connect_over_
 
 ### How do I connect Playwright to a Steel browser session?
 
-Create a session with `client.sessions.create()`, then connect with `chromium.connectOverCDP()` in Node or `playwright.chromium.connect_over_cdp()` in Python, passing the session's `websocketUrl` with your `apiKey` appended as a query parameter.
+Create a session with `client.sessions.create()`, then connect with `chromium.connectOverCDP()` in Node or `playwright.chromium.connect_over_cdp()` in Python, passing the session's `websocketUrl` directly.
 
 ### Does Playwright work with Steel's proxies, stealth mode, and CAPTCHA solving?
 

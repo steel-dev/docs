@@ -57,7 +57,7 @@ async def _ensure_session() -> Page:
     _session = steel.sessions.create()
     _playwright = await async_playwright().start()
     _browser = await _playwright.chromium.connect_over_cdp(
-        f"{_session.websocket_url}&apiKey={STEEL_API_KEY}"
+        _session.websocket_url
     )
     ...
     return _page

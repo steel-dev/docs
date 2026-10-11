@@ -12,7 +12,7 @@ description: Use Steel with chromedp to connect over CDP, navigate to Hacker New
 chromedp speaks the Chrome DevTools Protocol over a WebSocket and never shells out to a local Chrome. A Steel session exposes exactly that WebSocket, so `chromedp.NewRemoteAllocator` points at the remote browser and every `chromedp.Run` step executes in the cloud, behind Steel's stealth, proxies, and live viewer. No browser on your machine, just the same [browser automation](/cookbook/topics/browser-automation) over CDP the other driver recipes use.
 
 ```go
-cdpURL := fmt.Sprintf("%s&apiKey=%s", sess.WebsocketURL, apiKey)
+cdpURL := sess.WebsocketURL
 
 allocCtx, cancelAlloc := chromedp.NewRemoteAllocator(ctx, cdpURL, chromedp.NoModifyURL)
 defer cancelAlloc()

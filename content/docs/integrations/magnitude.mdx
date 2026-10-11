@@ -32,7 +32,7 @@ const agent = await startBrowserAgent({
     provider: "anthropic",
     options: { model: "claude-sonnet-4-6", apiKey: ANTHROPIC_API_KEY },
   },
-  browser: { cdp: `${session.websocketUrl}&apiKey=${STEEL_API_KEY}` },
+  browser: { cdp: session.websocketUrl },
 });
 ```
 
@@ -47,7 +47,7 @@ No — add `browser: { cdp: ... }` to your `startBrowserAgent` config and Magnit
 
 ### How do I connect Magnitude to a Steel browser session?
 
-Create a session with `client.sessions.create()`, then set `browser.cdp` in the `startBrowserAgent` config to the session's `websocketUrl` with your `apiKey` appended.
+Create a session with `client.sessions.create()`, then set `browser.cdp` in the `startBrowserAgent` config to the session's `websocketUrl` directly.
 
 ### Does Magnitude work with Steel's proxies, stealth mode, and CAPTCHA solving?
 
