@@ -1,66 +1,64 @@
 ---
 title: Hermes Agent
 sidebarTitle: Hermes Agent
-description: Pending integration that adds Steel as a browser provider inside Hermes.
+description: Give Hermes Agent a Steel cloud browser with the standalone browser-provider plugin.
 llm: true
 ---
 
 :::callout
-The Steel integration for Hermes is currently pending upstream. It is being developed in [NousResearch/hermes-agent PR #5555](https://github.com/NousResearch/hermes-agent/pull/21182) and may change before it lands in a Hermes release. Upvote or comment on the PR to signal interest.
+Steel is available as a [standalone browser-provider plugin](https://github.com/steel-dev/hermes-steel) for Hermes Agent 0.18.0 and newer. Install the plugin and explicitly select `steel` as the browser provider to route browser tasks through Steel.
 :::
 
-The pending Hermes integration adds Steel as a cloud browser provider inside Hermes. Based on the current upstream pull request, the integration is expected to provide:
+The plugin connects Hermes' browser tools to Steel cloud sessions and provides:
 
-*   Steel as a selectable browser provider during Hermes setup
 *   Steel-backed browser sessions for web navigation and interaction
-*   A `steel_scrape` tool for server-side content extraction
-*   Support for Steel-specific options such as proxying and CAPTCHA solving
-*   Viewer URL support so you can monitor browser sessions while the agent runs
-
-If this ships as proposed, Hermes users will be able to route browser tasks through Steel by setting `STEEL_API_KEY` and selecting Steel in Hermes configuration. Meanwhile, [other agent frameworks](/cookbook/topics/agents) already route browser tasks through Steel today.
+*   A `steel_scrape` tool for server-side content extraction without a browser session
+*   Optional residential proxies and CAPTCHA solving
+*   A live viewer link so you can monitor browser sessions while the agent runs
 
 ### Requirements
 
-*   **Hermes Agent**: A build that includes the Steel integration from PR #5555 or a future release that ships it
-*   **Steel API Key**: Active Steel account
+*   **Hermes Agent**: Version 0.18.0 or newer
+*   **Steel API key**: An active [Steel account](https://app.steel.dev) and [API key](https://app.steel.dev/settings/api-keys)
 
-### Expected setup flow
+### Install and select the plugin
 
-The workflow below reflects the current pull request, not a released Hermes build.
+Install the plugin, enable it, and select Steel as the browser backend:
 
 ```bash Terminal
-hermes setup
+hermes plugins install steel-dev/hermes-steel --enable
+hermes config set browser.cloud_provider steel
 ```
 
-During setup:
+The installer prompts for your `STEEL_API_KEY` and saves it to `~/.hermes/.env`. Installing the plugin does not automatically change the browser backend: run the second command to route Hermes' browser tools through Steel.
 
-1.  Choose your model provider
-2.  Select Steel as the browser provider
-3.  Add your `STEEL_API_KEY`
+### Browse with Hermes
 
-If you are using a current release of Hermes and do not see Steel in the setup flow, that is expected until the integration lands upstream. To try it now, check out the PR branch and run Hermes from source.
+Ask Hermes to perform a browser task:
 
-### Expected workflow
-
-Once the integration is available, Hermes should be able to use Steel for tasks that need a real browser:
-
-```
-Find a hotel near Grand Central and compare the top options.
+```text
+Find a hotel near Grand Central and show me the live browser session.
 ```
 
-In the proposed implementation, Hermes would start a Steel session, browse the relevant sites, and return a viewer URL alongside the task output so you can inspect the session while it runs.
+The plugin includes the Steel backend name and a live viewer link in the first browser result for each session. Open the viewer to inspect the browser while Hermes works.
 
-### Constraints
+### Optional proxy and CAPTCHA settings
 
-*   **This integration is not yet part of a released Hermes build.** Check the upstream PR or Hermes changelog before relying on it.
-*   **The setup flow may change before release.** Provider names, environment variables, or supported options may still be updated.
-*   **Documentation should be validated against the released Hermes version once the PR lands.**
+Residential proxies and CAPTCHA solving are off by default. To enable them as persistent defaults:
+
+```bash Terminal
+hermes config set browser.steel.use_proxy true
+hermes config set browser.steel.solve_captcha true
+```
+
+These features require a verified Steel account. If Steel declines an optional feature, the plugin can create the session without it and reports what was omitted. See [pricing and limits](/overview/pricinglimits) for account requirements.
 
 ### Resources
 
-*   [Steel is now a native browser provider in Hermes](https://steel.dev/blog/steel-is-now-a-native-browser-provider-in-hermes) – Blog post covering the Hermes integration
-*   [Hermes Agent repository](https://github.com/NousResearch/hermes-agent) – Upstream project
-*   [Steel integration PR #5555](https://github.com/NousResearch/hermes-agent/pull/5555) – Proposed Steel provider implementation
-*   [Steel CLI docs](/overview/steel-cli) – Steel browser workflows from the terminal
-*   [Steel Sessions API reference](/api-reference) – Programmatic session management
-*   [Steel Discord](https://discord.gg/steel-dev) – Get help and share what you build
+*   [Steel plugin for Hermes Agent](https://github.com/steel-dev/hermes-steel) - Installation, configuration, and troubleshooting
+*   [Hermes Agent repository](https://github.com/NousResearch/hermes-agent) - Upstream project
+*   [Hermes Agent and Steel Browser](https://steel.dev/blog/steel-is-now-a-native-browser-provider-in-hermes) - Blog post covering the integration and its move to a standalone plugin
+*   [Original integration proposal](https://github.com/NousResearch/hermes-agent/pull/5555) and [revised provider proposal](https://github.com/NousResearch/hermes-agent/pull/21182) - Historical proposals preceding the standalone plugin
+*   [Steel CLI docs](/overview/steel-cli) - Steel browser workflows from the terminal
+*   [Steel Sessions API reference](/api-reference) - Programmatic session management
+*   [Steel Discord](https://discord.gg/steel-dev) - Get help and share what you build
