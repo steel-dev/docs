@@ -8,7 +8,7 @@ llm: true
 
 | Feature          | Steel Local                               | Steel Cloud                                                  |
 |------------------|-------------------------------------------|--------------------------------------------------------------|
-| Concurrency      | 1                                         | 100+                                                         |
+| Concurrency      | 1                                         | 10 on Launch, 100 on Scale, 1,000+ on Enterprise               |
 | Stealth          | Limited                                   | Advanced Stealth (docs)                                      |
 | CAPTCHA Solving  | None                                      | Supported with the CAPTCHAs API                              |
 | Proxies          | Bring your own                            | Bring your own + Steel Managed Proxies                       |
@@ -18,6 +18,10 @@ llm: true
 
 
 The defining factor between running Steel locally and using Steel Cloud is concurrency.
+Cloud feature access and rates depend on your plan. On Launch, Steel-managed proxies and
+CAPTCHA solving require a $10 paid balance deposit; free credits do not count, and the
+deposit goes toward usage. Steel's custom Stealth Browser is available on Enterprise,
+with access enabled per workload. See [Pricing/Limits](/overview/pricinglimits).
 
 For the Extensions API, if you put the extensions you would like to build/load in the `api/src/extensions/` folder then Steel Local will build these and inject them into the session. Credentials are not supported in Steel Local.
 

@@ -13,7 +13,11 @@ Browser Tools are stateless, single-call endpoints that spin up a managed browse
 | `POST /v1/screenshot` | Loads a URL and returns a hosted PNG of the page.                 |
 | `POST /v1/pdf`    | Loads a URL and returns a hosted PDF of the page.                     |
 
-Each call counts as 1 credit and is rate limited to 20 requests per minute per organization. Reach for [Sessions](/overview/sessions-api/overview) instead when you need cookies, multi-step navigation, or extension state.
+Browser Tools cost $5 per 1,000 calls on Launch and Scale, with custom Enterprise pricing.
+Steel-managed proxy bandwidth is billed separately at your plan's rate. Calls are rate
+limited to 20 requests per minute per organization. See [Pricing/Limits](/overview/pricinglimits)
+for current rates. Reach for [Sessions](/overview/sessions-api/overview) instead when you need
+cookies, multi-step navigation, or extension state.
 
 
 ### Scrape
@@ -177,7 +181,7 @@ All three endpoints accept the same handful of options for controlling how the p
 
 | Option     | Type      | What it does                                                                       |
 | ---------- | --------- | ---------------------------------------------------------------------------------- |
-| `useProxy` | `boolean` | Route the request through a Steel-managed residential proxy. Paid plans only.      |
+| `useProxy` | `boolean` | Route the request through a Steel-managed residential proxy. Requires proxy access. |
 | `delay`    | `number`  | Milliseconds to wait after navigation before capturing. Useful for hydrated sites. |
 
 A common pattern for client-rendered pages is to combine `delay` with a residential proxy:
@@ -205,8 +209,12 @@ result = client.scrape(
 
 :::callout
 type: warn
-### Hobby plans cannot use Steel proxies on Browser Tools
-`useProxy: true` returns `402 Payment Required` on the hobby plan. Upgrade, or pass your own proxy by opening a [Session](/overview/sessions-api/overview) and scraping through it.
+### Enable Steel-managed proxies on Launch
+Add $10 in paid balance to enable `useProxy: true` on Launch. Free credits do not count
+toward this deposit, which goes toward usage and is not an extra fee. Scale includes access;
+Enterprise pricing is custom. To use your own proxy without the managed-proxy deposit,
+open a [Session](/overview/sessions-api/overview) and scrape through it. BYOP has no Steel
+proxy bandwidth charge; browser session usage is still billed.
 :::
 
 
@@ -214,7 +222,7 @@ type: warn
 
 | Status | Meaning                                                          |
 | ------ | ---------------------------------------------------------------- |
-| 402    | `useProxy: true` requested on a plan that does not allow it.     |
+| 402    | `useProxy: true` requested before proxy access is enabled.       |
 | 408    | The browser timed out before completing the action.              |
 | 429    | Concurrent session limit for your plan reached, or 20 RPM hit.   |
 | 503    | No browser capacity available right now. Safe to retry.          |
@@ -244,6 +252,13 @@ Reach out to us on the <span className="font-bold">#help</span> channel on [Disc
 ### Should I use Browser Tools or Sessions?
 
 Use Browser Tools (`/v1/scrape`, `/v1/screenshot`, `/v1/pdf`) for stateless one-shot actions against a URL; each call spins up a fresh browser and tears it down. Reach for Sessions when you need to persist cookies, click through multi-step flows, pin a proxy to a country, or reuse an authenticated profile or extension.
+
+### How much do Browser Tools cost?
+
+Browser Tools cost $5 per 1,000 calls on Launch and Scale, with custom Enterprise pricing.
+Steel-managed proxy bandwidth is billed separately. Launch accounts must add $10 in paid
+balance to enable Steel-managed proxies; free credits do not count toward this deposit,
+which goes toward usage and is not an extra fee.
 
 ### What formats can the scrape endpoint return?
 

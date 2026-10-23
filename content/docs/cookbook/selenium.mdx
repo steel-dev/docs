@@ -9,6 +9,12 @@ description: Use Steel with Selenium in Python for cloud browser automation.
 
 <RecipeQuickstart slug="selenium" />
 
+:::callout
+type: warn
+### Current plan limits
+Launch sessions are limited to 15 minutes. A 30-minute session requires Scale or Enterprise. See [Pricing/Limits](/overview/pricinglimits) for current limits and rates.
+:::
+
 Selenium speaks the W3C WebDriver protocol over HTTP, not CDP. Every click, navigation, and `find_element` is an HTTP round-trip to a remote endpoint that implements the spec. Steel runs one at `http://connect.steelbrowser.com/selenium`, which is where `webdriver.Remote` points.
 
 The catch: Steel identifies callers with a `steel-api-key` header and routes each command to the right browser with a `session-id` header. `webdriver.Remote` doesn't expose a direct hook for custom headers, so the starter subclasses `RemoteConnection`:

@@ -344,7 +344,7 @@ const captchaSelectors = [
 
 ### Important Considerations
 
-1.  **Plan Availability**: CAPTCHA solving is only available on Developer, Startup, and Enterprise plans. It is not included in the free tier.
+1.  **Plan Availability and Pricing**: CAPTCHA solving costs $3 per 1,000 solves on Launch and $1 per 1,000 solves on Scale, with custom Enterprise pricing. On Launch, add $10 in paid balance to enable CAPTCHA solving. Free credits do not count toward this deposit; the deposit goes toward usage and is not an extra fee. Scale includes access. See [Pricing/Limits](/overview/pricinglimits) for details.
 
 2.  **Success Rates**: While our system has high success rates, CAPTCHA solving is not guaranteed to work 100% of the time. Always implement proper error handling.
 
@@ -419,6 +419,10 @@ A CAPTCHA solver detects a challenge on a page, produces a valid answer for it, 
 ### What is a CAPTCHA solving API?
 
 It is an API that exposes solving as part of your automation instead of as a manual step: you enable it on a session, then read CAPTCHA state and trigger solves over HTTP or the SDKs. In Steel that means the `solveCaptcha` session flag plus the status and solve endpoints of the [CAPTCHAs API](/overview/captchas-api/overview).
+
+### Which plans include CAPTCHA solving, and how much does it cost?
+
+CAPTCHA solving costs $3 per 1,000 solves on Launch and $1 per 1,000 solves on Scale, with custom Enterprise pricing. Launch accounts must add $10 in paid balance to enable solving. Free credits do not count toward the deposit, which goes toward usage rather than an extra fee. Scale includes access.
 
 ### How does Steel handle CAPTCHAs?
 
