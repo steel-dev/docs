@@ -17,7 +17,7 @@ Each session can be in one of three states:
 *   **Failed**: Something went wrong during the session's lifetime (like a crash or connection loss). These sessions are automatically cleaned up.
 
 
-Browser sessions are billed and metered by the minute. A session can last up to 24 hours depending on your plan.
+Browser sessions are billed by the minute, rounded up. Launch sessions can last up to 15 minutes, Scale sessions up to 1 hour, and Enterprise sessions up to 24 hours. See [Pricing/Limits](/overview/pricinglimits) for current rates and limits.
 
 Understanding how sessions live and die helps you manage resources effectively and build more reliable applications.
 
@@ -68,7 +68,7 @@ The value must be a valid UUID such as `123e4567-e89b-12d3-a456-426614174000`. O
 
 ### Session Lifetime and Timeout
 
-When you start a session, it stays alive for 5 minutes by default but you can change it by passing the timeout parameter. After the time passes, the session will be automatically released.
+When you start a session, it stays alive for 5 minutes by default but you can change it by passing the timeout parameter, up to your plan's maximum session time. After the time passes, the session will be automatically released.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -191,7 +191,7 @@ Reach out to us on the <span className="font-bold">#help</span> channel on [Disc
 
 ### What is the maximum length of a Steel session?
 
-Up to 24 hours, depending on your plan. Sessions are billed and metered by the minute.
+Launch sessions can last up to 15 minutes, Scale sessions up to 1 hour, and Enterprise sessions up to 24 hours. Sessions are billed by the minute, rounded up. See [Pricing/Limits](/overview/pricinglimits) for current rates and limits.
 
 ### Can I extend the timeout of a running Steel session?
 
