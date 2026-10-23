@@ -9,14 +9,6 @@ description: Build an AI agent with browser-use and Steel that solves CAPTCHAs a
 
 <RecipeQuickstart slug="browser-use-captcha-auto" />
 
-:::callout
-type: warn
-### Current plan limits
-Launch sessions are limited to 15 minutes. A 30-minute session requires Scale or Enterprise. See [Pricing/Limits](/overview/pricinglimits) for current limits and rates.
-
-On Launch, Steel-managed proxies and CAPTCHA solving require a $10 paid balance deposit. Free credits do not count toward the deposit, which goes toward usage and is not an extra fee.
-:::
-
 Steel can solve [CAPTCHAs](/cookbook/topics/captchas) inside a session without the agent lifting a finger. This recipe wires that into Browser Use: one flag at session creation, one custom tool the agent calls to block until the solver reports done. Everything else is the same perception-plan-act loop as the base [Browser Use](/cookbook/browser-use) recipe.
 
 ```python

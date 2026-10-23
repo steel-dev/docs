@@ -16,8 +16,8 @@ Browser Tools are stateless, single-call endpoints that spin up a managed browse
 Browser Tools cost $5 per 1,000 calls on Launch and Scale, with custom Enterprise pricing.
 Steel-managed proxy bandwidth is billed separately at your plan's rate. Calls are rate
 limited to 20 requests per minute per organization. See [Pricing/Limits](/overview/pricinglimits)
-for current rates. Reach for [Sessions](/overview/sessions-api/overview) instead when you need
-cookies, multi-step navigation, or extension state.
+for rates and proxy access requirements. Reach for [Sessions](/overview/sessions-api/overview)
+instead when you need cookies, multi-step navigation, or extension state.
 
 
 ### Scrape
@@ -207,17 +207,6 @@ result = client.scrape(
 ```
 </CodeTabs>
 
-:::callout
-type: warn
-### Enable Steel-managed proxies on Launch
-Add $10 in paid balance to enable `useProxy: true` on Launch. Free credits do not count
-toward this deposit, which goes toward usage and is not an extra fee. Scale includes access;
-Enterprise pricing is custom. To use your own proxy without the managed-proxy deposit,
-open a [Session](/overview/sessions-api/overview) and scrape through it. BYOP has no Steel
-proxy bandwidth charge; browser session usage is still billed.
-:::
-
-
 ### Errors
 
 | Status | Meaning                                                          |
@@ -235,6 +224,7 @@ Browser Tools are stateless. Each call opens a fresh browser, performs the actio
 - Persist cookies or local storage across navigations
 - Submit forms, click through flows, or interact with the page
 - Pin a proxy to a specific country (`useProxy: { geolocation: { country } }`)
+- Route requests through your own proxy provider
 - Reuse an authenticated profile or extension
 
 You can still scrape, screenshot, or generate a PDF from inside a session. The Browser Tools endpoints are just the shortcut when you don't need the rest.
@@ -252,13 +242,6 @@ Reach out to us on the <span className="font-bold">#help</span> channel on [Disc
 ### Should I use Browser Tools or Sessions?
 
 Use Browser Tools (`/v1/scrape`, `/v1/screenshot`, `/v1/pdf`) for stateless one-shot actions against a URL; each call spins up a fresh browser and tears it down. Reach for Sessions when you need to persist cookies, click through multi-step flows, pin a proxy to a country, or reuse an authenticated profile or extension.
-
-### How much do Browser Tools cost?
-
-Browser Tools cost $5 per 1,000 calls on Launch and Scale, with custom Enterprise pricing.
-Steel-managed proxy bandwidth is billed separately. Launch accounts must add $10 in paid
-balance to enable Steel-managed proxies; free credits do not count toward this deposit,
-which goes toward usage and is not an extra fee.
 
 ### What formats can the scrape endpoint return?
 

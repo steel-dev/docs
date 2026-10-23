@@ -23,12 +23,11 @@ Use this table to pick the right option for your project.
 | Best For    | Quickly accessing high-quality residential IPs from specific countries without setup. | General web access, testing, or sites that don't block datacenter IPs. | Full control over your proxy infrastructure, using specialized providers. |
 | IP Type     | High-quality residential IPs                                                          | Datacenter                                                    | Any (Datacenter, Residential, Mobile)                                |
 | Control     | Managed by Steel (automatic rotation)                                                 | Static datacenter IP assigned by Steel                        | Full control over IPs and rotation logic                             |
-| Cost        | $10/GB on Launch, $6/GB on Scale, custom on Enterprise                                 | No proxy bandwidth charge; browser usage still billed         | No Steel proxy bandwidth charge; your provider bills separately      |
-| Availability| Launch after a $10 paid balance deposit; Scale; Enterprise                            | All plans                                                    | All plans                                                           |
+| Cost        | $10/GB on Launch, $6/GB on Scale, custom on Enterprise                                 | No proxy bandwidth charge                                    | No Steel proxy bandwidth charge; your provider bills separately      |
+| Availability| Launch (verification required), Scale, Enterprise                                    | All plans                                                    | All plans                                                           |
 
-On Launch, enable Steel-managed proxies by adding $10 in paid balance. Free credits do not
-count toward this deposit. The deposit goes toward usage and is not an extra fee. Browser
-session usage is billed separately from proxy bandwidth. See [Pricing/Limits](/overview/pricinglimits).
+Browser session usage is billed separately. See [Pricing/Limits](/overview/pricinglimits)
+for billing details and Launch verification requirements.
 
 
 ### Steel-Managed Proxies
@@ -50,7 +49,7 @@ These proxies are ideal for accessing sites that block datacenter IPs or when yo
 
 ### Default Behavior (No Proxies)
 
-When you create a Steel session without enabling proxies, your requests originate from the datacenter/machine’s IP addresses where Steel's browser infrastructure is hosted. This option is available on all plans with no proxy bandwidth charge; browser session usage is still billed. This approach works well for:
+When you create a Steel session without enabling proxies, your requests originate from the datacenter/machine’s IP addresses where Steel's browser infrastructure is hosted. This option is available on all plans with no proxy bandwidth charge. This approach works well for:
 
 *   Interacting with websites that aren’t blocking default these datacenter IPs
 
@@ -67,7 +66,7 @@ If you have existing proxy infrastructure or specific proxy requirements, you ca
 
 *   **Complete control** over your proxy infrastructure and IP sources
 
-*   **No Steel proxy bandwidth charge** — you pay your own proxy provider, while browser session usage is still billed by Steel
+*   **No Steel proxy bandwidth charge** — you pay your own proxy provider
 
 *   **Flexibility** to use specialized proxy providers or custom configurations
 
@@ -264,7 +263,7 @@ Reach out to us on the <span className="font-bold">#help</span> channel on [Disc
 :::faq
 ### How much do Steel proxies cost?
 
-Steel-managed residential proxies cost $10/GB on Launch and $6/GB on Scale, with custom Enterprise pricing. Default datacenter traffic and Bring Your Own Proxy have no Steel proxy bandwidth charge. With BYOP, you pay your own proxy provider. Browser session usage is still billed in all cases.
+Steel-managed residential proxies cost $10/GB on Launch and $6/GB on Scale, with custom Enterprise pricing. Default datacenter traffic and Bring Your Own Proxy have no Steel proxy bandwidth charge. With BYOP, you pay your own proxy provider.
 
 ### Why is my proxy bandwidth higher than the content I downloaded?
 
@@ -276,7 +275,7 @@ No — proxies are disabled by default (`useProxy: false` is the implicit settin
 
 ### Can I use my own proxies with Steel?
 
-Yes — Bring Your Own Proxy (BYOP) lets you pass a `server` URL in `http://`, `https://`, or `socks5://` format on any plan, including Launch, without the managed-proxy deposit requirement. Steel does not charge proxy bandwidth for BYOP; browser session usage is still billed, and you pay your own proxy provider. Your proxy credentials are handled securely and never logged or stored by Steel beyond the duration of your session.
+Yes — Bring Your Own Proxy (BYOP) lets you pass a `server` URL in `http://`, `https://`, or `socks5://` format on any plan. Your proxy credentials are handled securely and never logged or stored by Steel beyond the duration of your session.
 
 ### Can Steel proxies target a specific country or city?
 
@@ -284,5 +283,5 @@ Yes — Steel-managed proxies support geographic targeting across 200+ countries
 
 ### Which Steel plans include managed residential proxies?
 
-Managed residential proxies are available on Launch after adding $10 in paid balance, and on Scale and Enterprise. Free credits do not count toward the Launch deposit; it goes toward usage and is not an extra fee. The no-proxy default and BYOP are available on all plans without this deposit requirement.
+Launch (after account verification), Scale, and Enterprise. See [Pricing/Limits](/overview/pricinglimits) for access requirements. The no-proxy default and BYOP are available on all plans.
 :::

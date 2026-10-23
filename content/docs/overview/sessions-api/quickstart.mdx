@@ -104,8 +104,6 @@ npx tsx steel-client.ts
 To configure your session, replace the `client.sessions.create()` call inside `main()`
 with the following options:
 
-Steel-provided proxies and CAPTCHA solving require a $10 paid balance deposit on Launch. Free credits do not count toward verification; the deposit is available for usage and is not an extra fee. See [Pricing/Limits](/overview/pricinglimits) for details.
-
 ```typescript Typescript -wcn
 const session = await client.sessions.create({
     useProxy: true,           // Use Steel's residential proxy network
@@ -133,5 +131,5 @@ The default session timeout is 5 minutes. You can extend it with the `timeout` o
 
 ### Can I enable proxies and CAPTCHA solving on a session?
 
-Yes. On Launch, first add $10 in paid balance to verify your account; free credits do not count. The deposit goes toward usage and is not an extra fee. Then pass `useProxy: true` to route through Steel's residential proxy network and `solveCaptcha: true` to enable automatic CAPTCHA solving when creating the session. You can also set a custom user agent with `userAgent`. See [Pricing/Limits](/overview/pricinglimits) for current access requirements and rates.
+Yes. Pass `useProxy: true` to route through Steel's residential proxy network and `solveCaptcha: true` to enable automatic CAPTCHA solving when creating the session. You can also set a custom user agent with `userAgent`. See [Pricing/Limits](/overview/pricinglimits) for access requirements and rates.
 :::

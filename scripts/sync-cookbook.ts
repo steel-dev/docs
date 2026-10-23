@@ -59,20 +59,6 @@ const LANGUAGE_ORDER: string[] = ['TypeScript', 'Python', 'Rust', 'Go'];
 // home page, shown in this order. Slugs must match concept slugs.
 const FEATURED_SLUGS: string[] = ['scrape', 'playwright', 'vercel-ai-sdk', 'claude-agent-sdk'];
 
-// Current plan guidance stays with the docs when upstream recipes are synced.
-const SESSION_PLAN_NOTE =
-  'Launch sessions are limited to 15 minutes. A 30-minute session requires Scale or Enterprise. ' +
-  'See [Pricing/Limits](/overview/pricinglimits) for current limits and rates.';
-const MANAGED_FEATURE_NOTE =
-  'On Launch, Steel-managed proxies and CAPTCHA solving require a $10 paid balance deposit. ' +
-  'Free credits do not count toward the deposit, which goes toward usage and is not an extra fee.';
-const RECIPE_PLAN_NOTES: Record<string, string> = {
-  selenium: SESSION_PLAN_NOTE,
-  'browser-use': `${SESSION_PLAN_NOTE}\n\n${MANAGED_FEATURE_NOTE}`,
-  notte: `${SESSION_PLAN_NOTE}\n\n${MANAGED_FEATURE_NOTE}`,
-  'browser-use-captcha-auto': `${SESSION_PLAN_NOTE}\n\n${MANAGED_FEATURE_NOTE}`,
-};
-
 interface CookbookLock {
   repo: string; // "owner/name" on GitHub
   ref: string; // human-readable branch/tag
@@ -361,11 +347,7 @@ async function readRecipeBody(
 ): Promise<string> {
   const raw = await fs.readFile(path.join(cookbookDir, recipe.path, 'README.md'), 'utf8');
   const stripped = stripLeadingH1(raw);
-  const body = rewriteSiblingLinks(stripped, pathToSlug).trim();
-  const planNote = RECIPE_PLAN_NOTES[recipe.slug];
-  return planNote
-    ? `:::callout\ntype: warn\n### Current plan limits\n${planNote}\n:::\n\n${body}`
-    : body;
+  return rewriteSiblingLinks(stripped, pathToSlug).trim();
 }
 
 function frontmatter(fields: Record<string, string>): string {
