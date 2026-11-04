@@ -152,7 +152,7 @@ export function DocsLayout({ tree, children, stars }: DocsLayoutProps) {
                   asChild
                   className="bg-yellow-300 font-mono text-neutral-900 hidden items-baseline gap-0.5 px-2 xl:px-3 py-2 hover:bg-yellow-400 transition-colors duration-200 group xl:flex shrink-0"
                 >
-                  <Link href="https://app.steel.dev" target="_blank">
+                  <Link href="https://app.steel.dev/sign-in?src=docs" target="_blank">
                     Sign in
                     <ArrowUpRight className="w-3.5 h-3.5 translate-y-0.5 group-hover:translate-y-0 transition-transform duration-200" />
                   </Link>
