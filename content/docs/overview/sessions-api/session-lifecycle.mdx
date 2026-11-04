@@ -176,6 +176,70 @@ print(response.message) # "All sessions released successfully"
 
 </CodeTabs>
 
+### Why a Session Ended
+
+Every released or failed session has a `releaseReason`. It is `null` while the session is live, and for sessions created before Steel tracked the reason.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const session = await client.sessions.retrieve(sessionId);
+
+console.log(session.status, session.releaseReason);
+```
+
+```python !! Python -wcn
+session = client.sessions.retrieve(session_id)
+
+print(session.status, session.release_reason)
+```
+
+</CodeTabs>
+
+| `releaseReason` | Meaning |
+|---|---|
+| `user_requested` | You released the session through the API or SDK. |
+| `timeout` | The session reached its `timeout`. |
+| `inactivity_timeout` | The session had no activity for its `inactivityTimeout`. |
+| `creation_timeout` | The session did not start in time. |
+| `startup_failed` | Steel could not start the browser. |
+| `browser_closed` | The browser or agent closed itself. This is not a crash. |
+| `browser_crashed` | The browser crashed, or its machine stopped responding. |
+
+### Find Past Sessions
+
+`sessions.list` returns sessions newest first. Filter it by status, release reason, or creation time.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+for await (const session of client.sessions.list({
+  releaseReason: 'timeout',
+  createdAfter: '2026-11-01T00:00:00Z',
+  createdBefore: '2026-11-02T00:00:00Z',
+})) {
+  console.log(session.id, session.createdAt);
+}
+```
+
+```python !! Python -wcn
+for session in client.sessions.list(
+    release_reason="timeout",
+    created_after="2026-11-01T00:00:00Z",
+    created_before="2026-11-02T00:00:00Z",
+):
+    print(session.id, session.created_at)
+```
+
+</CodeTabs>
+
+- The list leaves out failed sessions unless you pass `status` or `releaseReason`. Pass `status: 'failed'` to list failed sessions.
+- `releaseReason` leaves out live sessions. Without `status`, it includes failed sessions with that reason.
+- `createdAfter` includes sessions created at that exact time. `createdBefore` does not. Both take ISO 8601 timestamps.
+- `totalCount` comes back only for `status: 'live'` with no metadata, signal, release reason, or date filter. For other lists, follow `nextCursor` until it is `null`. The SDK does this for you.
+
+To filter by your own keys or by what happened during the session, see [Session Metadata](/overview/sessions-api/session-metadata) and [Session Signals](/overview/sessions-api/session-signals).
+
 :::callout
 type: help
 ### Need help building with the Sessions API?
@@ -204,4 +268,8 @@ Set `inactivityTimeout` so the session releases itself if your side goes quiet â
 ### How do I end a Steel session before it times out?
 
 Call `client.sessions.release(session.id)` â€” releasing explicitly is best practice rather than waiting for the timeout. To clean up everything at once, `client.sessions.releaseAll()` releases all active sessions.
+
+### How do I find Steel sessions that failed or timed out?
+
+Call `client.sessions.list({ status: 'failed' })` for failed sessions, or filter by `releaseReason`, such as `timeout` or `browser_crashed`. The default list leaves failed sessions out. Each session's `releaseReason` tells you why it ended.
 :::
