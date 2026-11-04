@@ -45,6 +45,14 @@ export const AGENT_INSTRUCTIONS = `# Steel Documentation
   await browser.close();
   await client.sessions.release(session.id);
   \`\`\`
+- For agent-style browser control over plain HTTP, use the Commands API (beta). Take a snapshot, then act on the refs in it:
+  \`\`\`
+  curl -X POST https://api.steel.dev/v1/sessions/SESSION_ID/commands \\
+    -H "steel-api-key: YOUR_KEY" \\
+    -H "Content-Type: application/json" \\
+    -d '{"commands": [{"command": "navigate", "url": "https://example.com"}, {"command": "snapshot", "interactive": true}]}'
+  \`\`\`
+  Then send \`{"after": "<next from the response>", "commands": [{"command": "click", "target": "e1"}]}\`. Docs: https://docs.steel.dev/overview/commands-api/overview
 - Python SDK:
   \`\`\`python
   from steel import Steel

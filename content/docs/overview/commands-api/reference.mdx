@@ -1,0 +1,232 @@
+---
+title: Commands API Reference
+sidebarTitle: Reference
+description: Every command, request field, response field, limit, and error code of the Steel Commands API.
+llm: true
+publishedAt: "2026-11-04"
+---
+
+`POST /v1/sessions/{sessionId}/commands` runs commands in a live session. The full schema is also in the [API reference](/api-reference).
+
+```bash !! curl -wcn
+curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
+  -H "steel-api-key: $STEEL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d" \
+  -d '{ "commands": [{ "command": "snapshot", "interactive": true }] }'
+```
+
+| Header | Required | Meaning |
+| --- | --- | --- |
+| `steel-api-key` | Yes | Your API key. |
+| `Content-Type` | Yes | `application/json`. |
+| `Idempotency-Key` | No | A random value. A retry with the same key returns the stored result. |
+
+### Request
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `commands` | array | Up to 50 commands. They run in order and stop at the first failure. |
+| `after` | string | The `next` value from your last response. A retry with the same `after` and commands runs only once. |
+| `observe` | object | `mode` (`none`, `snapshot`, or `diff`), `base` (a snapshot id for `diff`), `tab`, and the [snapshot options](#snapshot). |
+| `eventsAfter` | string | `c-0` the first time, then the last `events.cursor`. |
+
+Fields that are not listed, or that a command does not take, fail with `400 invalid_request`.
+
+### Response
+
+```json !! Response -wcn
+{
+  "next": "op_4f8k2m9q1x",
+  "epoch": 3,
+  "page": { "tab": "t1", "url": "https://example.com/", "title": "Example Domain" },
+  "execution": { "id": "x-2", "state": "completed", "effect": "applied", "replayed": false, "ran": 1 },
+  "results": [{ "ok": true, "effect": "applied" }],
+  "observe": { "snapshotId": "s-2", "base": "s-1", "diff": "...", "additions": 4, "removals": 2 }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `next` | Send it as `after` in your next request. Valid for an hour. |
+| `epoch` | Goes up when commands or a dialog answer change the page, and when the browser restarts. |
+| `epochChanged` | `true` when another Commands API client changed the session since `after`. |
+| `page` | The tab the execution used, with its `url` and `title`. |
+| `execution` | `id`, `state`, `effect`, `replayed`, `ran` (commands started), and `error` when the execution ended early. |
+| `results` | One entry per command that ran: `ok`, `effect`, the command's own fields, and `error` when it failed. |
+| `observe` | `snapshotId` with `snapshot`, or `diff`. A diff without a usable base returns the full snapshot with `full: true`. |
+| `dialog` | A dialog that is open on the tab and waits for an answer. |
+| `events` | Navigations, opened and closed tabs, dialogs, and downloads since `eventsAfter`: `cursor`, `items`, and `more`. |
+| `bodyExpired` | `true` when a replay comes after its large parts expired. |
+
+`effect` is `none` when nothing changed, `applied` when the page changed, and `unknown` when it may have changed, for example after a timeout during input. Execution states are `queued`, `running`, `completed`, `failed`, `cancelled`, `timeout`, and `expired`.
+
+### Commands
+
+#### Navigation
+
+| Command | Fields | Notes |
+| --- | --- | --- |
+| `navigate` | `url`, `tab` | Only `http`, `https`, and `about:blank`. A URL without a scheme gets `https://`. Waits up to 15 seconds for the page to load. |
+| `back`, `forward` | `tab` | Returns `navigated: false` when there is no history entry. |
+| `reload` | `tab` | |
+| `tab` | `action` (`list`, `new`, `close`), `tab`, `url` | `list` returns `tabs`. The last tab cannot be closed. |
+
+#### Snapshot
+
+| Command | Fields | Notes |
+| --- | --- | --- |
+| `snapshot` | `tab`, `interactive`, `compact`, `depth` | Returns `snapshotId` and `snapshot`. `interactive` keeps only lines with refs. `compact` keeps lines with refs or values and their ancestors. `depth` limits the depth. |
+| `find` | `by`, `value`, `name`, `exact`, `tab`, `frame` | Returns `count` and `matches` with refs, for up to 50 matches. `by` is a locator field, such as `role` or `text`. `name` works only with `by: "role"`. |
+
+#### Elements
+
+| Command | Fields | Notes |
+| --- | --- | --- |
+| `click`, `dblclick`, `hover` | `target` | Scrolls the element into view and uses the mouse. Fails with `not_actionable` when something covers the element. |
+| `focus` | `target` | |
+| `type` | `target`, `text`, `clear`, `delay` | Types one key press at a time, after the current content. `clear` replaces the content. `delay` is milliseconds between key presses, up to 1000. |
+| `fill` | `target`, `value` | Replaces the content in one step, without key presses. Date and time inputs take values like `2025-01-31`. |
+| `press` | `key`, `target` | Key names follow the US layout, such as `Enter`, `ArrowDown`, or `Control+a`. |
+| `select` | `target`, `values` | Matches options by value, then by label. |
+| `check`, `uncheck` | `target` | Checkboxes, radio buttons, switches, and toggle buttons. |
+| `scroll` | `direction`, `amount`, `target` | Scrolls the page, or the element in `target`. `amount` is pixels, 300 by default. Returns `x`, `y`, and `moved`. |
+| `upload` | `target`, `files` | File names from the session's files. Upload them first with the [Files API](/overview/files-api/overview). |
+| `drag` | `source`, `target` | Drags with the mouse. HTML5 drag and drop works. |
+
+Input commands that start a navigation wait up to 15 seconds for the new page's DOM. When it is still loading, the result has `loading: true`.
+
+#### Reading
+
+| Command | Fields | Notes |
+| --- | --- | --- |
+| `get` | `what`, `target`, `attribute` | Returns `value`. See the values below. |
+| `is` | `what` (`visible`, `enabled`, `checked`), `target` | Returns `value` as `true` or `false`. |
+| `screenshot` | `target`, `fullPage`, `format`, `quality` | Returns base64 `data`. `format` is `png`, `jpeg`, or `webp`. |
+| `pdf` | `tab`, `landscape`, `printBackground` | Returns base64 `data`. Works only in headless sessions. |
+| `eval` | `script`, `timeout`, `tab` | Runs JavaScript in the page and returns `value` as JSON. Waits for a promise to settle. Fails with `script_error` when the script throws. |
+
+| `get` value | Returns |
+| --- | --- |
+| `text` | The text a person can see. |
+| `html` | The HTML. |
+| `markdown` | The page's main content as Markdown. With `target`, all of that element. |
+| `value` | The value of a field. |
+| `attr` | The attribute named in `attribute`. |
+| `title`, `url` | The page title or URL. |
+| `count` | How many elements match `target`. |
+| `box` | The element's box, in CSS pixels of the visible part of the page. |
+| `locator` | Ways to find the element again in a later session, best first. |
+
+#### Waiting
+
+`wait` takes one of the conditions below, and an optional `timeout` in milliseconds. The default timeout is 10 seconds and the most is 50 seconds.
+
+```json !! Request -wcn
+{ "commands": [{ "command": "wait", "target": { "text": "Order placed" }, "timeout": 20000 }] }
+```
+
+| Field | Waits for |
+| --- | --- |
+| `target` with `state` | The element to be `visible` (default), `hidden`, `attached`, or `detached`. |
+| `text` | Text on the page. |
+| `url` | The tab's URL to match. `*` matches any characters. |
+| `load` | `load`, `domcontentloaded`, or `networkidle`. |
+| `ms` | A fixed time, up to 30000 milliseconds. |
+| `download` | `true` waits for the next download to finish and returns `file` and `bytes`. |
+
+#### Keyboard and mouse
+
+| Command | Fields | Notes |
+| --- | --- | --- |
+| `keydown`, `keyup` | `key`, `tab` | Holds a key down, or lets it go. Held modifier keys apply to later input on the tab. |
+| `mouse` | `action` (`move`, `down`, `up`, `click`, `wheel`), `x`, `y`, `button`, `clicks`, `deltaX`, `deltaY`, `tab` | Input at a point, for pages without useful elements, such as a canvas. `x` and `y` are CSS pixels of the visible part of the page. |
+
+#### Control
+
+| Command | Fields | Notes |
+| --- | --- | --- |
+| `status` | `execution` | Waits for an execution and returns it. |
+| `cancel` | `execution` | Stops an execution. |
+| `dialog` | `dialog`, `action` (`accept`, `dismiss`), `text` | Answers an open dialog. The response is `answered` and `epoch`, not an execution. |
+
+`status`, `cancel`, and `dialog` run right away, outside the queue. Send each of them alone.
+
+### Targets
+
+Element commands take `target`: a ref such as `e12`, a CSS selector, or a locator object. A locator sets exactly one of `role`, `text`, `label`, `placeholder`, `alt`, `title`, `testid`, or `css`.
+
+```json !! Request -wcn
+{
+  "commands": [
+    {
+      "command": "click",
+      "target": { "role": "button", "name": "Pay", "exact": true },
+      "frame": ["#checkout", { "title": "Payment" }],
+      "expect": { "role": "button" }
+    }
+  ]
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `name` | The accessible name. Works only with `role`. |
+| `exact` | Match the whole text. Text matches a case-insensitive substring by default. `testid` always matches exactly. |
+| `nth` | Picks one of several matches. Negative values count from the end. |
+| `frame` | The iframe to look in, named like a target. List nested iframes from the outside in. |
+| `expect` | Fails the command when the element does not have this `role` or `name`. |
+| `tab` | A tab id such as `t2`, for commands without a ref. A ref already knows its tab. |
+
+### Limits
+
+| Limit | Value |
+| --- | --- |
+| Commands per request | 50 |
+| Response wait | 20 seconds, then `state: "running"` |
+| Execution run time | 60 seconds |
+| Executions waiting per session | 16 |
+| `navigate` page load | 15 seconds |
+| Page answer for each input | 10 seconds |
+| `wait` and `eval` timeout | 10 seconds by default, 50 seconds at most |
+| `next` and stored results | 1 hour |
+| Large result parts | 10 minutes |
+
+### Errors
+
+Request errors have no execution. The body is `{ "error": { "code": ..., "message": ... } }`.
+
+| Status | Code | Meaning |
+| --- | --- | --- |
+| `400` | `invalid_request` | The body is not valid. |
+| `401` | | Missing or invalid `steel-api-key`. |
+| `404` | `session_not_found` | The session does not exist. |
+| `410` | `session_ended` | The session has ended. Create a new session. |
+| `422` | `key_conflict` | The `Idempotency-Key` was used with different commands. |
+| `422` | `invalid_operation_token` | Steel no longer knows your `after`. The response carries a fresh `next`. Check the page first, because the commands may have run. |
+| `422` | `unknown_execution` | `status` or `cancel` named an execution Steel does not know. |
+| `422` | `dialog_not_pending` | The dialog was already answered or closed. |
+| `422` | `missing_capability` | The session's browser does not support commands. Create a new session. |
+| `429` | `queue_full`, `records_full` | Too much work in the session. Wait for `Retry-After`. |
+| `429` | `expired` | The execution could not start in time. |
+| `503` | `delivery_failed` | Steel could not reach the browser. Retry with the same `Idempotency-Key`. |
+
+An unexpected error inside the browser returns `200` with `internal_error` and no execution. Command errors appear in `results[i].error` with `code`, `message`, and sometimes `reason`.
+
+| Code | Meaning |
+| --- | --- |
+| `stale_ref` | The ref's element left the page or shows other content. Take a new snapshot. |
+| `not_actionable` | The element cannot take the input, for example because it is covered or disabled. |
+| `dialog_pending` | A dialog waits for an answer on the tab. |
+| `element_not_found` | No element matches the target. |
+| `invalid_argument` | A field has a bad value, or a locator matches several elements (`ambiguous`). |
+| `tab_not_found`, `tab_crashed`, `tab_required` | The tab is missing, crashed, or has to be named because several are open. |
+| `frame_not_found` | The `frame` is missing or is not an iframe. |
+| `forbidden_url`, `forbidden_file` | The URL or file is not allowed. |
+| `navigation_failed`, `download_failed` | The page or the download did not load. |
+| `script_error` | The `eval` script threw. |
+| `timeout`, `cancelled` | The command ran out of time or was cancelled. |
+| `session_ended`, `browser_restarted` | The session ended or the browser started again. |
+| `unknown_command`, `internal_error` | The command cannot run here, or Steel hit an unexpected error. |
+
+`reason` adds detail, such as `covered`, `offscreen`, `no_box`, `disabled`, `read_only`, `not_editable`, `ambiguous`, `detached`, `content_changed`, `missing`, or `not_frame`.

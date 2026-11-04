@@ -1,0 +1,5 @@
+{
+  "title": "Commands API",
+  "root": false,
+  "pages": ["---Commands API---", "overview", "reference"]
+}
