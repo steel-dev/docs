@@ -1,0 +1,189 @@
+---
+title: Session Metadata
+sidebarTitle: Session Metadata
+description: Attach your own key-value pairs to Steel sessions, change them during or after a run, and find sessions by them later.
+llm: true
+publishedAt: "2026-11-04"
+---
+
+### Overview
+
+Session metadata is a flat set of key-value pairs that you attach to a session. Use it to store your own identifiers, such as a job ID, a customer, or an environment. Steel returns metadata on every session response and shows it on the session page in the dashboard, so don't store secrets in it.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+const session = await client.sessions.create({
+  metadata: {
+    job_id: 'job-1042',
+    customer: 'acme',
+    attempt: 1,
+  },
+});
+
+console.log(session.metadata);
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+client = Steel()
+
+session = client.sessions.create(
+    metadata={
+        "job_id": "job-1042",
+        "customer": "acme",
+        "attempt": 1,
+    },
+)
+
+print(session.metadata)
+```
+
+</CodeTabs>
+
+Steel stores every value as a string. Numbers and booleans come back in their string form, so `1` comes back as `"1"`:
+
+```json JSON -wcn
+{
+  "job_id": "job-1042",
+  "customer": "acme",
+  "attempt": "1"
+}
+```
+
+### Update Metadata
+
+`updateMetadata` changes only the keys that you send. Set a key to `null` to remove it. Keys that you leave out keep their values. You can update metadata while the session runs and after it ends.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const { metadata } = await client.sessions.updateMetadata(session.id, {
+  metadata: {
+    outcome: 'success',
+    attempt: null,
+  },
+});
+
+console.log(metadata);
+```
+
+```python !! Python -wcn
+result = client.sessions.update_metadata(
+    session.id,
+    metadata={
+        "outcome": "success",
+        "attempt": None,
+    },
+)
+
+print(result.metadata)
+```
+
+</CodeTabs>
+
+The response contains the merged metadata:
+
+```json JSON -wcn
+{
+  "metadata": {
+    "job_id": "job-1042",
+    "customer": "acme",
+    "outcome": "success"
+  }
+}
+```
+
+Each update is atomic. If two updates change different keys at the same time, Steel keeps both changes.
+
+### Replace Metadata
+
+`replaceMetadata` replaces the whole object. Send an empty object to clear it. If two replacements arrive at the same time, the last one wins.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+await client.sessions.replaceMetadata(session.id, {
+  metadata: { job_id: 'job-1042', owner: 'data-team' },
+});
+
+await client.sessions.replaceMetadata(session.id, { metadata: {} });
+```
+
+```python !! Python -wcn
+client.sessions.replace_metadata(
+    session.id,
+    metadata={"job_id": "job-1042", "owner": "data-team"},
+)
+
+client.sessions.replace_metadata(session.id, metadata={})
+```
+
+</CodeTabs>
+
+Use `updateMetadata` unless you want to remove every key that you don't send.
+
+| SDK method | Endpoint | Behavior |
+|---|---|---|
+| `updateMetadata` (`update_metadata` in Python) | `PATCH /v1/sessions/{id}/metadata` | Merges the keys that you send. `null` removes a key. |
+| `replaceMetadata` (`replace_metadata` in Python) | `PUT /v1/sessions/{id}/metadata` | Replaces all keys. `{}` clears the metadata. |
+
+### Find Sessions by Metadata
+
+Pass `metadata` to `sessions.list` to find sessions with matching values. Each value must match the stored string exactly. If you pass several keys, a session must match all of them.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+for await (const session of client.sessions.list({
+  metadata: { customer: 'acme', job_id: 'job-1042' },
+})) {
+  console.log(session.id, session.status);
+}
+```
+
+```python !! Python -wcn
+for session in client.sessions.list(
+    metadata={"customer": "acme", "job_id": "job-1042"},
+):
+    print(session.id, session.status)
+```
+
+</CodeTabs>
+
+The SDK fetches every page for you. Over HTTP, send each key in bracket form and follow `nextCursor` until it is `null`:
+
+```bash cURL -wcn
+curl -G https://api.steel.dev/v1/sessions \
+  -H "steel-api-key: $STEEL_API_KEY" \
+  --data-urlencode "metadata[customer]=acme" \
+  --data-urlencode "metadata[job_id]=job-1042"
+```
+
+- Filter values are strings. Pass `attempt: '1'` to match a value that you sent as `1`.
+- The list leaves out failed sessions unless you pass `status` or `releaseReason`. See [Find Past Sessions](/overview/sessions-api/session-lifecycle#find-past-sessions).
+- To find sessions in a job that hit a CAPTCHA or a bot block, add a `signal` filter. See [Session Signals](/overview/sessions-api/session-signals).
+
+### Limits
+
+| Rule | Limit |
+|---|---|
+| Keys | Up to 50 per session |
+| Size | Up to 8 KiB, measured as UTF-8 JSON |
+| Key format | Starts with a letter. Uses only letters, digits, `_`, `.`, and `-`. Up to 64 characters. |
+| Reserved keys | Keys that start with `steel_` |
+| Values | Strings up to 1024 characters, numbers, or booleans |
+| Keys per update | Up to 100 in one `updateMetadata` call |
+
+A request that breaks a rule fails with a `400` error that names the key. An update that would push the merged metadata past a limit fails and leaves the session unchanged.
+
+:::callout
+type: help
+### Need help with session metadata?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) or [@steeldotdev](https://twitter.com/steeldotdev).
+:::

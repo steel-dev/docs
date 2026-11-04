@@ -1,0 +1,166 @@
+---
+title: Session Signals
+sidebarTitle: Session Signals
+description: Read the signals Steel records on each session, such as CAPTCHAs, bot blocks, and proxy failures, and find the sessions that hit them.
+llm: true
+publishedAt: "2026-11-04"
+---
+
+### Overview
+
+Signals are labels that Steel adds to a session when it sees certain events during the run, such as a CAPTCHA or a bot block. You don't set signals. To attach your own labels, use [session metadata](/overview/sessions-api/session-metadata).
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from 'steel-sdk';
+
+const client = new Steel();
+
+const session = await client.sessions.retrieve(sessionId);
+
+console.log(session.signals);
+```
+
+```python !! Python -wcn
+from steel import Steel
+
+client = Steel()
+
+session = client.sessions.retrieve(session_id)
+
+print(session.signals)
+```
+
+</CodeTabs>
+
+`signals` is an array of signal names. Sessions in `sessions.list` results carry the same field:
+
+```json JSON -wcn
+["captcha_encountered", "bot_detection_triggered"]
+```
+
+### Available Signals
+
+| Signal | What it means |
+|---|---|
+| `captcha_encountered` | A CAPTCHA was detected during the session. |
+| `bot_detection_triggered` | A page ended on an anti-bot block or challenge that the browser did not get past. |
+| `proxy_connection_failed` | The proxy connection failed or was unreliable. |
+| `session_timeout_exceeded` | The session ended on its timeout or inactivity limit. |
+| `context_restored` | The session restored a previously saved browser context. |
+
+For the exact reason a session ended, read its `releaseReason`. See [Why a Session Ended](/overview/sessions-api/session-lifecycle#why-a-session-ended).
+
+### When Signals Appear
+
+Steel adds signals to a session when the session ends. While the session runs, `signals` is an empty array. Steel fills it in within a few seconds after release.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+await client.sessions.release(session.id);
+
+await new Promise((resolve) => setTimeout(resolve, 10_000));
+
+const { signals } = await client.sessions.retrieve(session.id);
+```
+
+```python !! Python -wcn
+import time
+
+client.sessions.release(session.id)
+
+time.sleep(10)
+
+signals = client.sessions.retrieve(session.id).signals
+```
+
+</CodeTabs>
+
+An empty array doesn't prove that nothing happened. Detection uses heuristics and doesn't cover every case. A signal records that Steel saw the event at some point in the session. It doesn't describe the final state of the page.
+
+### Look Up Signal Definitions
+
+`signalCatalog` returns the current signals with a label and a description for each. Use it to show signals in your own UI without hardcoding the list.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const catalog = await client.sessions.signalCatalog();
+
+for (const signal of catalog.signals) {
+  console.log(signal.value, signal.label, signal.severity);
+}
+```
+
+```python !! Python -wcn
+catalog = client.sessions.signal_catalog()
+
+for signal in catalog.signals:
+    print(signal.value, signal.label, signal.severity)
+```
+
+</CodeTabs>
+
+Each entry has a `severity` of `info`, `warning`, `danger`, or `success`. The `semantics` field states the same limits as the section above:
+
+```json JSON -wcn
+{
+  "signals": [
+    {
+      "value": "bot_detection_triggered",
+      "label": "Bot blocked",
+      "description": "A page ended on an anti-bot block or challenge that the browser did not get past",
+      "source": "derived",
+      "severity": "warning"
+    }
+  ],
+  "semantics": "Signals record what was observed at some point during a session, not the current page state. ..."
+}
+```
+
+Steel can add signals over time. Handle signal values that you don't recognize.
+
+### Find Sessions by Signal
+
+Pass `signal` to `sessions.list` to find sessions that carry a signal. If you pass several signals, a session must carry all of them. Combine `signal` with `metadata` to narrow the search to one of your jobs or customers.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+for await (const session of client.sessions.list({
+  metadata: { job_id: 'job-1042' },
+  signal: ['bot_detection_triggered'],
+})) {
+  console.log(session.id, session.signals);
+}
+```
+
+```python !! Python -wcn
+for session in client.sessions.list(
+    metadata={"job_id": "job-1042"},
+    signal=["bot_detection_triggered"],
+):
+    print(session.id, session.signals)
+```
+
+</CodeTabs>
+
+Over HTTP, repeat the `signal` parameter for each signal:
+
+```bash cURL -wcn
+curl -G https://api.steel.dev/v1/sessions \
+  -H "steel-api-key: $STEEL_API_KEY" \
+  --data-urlencode "signal=captcha_encountered" \
+  --data-urlencode "signal=bot_detection_triggered"
+```
+
+- The list leaves out failed sessions unless you pass `status` or `releaseReason`. See [Find Past Sessions](/overview/sessions-api/session-lifecycle#find-past-sessions).
+- The dashboard shows signals in the sessions list and on each session page.
+
+:::callout
+type: help
+### Need help with session signals?
+Reach out to us on the <span className="font-bold">#help</span> channel on [Discord](https://discord.gg/steel-dev) or [@steeldotdev](https://twitter.com/steeldotdev).
+:::
