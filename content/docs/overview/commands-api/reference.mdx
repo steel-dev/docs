@@ -8,7 +8,7 @@ publishedAt: "2026-11-04"
 
 `POST /v1/sessions/{sessionId}/commands` runs commands in a live session. The full schema is also in the [API reference](/api-reference).
 
-```bash !! curl -wcn
+```bash curl -wcn
 curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
   -H "steel-api-key: $STEEL_API_KEY" \
   -H "Content-Type: application/json" \
@@ -35,7 +35,7 @@ Fields that are not listed, or that a command does not take, fail with `400 inva
 
 ### Response
 
-```json !! Response -wcn
+```json Response -wcn
 {
   "next": "op_4f8k2m9q1x",
   "epoch": 3,
@@ -122,7 +122,7 @@ Input commands that start a navigation wait up to 15 seconds for the new page's 
 
 `wait` takes one of the conditions below, and an optional `timeout` in milliseconds. The default timeout is 10 seconds and the most is 50 seconds.
 
-```json !! Request -wcn
+```json Request -wcn
 { "commands": [{ "command": "wait", "target": { "text": "Order placed" }, "timeout": 20000 }] }
 ```
 
@@ -156,7 +156,7 @@ Input commands that start a navigation wait up to 15 seconds for the new page's 
 
 Element commands take `target`: a ref such as `e12`, a CSS selector, or a locator object. A locator sets exactly one of `role`, `text`, `label`, `placeholder`, `alt`, `title`, `testid`, or `css`.
 
-```json !! Request -wcn
+```json Request -wcn
 {
   "commands": [
     {

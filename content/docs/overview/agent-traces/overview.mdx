@@ -35,12 +35,12 @@ Agent Traces are based on what happened in the browser session, not on what the 
 
 Fetch the trace timeline for a session as JSON:
 
-```bash !! curl -wcn
+```bash curl -wcn
 curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
   -H "steel-api-key: $STEEL_API_KEY"
 ```
 
-```json !! Response -wcn
+```json Response -wcn
 {
   "events": [
     {
