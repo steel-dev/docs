@@ -15,6 +15,7 @@ export const AGENT_INSTRUCTIONS = `# Steel Documentation
 - Auth env var: \`STEEL_API_KEY\`
 - API base URL: \`https://api.steel.dev\`
 - WebSocket: \`wss://connect.steel.dev?apiKey=<key>&sessionId=<id>\`
+- MCP server: \`https://mcp.steel.dev/mcp\` (OAuth sign-in, or \`Authorization: Bearer <your-key>\`)
 - API reference: https://steel.apidocumentation.com/api-reference
 - Brand design language (DESIGN.md): https://docs.steel.dev/DESIGN.md
 
@@ -53,6 +54,11 @@ export const AGENT_INSTRUCTIONS = `# Steel Documentation
     -d '{"commands": [{"command": "navigate", "url": "https://example.com"}, {"command": "snapshot", "interactive": true}]}'
   \`\`\`
   Then send \`{"after": "<next from the response>", "commands": [{"command": "click", "target": "e1"}]}\`. Docs: https://docs.steel.dev/overview/commands-api/overview
+- To give an MCP client Steel browsers, add the hosted MCP server. In Claude Code:
+  \`\`\`bash
+  claude mcp add --transport http steel https://mcp.steel.dev/mcp
+  \`\`\`
+  The client signs in with OAuth on first use. Docs: https://docs.steel.dev/overview/mcp
 - Python SDK:
   \`\`\`python
   from steel import Steel

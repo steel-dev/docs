@@ -49,6 +49,7 @@ const TOPIC_DESCRIPTIONS: Record<string, string> = {
   Subagents:
     'Multi-agent recipes where a lead orchestrator dispatches parallel subagents, each driving its own Steel browser.',
   Convex: 'Recipes that run Steel from a Convex backend.',
+  MCP: 'Recipes that build your own MCP server on Steel. For the hosted Steel MCP server, connect a client to mcp.steel.dev instead.',
 };
 
 // Display order for language tabs in merged concept pages. Entries not
