@@ -1,0 +1,351 @@
+---
+title: Commands API
+sidebarTitle: Overview
+description: Drive a Steel session's browser over HTTP with high-level commands such as snapshot, click, and fill. Built for AI agents.
+llm: true
+publishedAt: "2026-11-04"
+---
+
+The Commands API drives a session's browser with high-level commands. Take a snapshot of the page, pick an element by its ref, and act on it. Steel runs the commands inside the session next to Chrome, so one HTTP request can run several commands and return the new page state.
+
+:::callout
+type: info
+### Beta
+The Commands API is in beta. Commands, fields, and limits may change. Share feedback on [Discord](https://discord.gg/steel-dev).
+:::
+
+```bash !! curl -wcn
+curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
+  -H "steel-api-key: $STEEL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "commands": [
+      { "command": "navigate", "url": "https://example.com" },
+      { "command": "snapshot", "interactive": true }
+    ]
+  }'
+```
+
+The response has one result per command. The snapshot lists the elements on the page, each with a ref.
+
+```json !! Response -wcn
+{
+  "next": "op_4f8k2m9q1x",
+  "epoch": 1,
+  "page": { "tab": "t1", "url": "https://example.com/", "title": "Example Domain" },
+  "execution": { "id": "x-1", "state": "completed", "effect": "applied", "replayed": false, "ran": 2 },
+  "results": [
+    { "ok": true, "effect": "applied", "url": "https://example.com/" },
+    { "ok": true, "effect": "none", "snapshotId": "s-1", "snapshot": "- link \"Learn more\" [ref=e1]" }
+  ]
+}
+```
+
+Send a ref back to act on its element. Pass `next` as `after`, so Steel knows which page state you saw.
+
+```json !! Request -wcn
+{ "after": "op_4f8k2m9q1x", "commands": [{ "command": "click", "target": "e1" }] }
+```
+
+### When to use it
+
+| Approach | Use it for |
+| --- | --- |
+| Commands API | Agents that read the page and act step by step. Plain HTTP, no browser library. |
+| [Playwright](/cookbook/playwright) or [Puppeteer](/cookbook/puppeteer) | Scripts that need full CDP control, such as network interception. |
+| [Browser Tools](/overview/browser-tools/overview) | One-shot scrapes, screenshots, and PDFs without a session. |
+
+You can mix them. A Playwright script and the Commands API can drive the same session. `epochChanged` only sees changes made through the Commands API, so take a new snapshot after other code changes the page.
+
+### Quickstart
+
+Create a session, run commands on it, then release it. The SDKs do not have a commands method yet, so these examples call the endpoint over HTTP.
+
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import Steel from "steel-sdk";
+
+const client = new Steel();
+
+async function runCommands(sessionId: string, body: object) {
+  const response = await fetch(
+    `https://api.steel.dev/v1/sessions/${sessionId}/commands`,
+    {
+      method: "POST",
+      headers: {
+        "steel-api-key": process.env.STEEL_API_KEY!,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    },
+  );
+  return response.json();
+}
+
+const session = await client.sessions.create();
+
+try {
+  const opened = await runCommands(session.id, {
+    commands: [
+      { command: "navigate", url: "https://example.com" },
+      { command: "snapshot", interactive: true },
+    ],
+  });
+  console.log(opened.results[1].snapshot);
+
+  const clicked = await runCommands(session.id, {
+    after: opened.next,
+    commands: [{ command: "click", target: { role: "link", name: "Learn more" } }],
+    observe: { mode: "snapshot", interactive: true },
+  });
+  console.log(clicked.page.url);
+  console.log(clicked.observe.snapshot);
+} finally {
+  await client.sessions.release(session.id);
+}
+```
+
+```python !! Python -wcn
+import os
+
+import httpx
+from steel import Steel
+
+client = Steel()
+
+
+def run_commands(session_id: str, body: dict) -> dict:
+    response = httpx.post(
+        f"https://api.steel.dev/v1/sessions/{session_id}/commands",
+        headers={"steel-api-key": os.environ["STEEL_API_KEY"]},
+        json=body,
+        timeout=60,
+    )
+    return response.json()
+
+
+session = client.sessions.create()
+
+try:
+    opened = run_commands(session.id, {
+        "commands": [
+            {"command": "navigate", "url": "https://example.com"},
+            {"command": "snapshot", "interactive": True},
+        ],
+    })
+    print(opened["results"][1]["snapshot"])
+
+    clicked = run_commands(session.id, {
+        "after": opened["next"],
+        "commands": [{"command": "click", "target": {"role": "link", "name": "Learn more"}}],
+        "observe": {"mode": "snapshot", "interactive": True},
+    })
+    print(clicked["page"]["url"])
+    print(clicked["observe"]["snapshot"])
+finally:
+    client.sessions.release(session.id)
+```
+</CodeTabs>
+
+The click uses a locator, so the example does not depend on a ref number. An agent usually reads the snapshot and sends the ref it picked.
+
+### Snapshots and refs
+
+A snapshot is the page's accessibility tree as text. Each line has the role, the name, the states, and a ref. A value follows the colon.
+
+```text !! Snapshot -wcn
+- heading "Account" [level=1, ref=e1]
+- textbox "Name" [ref=e2]: Ada
+- checkbox "Remember me" [checked=false, ref=e3]
+- button "Save" [ref=e4]
+- generic "Open card" [ref=e5] clickable [cursor:pointer]
+```
+
+| Option | Effect |
+| --- | --- |
+| `interactive` | Only lines with refs. Good for most agent steps. |
+| `compact` | Only lines with refs or values, and their ancestors. |
+| `depth` | Only lines up to this depth. |
+
+A ref points at one element and stays the same across snapshots of the same page. When the element leaves the page, or a list reuses it for other content, commands on the ref fail with `stale_ref`. Take a new snapshot then. Password fields show as `••••••••` in snapshots and in every other result.
+
+### Targets
+
+Commands that act on an element take a `target`. It can be a ref, a CSS selector, or a locator object.
+
+```json !! Request -wcn
+{
+  "commands": [
+    { "command": "fill", "target": "e2", "value": "Ada Lovelace" },
+    { "command": "fill", "target": { "label": "Email" }, "value": "ada@example.com" },
+    { "command": "check", "target": "#remember-me" },
+    { "command": "click", "target": { "role": "button", "name": "Save" } }
+  ]
+}
+```
+
+A locator sets exactly one of these fields:
+
+| Field | Matches |
+| --- | --- |
+| `role` | The accessibility role. Add `name` to match the accessible name too. |
+| `text` | Visible text. |
+| `label` | The label of a form field. |
+| `placeholder` | Placeholder text. |
+| `alt` | Image alt text. |
+| `title` | The `title` attribute. |
+| `testid` | The `data-testid` attribute, exactly. |
+| `css` | A CSS selector. |
+
+Text matches a case-insensitive substring unless you set `exact: true`. When a locator finds several elements, it uses the only visible one or fails with `ambiguous`, so set `nth` to pick one. For an element inside an iframe, add `frame`:
+
+```json !! Request -wcn
+{
+  "commands": [
+    {
+      "command": "fill",
+      "frame": { "title": "Payment" },
+      "target": { "label": "Card number" },
+      "value": "4242 4242 4242 4242"
+    }
+  ]
+}
+```
+
+### Run several commands at once
+
+`commands` takes up to 50 commands. They run in order and stop at the first failure. Commands that already ran are not undone. Add `observe` to see the page after the commands.
+
+```json !! Request -wcn
+{
+  "commands": [
+    { "command": "fill", "target": "e2", "value": "ada@example.com" },
+    { "command": "click", "target": { "role": "button", "name": "Continue" } }
+  ],
+  "observe": { "mode": "diff", "interactive": true }
+}
+```
+
+| `observe.mode` | Returns |
+| --- | --- |
+| `snapshot` | A new snapshot of the tab. |
+| `diff` | A unified diff against the tab's last snapshot, or against the snapshot id in `base`. |
+| `none` | Nothing. Same as leaving out `observe`. |
+
+A failed command still returns `200`. Its error is in `results`, and the execution state is `failed`. Here a cookie banner covers the button:
+
+```json !! Response -wcn
+{
+  "execution": { "id": "x-4", "state": "failed", "effect": "none", "replayed": false, "ran": 1 },
+  "results": [
+    {
+      "ok": false,
+      "effect": "none",
+      "error": {
+        "code": "not_actionable",
+        "reason": "covered",
+        "message": "button \"Continue\" is covered by dialog \"Cookie settings\" (<div id=\"consent\">) at its click point. Dismiss or interact with the covering element first."
+      }
+    }
+  ]
+}
+```
+
+### Sequence requests with `after`
+
+Every response has a `next` value. Send it as `after` in your next request. A retried request with the same `after` and commands then runs only once. If another Commands API client changed the session in between, the response sets `epochChanged: true`.
+
+```typescript !! Typescript -wcn
+let after: string | undefined;
+
+async function step(commands: object[]) {
+  const reply = await runCommands(session.id, { after, commands });
+  after = reply.next;
+  if (reply.epochChanged) {
+    console.log("Another client changed the page. Take a new snapshot.");
+  }
+  return reply;
+}
+```
+
+### Retry safely
+
+Send a random `Idempotency-Key` header with each request, and reuse it when you retry that request. A retry with the same key returns the stored result with `replayed: true` instead of running the commands again.
+
+```bash !! curl -wcn
+curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
+  -H "steel-api-key: $STEEL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d" \
+  -d '{ "commands": [{ "command": "click", "target": "e4" }] }'
+```
+
+| Status | Code | What to do |
+| --- | --- | --- |
+| `503` | `delivery_failed` | Steel could not reach the browser, so the commands may or may not have run. Retry with the same key. |
+| `429` | `queue_full`, `records_full` | Wait for `Retry-After`, then retry. |
+| `422` | `key_conflict` | The key was already used with different commands. Use a new key. |
+| `410` | `session_ended` | The session is over. Create a new session. |
+
+Steel keeps results for at least an hour. Large parts, such as snapshot text and screenshot data, are kept for 10 minutes. A replay after that returns the rest with `bodyExpired: true`.
+
+### Long-running commands
+
+Executions run one at a time per session. The response waits up to 20 seconds. If the execution is still going, the response shows `state: "running"`. Wait for it with `status`, or stop it with `cancel`.
+
+```json !! Request -wcn
+{ "commands": [{ "command": "status", "execution": "x-1" }] }
+```
+
+`status`, `cancel`, and `dialog` run right away, outside the queue. Send each of them alone. An execution stops after 60 seconds, and up to 16 can wait in the queue.
+
+### Dialogs
+
+Steel never answers a dialog on its own. An open dialog shows up in `dialog`, and commands on its tab fail with `dialog_pending` until you answer it.
+
+```json !! Response -wcn
+{
+  "dialog": { "id": "d-1", "tab": "t1", "type": "confirm", "message": "Delete this item?" }
+}
+```
+
+Answer it with the `dialog` command. Pass `text` to answer a prompt.
+
+```json !! Request -wcn
+{ "commands": [{ "command": "dialog", "dialog": "d-1", "action": "accept" }] }
+```
+
+### Files
+
+`upload` takes files from the session's files, so upload them first with the [Files API](/overview/files-api/overview). Then pass their names.
+
+```json !! Request -wcn
+{ "commands": [{ "command": "upload", "target": { "label": "Resume" }, "files": "resume.pdf" }] }
+```
+
+`wait` with `download: true` waits for the next download to finish. Its result has the file name and size.
+
+```json !! Request -wcn
+{
+  "commands": [
+    { "command": "click", "target": { "role": "button", "name": "Export CSV" } },
+    { "command": "wait", "download": true }
+  ]
+}
+```
+
+Then download the file from the session's files:
+
+```bash !! curl -wcn
+curl https://api.steel.dev/v1/sessions/$SESSION_ID/files/report.csv \
+  -H "steel-api-key: $STEEL_API_KEY" \
+  -o report.csv
+```
+
+### Next steps
+
+:::next-steps
+- [Commands API reference](/overview/commands-api/reference): Every command, field, limit, and error code
+- [Session lifecycle](/overview/sessions-api/session-lifecycle): Timeouts and releasing sessions
+:::

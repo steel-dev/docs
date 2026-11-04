@@ -101,7 +101,7 @@ session = client.sessions.create(
 
 ### Inactivity Timeout
 
-By default a session runs until its `timeout` elapses, even when nothing is driving the browser. Set `inactivityTimeout` to release the session early once it stops seeing activity—any CDP command or remote input—so you don’t keep paying for an idle browser while waiting on an external step.
+By default a session runs until its `timeout` elapses, even when nothing is driving the browser. Set `inactivityTimeout` to release the session early once it stops seeing activity—any CDP command, Commands API request, or remote input—so you don’t keep paying for an idle browser while waiting on an external step.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -263,7 +263,7 @@ No — Steel currently doesn't support editing the timeout duration of a live se
 
 ### How do I avoid paying for an idle Steel session?
 
-Set `inactivityTimeout` so the session releases itself if your side goes quiet — for example when your agent crashes, hangs, or simply stops sending commands. Without it (the default), a stalled client keeps the session alive and billed until the hard `timeout` cap; with it, any CDP command or remote input resets the timer, so normal automation is unaffected while you're protected from paying for a browser nobody is driving.
+Set `inactivityTimeout` so the session releases itself if your side goes quiet — for example when your agent crashes, hangs, or simply stops sending commands. Without it (the default), a stalled client keeps the session alive and billed until the hard `timeout` cap; with it, any CDP command, Commands API request, or remote input resets the timer, so normal automation is unaffected while you're protected from paying for a browser nobody is driving.
 
 ### How do I end a Steel session before it times out?
 

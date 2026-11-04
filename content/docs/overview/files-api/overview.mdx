@@ -329,6 +329,14 @@ await cdpSession.send("DOM.setFileInputFiles", {
 await page.setInputFiles("#file-input", [uploadedSessionFile.path]);
 ```
 
+#### Commands API Upload
+
+With the [Commands API](/overview/commands-api/overview), pass the name of the uploaded session file to `upload`.
+
+```json JSON -wcn
+{ "commands": [{ "command": "upload", "target": "#file-input", "files": "resume.pdf" }] }
+```
+
 
 #### Browser-Use Example
 

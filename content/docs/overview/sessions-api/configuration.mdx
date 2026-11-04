@@ -86,7 +86,7 @@ setting, use the REST API for that recipe.
 ### Task with an inactivity timeout
 
 If Steel must release an idle session before `timeout`, use this recipe. Steel releases the session
-after 1 minute without a Chrome DevTools Protocol (CDP) command or remote input.
+after 1 minute without a Chrome DevTools Protocol (CDP) command, Commands API request, or remote input.
 
 ```json JSON -wcn
 {
@@ -100,7 +100,7 @@ This request sets `timeout` to 10 minutes. Activity resets the 1-minute inactivi
 ### Long-running headless worker
 
 If an unattended task can run for several minutes, use this recipe. Steel releases the session after
-2 minutes without a CDP command or remote input.
+2 minutes without a CDP command, Commands API request, or remote input.
 
 ```json JSON -wcn
 {
@@ -222,7 +222,7 @@ Use these settings to control the total and idle session life.
 | `timeout` | Sets the requested maximum session life. The default is 300000 ms (5 minutes). Set the value to 15000 ms or more. Your account limits set the maximum permitted value. |
 | `inactivityTimeout` | Releases an idle session before `timeout`. Set the value below `timeout`. If your SDK type does not include this field, use the REST API. |
 
-CDP commands and remote input reset the inactivity timer. After the task is complete, release the
+CDP commands, Commands API requests, and remote input reset the inactivity timer. After the task is complete, release the
 session. See [Session Lifecycle](/overview/sessions-api/session-lifecycle) for session states and
 release methods.
 
