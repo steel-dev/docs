@@ -26,7 +26,7 @@ curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| `commands` | array | Up to 50 commands. They run in order and stop at the first failure. |
+| `commands` | object or array | One command, or an array of up to 50. They run in order and stop at the first failure. |
 | `after` | string | The `next` value from your last response. A retry with the same `after` and commands runs only once. |
 | `observe` | object | `mode` (`none`, `snapshot`, or `diff`), `base` (a snapshot id for `diff`), `tab`, and the [snapshot options](#snapshot). |
 | `eventsAfter` | string | `c-0` the first time, then the last `events.cursor`. |
