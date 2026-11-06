@@ -127,7 +127,7 @@ const result = await client.screenshot({
   fullPage: true,
 });
 
-console.log(result.url); // https://files.steel.dev/v1/static/<id>.png
+console.log(result.url); // https://images.steel.dev/v1/static/artifacts/<token>/<id>.png
 ```
 
 ```python !! Python -wcn
@@ -140,7 +140,7 @@ print(result.url)
 ```
 </CodeTabs>
 
-The hosted URL is public and durable. Download it like any other PNG:
+The URL works without an API key and expires after 7 days. If you need the file longer, download it:
 
 ```typescript !! Typescript -wcn
 import fs from "node:fs";
@@ -153,7 +153,7 @@ fs.writeFileSync("page.png", buffer);
 
 ### PDF
 
-`POST /v1/pdf` renders the page and returns a hosted PDF URL. Same shape as screenshot: one URL in, one URL out.
+`POST /v1/pdf` renders the page and returns a hosted PDF URL. Same shape as screenshot: one URL in, one URL out, and the link also expires after 7 days.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -162,7 +162,7 @@ const result = await client.pdf({
   url: "https://docs.steel.dev",
 });
 
-console.log(result.url); // https://files.steel.dev/v1/static/<id>.pdf
+console.log(result.url); // https://files.steel.dev/v1/static/artifacts/<token>/<id>.pdf
 ```
 
 ```python !! Python -wcn
