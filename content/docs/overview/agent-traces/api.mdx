@@ -12,12 +12,12 @@ Use the Agent Traces API when you want the same activity timeline shown in the d
 
 Returns the trace timeline for a finished or in-progress session.
 
-```bash !! curl -wcn
+```bash curl -wcn
 curl https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces \
   -H "steel-api-key: $STEEL_API_KEY"
 ```
 
-```javascript !! fetch -wcn
+```javascript fetch -wcn
 const response = await fetch(
   `https://api.steel.dev/v1/sessions/${sessionId}/agent-traces`,
   { headers: { "steel-api-key": process.env.STEEL_API_KEY } },
@@ -28,7 +28,7 @@ const trace = await response.json();
 
 ### Response
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "events": [
     {
@@ -70,7 +70,7 @@ Activity-specific details appear when relevant. For example, click activities ca
 
 When Steel can identify the element involved in an activity, `target` can include readable labels and useful selectors:
 
-```json !! target -wcn
+```json target -wcn
 {
   "role": "button",
   "accessibleName": "Sign in",
@@ -91,7 +91,7 @@ Use target details as hints for review or replay. Some activities, such as navig
 
 You can limit results to a time range:
 
-```bash !! curl -wcn
+```bash curl -wcn
 curl "https://api.steel.dev/v1/sessions/$SESSION_ID/agent-traces?startTime=2026-05-22T18:00:00.000Z&endTime=2026-05-22T18:10:00.000Z" \
   -H "steel-api-key: $STEEL_API_KEY"
 ```

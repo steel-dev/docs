@@ -1,0 +1,393 @@
+---
+title: Steel MCP Server
+sidebarTitle: MCP Server
+description: Connect Claude, Cursor, VS Code, Codex, or any MCP client to Steel cloud browsers with the hosted Steel MCP server. Read pages, or drive a browser session with tools such as snapshot, click, and fill.
+llm: true
+publishedAt: "2026-11-05"
+---
+
+The Steel MCP server gives any MCP client cloud browsers. An agent can read a page in one call, or start a session and click, type, and fill forms in a real browser. Steel hosts the server, so there is nothing to install or run.
+
+:::callout
+type: info
+### Beta
+The MCP server is in beta. Tools, fields, and limits may change. Share feedback on [Discord](https://discord.gg/steel-dev).
+:::
+
+```bash Claude Code -wcn
+claude mcp add --transport http steel https://mcp.steel.dev/mcp
+```
+
+The first time the client connects, it opens a Steel sign-in page. Sign in and pick the project the agent should work in. Then ask for something that needs a browser:
+
+```text Prompt -wcn
+Use Steel to open news.ycombinator.com and list the top five stories.
+```
+
+### Connect a client
+
+The server URL is `https://mcp.steel.dev/mcp`. Add it to your client as a remote MCP server:
+
+<CodeTabs storage="mcpClient">
+
+```bash !! Claude Code -wcn
+claude mcp add --transport http steel https://mcp.steel.dev/mcp
+```
+
+```json !! Cursor -wcn
+{
+  "mcpServers": {
+    "steel": {
+      "url": "https://mcp.steel.dev/mcp"
+    }
+  }
+}
+```
+
+```json !! VS Code -wcn
+{
+  "servers": {
+    "steel": {
+      "type": "http",
+      "url": "https://mcp.steel.dev/mcp"
+    }
+  }
+}
+```
+
+```toml !! Codex -wcn
+[mcp_servers.steel]
+url = "https://mcp.steel.dev/mcp"
+```
+
+</CodeTabs>
+
+| Client | Where the config goes | How to sign in |
+| --- | --- | --- |
+| Claude Code | Run the command in a terminal. | Run `/mcp` in Claude Code and sign in to `steel`. |
+| Cursor | `~/.cursor/mcp.json` | Follow Cursor's sign-in prompt. |
+| VS Code | `.vscode/mcp.json` in your workspace | Follow VS Code's sign-in prompt. |
+| Codex | `~/.codex/config.toml` | Run `codex mcp login steel`. |
+
+In Claude on the web or the desktop app, open the **Connectors** settings, choose **Add custom connector**, and paste the server URL. Any other client that supports remote MCP servers over Streamable HTTP works the same way.
+
+### Sign in
+
+Steel signs clients in with OAuth. Clients find the sign-in page on their own: the server answers a request without credentials with `401` and points to its OAuth metadata.
+
+```http 401 response -wcn
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="steel", resource_metadata="https://mcp.steel.dev/.well-known/oauth-protected-resource/mcp", scope="mcp:browser"
+```
+
+On the consent page, pick the organization and one project. Sessions the agent creates run in that project.
+
+- The approval covers that one project. To switch projects, sign in again and pick another one.
+- The client refreshes its access on its own, so you sign in once.
+- If your organization requires two-step verification, set it up before you connect.
+- Sign-in needs a client that supports Client ID Metadata Documents, from the MCP authorization spec. If your client can't sign in, [use an API key](#use-an-api-key).
+
+### Use an API key
+
+Send a Steel API key as a bearer token when your client can't sign in, or when the agent runs unattended, such as in CI. Steel accepts the key, so the client skips the sign-in.
+
+<CodeTabs storage="mcpClient">
+
+```bash !! Claude Code -wcn
+claude mcp add --transport http steel https://mcp.steel.dev/mcp \
+  --header "Authorization: Bearer $STEEL_API_KEY"
+```
+
+```json !! Cursor -wcn
+{
+  "mcpServers": {
+    "steel": {
+      "url": "https://mcp.steel.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:STEEL_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+```json !! VS Code -wcn
+{
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "steel-api-key",
+      "description": "Steel API key",
+      "password": true
+    }
+  ],
+  "servers": {
+    "steel": {
+      "type": "http",
+      "url": "https://mcp.steel.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${input:steel-api-key}"
+      }
+    }
+  }
+}
+```
+
+```toml !! Codex -wcn
+[mcp_servers.steel]
+url = "https://mcp.steel.dev/mcp"
+bearer_token_env_var = "STEEL_API_KEY"
+```
+
+</CodeTabs>
+
+Sessions then run in the key's project. The server also accepts the key in the `steel-api-key` header. Create a key in [API Keys](https://app.steel.dev/settings/api-keys).
+
+### How the tools work
+
+The server tells the agent how to use its tools when it connects. The agent takes one of two paths:
+
+| Task | Tools |
+| --- | --- |
+| Read a page | `scrape` opens the URL in a fresh browser and returns Markdown. No session, and nothing is left running. |
+| Log in, click, type, or fill forms | `session_create`, then `snapshot` and actions on refs, then `session_release`. |
+
+`session_create` starts a browser. It returns the session id, a link to watch it live, the first tab, and the first `next`:
+
+```text session_create -wcn
+session_id: 5b2c7c1e-3f4a-4d0e-9a8b-2c6f1e0d9a47
+Watch it live: https://app.steel.dev/sessions/5b2c7c1e-3f4a-4d0e-9a8b-2c6f1e0d9a47
+It ends after 60 minutes, or after 10 minutes without commands.
+next: op_a1b2c3d4e5 (pass it as after with your first change)
+<untrusted-page-content>
+tab t1: about:blank —
+</untrusted-page-content>
+```
+
+`snapshot` returns the page as an accessibility tree. Each element the agent can act on has a ref, such as `e2`:
+
+```text snapshot -wcn
+next: op_k3m5p7r9t1 (pass it as after with your next change)
+<untrusted-page-content>
+tab t1: https://shop.example.com/ — Example Shop
+- heading "Find a product" [level=1, ref=e1]
+- searchbox "Search" [ref=e2]
+- button "Search" [ref=e3]
+</untrusted-page-content>
+```
+
+Tools that change the page take `after`, the `next` from the previous result. Here the agent types into the search box and presses Enter:
+
+```json type -wcn
+{
+  "session_id": "5b2c7c1e-3f4a-4d0e-9a8b-2c6f1e0d9a47",
+  "after": "op_k3m5p7r9t1",
+  "target": "e2",
+  "text": "mechanical keyboard",
+  "submit": true
+}
+```
+
+- **Safe retries.** A repeated call with the same `after` returns the stored result. It never runs twice.
+- **Page changes.** If the page changed since that `next`, the result says so. The agent takes a new snapshot before it uses old refs.
+- **Untrusted text.** Page text comes back inside `<untrusted-page-content>`. The server tells the agent never to follow instructions found there. Results are cut at 30,000 characters.
+- **Dialogs.** Steel never answers a dialog on its own. The result names the dialog, and the agent answers it with `dialog`.
+- **Long calls.** A call that is still running returns an execution id. The agent waits for it with `status` or stops it with `cancel`.
+
+### Tools
+
+Every tool except `scrape`, `session_create`, and `session_list` takes a `session_id`. Element tools take a `target`: a ref such as `e5`, or a CSS selector.
+
+#### Sessions and scraping
+
+| Tool | Arguments | What it does |
+| --- | --- | --- |
+| `scrape` | `url`, `use_proxy` | Reads a page without a session and returns it as Markdown. |
+| `session_create` | See [Session options](#session-options) | Starts a browser session. |
+| `session_list` | `all` | Lists running sessions created through MCP. Set `all` to add sessions created any other way. |
+| `session_release` | `session_id` | Ends a session and stops its billing. |
+
+#### Reading the page
+
+| Tool | Arguments | What it does |
+| --- | --- | --- |
+| `snapshot` | `tab`, `interactive`, `compact`, `depth` | Returns the accessibility tree with refs. `interactive` keeps only elements you can act on. |
+| `find` | `by`, `value`, `name`, `exact`, `tab` | Finds elements by `role`, `text`, `label`, `placeholder`, `alt`, `title`, `testid`, or `css`, and returns their refs. |
+| `get` | `what`, `target`, `attribute`, `tab` | Reads `text`, `html`, `markdown`, `value`, `attr`, `title`, `url`, `count`, `box`, or `locator`. |
+| `screenshot` | `target`, `full_page`, `tab` | Captures the tab, the full page, or one element as an image. |
+| `wait` | `target`, `state`, `text`, `url`, `load`, `ms`, `download`, `timeout`, `tab` | Waits for an element state, text, a URL, a load state, a download, or a fixed time. |
+
+#### Acting on the page
+
+These tools take `after`.
+
+| Tool | Arguments | What it does |
+| --- | --- | --- |
+| `navigate` | `tab`, `url` or `action` | Opens a URL, or goes `back`, `forward`, or `reload`. |
+| `click` | `target`, `double`, `tab` | Clicks an element. `double` double-clicks it. |
+| `hover` | `target`, `tab` | Moves the mouse over an element, for menus and tooltips. |
+| `type` | `target`, `text`, `clear`, `submit`, `tab` | Types key by key. `clear` empties the field first. `submit` presses Enter after. |
+| `fill` | `fields`, `tab` | Sets up to 50 field values in order. Stops at the first field that fails. |
+| `press_key` | `key`, `target`, `tab` | Presses a key or chord, such as `Enter`, `Escape`, or `Control+a`. |
+| `select_option` | `target`, `values`, `tab` | Selects options in a select by value or label. |
+| `check` | `target`, `checked`, `tab` | Checks a checkbox, radio, or switch. `checked: false` unchecks it. |
+| `drag` | `source`, `target`, `tab` | Drags `source` and drops it on `target`. |
+| `scroll` | `direction`, `amount`, `target`, `tab` | Scrolls the page, or brings `target` into view. |
+| `eval` | `tab`, `script`, `timeout` | Runs JavaScript in the page and returns its value. |
+
+#### Tabs, dialogs, and long calls
+
+| Tool | Arguments | What it does |
+| --- | --- | --- |
+| `tab` | `action`, `tab`, `url` | Lists, opens, or closes tabs. Opening and closing take `after`. |
+| `dialog` | `dialog_id`, `action`, `text` | Accepts or dismisses an open dialog. `text` answers a prompt. |
+| `status` | `execution` | Waits for a running execution and returns its result. |
+| `cancel` | `execution` | Stops a running execution. |
+
+### Session options
+
+The agent sets these on `session_create` when your prompt asks for them:
+
+```json session_create -wcn
+{
+  "use_proxy": true,
+  "solve_captcha": true,
+  "profile_id": "0b7c1d2e-4f5a-4b6c-8d9e-0f1a2b3c4d5e",
+  "persist_profile": true,
+  "timeout_minutes": 30
+}
+```
+
+| Option | Effect |
+| --- | --- |
+| `use_proxy` | Routes traffic through a Steel residential proxy. |
+| `solve_captcha` | Lets Steel solve CAPTCHAs. |
+| `profile_id` | Starts from a saved [profile](/overview/profiles-api/overview), by its UUID. |
+| `persist_profile` | Saves cookies and storage back to the profile when the session ends. |
+| `use_credentials` | Fills logins saved with the [Credentials API](/overview/credentials-api/overview) on matching pages. |
+| `timeout_minutes` | The session's hard time limit, from 1 to 1440. Defaults to 60, capped by your plan. |
+
+### Limits and billing
+
+MCP sessions and scrapes are regular Steel sessions and scrapes. Sessions bill browser hours, and each `scrape` bills as a Browser Tools call. See [Pricing/Limits](/overview/pricinglimits).
+
+| Limit | Value |
+| --- | --- |
+| Session length | 60 minutes by default, capped by your plan. `timeout_minutes` changes it. |
+| Idle sessions | A session ends after 10 minutes without a tool call on it. See [Session lifecycle](/overview/sessions-api/session-lifecycle). |
+| `scrape` | 20 pages a minute per organization. |
+| `session_create` | Your plan's session create rate. |
+| Concurrent sessions | Your plan's concurrency limit. |
+| Page text | 30,000 characters per result. |
+
+Ask the agent to release sessions when the task is done. `session_list` shows the ones still running:
+
+```text session_list -wcn
+5b2c7c1e-3f4a-4d0e-9a8b-2c6f1e0d9a47 created 2026-11-05T09:12:44.000Z by mcp
+```
+
+You can also release sessions from the [Sessions page](https://app.steel.dev/sessions) in the dashboard.
+
+### Turn a run into a script
+
+Once the agent has found the right element, `get` with `what: "locator"` lists ways to find it again in a later session, best first:
+
+```json get -wcn
+{
+  "session_id": "5b2c7c1e-3f4a-4d0e-9a8b-2c6f1e0d9a47",
+  "what": "locator",
+  "target": "e12"
+}
+```
+
+```json Locators -wcn
+[
+  {
+    "target": { "role": "button", "name": "Accept", "exact": true },
+    "frame": { "css": "iframe[src^=\"https://consent.example.com/?\"]" }
+  }
+]
+```
+
+Use a locator as the `target` and `frame` of a [Commands API](/overview/commands-api/overview) command. The same step then runs from your code, with no model in the loop:
+
+```bash curl -wcn
+curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
+  -H "steel-api-key: $STEEL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "commands": [
+      {
+        "command": "click",
+        "frame": { "css": "iframe[src^=\"https://consent.example.com/?\"]" },
+        "target": { "role": "button", "name": "Accept", "exact": true }
+      }
+    ]
+  }'
+```
+
+### Disconnect a client
+
+Open **Settings → Profile → Security** in the [dashboard](https://app.steel.dev/settings/profile#/security). Disconnect the client under **Connected apps**.
+
+- **OAuth clients** lose access within 10 minutes of being disconnected.
+- **API keys** stop working when you delete them in [API Keys](https://app.steel.dev/settings/api-keys).
+
+### Troubleshooting
+
+Tool errors start with `Failed:` and a code. Most results also tell the agent what to do next.
+
+| Code | What to do |
+| --- | --- |
+| `invalid_operation_token` | Steel no longer knows the `after`. Use the `next` from the latest result. |
+| `session_ended` | The session is over. Start a new one with `session_create`. |
+| `session_not_found` | Check `session_id`, or start a session with `session_create`. |
+| `browser_restarted` | Every tab and ref changed. Start again with `tab` and `snapshot`. |
+| `stale_ref` | The element left the page. Take a new snapshot. |
+| `missing_capability` | The session's browser is too old for these tools. Start a new session. |
+| `delivery_failed` | Steel could not reach the browser. Call again with the same arguments. It will not run twice. |
+| `expired`, `queue_full` | The call did not start. Call again with the same arguments. |
+
+See the [Commands API reference](/overview/commands-api/reference) for every error code. Connection errors come back as HTTP status codes:
+
+| Message | Fix |
+| --- | --- |
+| `401` The access token is not valid for this MCP server. | Sign in again from your client. |
+| `401` The project this sign-in was approved for no longer exists. | Sign in again and pick another project. |
+| `401` with an API key | Check the key in [API Keys](https://app.steel.dev/settings/api-keys), or create a new one. |
+| `403` Account suspended | Contact [support@steel.dev](mailto:support@steel.dev). |
+
+### FAQ
+
+:::faq
+### What is the Steel MCP server?
+
+A hosted Model Context Protocol server at `https://mcp.steel.dev/mcp`. It gives MCP clients such as Claude, Cursor, VS Code, and Codex tools to read pages and drive Steel cloud browsers, with nothing to install.
+
+### Which MCP clients work with Steel?
+
+Any client that supports remote MCP servers over Streamable HTTP. Sign-in uses OAuth with Client ID Metadata Documents. A client that can't sign in that way can send a Steel API key as a bearer token instead.
+
+### Do I need a Steel API key?
+
+No. Clients that support OAuth sign in with your Steel account. Use an API key for unattended agents, or for clients that can't sign in.
+
+### How is MCP usage billed?
+
+The same as the API. Sessions bill browser hours until they are released or time out, and each `scrape` bills as a Browser Tools call. An MCP session also ends after 10 minutes without a tool call.
+
+### Should I use the MCP server or Steel Skills?
+
+Use the MCP server when your client supports MCP and you want browser tools with no setup. Use [Steel Skills](/overview/skills) when a coding agent should run the Steel CLI or write Steel code.
+
+### Can I self-host the Steel MCP server?
+
+No. The MCP server runs on Steel Cloud only. To build a server with your own tools, start from the [MCP server recipe](/cookbook/mcp).
+:::
+
+### Next steps
+
+:::next-steps
+- [Commands API](/overview/commands-api/overview): The HTTP API behind the page tools
+- [Build your own MCP server](/cookbook/mcp): Your own tools in TypeScript, Python, Rust, or Go
+:::

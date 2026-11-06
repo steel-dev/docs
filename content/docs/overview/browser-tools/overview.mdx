@@ -66,7 +66,7 @@ The supported formats map to fields on `content`:
 
 `metadata` carries the usual SEO fields (`title`, `description`, `canonical`, Open Graph tags, JSON-LD, `statusCode`, etc.) and `links` is a flat array of every anchor on the page.
 
-```json !! JSON -wcn
+```json JSON -wcn
 {
   "content": {
     "markdown": "# Steel Docs\n\n..."
@@ -142,7 +142,7 @@ print(result.url)
 
 The URL works without an API key and expires after 7 days. If you need the file longer, download it:
 
-```typescript !! Typescript -wcn
+```typescript Typescript -wcn
 import fs from "node:fs";
 
 const response = await fetch(result.url);

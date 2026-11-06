@@ -146,6 +146,15 @@ steel login
 
 This walks you through signing in and stores a key locally. Alternatively, set `STEEL_API_KEY` in your environment and the CLI will use it directly: useful for CI and non-interactive environments.
 
+#### MCP Server
+
+The [Steel MCP server](/overview/mcp) can sign you in with OAuth, so a client can connect without a key. To use a key instead, send it as a bearer token:
+
+```bash Terminal -wcn
+claude mcp add --transport http steel https://mcp.steel.dev/mcp \
+  --header "Authorization: Bearer $STEEL_API_KEY"
+```
+
 ### Managing Your API Keys
 
 All key management happens in the [API Keys dashboard](https://app.steel.dev/settings/api-keys). From there you can:

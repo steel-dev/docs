@@ -14,7 +14,7 @@ type: info
 The Commands API is in beta. Commands, fields, and limits may change. Share feedback on [Discord](https://discord.gg/steel-dev).
 :::
 
-```bash !! curl -wcn
+```bash curl -wcn
 curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
   -H "steel-api-key: $STEEL_API_KEY" \
   -H "Content-Type: application/json" \
@@ -28,7 +28,7 @@ curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
 
 The response has one result per command. The snapshot lists the elements on the page, each with a ref.
 
-```json !! Response -wcn
+```json Response -wcn
 {
   "next": "op_4f8k2m9q1x",
   "epoch": 1,
@@ -43,7 +43,7 @@ The response has one result per command. The snapshot lists the elements on the 
 
 Send a ref back to act on its element. Pass `next` as `after`, so Steel knows which page state you saw.
 
-```json !! Request -wcn
+```json Request -wcn
 { "after": "op_4f8k2m9q1x", "commands": [{ "command": "click", "target": "e1" }] }
 ```
 
@@ -52,6 +52,7 @@ Send a ref back to act on its element. Pass `next` as `after`, so Steel knows wh
 | Approach | Use it for |
 | --- | --- |
 | Commands API | Agents that read the page and act step by step. Plain HTTP, no browser library. |
+| [MCP Server](/overview/mcp) | Agents in an MCP client, such as Claude or Cursor. The same commands as tools, with nothing to host. |
 | [Playwright](/cookbook/playwright) or [Puppeteer](/cookbook/puppeteer) | Scripts that need full CDP control, such as network interception. |
 | [Browser Tools](/overview/browser-tools/overview) | One-shot scrapes, screenshots, and PDFs without a session. |
 
@@ -154,7 +155,7 @@ The click uses a locator, so the example does not depend on a ref number. An age
 
 A snapshot is the page's accessibility tree as text. Each line has the role, the name, the states, and a ref. A value follows the colon.
 
-```text !! Snapshot -wcn
+```text Snapshot -wcn
 - heading "Account" [level=1, ref=e1]
 - textbox "Name" [ref=e2]: Ada
 - checkbox "Remember me" [checked=false, ref=e3]
@@ -174,7 +175,7 @@ A ref points at one element and stays the same across snapshots of the same page
 
 Commands that act on an element take a `target`. It can be a ref, a CSS selector, or a locator object.
 
-```json !! Request -wcn
+```json Request -wcn
 {
   "commands": [
     { "command": "fill", "target": "e2", "value": "Ada Lovelace" },
@@ -200,7 +201,7 @@ A locator sets exactly one of these fields:
 
 Text matches a case-insensitive substring unless you set `exact: true`. When a locator finds several elements, it uses the only visible one or fails with `ambiguous`, so set `nth` to pick one. For an element inside an iframe, add `frame`:
 
-```json !! Request -wcn
+```json Request -wcn
 {
   "commands": [
     {
@@ -217,7 +218,7 @@ Text matches a case-insensitive substring unless you set `exact: true`. When a l
 
 `commands` takes up to 50 commands. They run in order and stop at the first failure. Commands that already ran are not undone. Add `observe` to see the page after the commands.
 
-```json !! Request -wcn
+```json Request -wcn
 {
   "commands": [
     { "command": "fill", "target": "e2", "value": "ada@example.com" },
@@ -235,7 +236,7 @@ Text matches a case-insensitive substring unless you set `exact: true`. When a l
 
 A failed command still returns `200`. Its error is in `results`, and the execution state is `failed`. Here a cookie banner covers the button:
 
-```json !! Response -wcn
+```json Response -wcn
 {
   "execution": { "id": "x-4", "state": "failed", "effect": "none", "replayed": false, "ran": 1 },
   "results": [
@@ -256,7 +257,7 @@ A failed command still returns `200`. Its error is in `results`, and the executi
 
 Every response has a `next` value. Send it as `after` in your next request. A retried request with the same `after` and commands then runs only once. If another Commands API client changed the session in between, the response sets `epochChanged: true`.
 
-```typescript !! Typescript -wcn
+```typescript Typescript -wcn
 let after: string | undefined;
 
 async function step(commands: object[]) {
@@ -273,7 +274,7 @@ async function step(commands: object[]) {
 
 Send a random `Idempotency-Key` header with each request, and reuse it when you retry that request. A retry with the same key returns the stored result with `replayed: true` instead of running the commands again.
 
-```bash !! curl -wcn
+```bash curl -wcn
 curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
   -H "steel-api-key: $STEEL_API_KEY" \
   -H "Content-Type: application/json" \
@@ -294,7 +295,7 @@ Steel keeps results for at least an hour. Large parts, such as snapshot text and
 
 Executions run one at a time per session. The response waits up to 20 seconds. If the execution is still going, the response shows `state: "running"`. Wait for it with `status`, or stop it with `cancel`.
 
-```json !! Request -wcn
+```json Request -wcn
 { "commands": [{ "command": "status", "execution": "x-1" }] }
 ```
 
@@ -304,7 +305,7 @@ Executions run one at a time per session. The response waits up to 20 seconds. I
 
 Steel never answers a dialog on its own. An open dialog shows up in `dialog`, and commands on its tab fail with `dialog_pending` until you answer it.
 
-```json !! Response -wcn
+```json Response -wcn
 {
   "dialog": { "id": "d-1", "tab": "t1", "type": "confirm", "message": "Delete this item?" }
 }
@@ -312,7 +313,7 @@ Steel never answers a dialog on its own. An open dialog shows up in `dialog`, an
 
 Answer it with the `dialog` command. Pass `text` to answer a prompt.
 
-```json !! Request -wcn
+```json Request -wcn
 { "commands": [{ "command": "dialog", "dialog": "d-1", "action": "accept" }] }
 ```
 
@@ -320,13 +321,13 @@ Answer it with the `dialog` command. Pass `text` to answer a prompt.
 
 `upload` takes files from the session's files, so upload them first with the [Files API](/overview/files-api/overview). Then pass their names.
 
-```json !! Request -wcn
+```json Request -wcn
 { "commands": [{ "command": "upload", "target": { "label": "Resume" }, "files": "resume.pdf" }] }
 ```
 
 `wait` with `download: true` waits for the next download to finish. Its result has the file name and size.
 
-```json !! Request -wcn
+```json Request -wcn
 {
   "commands": [
     { "command": "click", "target": { "role": "button", "name": "Export CSV" } },
@@ -337,7 +338,7 @@ Answer it with the `dialog` command. Pass `text` to answer a prompt.
 
 Then download the file from the session's files:
 
-```bash !! curl -wcn
+```bash curl -wcn
 curl https://api.steel.dev/v1/sessions/$SESSION_ID/files/report.csv \
   -H "steel-api-key: $STEEL_API_KEY" \
   -o report.csv
