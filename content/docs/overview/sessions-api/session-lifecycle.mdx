@@ -180,6 +180,11 @@ print(response.message) # "All sessions released successfully"
 
 Every released or failed session has a `releaseReason`. It is `null` while the session is live, and for sessions created before Steel tracked the reason.
 
+:::callout
+type: info
+Reading `releaseReason` in TypeScript needs `steel-sdk` 0.21.0 or later. Filtering by it in [Find Past Sessions](#find-past-sessions) needs 0.21.0 or later in TypeScript and Python.
+:::
+
 <CodeTabs storage="languageSwitcher">
 
 ```typescript !! Typescript -wcn

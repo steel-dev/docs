@@ -10,6 +10,11 @@ publishedAt: "2026-11-04"
 
 Session metadata is a flat set of key-value pairs that you attach to a session. Use it to store your own identifiers, such as a job ID, a customer, or an environment. Steel returns metadata on every session response and shows it on the session page in the dashboard, so don't store secrets in it.
 
+:::callout
+type: info
+Session metadata needs `steel-sdk` 0.21.0 or later, in TypeScript and Python.
+:::
+
 <CodeTabs storage="languageSwitcher">
 
 ```typescript !! Typescript -wcn
