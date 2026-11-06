@@ -51,7 +51,7 @@ const config = {
       },
       {
         source: "/steel-go-sdk",
-        destination: "https://pkg.go.dev/github.com/steel-dev/steel-go",
+        destination: "https://pkg.go.dev/github.com/steel-dev/sdk/go",
         permanent: true,
       },
       {

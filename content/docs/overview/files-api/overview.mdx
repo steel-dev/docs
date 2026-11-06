@@ -100,7 +100,7 @@ for file in response.json()["data"]:
 
 #### Download Files from Session File System
 
-For raw HTTP requests, the `{path}` parameter is relative. Session file responses currently come back in a `/files/...` form, so strip that prefix before interpolating the value into the URL.
+The path is relative, both in SDK calls and in raw HTTP requests. Upload and list return session file paths in a `/files/...` form, so strip that prefix before you pass a path to download or delete. A path that starts with `/` fails with a `400` error.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -141,7 +141,7 @@ with open("session_files.zip", "wb") as f:
 
 #### Delete Files from Sessions File System
 
-The raw HTTP delete endpoint also expects the relative path segment rather than the `/files/...` form returned by session file responses.
+Delete also takes the relative path, not the `/files/...` form that upload and list return.
 
 <CodeTabs storage="languageSwitcher">
 
