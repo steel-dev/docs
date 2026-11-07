@@ -3,13 +3,13 @@ title: Build a research agent with Swiftide
 description: "Use Steel with Swiftide to build an agent whose tool reads the web through Steel's scrape endpoint, so the model works from clean Markdown with no browser library."
 ---
 
-<RecipeJsonLd slug="swiftide" title={"Build a research agent with Swiftide"} description={"Use Steel with Swiftide to build an agent whose tool reads the web through Steel's scrape endpoint, so the model works from clean Markdown with no browser library."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-06-23" dateModified="2026-06-23" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/swiftide" />
+<RecipeJsonLd slug="swiftide" title={"Build a research agent with Swiftide"} description={"Use Steel with Swiftide to build an agent whose tool reads the web through Steel's scrape endpoint, so the model works from clean Markdown with no browser library."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-06-23" dateModified="2026-06-23" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/swiftide" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/swiftide" path="examples/swiftide" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/swiftide" path="examples/swiftide" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
 
 <RecipeQuickstart slug="swiftide" />
 
-[Swiftide](https://swiftide.rs) is a Rust framework for LLM applications: indexing pipelines, query pipelines, and agents that loop over tool calls until they reach an answer. This recipe builds an [agent](/cookbook/topics/agents) whose only tool reads the web through Steel's `scrape` endpoint, so the model works from clean Markdown instead of raw HTML and never touches a browser library or CDP.
+[Swiftide](https://swiftide.rs) is a Rust framework for LLM applications: indexing pipelines, query pipelines, and agents that loop over tool calls until they reach an answer. This recipe builds an agent whose only tool reads the web through Steel's `scrape` endpoint, so the model works from clean Markdown instead of raw HTML and never touches a browser library or CDP.
 
 The agent runs on Anthropic (`claude-sonnet-4-6`) and the tool is a `#[derive(Tool)]` struct that owns the Steel client:
 
@@ -21,22 +21,21 @@ The agent runs on Anthropic (`claude-sonnet-4-6`) and the tool is a `#[derive(To
     param(name = "url", description = "Absolute URL of the page to read, including https://")
 )]
 struct ReadPage {
-    client: Arc<Steel>,
+    client: Arc<Client>,
 }
 
 impl ReadPage {
     async fn read_page(&self, _ctx: &dyn AgentContext, url: &str) -> Result<ToolOutput, ToolError> {
-        let response = self.client.scrape(ClientScrapeParams {
-            url: url.to_string(),
-            format: Some(vec![ScrapeRequestFormatItem::Markdown]),
-            ..
+        let response = self.client.scrape(ScrapeParams {
+            format: Some(vec![ScrapeParamsFormat::Markdown]),
+            ..ScrapeParams::new(url.to_string())
         }).await?;
         // ... return response.content.markdown plus response.links
     }
 }
 ```
 
-The derive macro reads the struct's snake-case name (`ReadPage` -> `read_page`), finds the method with that name, and turns each `#[tool(param(...))]` into a JSON Schema field via `schemars`. Anything that implements `Tool` slots into `Agent::builder().tools(...)`, so a stateful struct and a `#[swiftide::tool]` free function are interchangeable at the call site. The struct form is what lets the tool hold `Arc<Steel>`; a free function has nowhere to put it.
+The derive macro reads the struct's snake-case name (`ReadPage` -> `read_page`), finds the method with that name, and turns each `#[tool(param(...))]` into a JSON Schema field via `schemars`. Anything that implements `Tool` slots into `Agent::builder().tools(...)`, so a stateful struct and a `#[swiftide::tool]` free function are interchangeable at the call site. The struct form is what lets the tool hold `Arc<Client>`; a free function has nowhere to put it.
 
 Wiring the agent is four builder calls:
 
@@ -63,7 +62,7 @@ cp .env.example .env          # set STEEL_API_KEY and ANTHROPIC_API_KEY
 cargo run
 ```
 
-Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys) and an Anthropic key at [console.anthropic.com](https://console.anthropic.com/settings/keys). The Anthropic client reads `ANTHROPIC_API_KEY` from the environment on its own; the Steel key is passed to `Steel::new` explicitly.
+Get a Steel key at [app.steel.dev/settings/api-keys](https://app.steel.dev/settings/api-keys) and an Anthropic key at [console.anthropic.com](https://console.anthropic.com/settings/keys). The Anthropic client reads `ANTHROPIC_API_KEY` from the environment on its own; the Steel key is passed to `Client::builder().api_key(...)` explicitly.
 
 Your output varies. Structure looks like this:
 
@@ -86,13 +85,13 @@ Each `scrape` call spins up a short-lived Steel browser server-side, so a run co
 
 **The `#[derive(Tool)]` macro needs `serde` and `async-trait` as direct dependencies.** The expansion emits a bare `#[async_trait::async_trait]` and a `serde`-derived args struct without a `#[serde(crate = ...)]` override, so both crates have to resolve at the crate root even though you never name them. They are in `Cargo.toml` for that reason alone. The `#[swiftide::tool]` attribute macro on a free function fully qualifies its paths and does not need them, so that is the lighter option when your tool is stateless.
 
-Steel's request builders implement `IntoFuture` with a `Send` future, so `client.scrape(...).await` works directly inside a Swiftide tool even though tools run on a multi-threaded Tokio runtime.
+Steel's client methods are plain `async fn`s with `Send` futures, so `client.scrape(...).await` works directly inside a Swiftide tool even though tools run on a multi-threaded Tokio runtime.
 
 ## Make it yours
 
 - **Swap the task.** Change `TASK` and `SYSTEM_PROMPT` in `main.rs`. The tool stays the same; the agent re-plans against the new goal.
 - **Give it more reach.** The tool already returns up to 40 of the page's links, which is what lets the model follow a story into its comments. Raise `.limit(8)` if you want it to crawl deeper, and widen or drop the link cap.
-- **Add a second tool.** A `screenshot` tool backed by `client.screenshot(...)` (returns a base64 PNG) or a `pdf` tool backed by `client.pdf(...)` drops in as another `#[derive(Tool)]` struct in the `tools(vec![...])` list. The agent picks per turn.
+- **Add a second tool.** A `screenshot` tool backed by `client.screenshot(...)` (returns a hosted image URL) or a `pdf` tool backed by `client.pdf(...)` drops in as another `#[derive(Tool)]` struct in the `tools(vec![...])` list. The agent picks per turn.
 - **Change the model.** Any Anthropic chat model works in `default_prompt_model`. Swiftide also ships OpenAI, Gemini, Groq, and Ollama integrations behind feature flags; swap the `Anthropic` builder for one of those and the tools are unaffected.
 
 ## Related
@@ -102,7 +101,7 @@ Steel's request builders implement `IntoFuture` with a `Send` future, so `client
 ## Related recipes
 
 <RecipeGrid>
+<RecipeCard slug="stripe-projects-web-agent" title={"Build a live browser agent with Stripe Projects"} description={"Stripe Projects provisions Steel, OpenRouter, and Vercel for a Next.js browser agent with embedded Steel Live View and a bounded tool loop."} topics={['Agents', 'Next.js']} languages={['TypeScript']} date="2026-07-16" />
 <RecipeCard slug="restate-agent" title={"Run a durable browser agent with Restate"} description={"Build a Restate Virtual Object in TypeScript that uses durable OpenAI planning steps and Steel scraping to answer browser research questions."} topics={['Agents', 'Restate']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-29" />
 <RecipeCard slug="mcp" title={"Expose a Steel browser to any MCP client"} description={"Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools."} topics={['Agents', 'MCP']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-24" />
-<RecipeCard slug="genkit" title={"Build a browser agent with Genkit"} description={"Use Steel with Genkit Go to build a tool-calling agent that navigates and extracts from a chromedp-backed browser and completes a web task."} topics={['Agents']} languages={['Go']} date="2026-06-23" />
 </RecipeGrid>

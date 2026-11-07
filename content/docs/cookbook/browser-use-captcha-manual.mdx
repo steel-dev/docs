@@ -3,17 +3,17 @@ title: Solve reCAPTCHA v2 manually with Browser Use
 description: "Manually solve reCAPTCHA v2 using Steel's CAPTCHA API with the browser-use framework."
 ---
 
-<RecipeJsonLd slug="browser-use-captcha-manual" title={"Solve reCAPTCHA v2 manually with Browser Use"} description={"Manually solve reCAPTCHA v2 using Steel's CAPTCHA API with the browser-use framework."} authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai"}]} datePublished="2026-02-10" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/browser-use-captcha-manual" />
+<RecipeJsonLd slug="browser-use-captcha-manual" title={"Solve reCAPTCHA v2 manually with Browser Use"} description={"Manually solve reCAPTCHA v2 using Steel's CAPTCHA API with the browser-use framework."} authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai"}]} datePublished="2026-02-10" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/browser-use-captcha-manual" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/browser-use-captcha-manual" path="examples/browser-use-captcha-manual" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/browser-use-captcha-manual" path="examples/browser-use-captcha-manual" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="browser-use-captcha-manual" />
 
-Steel can solve [CAPTCHAs](/cookbook/topics/captchas) for you in the background, or it can hand you the status API and let you drive. This recipe picks the second path. The session is created with auto-solving explicitly off, a custom Browser Use tool polls `client.sessions.captchas.status()`, and it calls `client.sessions.captchas.solve()` only for the CAPTCHA type you care about. Every state transition (detected, solving, validating, solved) is yours to read and react to.
+Steel can solve CAPTCHAs for you in the background, or it can hand you the status API and let you drive. This recipe picks the second path. The session is created with auto-solving explicitly off, a custom Browser Use tool polls `client.sessions.captchas.status()`, and it calls `client.sessions.captchas.solve()` only for the CAPTCHA type you care about. Every state transition (detected, solving, validating, solved) is yours to read and react to.
 
 ```python
 session = client.sessions.create(
-    timeout=300000,
+    api_timeout=300000,
     solve_captcha=True,
     stealth_config={"auto_captcha_solving": False},
 )
@@ -139,5 +139,5 @@ A run takes ~60 seconds and costs Steel session time plus OpenAI tokens for each
 <RecipeGrid>
 <RecipeCard slug="browser-use-captcha-auto" title={"Solve CAPTCHAs automatically in a Browser Use agent"} description={"Build an AI agent with browser-use and Steel that solves CAPTCHAs automatically."} topics={['Agents', 'Browser Use', 'Captchas']} languages={['Python']} date="2025-02-20" />
 <RecipeCard slug="browser-use" title={"Build a browser agent with Browser Use"} description={"Integrate Steel with the browser-use framework for AI-driven web automation."} topics={['Agents', 'Browser Use']} languages={['Python']} date="2025-02-20" />
-<RecipeCard slug="restate-agent" title={"Run a durable browser agent with Restate"} description={"Build a Restate Virtual Object in TypeScript that uses durable OpenAI planning steps and Steel scraping to answer browser research questions."} topics={['Agents', 'Restate']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-29" />
+<RecipeCard slug="stripe-projects-web-agent" title={"Build a live browser agent with Stripe Projects"} description={"Stripe Projects provisions Steel, OpenRouter, and Vercel for a Next.js browser agent with embedded Steel Live View and a bounded tool loop."} topics={['Agents', 'Next.js']} languages={['TypeScript']} date="2026-07-16" />
 </RecipeGrid>

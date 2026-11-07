@@ -3,13 +3,13 @@ title: Solve CAPTCHAs automatically in a Browser Use agent
 description: Build an AI agent with browser-use and Steel that solves CAPTCHAs automatically.
 ---
 
-<RecipeJsonLd slug="browser-use-captcha-auto" title={"Solve CAPTCHAs automatically in a Browser Use agent"} description={"Build an AI agent with browser-use and Steel that solves CAPTCHAs automatically."} authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai"}]} datePublished="2025-02-20" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/browser-use-captcha-auto" />
+<RecipeJsonLd slug="browser-use-captcha-auto" title={"Solve CAPTCHAs automatically in a Browser Use agent"} description={"Build an AI agent with browser-use and Steel that solves CAPTCHAs automatically."} authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai"}]} datePublished="2025-02-20" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/browser-use-captcha-auto" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/browser-use-captcha-auto" path="examples/browser-use-captcha-auto" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/browser-use-captcha-auto" path="examples/browser-use-captcha-auto" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="browser-use-captcha-auto" />
 
-Steel can solve [CAPTCHAs](/cookbook/topics/captchas) inside a session without the agent lifting a finger. This recipe wires that into Browser Use: one flag at session creation, one custom tool the agent calls to block until the solver reports done. Everything else is the same perception-plan-act loop as the base [Browser Use](/cookbook/browser-use) recipe.
+Steel can solve CAPTCHAs inside a session without the agent lifting a finger. This recipe wires that into Browser Use: one flag at session creation, one custom tool the agent calls to block until the solver reports done. Everything else is the same perception-plan-act loop as the base [Browser Use](/cookbook/browser-use) recipe.
 
 ```python
 session = client.sessions.create(solve_captcha=True)
@@ -85,7 +85,7 @@ A run usually finishes in under a minute: a few cents of Steel session time plus
 
 ## Make it yours
 
-- **Point at a real target.** Replace the `TASK` string with the actual flow: "sign up at example.com with these details." Keep the instruction to call `wait_for_captcha_solution` when a CAPTCHA appears; everything else, the agent figures out.
+- **Point at a real target.** Replace the `TASK` string with the actual flow: "sign up at example.com with these details". Keep the instruction to call `wait_for_captcha_solution` when a CAPTCHA appears; everything else, the agent figures out.
 - **Tune the poll loop.** `wait_for_captcha_solution` uses `timeout_ms=60000` and `poll_interval_ms=1000`. Image grids and audio fallbacks sometimes need 90-120 seconds. A 2-3 second poll cuts API calls without noticeable delay.
 - **Fail loud on solver failure.** The current summary counts `failed` tasks but the tool does not short-circuit on them. Check `summary["failed_tasks"] > 0` inside the loop and return an error string so the agent can retry or abort.
 - **Combine with stealth.** `sessions.create()` accepts `use_proxy=True` and `session_timeout=1800000` alongside `solve_captcha=True`. Sites that CAPTCHA you aggressively usually want all three.
@@ -101,5 +101,5 @@ A run usually finishes in under a minute: a few cents of Steel session time plus
 <RecipeGrid>
 <RecipeCard slug="browser-use-captcha-manual" title={"Solve reCAPTCHA v2 manually with Browser Use"} description={"Manually solve reCAPTCHA v2 using Steel's CAPTCHA API with the browser-use framework."} topics={['Agents', 'Browser Use', 'Captchas']} languages={['Python']} date="2026-02-10" />
 <RecipeCard slug="browser-use" title={"Build a browser agent with Browser Use"} description={"Integrate Steel with the browser-use framework for AI-driven web automation."} topics={['Agents', 'Browser Use']} languages={['Python']} date="2025-02-20" />
-<RecipeCard slug="restate-agent" title={"Run a durable browser agent with Restate"} description={"Build a Restate Virtual Object in TypeScript that uses durable OpenAI planning steps and Steel scraping to answer browser research questions."} topics={['Agents', 'Restate']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-29" />
+<RecipeCard slug="stripe-projects-web-agent" title={"Build a live browser agent with Stripe Projects"} description={"Stripe Projects provisions Steel, OpenRouter, and Vercel for a Next.js browser agent with embedded Steel Live View and a bounded tool loop."} topics={['Agents', 'Next.js']} languages={['TypeScript']} date="2026-07-16" />
 </RecipeGrid>

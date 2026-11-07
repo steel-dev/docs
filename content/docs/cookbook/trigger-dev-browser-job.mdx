@@ -3,13 +3,13 @@ title: Run a Steel browser job with Trigger.dev
 description: Queue a Trigger.dev task that creates a Steel session, drives Playwright over CDP, saves artifacts, and releases the browser in cleanup.
 ---
 
-<RecipeJsonLd slug="trigger-dev-browser-job" title={"Run a Steel browser job with Trigger.dev"} description={"Queue a Trigger.dev task that creates a Steel session, drives Playwright over CDP, saves artifacts, and releases the browser in cleanup."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-06-29" dateModified="2026-06-29" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/trigger-dev-browser-job" />
+<RecipeJsonLd slug="trigger-dev-browser-job" title={"Run a Steel browser job with Trigger.dev"} description={"Queue a Trigger.dev task that creates a Steel session, drives Playwright over CDP, saves artifacts, and releases the browser in cleanup."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-06-29" dateModified="2026-06-29" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/trigger-dev-browser-job" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/trigger-dev-browser-job" path="examples/trigger-dev-browser-job" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-29" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/trigger-dev-browser-job" path="examples/trigger-dev-browser-job" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-29" />
 
 <RecipeQuickstart slug="trigger-dev-browser-job" />
 
-This recipe runs browser automation as a [queued background job](/cookbook/topics/triggerdev). The request
+This recipe runs browser automation as a queued background job. The request
 path only enqueues `steel-browser-job`; the task creates a Steel session,
 connects Playwright over CDP, extracts a page summary, saves artifacts, and
 releases the session in `finally`.
@@ -23,7 +23,7 @@ export const browserJob = task({
   retry: { maxAttempts: 3 },
   queue: { concurrencyLimit: 2 },
   run: async (payload) => {
-    session = await steel.sessions.create({ sessionTimeout: 600000 });
+    session = await steel.sessions.create({ timeout: 600000 });
     browser = await chromium.connectOverCDP(
       `${session.websocketUrl}&apiKey=${steelApiKey}`
     );

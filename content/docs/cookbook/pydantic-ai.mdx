@@ -3,15 +3,15 @@ title: Build a typed browser agent with Pydantic AI
 description: Use Steel with Pydantic AI to build typed, provider-agnostic browser agents with dependency injection.
 ---
 
-<RecipeJsonLd slug="pydantic-ai" title={"Build a typed browser agent with Pydantic AI"} description={"Use Steel with Pydantic AI to build typed, provider-agnostic browser agents with dependency injection."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-04-29" dateModified="2026-04-29" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/pydantic-ai" />
+<RecipeJsonLd slug="pydantic-ai" title={"Build a typed browser agent with Pydantic AI"} description={"Use Steel with Pydantic AI to build typed, provider-agnostic browser agents with dependency injection."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-04-29" dateModified="2026-04-29" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/pydantic-ai" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/pydantic-ai" path="examples/pydantic-ai" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/pydantic-ai" path="examples/pydantic-ai" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
 
 <RecipeQuickstart slug="pydantic-ai" />
 
-[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's agent framework. It's provider-agnostic and reuses Pydantic models for tool arguments and final outputs. Steel's [Pydantic AI integration](/integrations/pydantic-ai) covers the same setup on its own.
+[Pydantic AI](https://ai.pydantic.dev/) is the Pydantic team's agent framework. It's provider-agnostic and reuses Pydantic models for tool arguments and final outputs.
 
-This starter wires a Steel browser into Pydantic AI's dependency-injection pattern and points the [agent](/cookbook/topics/agents) at GitHub Trending.
+This starter wires a Steel browser into Pydantic AI's dependency-injection pattern and points the agent at GitHub Trending.
 
 ```python
 from pydantic_ai import Agent, RunContext

@@ -3,13 +3,13 @@ title: Watch Claude pricing for divergent A/B variants
 description: Convex cron plus two parallel Steel proxy probes against claude.com/pricing. Stores per-tier per-region snapshots and surfaces tiers where the probes disagree.
 ---
 
-<RecipeJsonLd slug="convex-price-watch" title={"Watch Claude pricing for divergent A/B variants"} description={"Convex cron plus two parallel Steel proxy probes against claude.com/pricing. Stores per-tier per-region snapshots and surfaces tiers where the probes disagree."} authors={[{"handle":"nibzard","name":"Nikola Balic"}]} datePublished="2026-05-04" dateModified="2026-05-04" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/convex-price-watch" />
+<RecipeJsonLd slug="convex-price-watch" title={"Watch Claude pricing for divergent A/B variants"} description={"Convex cron plus two parallel Steel proxy probes against claude.com/pricing. Stores per-tier per-region snapshots and surfaces tiers where the probes disagree."} authors={[{"handle":"nibzard","name":"Nikola Balic"}]} datePublished="2026-05-04" dateModified="2026-05-04" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/convex-price-watch" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/convex-price-watch" path="examples/convex-price-watch" authors={[{"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-05-04" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/convex-price-watch" path="examples/convex-price-watch" authors={[{"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-05-04" />
 
 <RecipeQuickstart slug="convex-price-watch" />
 
-A scheduled monitor: scrape `https://claude.com/pricing` every 10 minutes from two parallel proxy probes, store one row per (region, tier, capturedAt) in [Convex](/cookbook/topics/convex), and surface tiers where the probes disagree. No LLM, no streaming. Just `@steel-dev/convex`, a cron, and a reactive dashboard.
+A scheduled monitor: scrape `https://claude.com/pricing` every 10 minutes from two parallel proxy probes, store one row per (region, tier, capturedAt) in Convex, and surface tiers where the probes disagree. No LLM, no streaming. Just `@steel-dev/convex`, a cron, and a reactive dashboard.
 
 ```
 convex/
