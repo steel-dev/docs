@@ -10,21 +10,30 @@ The Commands API drives a session's browser with high-level commands. Take a sna
 
 :::callout
 type: info
-### Beta
-The Commands API is in beta. Commands, fields, and limits may change. Share feedback on [Discord](https://discord.gg/steel-dev).
+`sessions.commands` needs `steel-sdk` 0.21.0 or later, in TypeScript and Python.
 :::
 
-```bash curl -wcn
-curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
-  -H "steel-api-key: $STEEL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "commands": [
-      { "command": "navigate", "url": "https://example.com" },
-      { "command": "snapshot", "interactive": true }
-    ]
-  }'
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const reply = await client.sessions.commands(session.id, {
+  commands: [
+    { command: "navigate", url: "https://example.com" },
+    { command: "snapshot", interactive: true },
+  ],
+});
 ```
+
+```python !! Python -wcn
+reply = client.sessions.commands(
+    session.id,
+    commands=[
+        {"command": "navigate", "url": "https://example.com"},
+        {"command": "snapshot", "interactive": True},
+    ],
+)
+```
+</CodeTabs>
 
 The response has one result per command. The snapshot lists the elements on the page, each with a ref.
 
@@ -43,9 +52,23 @@ The response has one result per command. The snapshot lists the elements on the 
 
 Send a ref back to act on its element. Pass `next` as `after`, so Steel knows which page state you saw.
 
-```json Request -wcn
-{ "after": "op_4f8k2m9q1x", "commands": [{ "command": "click", "target": "e1" }] }
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+await client.sessions.commands(session.id, {
+  after: "op_4f8k2m9q1x",
+  commands: [{ command: "click", target: "e1" }],
+});
 ```
+
+```python !! Python -wcn
+client.sessions.commands(
+    session.id,
+    after="op_4f8k2m9q1x",
+    commands=[{"command": "click", "target": "e1"}],
+)
+```
+</CodeTabs>
 
 ### When to use it
 
@@ -60,7 +83,7 @@ You can mix them. A Playwright script and the Commands API can drive the same se
 
 ### Quickstart
 
-Create a session, run commands on it, then release it. The SDKs do not have a commands method yet, so these examples call the endpoint over HTTP.
+Create a session, run commands on it, then release it.
 
 <CodeTabs storage="languageSwitcher">
 
@@ -69,87 +92,62 @@ import Steel from "steel-sdk";
 
 const client = new Steel();
 
-async function runCommands(sessionId: string, body: object) {
-  const response = await fetch(
-    `https://api.steel.dev/v1/sessions/${sessionId}/commands`,
-    {
-      method: "POST",
-      headers: {
-        "steel-api-key": process.env.STEEL_API_KEY!,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    },
-  );
-  return response.json();
-}
-
 const session = await client.sessions.create();
 
 try {
-  const opened = await runCommands(session.id, {
+  const opened = await client.sessions.commands(session.id, {
     commands: [
       { command: "navigate", url: "https://example.com" },
       { command: "snapshot", interactive: true },
     ],
   });
+  if (!("results" in opened)) throw new Error("Expected command results");
   console.log(opened.results[1].snapshot);
 
-  const clicked = await runCommands(session.id, {
+  const clicked = await client.sessions.commands(session.id, {
     after: opened.next,
     commands: [{ command: "click", target: { role: "link", name: "Learn more" } }],
     observe: { mode: "snapshot", interactive: true },
   });
-  console.log(clicked.page.url);
-  console.log(clicked.observe.snapshot);
+  if (!("results" in clicked)) throw new Error("Expected command results");
+  console.log(clicked.page?.url);
+  console.log(clicked.observe?.snapshot);
 } finally {
   await client.sessions.release(session.id);
 }
 ```
 
 ```python !! Python -wcn
-import os
-
-import httpx
 from steel import Steel
 
 client = Steel()
 
-
-def run_commands(session_id: str, body: dict) -> dict:
-    response = httpx.post(
-        f"https://api.steel.dev/v1/sessions/{session_id}/commands",
-        headers={"steel-api-key": os.environ["STEEL_API_KEY"]},
-        json=body,
-        timeout=60,
-    )
-    return response.json()
-
-
 session = client.sessions.create()
 
 try:
-    opened = run_commands(session.id, {
-        "commands": [
+    opened = client.sessions.commands(
+        session.id,
+        commands=[
             {"command": "navigate", "url": "https://example.com"},
             {"command": "snapshot", "interactive": True},
         ],
-    })
-    print(opened["results"][1]["snapshot"])
+    )
+    print(opened.results[1].snapshot)
 
-    clicked = run_commands(session.id, {
-        "after": opened["next"],
-        "commands": [{"command": "click", "target": {"role": "link", "name": "Learn more"}}],
-        "observe": {"mode": "snapshot", "interactive": True},
-    })
-    print(clicked["page"]["url"])
-    print(clicked["observe"]["snapshot"])
+    clicked = client.sessions.commands(
+        session.id,
+        after=opened.next,
+        commands=[{"command": "click", "target": {"role": "link", "name": "Learn more"}}],
+        observe={"mode": "snapshot", "interactive": True},
+    )
+    print(clicked.page.url)
+    print(clicked.observe.snapshot)
 finally:
     client.sessions.release(session.id)
 ```
 </CodeTabs>
 
-The click uses a locator, so the example does not depend on a ref number. An agent usually reads the snapshot and sends the ref it picked.
+The click uses a locator, so the example does not depend on a ref number. An agent usually reads the snapshot and sends the ref it picked. In TypeScript, the response type also covers the answer to a `dialog` command, so check for `results` before you read them.
 
 ### Snapshots and refs
 
@@ -257,11 +255,14 @@ A failed command still returns `200`. Its error is in `results`, and the executi
 
 Every response has a `next` value. Send it as `after` in your next request. A retried request with the same `after` and commands then runs only once. If another Commands API client changed the session in between, the response sets `epochChanged: true`.
 
-```typescript Typescript -wcn
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
 let after: string | undefined;
 
-async function step(commands: object[]) {
-  const reply = await runCommands(session.id, { after, commands });
+async function step(commands: Steel.Command[]) {
+  const reply = await client.sessions.commands(session.id, { after, commands });
+  if (!("results" in reply)) throw new Error("Expected command results");
   after = reply.next;
   if (reply.epochChanged) {
     console.log("Another client changed the page. Take a new snapshot.");
@@ -270,17 +271,49 @@ async function step(commands: object[]) {
 }
 ```
 
+```python !! Python -wcn
+from steel import omit
+
+after = omit
+
+
+def step(commands):
+    global after
+    reply = client.sessions.commands(session.id, after=after, commands=commands)
+    after = reply.next
+    if reply.epoch_changed:
+        print("Another client changed the page. Take a new snapshot.")
+    return reply
+```
+</CodeTabs>
+
 ### Retry safely
 
-Send a random `Idempotency-Key` header with each request, and reuse it when you retry that request. A retry with the same key returns the stored result with `replayed: true` instead of running the commands again.
+Send a random `Idempotency-Key` with each request, and reuse it when you retry that request. A retry with the same key returns the stored result with `replayed: true` instead of running the commands again.
 
-```bash curl -wcn
-curl -X POST https://api.steel.dev/v1/sessions/$SESSION_ID/commands \
-  -H "steel-api-key: $STEEL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -H "Idempotency-Key: 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d" \
-  -d '{ "commands": [{ "command": "click", "target": "e4" }] }'
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+import { randomUUID } from "node:crypto";
+
+const reply = await client.sessions.commands(session.id, {
+  commands: [{ command: "click", target: "e4" }],
+  "idempotency-key": randomUUID(),
+});
 ```
+
+```python !! Python -wcn
+import uuid
+
+reply = client.sessions.commands(
+    session.id,
+    commands=[{"command": "click", "target": "e4"}],
+    idempotency_key=str(uuid.uuid4()),
+)
+```
+</CodeTabs>
+
+The SDKs retry `429` and `503` responses on their own, two times by default, with the same key. Without a key or `after`, a retry after a `503` can run the commands twice.
 
 | Status | Code | What to do |
 | --- | --- | --- |
@@ -338,11 +371,18 @@ Answer it with the `dialog` command. Pass `text` to answer a prompt.
 
 Then download the file from the session's files:
 
-```bash curl -wcn
-curl https://api.steel.dev/v1/sessions/$SESSION_ID/files/report.csv \
-  -H "steel-api-key: $STEEL_API_KEY" \
-  -o report.csv
+<CodeTabs storage="languageSwitcher">
+
+```typescript !! Typescript -wcn
+const response = await client.sessions.files.download(session.id, "report.csv");
+const csv = await response.text();
 ```
+
+```python !! Python -wcn
+response = client.sessions.files.download("report.csv", session_id=session.id)
+csv = response.text()
+```
+</CodeTabs>
 
 ### Next steps
 

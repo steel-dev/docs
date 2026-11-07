@@ -46,7 +46,7 @@ export const AGENT_INSTRUCTIONS = `# Steel Documentation
   await browser.close();
   await client.sessions.release(session.id);
   \`\`\`
-- For agent-style browser control over plain HTTP, use the Commands API (beta). Take a snapshot, then act on the refs in it:
+- For agent-style browser control over plain HTTP, use the Commands API. Take a snapshot, then act on the refs in it:
   \`\`\`
   curl -X POST https://api.steel.dev/v1/sessions/SESSION_ID/commands \\
     -H "steel-api-key: YOUR_KEY" \\
