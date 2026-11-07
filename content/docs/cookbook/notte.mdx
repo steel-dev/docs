@@ -3,15 +3,15 @@ title: "Control a browser with Notte's reasoning engine"
 description: "Control browsers with AI using Steel's infrastructure and Notte's reasoning engine."
 ---
 
-<RecipeJsonLd slug="notte" title={"Control a browser with Notte's reasoning engine"} description={"Control browsers with AI using Steel's infrastructure and Notte's reasoning engine."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-08-26" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/notte" />
+<RecipeJsonLd slug="notte" title={"Control a browser with Notte's reasoning engine"} description={"Control browsers with AI using Steel's infrastructure and Notte's reasoning engine."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-08-26" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/notte" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/notte" path="examples/notte" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/notte" path="examples/notte" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="notte" />
 
-Notte builds its [agent](/cookbook/topics/agents) on top of a perception layer. Each step, `notte.Session` flattens the live DOM into a compact action space (labeled interactive elements, form fields, section headings) and hands that structured view to the reasoning model. The model picks an action by id, Notte translates it back into a browser command. Steel's [Notte integration](/integrations/notte) covers the same setup on its own.
+Notte builds its agent on top of a perception layer. Each step, `notte.Session` flattens the live DOM into a compact action space (labeled interactive elements, form fields, section headings) and hands that structured view to the reasoning model. The model picks an action by id, Notte translates it back into a browser command.
 
-This recipe points that loop at a Steel session instead of a locally launched browser.
+This recipe points that loop at a Steel session instead of a locally-launched browser.
 
 ```python
 with notte.Session(cdp_url=cdp_url) as notte_session:
@@ -81,7 +81,7 @@ A default run takes ~25 seconds. The `finally` block calls `client.sessions.rele
 ## Related recipes
 
 <RecipeGrid>
+<RecipeCard slug="stripe-projects-web-agent" title={"Build a live browser agent with Stripe Projects"} description={"Stripe Projects provisions Steel, OpenRouter, and Vercel for a Next.js browser agent with embedded Steel Live View and a bounded tool loop."} topics={['Agents', 'Next.js']} languages={['TypeScript']} date="2026-07-16" />
 <RecipeCard slug="restate-agent" title={"Run a durable browser agent with Restate"} description={"Build a Restate Virtual Object in TypeScript that uses durable OpenAI planning steps and Steel scraping to answer browser research questions."} topics={['Agents', 'Restate']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-29" />
 <RecipeCard slug="mcp" title={"Expose a Steel browser to any MCP client"} description={"Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools."} topics={['Agents', 'MCP']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-24" />
-<RecipeCard slug="genkit" title={"Build a browser agent with Genkit"} description={"Use Steel with Genkit Go to build a tool-calling agent that navigates and extracts from a chromedp-backed browser and completes a web task."} topics={['Agents']} languages={['Go']} date="2026-06-23" />
 </RecipeGrid>

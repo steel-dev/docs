@@ -3,13 +3,13 @@ title: Drive a mobile browser with Claude Computer Use
 description: Claude Computer Use with Steel for autonomous task execution in mobile browser environments.
 ---
 
-<RecipeJsonLd slug="claude-computer-use-mobile" title={"Drive a mobile browser with Claude Computer Use"} description={"Claude Computer Use with Steel for autonomous task execution in mobile browser environments."} authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai"}, {"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-10-14" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/claude-computer-use-mobile" />
+<RecipeJsonLd slug="claude-computer-use-mobile" title={"Drive a mobile browser with Claude Computer Use"} description={"Claude Computer Use with Steel for autonomous task execution in mobile browser environments."} authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai"}, {"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-10-14" dateModified="2026-04-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/claude-computer-use-mobile" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/claude-computer-use-mobile" path="examples/claude-computer-use-mobile" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/claude-computer-use-mobile" path="examples/claude-computer-use-mobile" authors={[{"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="claude-computer-use-mobile" />
 
-Mobile-emulated Chrome, driven by Claude's computer-use tool. The agent loop is the same as the [Desktop TS](/cookbook/claude-computer-use) recipe (screenshot in, coordinate out, next screenshot back), but three things change when the surface is a [phone](/cookbook/topics/mobile): Steel allocates the viewport instead of you, Playwright drives the page over CDP instead of Steel's Input API, and every coordinate is clamped before it touches the browser. The [Claude Computer Use integration](/integrations/claude-computer-use) covers the base setup.
+Mobile-emulated Chrome, driven by Claude's computer-use tool. The agent loop is the same as the [Desktop TS](/cookbook/claude-computer-use) recipe (screenshot in, coordinate out, next screenshot back), but three things change when the surface is a phone: Steel allocates the viewport instead of you, Playwright drives the page over CDP instead of Steel's Input API, and every coordinate is clamped before it touches the browser.
 
 ## Mobile session, Playwright driver
 
@@ -17,7 +17,7 @@ Mobile-emulated Chrome, driven by Claude's computer-use tool. The agent loop is 
 
 ```typescript
 this.session = await this.client.sessions.create({
-  apiTimeout: 900000,
+  timeout: 900000,
   solveCaptcha: false,
   deviceConfig: { device: "mobile" },
 });

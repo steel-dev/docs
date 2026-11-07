@@ -3,17 +3,17 @@ title: Move files between your machine and a cloud browser
 description: Use the Steel Files API with Playwright to automate file uploads and downloads in the cloud.
 ---
 
-<RecipeJsonLd slug="files" title={"Move files between your machine and a cloud browser"} description={"Use the Steel Files API with Playwright to automate file uploads and downloads in the cloud."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2024-11-19" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/files-ts" />
+<RecipeJsonLd slug="files" title={"Move files between your machine and a cloud browser"} description={"Use the Steel Files API with Playwright to automate file uploads and downloads in the cloud."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2024-11-19" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/files-ts" />
 
 <Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/files-ts" path="examples/files-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/files-ts" path="examples/files-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="files-ts" />
 
-Every Steel session ships with a scoped filesystem inside the session VM. `client.sessions.files` exposes methods to move bytes across the boundary between your machine and that sandbox. This recipe uses `upload` to push a local CSV into the session, hands the resulting path to a remote `<input type="file">` over CDP, and lets the browser render a chart against it. It's one of Steel's [session APIs](/cookbook/topics/steel-apis).
+Every Steel session ships with a scoped filesystem inside the session VM. `client.sessions.files` exposes methods to move bytes across the boundary between your machine and that sandbox. This recipe uses `upload` to push a local CSV into the session, hands the resulting path to a remote `<input type="file">` over CDP, and lets the browser render a chart against it.
 
 ```typescript
 const uploadedFile = await client.sessions.files.upload(session.id, {
@@ -105,7 +105,7 @@ There's also `client.files` (without `.sessions`), an organization-scoped store 
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/files-py" path="examples/files-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/files-py" path="examples/files-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="files-py" />
 
@@ -189,7 +189,7 @@ Done!
 
 <Tab id="rust" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/files-rs" path="examples/files-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/files-rs" path="examples/files-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="files-rs" />
 
@@ -201,15 +201,14 @@ let uploaded = client
     .files()
     .upload(
         session_id,
-        SessionFileUploadParams {
-            file: FileUpload::new("stock.csv", bytes).with_content_type("text/csv"),
-            path: None,
-        },
+        SessionFileUploadParams::new(
+            Upload::from_bytes("stock.csv", bytes).with_content_type("text/csv"),
+        ),
     )
     .await?;
 ```
 
-`FileUpload::new` takes a filename and the raw bytes; `with_content_type` is the builder step for the MIME type. What comes back is a `File` whose `path` is a handle inside the session VM (for this asset, `stock.csv` at the sandbox root). That path is meaningful to the browser running on Steel, not to your laptop, and keeping those two namespaces straight is the whole point of the recipe.
+`Upload::from_bytes` takes a filename and the raw bytes; `with_content_type` is the builder step for the MIME type. What comes back is a `File` whose `path` is a handle inside the session VM (for this asset, `stock.csv` at the sandbox root). That path is meaningful to the browser running on Steel, not to your laptop, and keeping those two namespaces straight is the whole point of the recipe.
 
 ## Driving a file input over raw CDP
 
@@ -260,7 +259,7 @@ Session released
 
 ## Make it yours
 
-- **Upload from a URL.** `FileUpload` carries the bytes here, but the underlying endpoint also accepts a URL it fetches server-side, so you can skip reading the file locally for large fixtures.
+- **Upload from a URL.** `Upload` carries the bytes here, but the underlying endpoint also accepts a URL it fetches server-side, so you can skip reading the file locally for large fixtures.
 - **Harvest generated files.** Swap the csvplot flow for a site that exports. After the download fires, call `files().list(session_id)` to discover the new path, then `files().download(session_id, &path)` to pull the bytes back.
 - **Target a nested path.** Set `path: Some("inputs/stock.csv".into())` on `SessionFileUploadParams` to control where the file lands inside the sandbox instead of the default filename at root.
 
@@ -272,25 +271,21 @@ Session released
 
 <Tab id="go" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/files-go" path="examples/files-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/files-go" path="examples/files-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="files-go" />
 
 A Steel session carries its own filesystem inside the session VM. `client.Sessions.Files` moves bytes across the boundary between your machine and that sandbox. This recipe reads a local CSV, uploads it with `Upload`, then hands the returned server-side path to a remote `<input type="file">` so csvplot.com can render a chart against bytes that never lived on the browser host's local disk.
 
-The upload is a plain Go value, not an `io.Reader` or a multipart form you assemble yourself:
+The upload takes an `io.Reader`, and the SDK assembles the multipart form for you. `steel.FileParam` attaches the filename and content type that the form part carries:
 
 ```go
 uploaded, err := client.Sessions.Files.Upload(ctx, sess.ID, steel.SessionFileUploadParams{
-	File: steel.FileUpload{
-		Name:        "stock.csv",
-		Content:     csvBytes,
-		ContentType: "text/csv",
-	},
+	File: steel.FileParam(bytes.NewReader(csvBytes), "stock.csv", "text/csv"),
 })
 ```
 
-`Content` is the raw `[]byte` you got from `os.ReadFile`. What comes back is a `*steel.File` whose `Path` is a handle inside the session VM (typically `stock.csv` at the sandbox root). That path is meaningless on your laptop, and your laptop's paths are meaningless inside the session. Keeping that distinction straight is the whole point.
+`bytes.NewReader` wraps the raw `[]byte` you got from `os.ReadFile`. What comes back is a `*steel.File` whose `Path` is a handle inside the session VM (typically `stock.csv` at the sandbox root). That path is meaningless on your laptop, and your laptop's paths are meaningless inside the session. Keeping that distinction straight is the whole point.
 
 ## Wiring a remote file into a DOM input
 
@@ -341,9 +336,9 @@ Releasing session...
 
 ## Make it yours
 
-- **Upload from a URL.** `steel.FileUpload` carries bytes, but the underlying API also accepts a URL string for the file field. Fetch a report server-side and skip your machine entirely.
-- **Harvest generated files.** Swap the csvplot.com flow for a site that exports. After the download fires, call `client.Sessions.Files.List(ctx, sess.ID)` to discover the new path, then `client.Sessions.Files.Download(ctx, sess.ID, path)` to pull it back as an `io.ReadCloser`.
-- **Target a nested path.** `SessionFileUploadParams` has an optional `Path` field. The default is the filename at the sandbox root; set `Path` to a pointer to nest the upload, for example under `inputs/`.
+- **Upload from a URL.** `steel.FileParam` wraps bytes, but the underlying API also accepts a URL string for the file field. Pass `File: steel.Raw[io.Reader](url)` to fetch a report server-side and skip your machine entirely.
+- **Harvest generated files.** Swap the csvplot.com flow for a site that exports. After the download fires, call `client.Sessions.Files.List(ctx, sess.ID)` to discover the new path, then `client.Sessions.Files.Download(ctx, sess.ID, path)` to pull it back as an `*http.Response` whose `Body` streams the file.
+- **Target a nested path.** `SessionFileUploadParams` has an optional `Path` field. The default is the filename at the sandbox root; set `Path` with `steel.F` to nest the upload, for example under `inputs/`.
 
 ## Related
 

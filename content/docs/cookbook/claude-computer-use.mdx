@@ -3,17 +3,17 @@ title: Drive a browser with Claude Computer Use
 description: Connect Claude to a Steel browser session for autonomous web interactions.
 ---
 
-<RecipeJsonLd slug="claude-computer-use" title={"Drive a browser with Claude Computer Use"} description={"Connect Claude to a Steel browser session for autonomous web interactions."} authors={[{"handle":"junhsss","name":"Jun Ryu"}, {"handle":"hussufo","name":"Hussien Hussien"}]} datePublished="2025-07-16" dateModified="2026-06-23" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/claude-computer-use-ts" />
+<RecipeJsonLd slug="claude-computer-use" title={"Drive a browser with Claude Computer Use"} description={"Connect Claude to a Steel browser session for autonomous web interactions."} authors={[{"handle":"junhsss","name":"Jun Ryu"}, {"handle":"hussufo","name":"Hussien Hussien"}]} datePublished="2025-07-16" dateModified="2026-06-23" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/claude-computer-use-ts" />
 
 <Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/claude-computer-use-ts" path="examples/claude-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/claude-computer-use-ts" path="examples/claude-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="claude-computer-use-ts" />
 
-Claude sees the screen as an image and returns concrete actions at pixel coordinates: `left_click [640, 412]`, `type "claude 4.7 opus"`, `scroll down 3`. Something has to execute those actions against a real browser and send the next screenshot back. That "something" is the agent loop in `index.ts`, and the browser is a Steel session. The [Claude Computer Use integration](/integrations/claude-computer-use) covers install and setup.
+Claude sees the screen as an image and returns concrete actions at pixel coordinates: `left_click [640, 412]`, `type "claude 4.7 opus"`, `scroll down 3`. Something has to execute those actions against a real browser and send the next screenshot back. That "something" is the agent loop in `index.ts`, and the browser is a Steel session.
 
 ## The loop
 
@@ -31,7 +31,7 @@ const response = await this.client.beta.messages.create({
 
 The tool definition declares `computer_20251124` with the viewport's `display_width_px` and `display_height_px`. Keep it consistent with the Steel session's `dimensions` (1280x768 here) or clicks land in the wrong place.
 
-`executeComputerAction` is the translation layer. Claude emits [computer-use actions](/cookbook/topics/computer-use) (`left_click`, `type`, `key`, `scroll`, `screenshot`, ...); Steel's Input API speaks a parallel vocabulary (`click_mouse`, `type_text`, `press_key`, `scroll`, `take_screenshot`):
+`executeComputerAction` is the translation layer. Claude emits computer-use actions (`left_click`, `type`, `key`, `scroll`, `screenshot`, ...); Steel's Input API speaks a parallel vocabulary (`click_mouse`, `type_text`, `press_key`, `scroll`, `take_screenshot`):
 
 ```typescript
 case "left_click":
@@ -118,7 +118,7 @@ Expect ~60-120 seconds and 15-40 iterations for a simple browsing task.
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/claude-computer-use-py" path="examples/claude-computer-use-py" authors={[{"handle":"hussufo","name":"Hussien Hussien","avatar":"https://github.com/hussufo.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/claude-computer-use-py" path="examples/claude-computer-use-py" authors={[{"handle":"hussufo","name":"Hussien Hussien","avatar":"https://github.com/hussufo.png?size=40"}, {"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="claude-computer-use-py" />
 
@@ -236,13 +236,13 @@ A run typically takes 60-180 seconds and 10-30 loop iterations.
 
 <Tab id="rust" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/claude-computer-use-rs" path="examples/claude-computer-use-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/claude-computer-use-rs" path="examples/claude-computer-use-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
 
 <RecipeQuickstart slug="claude-computer-use-rs" />
 
 There is no first-party Anthropic SDK for Rust, so the Messages API here is exactly what it is on the wire: one `POST https://api.anthropic.com/v1/messages` with `reqwest`, three headers, and a JSON body you assemble yourself. That turns out to be an advantage for computer use. The request body is dynamic (a growing transcript of text, `tool_use`, and screenshot `tool_result` blocks), so you build it with `serde_json::json!`; the response shape is fixed, so you decode it into a typed `enum`. The half that benefits from types gets them, the half that does not stays loose.
 
-The other half of the loop is the browser. A Steel session is a headful Chromium in a VM, and `client.sessions().computer(&id, action)` runs one mouse or keyboard action server-side and returns a base64 PNG in the same call. The `steel` crate models the action set as a `SessionComputerParams` enum, so the actions you send Steel are fully typed even though the actions you receive from Claude arrive as untyped JSON.
+The other half of the loop is the browser. A Steel session is a headful Chromium in a VM, and `client.sessions().computer(&id, action)` runs one mouse or keyboard action server-side and returns a base64 PNG in the same call. The `steel-rs` crate models the action set as a `SessionComputerParams` enum, so the actions you send Steel are fully typed even though the actions you receive from Claude arrive as untyped JSON.
 
 ## Two type boundaries
 
@@ -267,7 +267,7 @@ Going the other direction, `execute_computer_action` reads that loose `input` an
 
 ```rust
 "left_click" | "right_click" | "middle_click" | "double_click" | "triple_click" => {
-    SessionComputerParams::ClickMouse(ComputerActionRequestClickMouse {
+    SessionComputerParams::ClickMouse(SessionComputerParamsClickMouse {
         button: Some(button),
         coordinates: Some(vec![coords.0, coords.1]),
         num_clicks,
@@ -355,33 +355,32 @@ Expect 60 to 180 seconds and 10 to 30 iterations for a simple browse, plus Anthr
 
 <Tab id="go" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/claude-computer-use-go" path="examples/claude-computer-use-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/claude-computer-use-go" path="examples/claude-computer-use-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
 
 <RecipeQuickstart slug="claude-computer-use-go" />
 
-Two typed unions meet in this recipe. Claude's Beta Messages API returns a `computer` tool call (`left_click` at `[640, 412]`, `type "claude opus"`, `scroll down 3`); Steel's Sessions Computer endpoint accepts a discriminated union of actions (`click_mouse`, `type_text`, `scroll`) and returns a screenshot. `main.go` is the agent loop that translates one into the other and feeds the screenshot back, using the official `anthropic-sdk-go` and `steel-go` SDKs end to end with no hand-rolled HTTP.
+Two typed unions meet in this recipe. Claude's Beta Messages API returns a `computer` tool call (`left_click` at `[640, 412]`, `type "claude opus"`, `scroll down 3`); Steel's Sessions Computer endpoint accepts a discriminated union of actions (`click_mouse`, `type_text`, `scroll`) and returns a screenshot. `main.go` is the agent loop that translates one into the other and feeds the screenshot back, using the official `anthropic-sdk-go` and `github.com/steel-dev/sdk/go` SDKs end to end with no hand-rolled HTTP.
 
 A Steel session is a headful Chromium in a VM. The Computer endpoint (`client.Sessions.Computer`) runs a mouse or keyboard action server-side and, when you pass `Screenshot: true`, returns a base64 PNG in the same call. So one round-trip both acts and observes.
 
 ## Constructing a Steel action
 
-Steel models its action request as a tagged union. In Go that is `SessionComputerParams`: a discriminator `Action` plus one pointer field per variant, all marshaled by the SDK based on the tag. You set the string and the matching struct, and leave the rest nil:
+Steel models its action request as a tagged union. In Go that is `SessionComputerParams`, whose `Body` field takes exactly one of the `SessionComputerParamsBody*` variant structs. Each variant carries its own `Action` constant, which the SDK sends as the tag, so you build the struct and hand it over:
 
 ```go
-req := &steel.ComputerActionRequestClickMouse{
-    Action:      "click_mouse",
-    Button:      &button,
-    Coordinates: &coords,
-    Screenshot:  ptr(true),
+req := steel.SessionComputerParamsBodyClickMouse{
+    Action:      steel.F(steel.SessionComputerParamsBodyClickMouseActionClickMouse),
+    Button:      steel.F(button),
+    Coordinates: steel.F(coords),
+    Screenshot:  steel.F(true),
 }
-resp, err := a.steelClient.Sessions.Computer(ctx, a.session.ID,
-    steel.SessionComputerParams{Action: "click_mouse", ComputerActionRequestClickMouse: req})
-img := resp.Base64Image // *string, base64 PNG
+resp, err := a.steelClient.Sessions.Computer(ctx, a.session.ID, steel.SessionComputerParams{Body: req})
+img := resp.Base64Image // string, base64 PNG
 ```
 
-`executeComputerAction` is one big `switch` over Claude's action names that builds the right variant for each: `left_click` and friends become a `ComputerActionRequestClickMouse` (with `NumClicks` 2 or 3 for double and triple), `type` becomes `ComputerActionRequestTypeText`, `scroll` becomes a `ComputerActionRequestScroll` with pixel deltas. Two translation details carry over from the Python and TypeScript versions: `scroll_amount` is multiplied by 100 pixels per step, and key names like `CTRL+A` run through `normalizeKey` (`CTRL` to `Control`, `ESC` to `Escape`, `UP` to `ArrowUp`) before they reach `press_key`.
+`executeComputerAction` is one big `switch` over Claude's action names that builds the right variant for each: `left_click` and friends become a `SessionComputerParamsBodyClickMouse` (with `NumClicks` 2 or 3 for double and triple), `type` becomes `SessionComputerParamsBodyTypeText`, `scroll` becomes a `SessionComputerParamsBodyScroll` with pixel deltas. Two translation details carry over from the Python and TypeScript versions: `scroll_amount` is multiplied by 100 pixels per step, and key names like `CTRL+A` run through `normalizeKey` (`CTRL` to `Control`, `ESC` to `Escape`, `UP` to `ArrowUp`) before they reach `press_key`.
 
-Most coordinate and key fields on these structs are pointers (`*[]float64`, `*bool`), so the `ptr` generic helper near the top of the file keeps the construction readable.
+Every field on these structs is a `param.Field`, so each value goes in through `steel.F`, and a field you never set, such as `HoldKeys` when Claude sends no modifier, stays out of the request.
 
 ## Reading Claude's turn
 
@@ -464,7 +463,7 @@ Expect roughly 60 to 180 seconds and 10 to 40 loop iterations for a simple brows
 - **Tune the viewport.** `viewportWidth` and `viewportHeight` set both the Steel `Dimensions` and the tool's `display_*_px`. Keep them equal.
 - **Rework the system prompt.** `browserSystemPrompt` is where the browsing conventions live: date injection, the screenshot-after-submit rule, black-screen recovery.
 - **Raise the ceiling.** `maxIterations` is the safety net for long tasks.
-- **Hand off auth.** Pass `SessionContext` to `Sessions.Create` to start authenticated. See [credentials](/cookbook/credentials) and [auth-context](/cookbook/auth-context).
+- **Hand off auth.** Pass `SessionContext` to `Sessions.New` to start authenticated. See [credentials](/cookbook/credentials) and [auth-context](/cookbook/auth-context).
 
 ## Related
 

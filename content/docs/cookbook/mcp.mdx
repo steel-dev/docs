@@ -3,19 +3,21 @@ title: Expose a Steel browser to any MCP client
 description: Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools.
 ---
 
-<RecipeJsonLd slug="mcp" title={"Expose a Steel browser to any MCP client"} description={"Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-06-24" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/mcp-ts" />
+<RecipeJsonLd slug="mcp" title={"Expose a Steel browser to any MCP client"} description={"Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-06-24" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/mcp-ts" />
 
 <Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/mcp-ts" path="examples/mcp-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/mcp-ts" path="examples/mcp-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="mcp-ts" />
 
-This is a [Model Context Protocol](https://modelcontextprotocol.io) server that hands any [MCP client](/cookbook/topics/mcp) a Steel cloud browser to drive. It uses the official [TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) and drives the browser with Playwright over CDP through `connectOverCDP`, so there is no local Chrome to launch. The server carries no model key of its own: the client supplies the model, this process owns the cloud session.
+This is a [Model Context Protocol](https://modelcontextprotocol.io) server that hands any MCP client a Steel cloud browser to drive. It uses the official [TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) and drives the browser with Playwright over CDP through `connectOverCDP`, so there is no local Chrome to launch. The server carries no model key of its own: the client supplies the model, this process owns the cloud session.
 
 Five tools make up the surface. `create_session` opens a Steel session and returns its id; `navigate`, `extract`, and `screenshot` take that id and act on the browser; `release_session` closes it.
+
+Don't need your own tools? Steel also hosts an MCP server at `https://mcp.steel.dev/mcp` that any client can connect to directly. See the [Steel MCP server docs](https://docs.steel.dev/overview/mcp).
 
 ## Each tool declares its shape, the id ties them together
 
@@ -79,13 +81,15 @@ Restart the client and ask it to open a page and read it back. It calls `create_
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/mcp-py" path="examples/mcp-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/mcp-py" path="examples/mcp-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="mcp-py" />
 
 This is a [Model Context Protocol](https://modelcontextprotocol.io) server that hands any MCP client a Steel cloud browser to drive. It uses [FastMCP](https://github.com/modelcontextprotocol/python-sdk), the decorator API in the official Python SDK, and drives the browser with Playwright over CDP. Because it connects to a remote browser with `connect_over_cdp`, there are no local browser binaries to install: the server is a thin process that owns the cloud session and nothing else, and it has no model key of its own.
 
 Five tools make up the surface. `create_session` opens a Steel session and returns its id; `navigate`, `extract`, and `screenshot` act on a session by id; `release_session` closes it.
+
+Don't need your own tools? Steel also hosts an MCP server at `https://mcp.steel.dev/mcp` that any client can connect to directly. See the [Steel MCP server docs](https://docs.steel.dev/overview/mcp).
 
 ## The decorator is the schema, the id is the handle
 
@@ -145,13 +149,15 @@ Restart the client and ask it to open a page and read it back. It calls `create_
 
 <Tab id="rust" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/mcp-rs" path="examples/mcp-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/mcp-rs" path="examples/mcp-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="mcp-rs" />
 
 This is a [Model Context Protocol](https://modelcontextprotocol.io) server that lends a Steel cloud browser to any MCP client. It is built on [rmcp](https://docs.rs/rmcp), the official Rust SDK, and drives the browser over CDP with [chromiumoxide](https://docs.rs/chromiumoxide). It compiles to a single binary with no interpreter and no model key of its own: the client supplies the model, this process owns the browser and nothing else.
 
 Five tools make up the surface. `create_session` opens a Steel session and returns its id; `navigate`, `extract`, and `screenshot` take that id and act on the browser; `release_session` closes it. Each tool is one `#[tool]`-annotated method on `SteelMcp`, and `#[tool_router]` plus `#[tool_handler]` turn those methods into the served schema.
+
+Don't need your own tools? Steel also hosts an MCP server at `https://mcp.steel.dev/mcp` that any client can connect to directly. See the [Steel MCP server docs](https://docs.steel.dev/overview/mcp).
 
 ## Holding the browser open between calls
 
@@ -194,7 +200,7 @@ Restart the client and ask it to open a page and read it back. It calls `create_
 
 - **Add a tool.** Write one more `async fn` with a `#[tool]` attribute and a `Parameters<T>` argument carrying `session_id`. A `click` tool is `entry.page.find_element(sel).await?.click().await?`.
 - **Start authenticated.** Pass a populated `SessionCreateParams` to `sessions().create` to attach a [profile](/cookbook/profiles) or [credentials](/cookbook/credentials) so the session opens already logged in.
-- **Return richer output.** Tools here return `Content::text` and `Content::image`. Swap in structured JSON content when a client wants typed fields instead of a string.
+- **Return richer output.** Tools here return `ContentBlock::text` and `ContentBlock::image`. Swap in structured JSON content when a client wants typed fields instead of a string.
 
 ## Related
 
@@ -204,7 +210,7 @@ Restart the client and ask it to open a page and read it back. It calls `create_
 
 <Tab id="go" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/mcp-go" path="examples/mcp-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/mcp-go" path="examples/mcp-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="mcp-go" />
 
@@ -212,13 +218,15 @@ This is a [Model Context Protocol](https://modelcontextprotocol.io) server that 
 
 The server exposes five tools. `create_session` starts a Steel session and returns its id; `navigate`, `extract`, and `screenshot` act on a session; `release_session` tears it down. The id Steel returns is the only thing tying the calls together.
 
+Don't need your own tools? Steel also hosts an MCP server at `https://mcp.steel.dev/mcp` that any client can connect to directly. See the [Steel MCP server docs](https://docs.steel.dev/overview/mcp).
+
 ## The session id is the handle
 
 A browser MCP server has to answer one question: when two tools run against "the browser," which browser do they mean? Hiding a single session in a global is the trap the [MCP spec calls out](https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/), because a second client on the same process would inherit the first one's cookies and page. The 2026 spec removed the transport-level session and says state should ride on an explicit handle "a `browser_id` minted from a tool and passed back as an ordinary argument." That is exactly what `create_session` does:
 
 ```go
 func (s *server) createSession(ctx context.Context, _ *mcp.CallToolRequest, _ createInput) (*mcp.CallToolResult, createOutput, error) {
-	steelSession, err := s.steel.Sessions.Create(ctx, steel.SessionCreateParams{ ... })
+	steelSession, err := s.steel.Sessions.New(ctx, steel.SessionNewParams{ ... })
 	// ... connect chromedp to steelSession.WebsocketURL ...
 	s.sessions[steelSession.ID] = sess
 	return nil, createOutput{SessionID: steelSession.ID, LiveViewURL: sess.viewerURL}, nil
@@ -257,7 +265,7 @@ One stdio rule: the JSON-RPC stream owns stdout, so the server logs only to stde
 ## Make it yours
 
 - **Add a tool.** A `click` tool is a few `chromedp.Click` lines and one more `mcp.AddTool` call. Take a `session_id`, look it up with `s.get`, act on the tab.
-- **Start authenticated.** Swap the `SessionCreateParams` in `createSession` to attach a [profile](/cookbook/profiles) or [credentials](/cookbook/credentials) so a session opens already logged in.
+- **Start authenticated.** Swap the `SessionNewParams` in `createSession` to attach a [profile](/cookbook/profiles) or [credentials](/cookbook/credentials) so a session opens already logged in.
 - **Go remote.** Replace `mcp.StdioTransport` with the SDK's streamable-HTTP handler to serve many clients from one process. The handle pattern already carries the state, so nothing else changes.
 
 ## Related
@@ -271,7 +279,7 @@ One stdio rule: the JSON-RPC stream owns stdout, so the server logs only to stde
 ## Related recipes
 
 <RecipeGrid>
+<RecipeCard slug="stripe-projects-web-agent" title={"Build a live browser agent with Stripe Projects"} description={"Stripe Projects provisions Steel, OpenRouter, and Vercel for a Next.js browser agent with embedded Steel Live View and a bounded tool loop."} topics={['Agents', 'Next.js']} languages={['TypeScript']} date="2026-07-16" />
 <RecipeCard slug="restate-agent" title={"Run a durable browser agent with Restate"} description={"Build a Restate Virtual Object in TypeScript that uses durable OpenAI planning steps and Steel scraping to answer browser research questions."} topics={['Agents', 'Restate']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-29" />
 <RecipeCard slug="genkit" title={"Build a browser agent with Genkit"} description={"Use Steel with Genkit Go to build a tool-calling agent that navigates and extracts from a chromedp-backed browser and completes a web task."} topics={['Agents']} languages={['Go']} date="2026-06-23" />
-<RecipeCard slug="eino" title={"Build a browser agent with Eino"} description={"Use Steel with the ByteDance Eino framework to build a ReAct agent that calls Steel's scrape API as a tool to research and answer a web question."} topics={['Agents']} languages={['Go']} date="2026-06-23" />
 </RecipeGrid>
