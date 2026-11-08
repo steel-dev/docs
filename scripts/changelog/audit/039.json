@@ -1,0 +1,204 @@
+{
+  "changelogNumber": 39,
+  "window": {
+    "since": "2026-10-02T13:19:47.276Z",
+    "until": "2026-10-09T13:22:00.256Z",
+    "source": "state"
+  },
+  "reconciliation": {
+    "commitsCollected": 31,
+    "authorSkippedCommits": 3,
+    "logicalChanges": 31,
+    "eligible": 27,
+    "excluded": 4,
+    "unaccounted": 0
+  },
+  "exclusions": [
+    {
+      "reason": "ignored_files_only",
+      "confidence": "structural",
+      "key": "0xnenlabs/steel#2155",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2155,
+        "url": "https://github.com/0xnenlabs/steel/pull/2155",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "e50c4a6",
+          "url": "https://github.com/0xnenlabs/steel/commit/e50c4a6ed1662cfe538038afe910c9cf7a43d8f3",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": null
+    },
+    {
+      "reason": "submodule_pointer_only",
+      "confidence": "structural",
+      "key": "0xnenlabs/steel#2164",
+      "repo": "0xnenlabs/steel",
+      "visibility": "private",
+      "redacted": true,
+      "pullRequest": {
+        "number": 2164,
+        "url": "https://github.com/0xnenlabs/steel/pull/2164",
+        "title": null
+      },
+      "commits": [
+        {
+          "shortSha": "8a7ff27",
+          "url": "https://github.com/0xnenlabs/steel/commit/8a7ff27d52630819b69e087bd248ef81d1f3c19c",
+          "subject": null
+        }
+      ],
+      "changedFileCount": 1,
+      "changedFiles": null
+    },
+    {
+      "reason": "self_generated",
+      "confidence": "structural",
+      "key": "steel-dev/docs#139",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 139,
+        "url": "https://github.com/steel-dev/docs/pull/139",
+        "title": "docs: draft changelog #038"
+      },
+      "commits": [
+        {
+          "shortSha": "fed1ac4",
+          "url": "https://github.com/steel-dev/docs/commit/fed1ac451c37c014a299f1160cde5f9416b709f0",
+          "subject": "docs: draft changelog #038 (#139)"
+        }
+      ],
+      "changedFileCount": 5,
+      "changedFiles": [
+        "content/docs/changelog/changelog-038.mdx",
+        "content/docs/changelog/meta.json",
+        "public/images/changelog/38.png",
+        "scripts/changelog/audit/038.json",
+        "scripts/changelog/state.json"
+      ]
+    },
+    {
+      "reason": "non_material_docs",
+      "confidence": "heuristic",
+      "key": "steel-dev/docs#142",
+      "repo": "steel-dev/docs",
+      "visibility": "public",
+      "redacted": false,
+      "pullRequest": {
+        "number": 142,
+        "url": "https://github.com/steel-dev/docs/pull/142",
+        "title": "feat(brand): replace Steel logo with the new mark"
+      },
+      "commits": [
+        {
+          "shortSha": "322ad57",
+          "url": "https://github.com/steel-dev/docs/commit/322ad57545a1669c53cab1d05a363746bc43ccb9",
+          "subject": "feat(brand): replace Steel logo with the new mark (#142)"
+        }
+      ],
+      "changedFileCount": 10,
+      "changedFiles": [
+        "app/(home)/_pages/page.en.tsx",
+        "app/favicon.ico",
+        "app/og/[...slug]/route.tsx",
+        "components/callout.tsx",
+        "components/ui/icon.tsx",
+        "lib/design-md.ts",
+        "public/images/logo.png",
+        "public/images/steel-mark.png",
+        "scripts/changelog/imagegen/assets/steel-logo.svg",
+        "scripts/changelog/imagegen/template.ts"
+      ]
+    }
+  ],
+  "authorSkipped": [
+    {
+      "repo": "0xnenlabs/steel",
+      "sha": "992cd6d2d8230b7d6bac7884a0ed2ba50a40af95",
+      "url": "https://github.com/0xnenlabs/steel/commit/992cd6d2d8230b7d6bac7884a0ed2ba50a40af95",
+      "author": "dependabot[bot]"
+    },
+    {
+      "repo": "0xnenlabs/steel",
+      "sha": "436b4e3bdcf604d11bfc9cc48096ea4df0a70e21",
+      "url": "https://github.com/0xnenlabs/steel/commit/436b4e3bdcf604d11bfc9cc48096ea4df0a70e21",
+      "author": "dependabot[bot]"
+    },
+    {
+      "repo": "0xnenlabs/steel",
+      "sha": "8e2af8a686be41f4b0a89cd4ab551b8b318de411",
+      "url": "https://github.com/0xnenlabs/steel/commit/8e2af8a686be41f4b0a89cd4ab551b8b318de411",
+      "author": "dependabot[bot]"
+    }
+  ],
+  "modelDiscarded": [
+    {
+      "text": null,
+      "reason": "This is a major internal infrastructure change, but the source describes a staged rollout rather than a distinct user-facing capability.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel 223c49b",
+          "url": "https://github.com/0xnenlabs/steel/commit/223c49b39d1596b423de75487904dab9f76912f4"
+        }
+      ]
+    },
+    {
+      "text": null,
+      "reason": "This is internal identity data plumbing for a later authentication migration and does not change current user-facing authorization behavior.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel 71b3787",
+          "url": "https://github.com/0xnenlabs/steel/commit/71b3787ef623d3573c878a46f03e7851635d909d"
+        }
+      ]
+    },
+    {
+      "text": null,
+      "reason": "The migration was intended to preserve existing visuals, and the regressions were corrected within the same release.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel c8b2c34",
+          "url": "https://github.com/0xnenlabs/steel/commit/c8b2c34d8624d988cad2b573532167f137d518a2"
+        },
+        {
+          "label": "0xnenlabs/steel b397f67",
+          "url": "https://github.com/0xnenlabs/steel/commit/b397f67c0205f930bef63c55917b20b3a0cc923a"
+        }
+      ]
+    },
+    {
+      "text": null,
+      "reason": "This is a visual identity update without a functional product change.",
+      "redacted": true,
+      "references": [
+        {
+          "label": "0xnenlabs/steel 45d056c",
+          "url": "https://github.com/0xnenlabs/steel/commit/45d056cae738e5a9d1ea10d9faf496afe909109b"
+        }
+      ]
+    },
+    {
+      "text": "Updated the Sessions API quickstart to match the pricing page's free credit amount.",
+      "reason": "This is a small documentation correction rather than a product change.",
+      "redacted": false,
+      "references": [
+        {
+          "label": "steel-dev/docs fa1e027",
+          "url": "https://github.com/steel-dev/docs/commit/fa1e02769a0c25666c1127d6495b06b964babd42"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+---
+title: "Changelog #039"
+sidebarTitle: "Changelog #039"
+llm: true
+image: "/images/changelog/39.png"
+imageAlt: "Announcing Changelog #039"
+publishedAt: "2026-10-09"
+---
+import Image from 'next/image';
+
+<Image
+  src="/images/changelog/39.png"
+  alt="Announcing Changelog #039"
+  width={800}
+  height={400}
+/>
+Hey everyone. This release adds global API keys for working across projects, improves managed browser and billing behavior, and fixes sign-in, usage reporting, session recordings, and API reliability.
+
+### ⭐ New
+
+#### Global API keys
+
+Global API keys can access any project in an organization by passing `projectId` with each request, while requests without one use the key's fallback project; Computers continue to require project-scoped keys.
+
+### 🔧 Improvements
+
+*   Billing notifications in Discord now cover Metronome plan renewals and payment failures, distinguish overdue payments from cancellations, and include amounts, invoice links, and updated balances where available.
+
+*   API key rotation now uses the same dialog as key creation, with confirmation, progress, copy controls, and a one-time reveal of the rotated key.
+
+*   Managed browsers now include Widevine support and use Google Chrome brand values across user-agent properties and headers.
+
+### 🐛 Bug Fixes
+
+*   Fixed sign-in for accounts with two-step verification by adding TOTP and backup-code flows for email links and OAuth, with clear errors for invalid or expired links.
+
+*   Fixed sessions created with `recordings: false` still allocating a recording.
+
+*   Fixed hourly usage data failing to load for Metronome-billed organizations on the Last 24h and Last 3d views.
+
+*   Fixed included usage credits starting on a plan's upgrade anniversary instead of the first of the month; mid-month plan attachments now receive a full credit grant through the next monthly boundary.
+
+*   Fixed recurring API pauses and memory growth caused by unbounded telemetry labels, duplicate logging workers, and DuckDB's external file cache.
+
+*   Fixed proxied browser actions on Box infrastructure using the wrong proxy provider instead of the organization's configured provider and overrides.
+
+*   Fixed managed browser pool rollouts draining available capacity while a new browser template was still starting or failed to register.
