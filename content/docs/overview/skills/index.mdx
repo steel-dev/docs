@@ -10,6 +10,13 @@ Most users should start with `steel-browser` and `steel-developer`. Add the debu
 
 ## Quick install
 
+For complete CLI authorization and browser-skill setup in OpenCode, Codex, Pi,
+or Claude Code, start with the [agent onboarding guide](https://setup.steel.dev/install.md):
+
+```text Prompt
+Read https://setup.steel.dev/install.md and follow it to set up Steel for this coding client. Then continue my requested task using the installed Steel skill.
+```
+
 Use `npx skills` when you want a direct install command that works across supported coding agents.
 
 ```bash Terminal
@@ -61,6 +68,10 @@ npx skills add steel-dev/skills --skill steel-browser -a opencode -g
 
 Supported agent targets are Claude Code, Cursor, Codex, OpenCode, and Pi.
 
+These are standalone skill-installer targets. The stable CLI's targeted
+`init --agent --from` flow currently accepts only `claude-code`, `codex`,
+`opencode`, and `pi`; it does not accept `cursor`.
+
 ## Which skill should I use?
 
 - Use `steel-browser` for live web work the agent should perform now.
@@ -77,7 +88,9 @@ steel doctor --preflight
 steel scrape https://example.com
 ```
 
-Restart your agent client after installing new skills so it can discover them.
+Load the installed skill using your client's skill mechanism; reload or restart
+the client if its discovery requires it. A successful install or doctor check
+does not establish skill loading or completion of your requested task.
 
 ## Skills or MCP?
 

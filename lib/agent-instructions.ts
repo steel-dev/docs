@@ -10,7 +10,8 @@ export const AGENT_INSTRUCTIONS = `# Steel Documentation
 ## Quick Reference
 
 - Install: \`npm install steel-sdk\` (Node.js) or \`pip install steel-sdk\` (Python)
-- CLI: \`curl -sSf https://setup.steel.dev | sh\`
+- Agent CLI setup (stable v0.5.0+): https://setup.steel.dev/install.md
+- Human-terminal CLI install: \`curl -fsS https://setup.steel.dev | sh\`
 - Auth header: \`steel-api-key: <your-key>\`
 - Auth env var: \`STEEL_API_KEY\`
 - API base URL: \`https://api.steel.dev\`
@@ -21,6 +22,13 @@ export const AGENT_INSTRUCTIONS = `# Steel Documentation
 
 ## Agent Instructions
 
+- For CLI setup, read https://setup.steel.dev/install.md. Install the stable binary, then run
+  \`steel init --agent --from <client>\` with \`opencode\`, \`codex\`, \`pi\`, or \`claude-code\`.
+  Ask the user to approve the returned device URL, then resume the same init command.
+  Load the installed \`steel-browser\` skill before performing the user's task.
+- CLI device login does not require copying an API key. The SDK/REST API examples below
+  use \`STEEL_API_KEY\` separately; do not extract a CLI device grant into application code.
+- CLI output is text by default, including when piped. Pass \`--json\` for machine-readable output.
 - For the simplest one-liner scrape, use the CLI:
   \`\`\`bash
   steel scrape https://example.com

@@ -1,7 +1,7 @@
 ---
 title: Steel CLI
 sidebarTitle: Steel CLI
-description: Run browser automation from the terminal with the Steel CLI. Manage sessions, scrape, screenshot, and install Steel Skills for coding agents like Claude Code, Cursor, Codex, and OpenCode.
+description: Set up stable Steel CLI v0.5.0 for OpenCode, Codex, Pi, and Claude Code. Manage browser sessions, download files, scrape pages, and verify results.
 llm: true
 ---
 
@@ -14,13 +14,13 @@ stop the session without wiring custom browser infrastructure.
 What it enables:
 
 - Run browser automation in cloud mode (default) or self-hosted/local mode
-- Drive pages with terminal-first browser commands (`open`, `snapshot`, `fill`, `click`, etc.)
+- Drive pages with terminal-first browser commands (`navigate`, `snapshot`, `fill`, `click`, etc.)
 - Use API tools for `scrape`, `screenshot`, and `pdf`
-- Bootstrap projects quickly with `forge` and run templates instantly with `run`
+- Bootstrap projects with `forge`
 
-Under the hood, `steel browser` is directly integrated with the `agent-browser` runtime.
-That means Steel adds session lifecycle, auth, and endpoint routing while preserving
-familiar browser command behavior.
+In v0.5.0, browser actions use the HTTP Commands API. The browser engine runs
+inside the Steel session; the CLI does not require a local browser daemon or
+an `agent-browser` installation.
 
 - GitHub: [steel-dev/cli](https://github.com/steel-dev/cli)
 
@@ -28,9 +28,10 @@ familiar browser command behavior.
 
 If you are using an AI agent and want a complete docs index before exploring pages:
 
-- `https://docs.steel.dev/llms-full.txt`
+- `https://docs.steel.dev/llms.txt`
 
-This returns a flattened, agent-friendly text map of the docs site.
+Fetch the individual pages listed in the index as needed. For CLI setup, start
+with [the agent onboarding guide](https://setup.steel.dev/install.md).
 
 ## Installation
 
@@ -40,8 +41,37 @@ Install with the official script (recommended):
 curl -fsS https://setup.steel.dev | sh
 ```
 
-This installs the native `steel` binary to `~/.steel/bin` and runs `steel init`
-to log you in, verify connectivity, and install coding-agent skills.
+This installs the stable native `steel` binary to `~/.steel/bin` and, in an
+interactive terminal, runs `steel init`. Restart your shell or run
+`export PATH="$HOME/.steel/bin:$PATH"` before using `steel` by name.
+
+### Setup with your coding agent
+
+Paste this into OpenCode, Codex, Pi, or Claude Code:
+
+```text Prompt
+Read https://setup.steel.dev/install.md and follow it to set up Steel for this coding client. Then continue my requested task using the installed Steel skill.
+```
+
+The guide installs the stable binary without interactive setup, then initializes
+the selected client explicitly. For example, in Codex:
+
+```bash Terminal
+curl -fsSL https://setup.steel.dev/install.sh | sh -s -- --non-interactive
+"$HOME/.steel/bin/steel" --version
+"$HOME/.steel/bin/steel" --json init --agent --from codex
+```
+
+Use the matching `--from` value: `opencode`, `codex`, `pi`, or `claude-code`.
+When approval is pending, the agent shows you the device authorization URL.
+Approve it in your browser, then have the agent rerun the same init command.
+Successful initialization installs the skill; the agent must still load it
+through its native skill mechanism and verify the requested task.
+
+- A Steel account is enough for device login; copying an API key is not required.
+- Node.js/npm, including `npx`, is required when installing skills.
+- Pass `--from` directly to `steel init --agent`. The installer's
+  `STEEL_ONBOARDING_FROM` value is telemetry metadata, not a setup target.
 
 ## Quick Start
 
@@ -50,7 +80,7 @@ to log you in, verify connectivity, and install coding-agent skills.
 ```bash Terminal -wc
 steel login
 steel browser start --session my-job
-steel browser open https://example.com --session my-job
+steel browser navigate https://example.com --session my-job
 steel browser snapshot -i --session my-job
 steel browser stop --session my-job
 ```
@@ -59,7 +89,7 @@ steel browser stop --session my-job
 
 ```bash Terminal
 steel browser start --api-url https://steel.your-domain.dev/v1 --session my-job
-steel browser open https://example.com --api-url https://steel.your-domain.dev/v1 --session my-job
+steel browser navigate https://example.com --api-url https://steel.your-domain.dev/v1 --session my-job
 ```
 
 ### Local Runtime (`localhost`) Flow
@@ -68,10 +98,14 @@ steel browser open https://example.com --api-url https://steel.your-domain.dev/v
 steel dev install
 steel dev start
 steel browser start --local --session local-job
-steel browser open https://example.com --session local-job
+steel browser navigate https://example.com --local --session local-job
 steel browser stop --session local-job
 steel dev stop
 ```
+
+The self-hosted browser service must enable `ENABLE_COMMANDS_API=true` for these
+actions. `steel dev start` does not enable that server setting automatically.
+Cloud device credentials are not forwarded to a different API origin.
 
 ## Skills for Coding Agents
 
@@ -84,7 +118,7 @@ This is designed for coding agents, including:
 
 - Codex
 - OpenCode
-- OpenClaw
+- Pi
 - Claude Code
 
 Install from the public skills catalog:
@@ -101,13 +135,15 @@ steel skills list
 steel skills doctor
 ```
 
-After installation, restart your agent client so it can discover newly installed skills.
+For complete CLI setup, prefer the [agent onboarding guide](https://setup.steel.dev/install.md).
+For a standalone skill installation, follow the client's discovery mechanism;
+reload or restart it if necessary, then load the installed skill before use.
 
 What this skill gives agents:
 
 - Mode-aware command planning (cloud vs self-hosted)
 - Named-session lifecycle discipline (`start -> work -> stop`)
-- Reliable command patterns for `steel browser` passthrough actions
+- Supported command patterns for `steel browser` actions
 - Migration guidance from `agent-browser`
 - Troubleshooting playbooks for auth/session/CAPTCHA failures
 
@@ -124,29 +160,20 @@ Most agent loops follow this pattern:
 ```bash Terminal
 SESSION="signup-demo-$(date +%s)"
 steel browser start --session "$SESSION"
-steel browser open https://example.com/signup --session "$SESSION"
+steel browser navigate https://example.com/signup --session "$SESSION"
 steel browser snapshot -i --session "$SESSION"
 steel browser fill @e1 "Jane Doe" --session "$SESSION"
 steel browser fill @e2 "jane@example.com" --session "$SESSION"
 steel browser select @e3 "California" --session "$SESSION"
 steel browser check @e4 --session "$SESSION"
 steel browser click @e5 --session "$SESSION"
-steel browser wait --load networkidle --session "$SESSION"
+steel browser wait --load-state networkidle --session "$SESSION"
 steel browser stop --session "$SESSION"
 ```
 
-If you already know upstream `agent-browser`, the behavior is typically command-prefix only:
-
-```bash Terminal
-agent-browser open https://example.com/signup
-agent-browser snapshot -i
-agent-browser fill @e1 "Jane Doe"
-agent-browser fill @e2 "jane@example.com"
-agent-browser select @e3 "California"
-agent-browser check @e4
-agent-browser click @e5
-agent-browser wait --load networkidle
-```
+References such as `@e1` come from the latest snapshot; replace the illustrative
+refs above with the ones returned for your page. Use the Steel command help
+rather than assuming every `agent-browser` option is supported.
 
 ## Command Model
 
@@ -158,26 +185,19 @@ agent-browser wait --load networkidle
 - `steel browser live`
 - `steel browser captcha solve`
 
-### Inherited Browser Commands (Passthrough)
+### Browser Actions (Commands API)
 
-All non-lifecycle `steel browser <command>` calls are routed through the vendored
-`agent-browser` runtime.
+The CLI sends actions to the Commands API for the selected session. It does not
+pass arbitrary commands through to a separate local browser runtime.
 
-Migration is usually command-prefix only:
+Common actions include:
 
-- Before: `agent-browser <command> ...`
-- After: `steel browser <command> ...`
-
-### Essential Inherited Commands
-
-These are the most common inherited commands agents use:
-
-- Page navigation: `open`, `back`, `forward`, `reload`
+- Page navigation: `navigate`, `back`, `forward`, `reload`
 - Page understanding: `snapshot`, `snapshot -i`
 - Interaction: `click`, `fill`, `type`, `select`, `check`, `press`, `hover`
 - Data retrieval: `get text`, `get html`, `get title`, `get url`
-- Synchronization: `wait`, `wait --load networkidle`, `wait --text`
-- Debugging: `screenshot`, `errors`, `console`
+- Synchronization: `wait`, `wait --load-state networkidle`, `wait --text`
+- Debugging: `screenshot`, `status`, `cancel`
 
 Use command help directly when needed:
 
@@ -198,7 +218,7 @@ For full command references:
 | ------------------- | -------------------------------------------------------------------------------------------- |
 | Onboarding          | `init`, `forge`                                                                              |
 | Browser lifecycle   | `browser start`, `browser stop`, `browser sessions`, `browser live`, `browser captcha solve` |
-| Browser passthrough | `steel browser <inherited-command>`                                                          |
+| Browser actions     | `browser navigate`, `snapshot`, `click`, `fill`, `wait`, `batch`                             |
 | API tools           | `scrape`, `screenshot`, `pdf`                                                                |
 | Local runtime       | `dev install`, `dev start`, `dev stop`                                                       |
 | Profiles            | `profile import`, `profile sync`, `profile list`, `profile delete`                           |
@@ -212,7 +232,7 @@ For full command references:
 ```bash Terminal
 SESSION="job-$(date +%s)"
 steel browser start --session "$SESSION"
-steel browser open https://example.com --session "$SESSION"
+steel browser navigate https://example.com --session "$SESSION"
 steel browser snapshot -i --session "$SESSION"
 steel browser get title --session "$SESSION"
 steel browser stop --session "$SESSION"
@@ -222,26 +242,29 @@ steel browser stop --session "$SESSION"
 
 ```bash Terminal
 # Manual solve mode
-steel browser start --session my-job --session-solve-captcha
+steel browser start --session my-job --solve-captcha
 steel browser captcha solve --session my-job
 
 # Auto solve mode (stealth preset)
 steel browser start --session my-job --stealth
 ```
 
-### 3. `agent-browser` Migration
+### 3. Download a File
+
+After navigating to a report page, use its snapshot reference to click the
+download link. Then retrieve the file before stopping the session:
 
 ```bash Terminal
-# Before
-agent-browser open https://example.com
-agent-browser snapshot -i
-agent-browser click @e3
-
-# After
-steel browser open https://example.com
-steel browser snapshot -i
-steel browser click @e3
+# Replace @e3 with the download link ref from your session's snapshot.
+steel browser click @e3 --session "$SESSION"
+steel browser wait --download --output ./report.csv --session "$SESSION"
+cat ./report.csv
+steel browser stop --session "$SESSION"
 ```
+
+Check the saved file and the requested result before reporting success. Use the
+same named session throughout; cleanup should release only the session created
+for your task.
 
 ### 4. API Tool Commands
 
@@ -273,26 +296,17 @@ steel forge --help
 
 ## Endpoint Resolution
 
-For browser lifecycle, passthrough bootstrap, and API tools (`scrape`, `screenshot`, `pdf`),
-endpoint selection is deterministic.
-
-Self-hosted precedence:
+API endpoint selection follows one precedence chain:
 
 1. `--api-url <url>`
-2. `STEEL_BROWSER_API_URL`
-3. `STEEL_LOCAL_API_URL`
-4. `browser.apiUrl` in `~/.config/steel/config.json`
-5. `http://localhost:3000/v1`
+2. `--local`: `browser.apiUrl` in `~/.config/steel/config.json`, or `http://localhost:3000/v1`
+3. `STEEL_API_URL`
+4. `https://api.steel.dev/v1`
 
-Cloud precedence:
-
-1. `STEEL_API_URL`
-2. `https://api.steel.dev/v1`
-
-Attach-flag override:
-
-- If `--cdp` or `--auto-connect` is provided, Steel skips bootstrap injection and forwards
-  passthrough arguments unchanged.
+For a session created elsewhere, use `--session <session-id>`. Stopping an
+ID-attached session forgets its local attachment without releasing the cloud
+session. Use an explicit `steel sessions release <session-id>` when release is
+intended. There is no generic `--cdp` or `--auto-connect` passthrough.
 
 ## Auth, Config, and Updates
 
@@ -321,10 +335,9 @@ NODE_ENV=test steel scrape https://example.com
 
 ## Runtime and Output Notes
 
-- `steel scrape` defaults to markdown-first output; use `--raw` for full JSON payload.
-- `steel browser start` and `steel browser sessions` return display-safe `connect_url` values
-  with sensitive query parameters redacted.
-- Browser command paths bypass auto-update checks to reduce interactive latency.
+- Output is text by default, even when piped. Use `--json` for machine-readable
+  output, including the full scrape API response.
+- Displayed connection URLs redact sensitive query parameters.
 
 ## Troubleshooting
 
@@ -333,7 +346,7 @@ NODE_ENV=test steel scrape https://example.com
   `--api-url`, env vars).
 - Session reuse issues: use a consistent `--session <name>` across every step.
 - Local runtime issues: run `steel dev install` once, then `steel dev start`.
-- Stale state: run `steel browser stop --all` and start a fresh named session.
+- Stale state: stop the specific named session you created, then start a fresh one.
 
 ## References
 
@@ -347,9 +360,13 @@ NODE_ENV=test steel scrape https://example.com
 :::faq
 ### How do I install the Steel CLI?
 
-Run `curl -fsS https://setup.steel.dev | sh`. This installs the native `steel` binary to `~/.steel/bin` and runs `steel init` to log you in, verify connectivity, and install coding-agent skills.
+For agent-led setup, follow [setup.steel.dev/install.md](https://setup.steel.dev/install.md).
+For a human terminal, run `curl -fsS https://setup.steel.dev | sh`, then restart
+your shell or add `~/.steel/bin` to your current `PATH`.
 
 ### Can I scrape or screenshot a page from the terminal without writing code?
 
-Yes. The CLI ships one-shot API tools: `steel scrape <url>` (markdown-first output by default, `--raw` for full JSON), `steel screenshot <url> --full-page`, and `steel pdf <url>`.
+Yes. The CLI ships one-shot API tools: `steel scrape <url>` (markdown-first output
+by default, `--json` for the full response), `steel screenshot <url> --full-page`,
+and `steel pdf <url>`.
 :::
