@@ -11,34 +11,48 @@ Claude Code already works well with shell commands; Steel adds the browser surfa
 
 ### Requirements
 
-*   **Node.js**: Version 18 or higher
+*   **Node.js/npm**: Including `npx` for skill installation
 *   **Claude Code**: Installed locally
-*   **Steel CLI**: Installed locally
-*   **Steel API Key**: Active Steel account
+*   **Steel CLI**: Stable v0.5.0 or later (installed during setup)
+*   **Steel account**: Device authorization; no API-key copy required
 
 ### Setup
 
-#### Step 1: Install Steel CLI
+#### Step 1: Ask Claude Code to set up Steel
 
-```bash Terminal
-curl -LsSf https://setup.steel.dev | sh
+Paste this into Claude Code:
+
+```text Prompt
+Read https://setup.steel.dev/install.md and follow it to set up Steel for claude-code. Then continue my requested task using the installed Steel skill.
 ```
 
-#### Step 2: Log in
+The guide installs the stable binary and initializes the correct skill target:
 
 ```bash Terminal
-steel login
+curl -fsSL https://setup.steel.dev/install.sh | sh -s -- --non-interactive
+"$HOME/.steel/bin/steel" --json init --agent --from claude-code
 ```
 
-#### Step 3: Install the browser skill (recommended)
+#### Step 2: Approve and resume
 
-The `steel-browser` skill gives Claude Code better command discovery and more reliable browser workflows.
+Open the device authorization URL returned by Steel and approve it in your own
+browser. Tell Claude Code when approval is complete so it reruns the same command:
 
 ```bash Terminal
-npx skills add steel-dev/skills --skill steel-browser -a claude-code -g
+"$HOME/.steel/bin/steel" --json init --agent --from claude-code
 ```
 
-Restart Claude Code after installing so it can discover the skill.
+#### Step 3: Load the browser skill
+
+Targeted init installs `steel-browser`. Ask Claude Code to load it through its
+native skill mechanism, then continue the task you requested:
+
+```text Prompt
+Load the installed steel-browser skill, perform my browser task, verify the result, and stop the session you created when finished.
+```
+
+Skill installation, skill loading, and first-task completion are separate
+checks. Reload the client if its skill discovery requires it.
 
 ### Authenticated workflows
 
@@ -72,11 +86,15 @@ After a successful run, Claude Code can help turn the browser workflow into some
 :::faq
 ### Do I need to write integration code to use Steel with Claude Code?
 
-No — the integration works through the Steel CLI. Install it with `curl -LsSf https://setup.steel.dev | sh`, run `steel login`, and Claude Code can start and control Steel sessions, scrape rendered pages, and run computer-use actions from the terminal.
+No. Follow the [agent setup guide](https://setup.steel.dev/install.md) with
+`claude-code` as the target. After device approval and skill loading, Claude Code
+can operate Steel browser sessions through the CLI.
 
 ### How does Claude Code connect to a Steel browser session?
 
-Through Steel CLI commands in its shell. For better command discovery and more reliable workflows, install the `steel-browser` skill with `npx skills add steel-dev/skills --skill steel-browser -a claude-code -g` and restart Claude Code so it discovers the skill.
+Through Steel CLI commands in its shell. The CLI uses the HTTP Commands API for
+browser actions. Targeted init installs `steel-browser`; load the skill before
+running the task.
 
 ### Does Claude Code work with Steel's proxies, stealth mode, and CAPTCHA solving?
 

@@ -14,9 +14,13 @@ Good fit for application forms, operational workflows, and browser-driven resear
 *   **Node.js**: Version 18 or higher
 *   **OpenClaw**: Installed locally
 *   **Steel CLI**: Installed locally
-*   **Steel API Key**: Active Steel account
+*   **Steel account**: Device authorization or an API key
 
 ### Setup
+
+OpenClaw is separate from OpenCode. It is not a supported
+`steel init --agent --from` target in v0.5.0. Use the manual setup below rather
+than selecting `opencode` for OpenClaw.
 
 #### Step 1: Install Steel CLI
 
@@ -35,10 +39,14 @@ steel login
 The `steel-browser` skill gives OpenClaw better command discovery and more reliable browser workflows.
 
 ```bash Terminal
-npx skills add steel-dev/skills --skill steel-browser -a opencode -g
+npx skills add steel-dev/skills --skill steel-browser
 ```
 
-Restart OpenClaw after installing so it can discover the skill.
+Choose OpenClaw if your skill installer offers it. Otherwise, follow OpenClaw's
+manual skill-installation instructions for the
+[steel-browser skill](https://github.com/steel-dev/skills/tree/main/steel-browser).
+Do not install into OpenCode's directories as a substitute. Load the installed
+skill through OpenClaw's skill mechanism before running a task.
 
 ### Example workflow
 
@@ -96,7 +104,9 @@ No — the integration works through the Steel CLI. Install it with `curl -LsSf 
 
 ### How does OpenClaw connect to a Steel browser session?
 
-Via Steel CLI commands in its shell. Install the `steel-browser` skill for better command discovery — `npx skills add steel-dev/skills --skill steel-browser -a opencode -g` — then restart OpenClaw so it discovers the skill.
+Via Steel CLI commands in its shell. Install `steel-browser` using OpenClaw's
+skill mechanism, then load it before running a task. OpenClaw and OpenCode are
+different clients; the `opencode` installation target is not an OpenClaw alias.
 
 ### Does OpenClaw work with Steel's proxies, stealth mode, and CAPTCHA solving?
 
