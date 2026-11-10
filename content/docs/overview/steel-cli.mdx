@@ -301,12 +301,18 @@ API endpoint selection follows one precedence chain:
 1. `--api-url <url>`
 2. `--local`: `browser.apiUrl` in `~/.config/steel/config.json`, or `http://localhost:3000/v1`
 3. `STEEL_API_URL`
-4. `https://api.steel.dev/v1`
+4. With no explicit override and an active device credential, the API URL saved with that device login
+5. Otherwise, `https://api.steel.dev/v1`
 
-For a session created elsewhere, use `--session <session-id>`. Stopping an
-ID-attached session forgets its local attachment without releasing the cloud
-session. Use an explicit `steel sessions release <session-id>` when release is
-intended. There is no generic `--cdp` or `--auto-connect` passthrough.
+For a session created elsewhere, use `--session <session-id>`. An explicit
+`steel browser stop --session <session-id>` releases that cloud session, even
+when the CLI only attached to it. Do not stop a borrowed session without release
+authorization. `steel sessions release <session-id>` also explicitly releases it.
+
+Only `browser stop --all` forgets attached sessions without releasing them, but
+it also releases other CLI-created sessions in the profile. It is not a safe
+detach workaround for a borrowed session. There is no generic `--cdp` or
+`--auto-connect` passthrough.
 
 ## Auth, Config, and Updates
 
