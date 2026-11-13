@@ -3,13 +3,13 @@ title: Combine You.com search with Steel browser actions
 description: Pair the You.com Search and Contents APIs with a Steel cloud browser in a search-then-act LangChain agent that prefers the cheap path and only opens a session when interaction is required.
 ---
 
-<RecipeJsonLd slug="you-com-search" title={"Combine You.com search with Steel browser actions"} description={"Pair the You.com Search and Contents APIs with a Steel cloud browser in a search-then-act LangChain agent that prefers the cheap path and only opens a session when interaction is required."} authors={[{"handle":"bsparker","name":"Brian Sparker"}]} datePublished="2026-04-30" dateModified="2026-04-30" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/you-com-search" />
+<RecipeJsonLd slug="you-com-search" title={"Combine You.com search with Steel browser actions"} description={"Pair the You.com Search and Contents APIs with a Steel cloud browser in a search-then-act LangChain agent that prefers the cheap path and only opens a session when interaction is required."} authors={[{"handle":"bsparker","name":"Brian Sparker"}]} datePublished="2026-04-30" dateModified="2026-04-30" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/you-com-search" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/you-com-search" path="examples/you-com-search" authors={[{"handle":"bsparker","name":"Brian Sparker","avatar":"https://github.com/bsparker.png?size=40"}]} updated="2026-04-30" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/you-com-search" path="examples/you-com-search" authors={[{"handle":"bsparker","name":"Brian Sparker","avatar":"https://github.com/bsparker.png?size=40"}]} updated="2026-04-30" />
 
 <RecipeQuickstart slug="you-com-search" />
 
-A [search-then-act agent](/cookbook/topics/search): [You.com](https://you.com/) handles discovery and static extraction, Steel handles real browser actions. The agent gets five tools across two cost tiers and is told to prefer the cheap tier. The Steel session is opened lazily on the first `navigate` call, so a question that resolves on search alone never spins up a browser.
+A search-then-act agent: [You.com](https://you.com/) handles discovery and static extraction, Steel handles real browser actions. The agent gets five tools across two cost tiers and is told to prefer the cheap tier. The Steel session is opened lazily on the first `navigate` call, so a question that resolves on search alone never spins up a browser.
 
 ```python
 tools = [youcom_search, youcom_contents, navigate, snapshot, click_text]
@@ -42,7 +42,7 @@ async def youcom_contents(urls: list[str]) -> dict:
         r = await client.post(
             f"{YOU_BASE}/contents",
             json={"urls": urls, "formats": ["markdown"]},
-            headers={"X-API-Key": YOUCOM_API_KEY, ...},
+            headers={"X-API-Key": YDC_API_KEY, ...},
         )
     ...
 ```
@@ -88,7 +88,7 @@ result = await executor.ainvoke({"input": question})
 
 ```bash
 cd examples/you-com-search
-cp .env.example .env          # set STEEL_API_KEY, ANTHROPIC_API_KEY, YOUCOM_API_KEY
+cp .env.example .env          # set STEEL_API_KEY, ANTHROPIC_API_KEY, YDC_API_KEY
 uv sync
 uv run playwright install chromium
 uv run main.py
@@ -121,7 +121,7 @@ If the agent answers from search and contents alone, the `open_session`, `naviga
 
 - **Swap the cheap tool.** Replace `youcom_search` with the Research API (`https://api.you.com/v1/research`) when you want a multi-step reasoned answer instead of raw results. The agent gets fewer URLs but better-synthesized inputs.
 - **Add more browser actions.** `click_text` is the minimum interactive primitive. Add `fill(selector, text)`, `press(key)`, `wait_for_selector`, or `scroll` when the agent needs to operate forms or trigger lazy-loaded content.
-- **Tighten the routing.** The `verbose=False` agent re-derives the routing each turn. For repeatable production flows, replace the agent with an explicit two-step pipeline: always run `youcom_search`, always run `youcom_contents` on the top hit, only call browser tools if a heuristic flag (response too short, contains "Please enable JavaScript," etc.) trips.
+- **Tighten the routing.** The `verbose=False` agent re-derives the routing each turn. For repeatable production flows, replace the agent with an explicit two-step pipeline: always run `youcom_search`, always run `youcom_contents` on the top hit, only call browser tools if a heuristic flag (response too short, contains "Please enable JavaScript", etc.) trips.
 - **Trace with LangSmith.** Set `LANGSMITH_API_KEY` and `LANGSMITH_TRACING=true` in `.env`. No code changes; every tool call shows up at [smith.langchain.com](https://smith.langchain.com).
 - **Swap the model.** `ChatOpenAI(model="gpt-5-mini")` works without touching the tools. The system prompt is generic.
 - **Self-host.** Both Steel (open-source browser infra) and the cookbook are deployable; the You.com APIs are remote. For a fully self-hostable variant, replace `youcom_contents` with a local extractor (Trafilatura, Readability) and a search frontend like SearXNG, and keep Steel for the browser tier.
@@ -133,7 +133,7 @@ If the agent answers from search and contents alone, the `open_session`, `naviga
 ## Related recipes
 
 <RecipeGrid>
+<RecipeCard slug="stripe-projects-web-agent" title={"Build a live browser agent with Stripe Projects"} description={"Stripe Projects provisions Steel, OpenRouter, and Vercel for a Next.js browser agent with embedded Steel Live View and a bounded tool loop."} topics={['Agents', 'Next.js']} languages={['TypeScript']} date="2026-07-16" />
 <RecipeCard slug="restate-agent" title={"Run a durable browser agent with Restate"} description={"Build a Restate Virtual Object in TypeScript that uses durable OpenAI planning steps and Steel scraping to answer browser research questions."} topics={['Agents', 'Restate']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-29" />
 <RecipeCard slug="mcp" title={"Expose a Steel browser to any MCP client"} description={"Build a Model Context Protocol server in Go with the official SDK and chromedp that hands any MCP client a Steel cloud browser through explicit session-handle tools."} topics={['Agents', 'MCP']} languages={['TypeScript', 'Python', 'Rust', 'Go']} date="2026-06-24" />
-<RecipeCard slug="genkit" title={"Build a browser agent with Genkit"} description={"Use Steel with Genkit Go to build a tool-calling agent that navigates and extracts from a chromedp-backed browser and completes a web task."} topics={['Agents']} languages={['Go']} date="2026-06-23" />
 </RecipeGrid>

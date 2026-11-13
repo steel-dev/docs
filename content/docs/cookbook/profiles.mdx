@@ -3,17 +3,17 @@ title: Persist authenticated sessions with Profiles
 description: Maintain authenticated sessions across Steel browser instances using profiles.
 ---
 
-<RecipeJsonLd slug="profiles" title={"Persist authenticated sessions with Profiles"} description={"Maintain authenticated sessions across Steel browser instances using profiles."} authors={[{"handle":"aspectrr","name":"Collin Pfeifer"}, {"handle":"jagadeshjai","name":"Jagadesh Jai"}, {"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-10-13" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/profiles-ts" />
+<RecipeJsonLd slug="profiles" title={"Persist authenticated sessions with Profiles"} description={"Maintain authenticated sessions across Steel browser instances using profiles."} authors={[{"handle":"aspectrr","name":"Collin Pfeifer"}, {"handle":"jagadeshjai","name":"Jagadesh Jai"}, {"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2025-10-13" dateModified="2026-06-24" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/profiles-ts" />
 
 <Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/profiles-ts" path="examples/profiles-ts" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/profiles-ts" path="examples/profiles-ts" authors={[{"handle":"aspectrr","name":"Collin Pfeifer","avatar":"https://github.com/aspectrr.png?size=40"}, {"handle":"jagadeshjai","name":"Jagadesh Jai","avatar":"https://github.com/jagadeshjai.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="profiles-ts" />
 
-A Steel profile is a named, long-lived browser identity. It holds everything a real Chrome user profile accumulates over time: cookies, localStorage, IndexedDB, history, installed extensions, autofill, site permissions. Every session you attach to the profile starts where the last one left off, and writes the user data directory back on release. Profiles are one of Steel's [authentication](/cookbook/topics/authentication) options for starting a browser already signed in.
+A Steel profile is a named, long-lived browser identity. It holds everything a real Chrome user profile accumulates over time: cookies, localStorage, IndexedDB, history, installed extensions, autofill, site permissions. Every session you attach to the profile starts where the last one left off, and writes the user data directory back on release.
 
 Two options on `sessions.create` wire it up. On the first run, mint a fresh profile:
 
@@ -125,7 +125,7 @@ Three recipes handle "start the browser already signed in." Pick by lifetime:
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/profiles-py" path="examples/profiles-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/profiles-py" path="examples/profiles-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="profiles-py" />
 
@@ -217,7 +217,7 @@ Other ports of this recipe: [profiles-ts](/cookbook/profiles) (interactive picke
 
 <Tab id="rust" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/profiles-rs" path="examples/profiles-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/profiles-rs" path="examples/profiles-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="profiles-rs" />
 
@@ -291,17 +291,17 @@ A full round trip takes ~30 seconds. Both sessions go through `client.sessions()
 
 <Tab id="go" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/profiles-go" path="examples/profiles-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/profiles-go" path="examples/profiles-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-24" />
 
 <RecipeQuickstart slug="profiles-go" />
 
 A Steel profile is a named, long-lived browser identity. It carries everything a real Chrome user profile accumulates: cookies, localStorage, IndexedDB, history, installed extensions, autofill, site permissions. Attach a session to a profile and the browser opens where the last one left off; on release, Steel writes the user data directory back to the profile.
 
-Two fields on `Sessions.Create` wire it up, both through the `steel.F(...)` field wrapper. To mint a fresh profile, pass `PersistProfile: steel.F(true)` and leave `ProfileID` unset. The created `*steel.Session` exposes `.ProfileID`. Store it. Every later run passes it back as `ProfileID: steel.F(profileID)` alongside `PersistProfile`, and the browser opens as that identity.
+Two fields on `Sessions.New` wire it up, both through the `steel.F(...)` field wrapper. To mint a fresh profile, pass `PersistProfile: steel.F(true)` and leave `ProfileID` unset. The created `*steel.Session` exposes `.ProfileID`. Store it. Every later run passes it back as `ProfileID: steel.F(profileID)` alongside `PersistProfile`, and the browser opens as that identity.
 
 ## Non-interactive by design
 
-The TypeScript sibling opens an `inquirer` menu so you can pick an existing profile or create a new one. This Go port drops the picker and runs the full round-trip end to end in one invocation: `seedCart` mints a profile and adds an item, the program sleeps about three seconds so the snapshot settles, then `verifyCart` opens a second session from the same `ProfileID` and counts the cart rows. Nothing to click. To reuse a profile from a previous run, read the printed `Profile ID` and feed it into `Sessions.Create` yourself.
+The TypeScript sibling opens an `inquirer` menu so you can pick an existing profile or create a new one. This Go port drops the picker and runs the full round-trip end to end in one invocation: `seedCart` mints a profile and adds an item, the program sleeps about three seconds so the snapshot settles, then `verifyCart` opens a second session from the same `ProfileID` and counts the cart rows. Nothing to click. To reuse a profile from a previous run, read the printed `Profile ID` and feed it into `Sessions.New` yourself.
 
 chromedp talks CDP directly: `chromedp.Evaluate` runs the cart logic in the page (`document.querySelector(".product-box-add-to-cart-button")` with an `input[value='Add to cart']` fallback, then `.cart-qty` for the header count and `.cart tbody tr` for the row count). `chromedp.NewRemoteAllocator` with `chromedp.NoModifyURL` attaches to the Steel browser over the websocket URL, the same idiom as the [chromedp](/cookbook/chromedp) recipe.
 
@@ -341,7 +341,7 @@ Session #2 viewer: https://app.steel.dev/sessions/ef56gh78...
 Found 1 item(s) in the cart. Profile persistence works.
 ```
 
-Both sessions release through the `release` helper deferred right after each `Sessions.Create`. Skipping release keeps browsers running until the default timeout and delays the profile snapshot.
+Both sessions release through the `release` helper deferred right after each `Sessions.New`. Skipping release keeps browsers running until the default timeout and delays the profile snapshot.
 
 ## Make it yours
 

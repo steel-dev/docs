@@ -3,17 +3,17 @@ title: Drive a browser with OpenAI Computer Use
 description: "Connect OpenAI's Computer Use Assistant to a Steel browser session for autonomous web interactions."
 ---
 
-<RecipeJsonLd slug="openai-computer-use" title={"Drive a browser with OpenAI Computer Use"} description={"Connect OpenAI's Computer Use Assistant to a Steel browser session for autonomous web interactions."} authors={[{"handle":"junhsss","name":"Jun Ryu"}, {"handle":"nibzard","name":"Nikola Balic"}]} datePublished="2025-03-19" dateModified="2026-06-23" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/openai-computer-use-ts" />
+<RecipeJsonLd slug="openai-computer-use" title={"Drive a browser with OpenAI Computer Use"} description={"Connect OpenAI's Computer Use Assistant to a Steel browser session for autonomous web interactions."} authors={[{"handle":"junhsss","name":"Jun Ryu"}, {"handle":"nibzard","name":"Nikola Balic"}]} datePublished="2025-03-19" dateModified="2026-06-23" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/openai-computer-use-ts" />
 
 <Tabs items={['TypeScript', 'Python', 'Rust', 'Go']} groupId="lang" persist updateAnchor className="cookbook-concept-tabs">
 
 <Tab id="typescript" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/openai-computer-use-ts" path="examples/openai-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/openai-computer-use-ts" path="examples/openai-computer-use-ts" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="openai-computer-use-ts" />
 
-OpenAI's [computer-use](/cookbook/topics/computer-use) model ships as a single tool declaration: `{ type: "computer" }`. You hand it to the Responses API, send a screenshot, and the model returns `computer_call` items with actions like `click`, `type`, `keypress`, `scroll`. Your job is to execute them against a real browser, capture the next screenshot, and feed it back. Steel's [OpenAI Computer Use integration](/integrations/openai-computer-use) covers the same loop as a guide.
+OpenAI's computer-use model ships as a single tool declaration: `{ type: "computer" }`. You hand it to the Responses API, send a screenshot, and the model returns `computer_call` items with actions like `click`, `type`, `keypress`, `scroll`. Your job is to execute them against a real browser, capture the next screenshot, and feed it back.
 
 ## The loop
 
@@ -139,7 +139,7 @@ Expect roughly 60-120 seconds and 15-40 turns for a simple browsing task.
 
 <Tab id="python" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/openai-computer-use-py" path="examples/openai-computer-use-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/openai-computer-use-py" path="examples/openai-computer-use-py" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}, {"handle":"nibzard","name":"Nikola Balic","avatar":"https://github.com/nibzard.png?size=40"}]} updated="2026-04-24" />
 
 <RecipeQuickstart slug="openai-computer-use-py" />
 
@@ -265,7 +265,7 @@ A run typically takes 60-180 seconds and 10-30 iterations. Screenshots are cache
 
 <Tab id="rust" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/openai-computer-use-rs" path="examples/openai-computer-use-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/openai-computer-use-rs" path="examples/openai-computer-use-rs" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
 
 <RecipeQuickstart slug="openai-computer-use-rs" />
 
@@ -300,7 +300,7 @@ Contrast [claude-computer-use-rs](/cookbook/claude-computer-use), where the Anth
 A `computer_call` carries one `action` such as `{ "type": "click", "button": "left", "x": 412, "y": 280 }`. `execute_action` matches on `type` and builds the matching Steel `SessionComputerParams`:
 
 ```rust
-"click" => SessionComputerParams::ClickMouse(ComputerActionRequestClickMouse {
+"click" => SessionComputerParams::ClickMouse(SessionComputerParamsClickMouse {
     button: Some(map_button(/* left | right | middle | back | forward */)),
     coordinates: Some(vec![x, y]),
     screenshot: Some(true),
@@ -360,26 +360,26 @@ A run drives a real session and a vision model across many turns, so it costs a 
 
 <Tab id="go" className="cookbook-concept-tab">
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/openai-computer-use-go" path="examples/openai-computer-use-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/openai-computer-use-go" path="examples/openai-computer-use-go" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-06-23" />
 
 <RecipeQuickstart slug="openai-computer-use-go" />
 
 This recipe wires two typed Go SDKs together so OpenAI's `computer-use-preview` model can drive a Steel cloud browser. The model emits a computer action through the official `github.com/openai/openai-go/v3` Responses API. You execute that action against a Steel session with `client.Sessions.Computer`, then hand the resulting screenshot back so the next turn sees what changed. That single exchange, repeated, is the whole agent.
 
-The interesting part in Go is the seam between the two SDKs, because each models the action vocabulary differently. openai-go gives you a *flattened* union: `ResponseComputerToolCallActionUnion` carries every possible field (`X`, `Y`, `Button`, `Keys`, `ScrollX`, `Text`, `Path`) on one struct, and you read whichever ones the `Type` discriminator says are live. Steel's Go SDK takes the opposite shape: `SessionComputerParams` is a *constructed* discriminated union where you set an `Action` string and attach the one matching `ComputerActionRequest*` pointer. `executeAction` is the translation layer between the two.
+The interesting part in Go is the seam between the two SDKs, because each models the action vocabulary differently. openai-go gives you a *flattened* union: `ResponseComputerToolCallActionUnion` carries every possible field (`X`, `Y`, `Button`, `Keys`, `ScrollX`, `Text`, `Path`) on one struct, and you read whichever ones the `Type` discriminator says are live. Steel's Go SDK takes the opposite shape: `SessionComputerParams` is a *constructed* discriminated union where `Body` holds exactly one `SessionComputerParamsBody*` struct, and that struct's type decides the action. `executeAction` is the translation layer between the two.
 
 ```go
 case "click":
-    body := &steel.ComputerActionRequestClickMouse{
-        Action:      steel.ComputerActionRequestClickMouseActionClickMouse,
-        Button:      ptr(mapButton(act.Button)),
-        Coordinates: coords(),
-        Screenshot:  ptr(true),
+    body := steel.SessionComputerParamsBodyClickMouse{
+        Action:      steel.F(steel.SessionComputerParamsBodyClickMouseActionClickMouse),
+        Button:      steel.F(mapButton(act.Button)),
+        Coordinates: steel.F(coords()),
+        Screenshot:  steel.F(true),
     }
-    return a.run(ctx, steel.SessionComputerParams{Action: "click_mouse", ComputerActionRequestClickMouse: body})
+    return a.run(ctx, steel.SessionComputerParams{Body: body})
 ```
 
-Every branch sets `Screenshot: ptr(true)`, so the Steel call that performs the action also returns the screenshot in the same round trip. `run` reads `resp.Base64Image` and falls back to an explicit `take_screenshot` if a particular action did not capture one.
+Every branch sets `Screenshot: steel.F(true)`, so the Steel call that performs the action also returns the screenshot in the same round trip. `run` reads `resp.Base64Image` and falls back to an explicit `take_screenshot` if a particular action did not capture one.
 
 ## Responses keeps the conversation, you keep the loop
 
@@ -467,7 +467,7 @@ A run typically takes 60-180 seconds across 10-30 model turns. Each turn is one 
 - **Adjust the viewport.** `viewportWidth` and `viewportHeight` feed both the Steel session `Dimensions` and the `computer_use_preview` tool's display size. Keep the two in sync so the model's coordinates match the real screen.
 - **Raise or lower the ceiling.** `maxIterations` bounds the loop at 50 turns. Lower it to cap spend on a flaky task.
 - **Gate safety checks.** Replace the auto-acknowledge block with a prompt or an allowlist before appending to `acks`.
-- **Persist a login.** Pass `SessionContext` to `Sessions.Create` to reuse cookies across runs. See [credentials](/cookbook/credentials).
+- **Persist a login.** Pass `SessionContext` to `Sessions.New` to reuse cookies across runs. See [credentials](/cookbook/credentials).
 
 ## Notes
 

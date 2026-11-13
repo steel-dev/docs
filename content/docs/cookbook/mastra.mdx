@@ -3,15 +3,15 @@ title: Build a typed browser agent with Mastra
 description: Use Steel with Mastra to build a typed browser agent with the Mastra Model Router and Studio playground.
 ---
 
-<RecipeJsonLd slug="mastra" title={"Build a typed browser agent with Mastra"} description={"Use Steel with Mastra to build a typed browser agent with the Mastra Model Router and Studio playground."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-04-29" dateModified="2026-04-29" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/mastra" />
+<RecipeJsonLd slug="mastra" title={"Build a typed browser agent with Mastra"} description={"Use Steel with Mastra to build a typed browser agent with the Mastra Model Router and Studio playground."} authors={[{"handle":"junhsss","name":"Jun Ryu"}]} datePublished="2026-04-29" dateModified="2026-04-29" sourceUrl="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/mastra" />
 
-<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e86cfbf8ba715cdbbc49fc2ef13e9fd7798695dc/examples/mastra" path="examples/mastra" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
+<RecipeMeta href="https://github.com/steel-dev/steel-cookbook/tree/e8ae071b522623f10950c1881389423082b6a0ae/examples/mastra" path="examples/mastra" authors={[{"handle":"junhsss","name":"Jun Ryu","avatar":"https://github.com/junhsss.png?size=40"}]} updated="2026-04-29" />
 
 <RecipeQuickstart slug="mastra" />
 
-[Mastra](https://mastra.ai/) is a TypeScript framework that wraps the Vercel AI SDK with typed tools, a model router, and a built-in Studio playground for chatting with your agents and inspecting traces. Steel's [Mastra integration](/integrations/mastra) covers the same setup on its own.
+[Mastra](https://mastra.ai/) is a TypeScript framework that wraps the Vercel AI SDK with typed tools, a model router, and a built-in Studio playground for chatting with your agents and inspecting traces.
 
-This recipe is a four-tool [browser agent](/cookbook/topics/agents): `open-session`, `navigate`, `snapshot`, `extract`. Each tool drives a Steel cloud session over Playwright. The agent runs against `github.com/trending/python` and returns a Zod-validated `FinalReport`.
+This recipe is a four-tool browser agent: `open-session`, `navigate`, `snapshot`, `extract`. Each tool drives a Steel cloud session over Playwright. The agent runs against `github.com/trending/python` and returns a Zod-validated `FinalReport`.
 
 ```typescript
 const researchAgent = new Agent({
