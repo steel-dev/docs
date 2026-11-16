@@ -21,9 +21,15 @@ Browser sessions are billed by the minute, rounded up. Launch sessions can last 
 
 Understanding how sessions live and die helps you manage resources effectively and build more reliable applications.
 
-### Reserving a Session ID
+### Tying a Session to Your Own Records
 
-Steel generates a session ID for you, but `create` also accepts one. Pass your own UUID when the ID has to exist before the browser does: a job row you write before starting the session, or a live view link you hand to a user while the browser is still booting.
+To track a session in your own system, such as a job row that you write before the browser starts, put your own ID in `metadata` and save the `id` that `create` returns.
+
+:::callout
+type: warn
+### Custom session IDs are deprecated
+Passing your own `sessionId` to `create` is deprecated, and Steel will reject it in a future release. Steel generates every session ID, because the ID records where the session runs. Put your own ID in `metadata` instead.
+:::
 
 <CodeTabs storage="languageSwitcher">
 
@@ -33,12 +39,12 @@ import Steel from 'steel-sdk';
 
 const client = new Steel();
 
-// Reserve the ID first, then create the session with it.
-const sessionId = randomUUID();
-await jobs.insert({ sessionId, status: 'starting' });
+// Write your own record first, then create the session with its ID in metadata.
+const jobId = randomUUID();
+await jobs.insert({ jobId, status: 'starting' });
 
-const session = await client.sessions.create({ sessionId });
-console.log(session.id === sessionId); // true
+const session = await client.sessions.create({ metadata: { job_id: jobId } });
+await jobs.update(jobId, { sessionId: session.id, status: 'running' });
 ```
 
 
@@ -48,22 +54,39 @@ from steel import Steel
 
 client = Steel()
 
-# Reserve the ID first, then create the session with it.
-session_id = str(uuid.uuid4())
-jobs.insert(session_id=session_id, status="starting")
+# Write your own record first, then create the session with its ID in metadata.
+job_id = str(uuid.uuid4())
+jobs.insert(job_id=job_id, status="starting")
 
-session = client.sessions.create(session_id=session_id)
-print(session.id == session_id)  # True
+session = client.sessions.create(metadata={"job_id": job_id})
+jobs.update(job_id, session_id=session.id, status="running")
 ```
 </CodeTabs>
 
-The value must be a valid UUID such as `123e4567-e89b-12d3-a456-426614174000`. Omit `sessionId` and Steel generates one instead. Either way, the ID goes to the same places:
+If your process stops before it saves `session.id`, find the session by its `job_id` and release it. See [Find Sessions by Metadata](/overview/sessions-api/session-metadata#find-sessions-by-metadata).
 
-*   `client.sessions.release(sessionId)` to end the session
+<CodeTabs storage="languageSwitcher">
 
-*   `client.sessions.files.list(sessionId)` and the rest of the Files API
+```typescript !! Typescript -wcn
+for await (const session of client.sessions.list({ metadata: { job_id: jobId } })) {
+  await client.sessions.release(session.id);
+}
+```
 
-*   `wss://connect.steel.dev?apiKey=<key>&sessionId=<id>` to attach Playwright or Puppeteer
+
+```python !! Python -wcn
+for session in client.sessions.list(metadata={"job_id": job_id}):
+    client.sessions.release(session.id)
+```
+</CodeTabs>
+
+Use the `id` that `create` returns everywhere after that:
+
+*   `client.sessions.release(session.id)` to end the session
+
+*   `client.sessions.files.list(session.id)` and the rest of the Files API
+
+*   `wss://connect.steel.dev?apiKey=<key>&sessionId=<session.id>` to attach Playwright or Puppeteer
 
 
 ### Session Lifetime and Timeout
